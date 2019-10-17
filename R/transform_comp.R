@@ -13,7 +13,7 @@
 #' @examples TBA
 #' @export
 transform_comp <- function(data, comp_labels, rounded_zeroes = TRUE, det_limit = NULL, component_1 = NULL){
-  if (rounded_zeroes = TRUE & is.null(det_limit)){
+  if (rounded_zeroes & is.null(det_limit)){
     stop("det_limit must be set for zeroes to be imputed. It should be the minimum measurable value in the compositional
          columns of data.")
   }
