@@ -1,4 +1,6 @@
 #' Mode
+#'
+#' @param x Vector to take the mode of.
 Mode <- function(x) {
   ux <- unique(x)
   ux[which.max(tabulate(match(x, ux)))]
@@ -6,6 +8,8 @@ Mode <- function(x) {
 
 
 #' Geometric mean
+#'
+#' @param vector Vector to take the geometric mean of.
 gm <- function(vector) {
   geometric_mean <- exp(mean(log(vector)))
   return(geometric_mean)
