@@ -8,7 +8,7 @@
 #'
 #' @param data Dataset to have the transformation applied to.
 #' @return ilr-transformed columns.
-#' @examples TBC
+#' @examples # TBA
 #' @export
 ilr_trans <- function(data){
   dClr <- clr_trans(data)

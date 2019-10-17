@@ -10,7 +10,7 @@
 #' minimum measurable value in the compositional columns of data.
 #' @param component_1 First component in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.
 #' @return \code{data} with ilr-transformed activity columns.
-#' @examples TBA
+#' @examples # TBA
 #' @export
 transform_comp <- function(data, comp_labels, rounded_zeroes = TRUE, det_limit = NULL, component_1 = NULL){
   if (rounded_zeroes & is.null(det_limit)){
