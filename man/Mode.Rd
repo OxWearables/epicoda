@@ -6,6 +6,9 @@
 \usage{
 Mode(x)
 }
+\arguments{
+\item{x}{Vector to take the mode of.}
+}
 \description{
 Mode
 }

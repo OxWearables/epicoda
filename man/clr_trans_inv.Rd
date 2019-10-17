@@ -6,6 +6,9 @@
 \usage{
 clr_trans_inv(data)
 }
+\arguments{
+\item{data}{Clr-transformed columns.}
+}
 \description{
 This inverts a clr transformation.
 }

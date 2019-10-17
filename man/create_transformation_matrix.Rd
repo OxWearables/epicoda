@@ -6,6 +6,9 @@
 \usage{
 create_transformation_matrix(nrow)
 }
+\arguments{
+\item{nrow}{Number of rows of transformation matrix to be created (= number of components in composition)}
+}
 \description{
 Create transformation matrix from clr to ilr pivot coordinates
 }

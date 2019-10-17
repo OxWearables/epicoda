@@ -27,5 +27,5 @@ Takes a dataset with a set of labelled compositional columns and returns a datas
 transformed variables added.
 }
 \examples{
-TBA
+# TBA
 }

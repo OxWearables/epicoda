@@ -6,6 +6,9 @@
 \usage{
 gm(vector)
 }
+\arguments{
+\item{vector}{Vector to take the geometric mean of.}
+}
 \description{
 Geometric mean
 }

@@ -6,6 +6,9 @@
 \usage{
 clr_trans(data)
 }
+\arguments{
+\item{data}{Compositional columns of dataframe.}
+}
 \description{
 Clr transformation
 }
