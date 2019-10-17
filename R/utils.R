@@ -54,7 +54,7 @@ alter_order_PA_vector <- function(comp_labels, component_1){
 #' Create columns headings for after the transformation.
 #'
 #' @param comp_labels
-transf_vector <- function(comp_labels){
+transf_labels <- function(comp_labels){
   l <- (length(comp_labels)-1)
   transf <- comp_labels[1:l]
   first_labels_transf <- paste0(1:l, "-", transf)
