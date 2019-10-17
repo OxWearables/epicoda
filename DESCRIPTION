@@ -4,7 +4,7 @@ Title: Supports epidemiological analyses using compositional exposure variables
 Version: 0.1.0.9000
 Author: person("Rosemary", "Walmsley", email = "rosemary.walmsley@gtc.ox.ac.uk",
                   role = c("aut", "cre"))
-Maintainer: person("Rosemary", "Walmsley", email = "rosemary.walmsley@gtc.ox.ac.uk")
+Maintainer: <rosemary.walmsley@gtc.ox.ac.uk>
 Description: Provides functions to support epidemiological analyses using compositional 
     exposure variables, including preparation of ilr-pivot coordinates and plotting 
     graphs of model predictions for linear, logistic and Cox regression models.  
