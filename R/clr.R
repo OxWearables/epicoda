@@ -1,4 +1,6 @@
 #' Clr transformation
+#'
+#' @param data Compositional columns of dataframe.
 #' @export
 clr_trans <- function(data) {
   gms <- apply(data,1,gm)
@@ -10,6 +12,8 @@ clr_trans <- function(data) {
 #' Clr inversion
 #'
 #' This inverts a clr transformation.
+#'
+#' @param data Clr-transformed columns.
 #' @export
 clr_trans_inv <- function(data){
   unwrapped <- exp(data)
