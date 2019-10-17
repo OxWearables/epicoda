@@ -1,7 +1,7 @@
 Package: epicoda
 Type: Package
 Title: Supports epidemiological analyses using compositional exposure variables
-Version: 0.1.0.9000
+Version: 0.0.0.9000
 Author: person("Rosemary", "Walmsley", email = "rosemary.walmsley@gtc.ox.ac.uk",
                   role = c("aut", "cre"))
 Maintainer: <rosemary.walmsley@gtc.ox.ac.uk>
@@ -11,6 +11,7 @@ Description: Provides functions to support epidemiological analyses using compos
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
+Depends: R (>= 3.6.1)
 Imports: 
     zCompositions, 
     ggplot2, 
