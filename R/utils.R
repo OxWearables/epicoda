@@ -16,6 +16,8 @@ gm <- function(vector) {
 }
 
 #' Create transformation matrix from clr to ilr pivot coordinates
+#'
+#' @param nrow Number of rows of transformation matrix to be created (= number of components in composition)
 create_transformation_matrix <- function(nrow) {
   tm <- matrix(nrow = nrow, ncol = 0)
   for (i in 1:(nrow - 1)){
