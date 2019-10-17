@@ -3,3 +3,4 @@
 export(clr_trans)
 export(clr_trans_inv)
 export(ilr_trans)
+export(transform_comp)

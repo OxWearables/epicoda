@@ -2,7 +2,7 @@
 % Please edit documentation in R/ilr.R
 \name{ilr_trans}
 \alias{ilr_trans}
-\title{ilr_trans: Ilr transformations}
+\title{ilr_trans: Performs ilr transformations (pivot coordinates)}
 \usage{
 ilr_trans(data)
 }
@@ -14,6 +14,11 @@ ilr-transformed columns.
 }
 \description{
 Takes activity columns and returns them after ilr transformation.
+}
+\details{
+This doesn't use compositions::ilr to insulate it from changes in the choice of
+basis used. As pivot coordinates are currently standard in physical activity epidemiology this
+is specified.
 }
 \examples{
 TBC
