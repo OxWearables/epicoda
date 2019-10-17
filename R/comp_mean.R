@@ -16,3 +16,4 @@ comp_mean <- function(data, comp_labels){
   comp_mean_normalised <- compos_mean/tot_time
   names(comp_mean_normalised) <- comp_labels
   return(comp_mean_normalised)
+}
