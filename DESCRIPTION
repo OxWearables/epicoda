@@ -1,11 +1,17 @@
 Package: epicoda
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Title: Supports epidemiological analyses using compositional exposure variables
+Version: 0.1.0.9000
+Author: person("Rosemary", "Walmsley", email = "rosemary.walmsley@gtc.ox.ac.uk",
+                  role = c("aut", "cre"))
+Maintainer: person("Rosemary", "Walmsley", email = "rosemary.walmsley@gtc.ox.ac.uk")
+Description: Provides functions to support epidemiological analyses using compositional 
+    exposure variables, including preparation of ilr-pivot coordinates and plotting 
+    graphs of model predictions for linear, logistic and Cox regression models.  
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
+Imports: 
+    zCompositions, 
+    ggplot2, 
+    survival
