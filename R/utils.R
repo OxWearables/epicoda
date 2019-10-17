@@ -32,3 +32,32 @@ create_transformation_matrix <- function(nrow) {
   tm <- as.matrix(tm)
   return(tm)
 }
+
+
+#' Alter order of compositional column labels.
+#'
+#' @param comp_labels
+#' @param component_1 Component which should be moved to front.
+#' @return \code{comp_labels} in new order.
+alter_order_PA_vector <- function(comp_labels, component_1){
+  if (component_1 %in% comp_labels){
+    comp_red <- comp_labels[comp_labels != component_1]
+    comp_labels <- c(component_1, comp_red)
+    return(comp_labels)
+  }
+  else{
+    stop("Specified component_1 does not appear in comp_labels.")
+  }
+}
+
+
+#' Create columns headings for after the transformation.
+#'
+#' @param comp_labels
+transf_vector <- function(comp_labels){
+  l <- (length(comp_labels)-1)
+  transf <- comp_labels[1:l]
+  first_labels_transf <- paste0(1:l, "-", transf)
+  transf_with_labels <- paste("ilr_", first_labels_transf, "_vs_remaining", sep = "")
+  return(transf_with_labels)
+}
