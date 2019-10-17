@@ -14,7 +14,7 @@ clr_trans <- function(data) {
 clr_trans_inv <- function(data){
   unwrapped <- exp(data)
   total <- rowSums(unwrapped)
-  print(head(total))
-  y <- 168*unwrapped/total
+  y <- unwrapped/total
+  colnames(y) <- sub("clr_", "", colnames(y))
   return(y)
 }
