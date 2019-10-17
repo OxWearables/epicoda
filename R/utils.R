@@ -67,3 +67,16 @@ transf_labels <- function(comp_labels){
   transf_with_labels <- paste("ilr_", first_labels_transf, "_vs_remaining", sep = "")
   return(transf_with_labels)
 }
+
+
+#' Create sum from a vector
+#'
+#' @param vector Vector to be turned into a sum.
+#' @return Sum of elements of vector.
+vector_to_sum <- function(vector){
+  sum_to_return <- paste(vector, collapse = "+")
+  return(sum_to_return)
+}
+
+
+
