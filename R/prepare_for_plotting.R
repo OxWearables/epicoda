@@ -26,26 +26,30 @@ vary_component_of_interest <- function(component_of_interest,
 #'
 #' @param from_component
 #' @param to_component
-#' @param dataset
-#' @param fixed_values
-#' @param PA_labels
+#' @param comp_sum Numeric value indicating the value compositional columns should sum to (e.g. 1, 24, 168, 10080).
+#' @param fixed_values Should be a dataframe with a column for each component and containing a single value for each of those.
+#' @param dataset Dataset to take distribution of \code{from_component} from.
+#' @param comp_labels Labels of compositional columns.
 #' @param lower_quantile See \code{vary_time_of_interest}
 #' @param upper_quantile See \code{vary_time_of_interest}
+#' @param granularity Doesn't usually need setting. Parameter indicating how many predictions to make. If too low, plotted curve has gaps. If too high, calculation is slow.
 #' @return Dataframe varying in time of interest.
 #' @examples
 #'
 #' @export
-make_new_data <- function(time_from,
-                          time_to,
-                          dataset,
+make_new_data <- function(from_component,
+                          to_component,
                           fixed_values,
-                          PA_labels,
+                          dataset,
+                          comp_sum = sum(fixed_values[1,comp_labels]),
+                          comp_labels,
                           lower_quantile = 0.05,
-                          upper_quantile = 0.95) {
+                          upper_quantile = 0.95,
+                          granularity = 10000) {
   new_data <- data.frame()[1:10000,]
-  for (column in colnames(dataset)) {
-    if (column == time_to) {
-      this_col <- data.frame(vary_time_of_interest(dataset[, column],
+  for (label in comp_labels) {
+    if (label == to_component) {
+      this_col <- data.frame(vary_time_of_interest(dataset[, label],
                                                    lower_quantile,
                                                    upper_quantile))
       new_data[column] <- this_col
@@ -55,49 +59,11 @@ make_new_data <- function(time_from,
       new_data[column] <- this_col
     }
   }
-  if (PA_labels == "int_class") {
-    new_data[, time_from] <-
-      rep(24  * 7, by = 10000) - new_data$vigorous - new_data$moderate -
-      new_data$non_active - new_data$light + new_data[, time_from]
+  tf <- rep(comp_sum, by = 10000)
+  for (label in comp_labels){
+    tf <- tf - new_data[, label]
   }
-  if (PA_labels == "ml_class_5") {
-    new_data[, time_from] <-
-      rep(24  * 7, by = 10000) - new_data$sedentary - new_data$moderate -
-      new_data$sleep - new_data$walking - new_data$tasks.light + new_data[, time_from]
-  }
-  if (PA_labels == "ml_class_4") {
-    new_data[, time_from] <-
-      rep(24  * 7, by = 10000) - new_data$sedentary - new_data$modwalk -
-      new_data$sleep - new_data$tasks.light + new_data[, time_from]
-  }
-  if (PA_labels == "ml_with_vig") {
-    new_data[, time_from] <-
-      rep(24  * 7, by = 10000) - new_data$moderate - new_data$vigorous -
-      new_data$walking - new_data$tasks.light - new_data$sleep - new_data$sedentary + new_data[, time_from]
-
-  }
-  if (PA_labels == "int_with_sleep") {
-    new_data[, time_from] <-
-      rep(24  * 7, by = 10000) - new_data$moderate - new_data$vigorous -
-      new_data$light - new_data$sleep - new_data$waking_non_active + new_data[, time_from]
-  }
-  if (PA_labels == "ml_with_vig_mw") {
-    new_data[, time_from] <-
-      rep(24  * 7, by = 10000) - new_data$modwalk - new_data$vigorous -
-      new_data$sedentary - new_data$sleep - new_data$tasks.light + new_data[, time_from]
-  }
-  if (PA_labels == "nonsleep_behav") {
-    new_data[, time_from] <-
-      rep(24  * 7, by = 10000) - new_data$moderate - new_data$vigorous -
-      new_data$walking - new_data$tasks.light - new_data$sleep - new_data$sedentary +
-      new_data[, time_from]
-
-  }
-  if (PA_labels == "compromise") {
-    new_data[, time_from] <-
-      rep(24  * 7, by = 10000) - new_data$moderate - new_data$vigorous -
-      new_data$light - new_data$sleep - new_data$sedentary +
-      new_data[, time_from]
-
-  }
+  tf <- tf + new_data[,to_component]
+  new_data[, from_component]<- tf
   return(new_data)
+}
