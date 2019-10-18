@@ -24,8 +24,8 @@ vary_component_of_interest <- function(component_of_interest,
 #'
 #' Generates a new dataset to feed into the plotting functions.
 #'
-#' @param from_component
-#' @param to_component
+#' @param from_component Component to plot transfer out of. Of the two being considered, should be component with generally higher values (e.g. higher median)
+#' @param to_component Component to plot transfer into. Of the two being considered, should be component with generally lower values (e.g. lower median.)
 #' @param comp_sum Numeric value indicating the value compositional columns should sum to (e.g. 1, 24, 168, 10080).
 #' @param fixed_values Should be a dataframe with a column for each component and containing a single value for each of those.
 #' @param dataset Dataset to take distribution of \code{from_component} from.
