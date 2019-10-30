@@ -15,6 +15,7 @@
 #' @param plot_log
 #' @param lower_quantile See \code{vary_time_of_interest} and \code{make_new_data}
 #' @param upper_quantile See \code{vary_time_of_interest} and \code{make_new_data}
+#' @param units_label What are the units of the compositional variables? E.g. for activity data "hrs/day". NB all the calculations are unitless,
 #' @return Plot with balance of two components plotted as exposure/ independent variable.
 #' @examples
 
@@ -31,7 +32,7 @@ plot_transfers <- function(type,
                                 plot_log = FALSE,
                                 lower_quantile = 0.05,
                                 upper_quantile = 0.95,
-                                weight_vector = NULL) {
+                                units_label) {
   if (is.null(yllimit) & type == "cox") {
     yllimit <- 0.5
   }
@@ -174,8 +175,8 @@ plot_transfers <- function(type,
           ymax = upper_CI
         ), color = "grey") +
         geom_point(size = 0.5) +
-        labs(#title = paste("Estimated relative hazard associated with transfer of minutes per week of",time_from, "to", time_to, "\n around the compositional mean"),
-          x = paste(time_from, "to", time_to, "\n (hr/week)"),
+        labs(
+          x = paste(time_from, "to", time_to, "\n ", units_label),
           y = y_label) +
         geom_hline(yintercept = 1) +
         geom_vline(xintercept = 0) +
@@ -197,8 +198,8 @@ plot_transfers <- function(type,
           ymax = upper_CI
         ), color = "grey") +
         geom_point(size = 0.5) +
-        labs(#title = paste("Estimated relative hazard associated with transfer of hours per week of",time_from, "to", time_to, "\n around the compositional mean"),
-          x = paste(time_from, "to", time_to, "\n (hr/wk)"),
+        labs(
+          x = paste(time_from, "to", time_to, "\n ", units_label),
           y = y_label) +
         geom_hline(yintercept = 1) +
         geom_vline(xintercept = 0)
@@ -235,7 +236,7 @@ plot_transfers <- function(type,
           ymax = upper_CI
         ), color = "grey") +
         geom_point(size = 0.5) +
-        labs(x = paste(time_from, "to", time_to, "\n (hr/wk)"),
+        labs(x = paste(time_from, "to", time_to, "\n ", units_label),
              y = y_label) +
         scale_y_continuous(
           trans = log_trans(),
