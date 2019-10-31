@@ -9,10 +9,10 @@
 #' @param fixed_values
 #' @param transformation_type Should match transformation used in \code{activity_trans} when developing models.
 #' @param comp_labels
-#' @param yllimit
-#' @param yulimit
-#' @param y_label
-#' @param plot_log
+#' @param yllimit Upper limit to show on y-axis on plot.
+#' @param yulimit Lower limit to show on y-axis on plot.
+#' @param y_label Label for y-axis on plot.
+#' @param plot_log If this is \code{TRUE}, the y-axis will be log-transformed.
 #' @param lower_quantile See \code{vary_time_of_interest} and \code{make_new_data}
 #' @param upper_quantile See \code{vary_time_of_interest} and \code{make_new_data}
 #' @param units_label What are the units of the compositional variables? E.g. for activity data "hrs/day". NB all the calculations are unitless,
@@ -87,6 +87,7 @@ plot_transfers <- function(time_from,
                    rounded_zeroes = FALSE)
 
   if (type == "logistic") {
+    print("Note that the confidence intervals on this plot include uncertainty driven by other, non-compositional variables.")
     predictions <- predict(model,
                            newdata = new_data,
                            type = "link",
@@ -213,6 +214,7 @@ plot_transfers <- function(time_from,
     }
   }
   if (type == "linear") {
+    print("Note that the confidence intervals on this plot include uncertainty driven by other, non-compositional variables.")
     predictions <- predict(model, newdata = new_data,
                            se.fit = TRUE)
     dNew <- data.frame(new_data, predictions)
