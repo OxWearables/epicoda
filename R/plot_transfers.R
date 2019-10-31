@@ -2,11 +2,11 @@
 #'
 #' Plots model predictions for the transfer of time given.
 #'
-#' @param time_from Should be an element of \code{comp_labels}.
-#' @param time_to Should be an element of \code{comp_labels}. Should have compositional mean less than \code{time_from}.
+#' @param from_component Should be an element of \code{comp_labels}.
+#' @param to_component Should be an element of \code{comp_labels}. Should have compositional mean less than \code{from_component}.
 #' @param model
 #' @param dataset Should be dataset used to develop \code{model}. Used to set reasonable values to display predictions for based on range of the data.
-#' @param fixed_values
+#' @param fixed_values If desired, fixed_values for variables in \code{dataset} which aren't in \code{comp_labels}. These will be used when making predictions
 #' @param transformation_type Should match transformation used in \code{activity_trans} when developing models.
 #' @param comp_labels
 #' @param yllimit Upper limit to show on y-axis on plot.
@@ -19,8 +19,8 @@
 #' @return Plot with balance of two components plotted as exposure/ independent variable.
 #' @examples
 
-plot_transfers <- function(time_from,
-                                time_to,
+plot_transfers <- function(from_component,
+                           to_component,
                                 model,
                                 dataset,
                                 fixed_values = NULL,
