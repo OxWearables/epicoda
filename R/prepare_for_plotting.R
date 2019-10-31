@@ -67,12 +67,30 @@ make_new_data <- function(from_component,
                           to_component,
                           fixed_values,
                           dataset,
-                          comp_sum = sum(fixed_values[1,comp_labels]),
+                          units = NULL,
                           comp_labels,
                           lower_quantile = 0.05,
                           upper_quantile = 0.95,
                           granularity = 10000) {
   new_data <- data.frame()[1:10000,]
+  if (units == "hr/wk"){
+    comp_sum <- 24*7
+  }
+  if (units == "unitless"){
+    comp_sum <- 1
+  }
+  if (units == "hr/day"){
+    comp_sum <- 24
+  }
+  if (units == "min/day"){
+    comp_sum <- 60*24
+  }
+  if (units == "min/wk"){
+    comp_sum <- 60*24*7
+  }
+  if (!(units %in% c("hr/wk", "hr/day", "min/wk", "min/day", "unitless"))){
+    stop("Unrecognised value for units. units should be \"hr/wk\", \"hr/day\", \"min/wk\", \"min/day\" or \"unitless\"")
+  }
   for (label in comp_labels) {
     if (label == to_component) {
       this_col <- data.frame(vary_time_of_interest(dataset[, label],
