@@ -48,16 +48,18 @@ transform_comp <- function(data, comp_labels, transformation_type = "ilr", round
   }
   if (transformation_type == "ilr"){
     dTransformed <- ilr_trans(dCompOnly)
-    transf_labels <- transf_labels(comp_labels)
+    transf_labels <- transf_labels(comp_labels, "ilr")
     colnames(dTransformed) <- transf_labels
   }
 
   if (transformation_type == "alr"){
     dTransformed <- alr_trans(dCompOnly, comp_labels, comparison_component)
+    colnames(dTransformed) <- transf_labels(comp_labels, "alr", comparison_component)
   }
 
   if (transformation_type == "clr"){
     dTransformed <- clr_trans(data)
+    colnames(dTransformed) <- transf_labels(comp_labels, "clr")
   }
   dOut <- data.frame(dDropped[, !colnames(dDropped) %in% colnames(dCompOnly)], dCompOnly, dTransformed)
 
