@@ -13,7 +13,7 @@ forest_plot_comp <- function(data, model, comp_labels, transformation_type = "il
   if (class(model) != "coxph"){
     stop("forest_plot_comp is only implemented for Cox models.")
   }
-  y <- 1
+  y
   return(y)
 }
 
