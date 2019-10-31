@@ -2,25 +2,30 @@
 % Please edit documentation in R/transform_comp.R
 \name{transform_comp}
 \alias{transform_comp}
-\title{Transform compositional variables to ilr pivot coordinates}
+\title{Transform compositional variables to ilr (pivot), alr or clr coordinates}
 \usage{
-transform_comp(data, comp_labels, rounded_zeroes = TRUE,
-  det_limit = NULL, component_1 = NULL)
+transform_comp(data, comp_labels, transformation_type = "ilr",
+  rounded_zeroes = TRUE, det_limit = NULL,
+  comparison_component = NULL, component_1 = NULL)
 }
 \arguments{
 \item{data}{Dataset to have the transformation applied to.}
 
 \item{comp_labels}{The labels of the compositional columns.}
 
+\item{transformation_type}{The type of transformation desired. Should be \code{"ilr", "alr"} or \code{"clr"}.}
+
 \item{rounded_zeroes}{Are zeroes rounded zeroes?}
 
 \item{det_limit}{Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
 minimum measurable value in the compositional columns of data.}
 
-\item{component_1}{First component in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
+\item{comparison_component}{Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of component that all other components will be compared to.}
+
+\item{component_1}{Only used if First component in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
 }
 \value{
-\code{data} with ilr-transformed activity columns.
+\code{data} with transformed activity columns.
 }
 \description{
 Takes a dataset with a set of labelled compositional columns and returns a dataset with
