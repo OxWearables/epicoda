@@ -2,12 +2,12 @@
 #'
 #' Plots model predictions for the transfer of time given.
 #'
-#' @param type Should be \code{cox}, \code{logistic} or \code{linear}, and should correspond to the type of the model in \code{model}.
 #' @param time_from Should be an element of \code{comp_labels}.
 #' @param time_to Should be an element of \code{comp_labels}. Should have compositional mean less than \code{time_from}.
 #' @param model
-#' @param dataset
+#' @param dataset Should be dataset used to develop \code{model}. Used to set reasonable values to display predictions for based on range of the data.
 #' @param fixed_values
+#' @param transformation_type Should match transformation used in \code{activity_trans} when developing models.
 #' @param comp_labels
 #' @param yllimit
 #' @param yulimit
@@ -19,12 +19,11 @@
 #' @return Plot with balance of two components plotted as exposure/ independent variable.
 #' @examples
 
-plot_transfers <- function(type,
-                                time_from,
+plot_transfers <- function(time_from,
                                 time_to,
                                 model,
                                 dataset,
-                                fixed_values,
+                                fixed_values = NULL,
                                 comp_labels,
                                 yllimit = NULL,
                                 yulimit = NULL,
@@ -33,6 +32,19 @@ plot_transfers <- function(type,
                                 lower_quantile = 0.05,
                                 upper_quantile = 0.95,
                                 units_label) {
+  type <- "unassigned"
+  if (class(model)=="lm"){
+    type <- "linear"
+  }
+  if ((class(model)[1] == "glm") & (family(model)[[1]] == "binomial")){
+    type <- "logistic"
+  }
+  if ((class(model) == "coxph")){
+    type <- "cox"
+  }
+  if (type == "unassigned"){
+    stop("model is not a recognised type of model.")
+  }
   if (is.null(yllimit) & type == "cox") {
     yllimit <- 0.5
   }
@@ -46,7 +58,18 @@ plot_transfers <- function(type,
     yulimit <- 1
   }
 
-
+  if (is.null(fixed_values)){
+    fixed_values <- generate_fixed_values(dataset, comp_labels)
+  }
+  cm <- comp_mean(dataset, comp_labels)
+  if (!(is.null(fixed_values))){
+    if (!is.null(colnames(fixed_values)[colnames(fixed_values) %in% comp_labels])){
+      warning("fixed_values will be updated to have compositional components fixed at the compositional mean. For technical and pragmatic reasons, use of a different reference for the compositional components is not currently possible.")
+    }
+    for (label in comp_labels){
+      fixed_values[, label] <- cm[[label]]
+    }
+  }
   new_data <-
     make_new_data(
       time_from,
@@ -60,24 +83,8 @@ plot_transfers <- function(type,
   new_data <-
     activity_trans(new_data,
                    comp_labels,
-                   rounded_zeroes = FALSE,
-                   weight_vector = weight_vector)
-  print(head(new_data))
-
-  if (comp_labels == "nonsleep_behav") {
-    new_data$sleep_cat <- cut(
-      new_data$sleep,
-      breaks = c(0, 6  * 7,
-                 7  * 7, 8 *
-                   7,
-                 9  * 7, 10 *
-                   7,
-                 24  * 7),
-      labels = c("<6", "6-7", "7-8",
-                 "8-9", "9-10", ">10")
-    )
-  }
-
+                   transformation_type,
+                   rounded_zeroes = FALSE)
 
   if (type == "logistic") {
     predictions <- predict(model,
