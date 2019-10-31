@@ -15,7 +15,7 @@
 #' @param plot_log If this is \code{TRUE}, the y-axis will be log-transformed.
 #' @param lower_quantile See \code{vary_time_of_interest} and \code{make_new_data}
 #' @param upper_quantile See \code{vary_time_of_interest} and \code{make_new_data}
-#' @param units_label What are the units of the compositional variables? E.g. for activity data "hrs/day". NB all the calculations are unitless,
+#' @param units What are the units of the compositional variables? E.g. for activity data "hr/day". Currently all non-activity exposure variables should be specified as unitless until support for alternatives units is added.
 #' @return Plot with balance of two components plotted as exposure/ independent variable.
 #' @examples
 
@@ -31,7 +31,7 @@ plot_transfers <- function(from_component,
                                 plot_log = FALSE,
                                 lower_quantile = 0.05,
                                 upper_quantile = 0.95,
-                                units_label) {
+                                units) {
   type <- "unassigned"
   if (class(model)=="lm"){
     type <- "linear"
@@ -72,10 +72,11 @@ plot_transfers <- function(from_component,
   }
   new_data <-
     make_new_data(
-      time_from,
-      time_to,
-      dataset,
+      from_component,
+      to_component,
       fixed_values,
+      dataset,
+      units,
       comp_labels,
       lower_quantile,
       upper_quantile
@@ -184,7 +185,7 @@ plot_transfers <- function(from_component,
         ), color = "grey") +
         geom_point(size = 0.5) +
         labs(
-          x = paste(time_from, "to", time_to, "\n ", units_label),
+          x = paste(time_from, "to", time_to, "\n ", units),
           y = y_label) +
         geom_hline(yintercept = 1) +
         geom_vline(xintercept = 0) +
@@ -207,7 +208,7 @@ plot_transfers <- function(from_component,
         ), color = "grey") +
         geom_point(size = 0.5) +
         labs(
-          x = paste(time_from, "to", time_to, "\n ", units_label),
+          x = paste(time_from, "to", time_to, "\n ", units),
           y = y_label) +
         geom_hline(yintercept = 1) +
         geom_vline(xintercept = 0)
@@ -245,7 +246,7 @@ plot_transfers <- function(from_component,
           ymax = upper_CI
         ), color = "grey") +
         geom_point(size = 0.5) +
-        labs(x = paste(time_from, "to", time_to, "\n ", units_label),
+        labs(x = paste(time_from, "to", time_to, "\n ", units),
              y = y_label) +
         scale_y_continuous(
           trans = log_trans(),
