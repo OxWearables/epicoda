@@ -1,3 +1,29 @@
+#' Generates list of fixed_values based on median/modal values in dataset
+#'
+#' If fixed values are not set, this will set them to modal/ median values.
+#'
+#' @param data Data used for model development.
+#' @param comp_labels Labels of the compositional componenets.Should be column names of columns in \code{data}.
+#' @return dataframe with a single row of fixed_values.
+generate_fixed_values <- function(data){
+  fixed_values <- data.frame(matrix(ncol = 0, nrow = 1))
+  others <- colnames(data)[!(colnames(data) %in% comp_labels)]
+  for (colname in others){
+    if (is.factor(data[, colname])== TRUE){
+      fixed_values[colname] <- (Mode(data[,colname]))
+    }
+    else {
+      fixed_values[colname] <- median(data[, colname], na.rm = TRUE)
+    }
+  }
+  cm <- comp_mean(data, comp_labels)
+  fixed_values <- cbind(cm, fixed_values)
+  return(fixed_values)
+}
+
+
+
+
 #' Varies component of interest.
 #'
 #' Produces variable going between percentiles of the component of interest in the data.
