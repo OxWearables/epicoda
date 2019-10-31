@@ -1,4 +1,4 @@
-#' Transform compositional variables to ilr pivot coordinates
+#' Transform compositional variables to ilr (pivot), alr or clr coordinates
 #'
 #' Takes a dataset with a set of labelled compositional columns and returns a dataset with
 #' transformed variables added.
@@ -11,7 +11,7 @@
 #' minimum measurable value in the compositional columns of data.
 #' @param comparison_component Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of component that all other components will be compared to.
 #' @param component_1 Only used if First component in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.
-#' @return \code{data} with ilr-transformed activity columns.
+#' @return \code{data} with transformed activity columns.
 #' @examples # TBA
 #' @export
 transform_comp <- function(data, comp_labels, transformation_type = "ilr", rounded_zeroes = TRUE, det_limit = NULL, comparison_component = NULL, component_1 = NULL){
