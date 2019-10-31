@@ -8,6 +8,8 @@
 #' @param dataset Should be dataset used to develop \code{model}. Used to set reasonable values to display predictions for based on range of the data.
 #' @param fixed_values If desired, fixed_values for variables in \code{dataset} which aren't in \code{comp_labels}. These will be used when making predictions
 #' @param transformation_type Should match transformation used in \code{activity_trans} when developing models.
+#' @param comparison_component If used, should match transformation used in \code{activity_trans} when developing models.
+#' @param component_1 If used, should match transformation used in \code{activity_trans} when developing models.
 #' @param comp_labels
 #' @param yllimit Upper limit to show on y-axis on plot.
 #' @param yulimit Lower limit to show on y-axis on plot.
@@ -24,6 +26,9 @@ plot_transfers <- function(from_component,
                                 model,
                                 dataset,
                                 fixed_values = NULL,
+                                transformation_type = NULL,
+                                comparison_component = NULL,
+                                component_1 = NULL,
                                 comp_labels,
                                 yllimit = NULL,
                                 yulimit = NULL,
@@ -32,6 +37,9 @@ plot_transfers <- function(from_component,
                                 lower_quantile = 0.05,
                                 upper_quantile = 0.95,
                                 units) {
+  if (is.null(transformation_type)){
+    stop("transformation_type must be specified and must match the transformation used in activity_trans earlier (which defaults to \"ilr\")")
+  }
   type <- "unassigned"
   if (class(model)=="lm"){
     type <- "linear"
@@ -84,7 +92,9 @@ plot_transfers <- function(from_component,
   new_data <-
     activity_trans(new_data,
                    comp_labels,
-                   transformation_type,
+                   transformation_type = transformation_type,
+                   component_1 = component_1,
+                   comparison_component = comparison_component,
                    rounded_zeroes = FALSE)
 
   if (type == "logistic") {
