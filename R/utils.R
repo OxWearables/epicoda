@@ -57,26 +57,7 @@ alter_order_comp_labels <- function(comp_labels, component_1){
 }
 
 
-#' Create columns headings for after the transformation.
-#'
-#' @param comp_labels List of compositional column labels.
-transf_labels <- function(comp_labels){
-  l <- (length(comp_labels)-1)
-  transf <- comp_labels[1:l]
-  first_labels_transf <- paste0(1:l, "-", transf)
-  transf_with_labels <- paste("ilr_", first_labels_transf, "_vs_remaining", sep = "")
-  return(transf_with_labels)
-}
 
-
-#' Create sum from a vector
-#'
-#' @param vector Vector to be turned into a sum.
-#' @return Sum of elements of vector.
-vector_to_sum <- function(vector){
-  sum_to_return <- paste(vector, collapse = "+")
-  return(sum_to_return)
-}
 
 
 
