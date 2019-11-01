@@ -4,7 +4,7 @@
 \alias{alr_trans}
 \title{Alr transformation}
 \usage{
-alr_trans(data, comparison_component, comp_labels)
+alr_trans(data, comparison_component = NULL, comp_labels)
 }
 \arguments{
 \item{data}{Compositional columns of dataframe}

@@ -5,9 +5,10 @@
 \title{plot_transfers: Plots model predictions.}
 \usage{
 plot_transfers(from_component, to_component, model, dataset,
-  fixed_values = NULL, comp_labels, yllimit = NULL, yulimit = NULL,
-  y_label, plot_log = FALSE, lower_quantile = 0.05,
-  upper_quantile = 0.95, units)
+  fixed_values = NULL, transformation_type = NULL,
+  comparison_component = NULL, component_1 = NULL, comp_labels,
+  yllimit = NULL, yulimit = NULL, y_label, plot_log = FALSE,
+  lower_quantile = 0.05, upper_quantile = 0.95, units)
 }
 \arguments{
 \item{from_component}{Should be an element of \code{comp_labels}.}
@@ -17,6 +18,12 @@ plot_transfers(from_component, to_component, model, dataset,
 \item{dataset}{Should be dataset used to develop \code{model}. Used to set reasonable values to display predictions for based on range of the data.}
 
 \item{fixed_values}{If desired, fixed_values for variables in \code{dataset} which aren't in \code{comp_labels}. These will be used when making predictions}
+
+\item{transformation_type}{Should match transformation used in \code{activity_trans} when developing models.}
+
+\item{comparison_component}{If used, should match transformation used in \code{activity_trans} when developing models.}
+
+\item{component_1}{If used, should match transformation used in \code{activity_trans} when developing models.}
 
 \item{yllimit}{Upper limit to show on y-axis on plot.}
 
@@ -31,8 +38,6 @@ plot_transfers(from_component, to_component, model, dataset,
 \item{upper_quantile}{See \code{vary_time_of_interest} and \code{make_new_data}}
 
 \item{units}{What are the units of the compositional variables? E.g. for activity data "hr/day". Currently all non-activity exposure variables should be specified as unitless until support for alternatives units is added.}
-
-\item{transformation_type}{Should match transformation used in \code{activity_trans} when developing models.}
 }
 \value{
 Plot with balance of two components plotted as exposure/ independent variable.
