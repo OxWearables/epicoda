@@ -14,7 +14,7 @@ transf_labels <- function(comp_labels, transformation_type, comparison_component
   }
   if (transformation_type == "alr"){
     if (is.null(comparison_component)){
-      stop("comparison_component must be specified for alr transformation. See \code{alr_trans}.")
+      stop("comparison_component must be specified for alr transformation. See alr_trans.")
     }
     comp_labels_without_cc <- comp_labels[comp_labels != comparison_component]
     transf_with_labels <- paste0("alr_",comp_labels_without_cc, "_", comparison_component)
