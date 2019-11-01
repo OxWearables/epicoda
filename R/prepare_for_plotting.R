@@ -18,6 +18,7 @@ generate_fixed_values <- function(data, comp_labels){
       fixed_values[colname] <- median(data[, colname], na.rm = TRUE)
     }
   }
+  print(head(fixed_values))
   cm <- comp_mean(data, comp_labels)
   fixed_values <- cbind(cm, fixed_values)
   return(fixed_values)
