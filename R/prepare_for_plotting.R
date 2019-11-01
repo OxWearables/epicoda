@@ -8,8 +8,10 @@
 generate_fixed_values <- function(data, comp_labels){
   fixed_values <- data.frame(matrix(ncol = 0, nrow = 1))
   others <- colnames(data)[!(colnames(data) %in% comp_labels)]
+  print(others)
   for (colname in others){
     if (is.factor(data[, colname])== TRUE){
+      print(paste("treating ", colname , "as factor"))
       fixed_values[colname] <- (Mode(data[,colname]))
     }
     else {
