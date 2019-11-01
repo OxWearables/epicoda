@@ -42,8 +42,8 @@ transform_comp <- function(data, comp_labels, transformation_type = "ilr", round
   }
   else{
     for (activity in comp_labels){
-      dDropped <- dDropped[dCompOnly[activity] != 0, ]
-      dCompOnly <- dCompOnly[dCompOnly[activity] != 0, ]
+      dDropped <- dDropped[dCompOnly[,activity] != 0, ]
+      dCompOnly <- dCompOnly[dCompOnly[,activity] != 0, ]
     }
   }
   if (transformation_type == "ilr"){
