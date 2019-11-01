@@ -36,7 +36,9 @@ plot_transfers <- function(from_component,
                                 plot_log = FALSE,
                                 lower_quantile = 0.05,
                                 upper_quantile = 0.95,
-                                units) {
+                                units,
+                                rounded_zeroes = FALSE,
+                                det_limit = NULL) {
   if (is.null(transformation_type)){
     stop("transformation_type must be specified and must match the transformation used in transform_comp earlier (which defaults to \"ilr\")")
   }
