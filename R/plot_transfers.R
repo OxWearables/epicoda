@@ -228,9 +228,10 @@ plot_transfers <- function(from_component,
     print("Note that the confidence intervals on this plot include uncertainty driven by other, non-compositional variables.")
     predictions <- predict(model, newdata = new_data,
                            se.fit = TRUE)
+    print(head(predictions))
+    print(length(predictions))
     dNew <- data.frame(new_data, predictions)
     dNew$axis_vals <-  dNew[, time_to] - comp_mean(dataset, comp_labels)[[time_to]]
-    dNew$normalised_predictions <- dNew$fit
 
     dNew$lower_CI <- dNew$fit - 1.96 * dNew$se.fit
     dNew$upper_CI <- dNew$fit + 1.96 * dNew$se.fit
@@ -248,7 +249,7 @@ plot_transfers <- function(from_component,
     if (plot_log == TRUE) {
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
-                        mapping = aes(x = axis_vals, y = normalised_predictions)) +
+                        mapping = aes(x = axis_vals, y = fit)) +
         ylim(yllimit, yulimit) +
         geom_errorbar(aes(
           x = axis_vals,
@@ -268,7 +269,7 @@ plot_transfers <- function(from_component,
     else {
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
-                        mapping = aes(x = axis_vals, y = normalised_predictions)) +
+                        mapping = aes(x = axis_vals, y = fit)) +
         ylim(yllimit, yulimit) +
         geom_errorbar(aes(
           x = axis_vals,
