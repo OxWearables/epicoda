@@ -96,11 +96,11 @@ make_new_data <- function(from_component,
       this_col <- data.frame(vary_time_of_interest(dataset[, label],
                                                    lower_quantile,
                                                    upper_quantile))
-      new_data[column] <- this_col
+      new_data[label] <- this_col
     }
     else{
-      this_col <- data.frame(rep(fixed_values[1, column], by = 10000))
-      new_data[column] <- this_col
+      this_col <- data.frame(rep(fixed_values[1, label], by = 10000))
+      new_data[label] <- this_col
     }
   }
   tf <- rep(comp_sum, by = 10000)
