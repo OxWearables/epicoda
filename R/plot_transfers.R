@@ -96,7 +96,6 @@ plot_transfers <- function(from_component,
                    component_1 = component_1,
                    comparison_component = comparison_component,
                    rounded_zeroes = FALSE)
-  print(head(new_data))
   if (type == "logistic") {
     print("Note that the confidence intervals on this plot include uncertainty driven by other, non-compositional variables.")
     predictions <- predict(model,
@@ -105,7 +104,7 @@ plot_transfers <- function(from_component,
                            se.fit = TRUE)
 
     dNew <- data.frame(new_data, predictions)
-    dNew$axis_vals <-  dNew[, time_to] - comp_mean(dataset, comp_labels)[[time_to]]
+    dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels)[[to_component]]
     dNew$normalised_predictions <- model$family$linkinv(dNew$fit)
 
     dNew$lower_CI <-
@@ -127,7 +126,7 @@ plot_transfers <- function(from_component,
           ymax = upper_CI
         ), color = "grey") +
         geom_point(size = 0.5) +
-        labs(x = paste(time_from, "to", time_to, "\n (hr/week)"),
+        labs(x = paste(from_component, "to", to_component, "\n (hr/week)"),
              y = y_label) +
         scale_y_continuous(
           trans = log_trans(),
@@ -146,7 +145,7 @@ plot_transfers <- function(from_component,
           ymax = upper_CI
         ), color = "grey") +
         geom_point(size = 0.5) +
-        labs(x = paste(time_from, "to", time_to, "\n (hr/week)"),
+        labs(x = paste(from_component, "to", to_component, "\n (hr/week)"),
              y = y_label) +
         geom_vline(xintercept = 0)
     }
@@ -156,8 +155,7 @@ plot_transfers <- function(from_component,
 
 
   if (type == "cox") {
-    transf_vec_for_here <- transf_vector(PA_label_dictionary[[comp_labels]])
-    print(transf_vec_for_here)
+    transf_vec_for_here <- transf_labels(comp_labels, transformation_type, comparison_component)
     predictions <- predict(model,
                            newdata = new_data,
                            type = "terms",
@@ -165,7 +163,7 @@ plot_transfers <- function(from_component,
                            terms = transf_vec_for_here)
 
     dNew <- data.frame(new_data, predictions)
-    dNew$axis_vals <-  dNew[, time_to] - comp_mean(dataset, comp_labels)[[time_to]]
+    dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels)[[to_component]]
 
     vector_for_args <-   paste("dNew$fit.", transf_vec_for_here, sep = "")
     sum_for_args <- paste0(vector_for_args, collapse = "+")
@@ -195,7 +193,7 @@ plot_transfers <- function(from_component,
         ), color = "grey") +
         geom_point(size = 0.5) +
         labs(
-          x = paste(time_from, "to", time_to, "\n ", units),
+          x = paste(from_component, "to", to_component, "\n ", units),
           y = y_label) +
         geom_hline(yintercept = 1) +
         geom_vline(xintercept = 0) +
@@ -218,7 +216,7 @@ plot_transfers <- function(from_component,
         ), color = "grey") +
         geom_point(size = 0.5) +
         labs(
-          x = paste(time_from, "to", time_to, "\n ", units),
+          x = paste(from_component, "to", to_component, "\n ", units),
           y = y_label) +
         geom_hline(yintercept = 1) +
         geom_vline(xintercept = 0)
@@ -228,10 +226,8 @@ plot_transfers <- function(from_component,
     print("Note that the confidence intervals on this plot include uncertainty driven by other, non-compositional variables.")
     predictions <- predict(model, newdata = new_data,
                            se.fit = TRUE)
-    print(head(predictions))
-    print(length(predictions))
     dNew <- data.frame(new_data, predictions)
-    dNew$axis_vals <-  dNew[, time_to] - comp_mean(dataset, comp_labels)[[time_to]]
+    dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels)[[to_component]]
 
     dNew$lower_CI <- dNew$fit - 1.96 * dNew$se.fit
     dNew$upper_CI <- dNew$fit + 1.96 * dNew$se.fit
@@ -257,7 +253,7 @@ plot_transfers <- function(from_component,
           ymax = upper_CI
         ), color = "grey") +
         geom_point(size = 0.5) +
-        labs(x = paste(time_from, "to", time_to, "\n ", units),
+        labs(x = paste(from_component, "to", to_component, "\n ", units),
              y = y_label) +
         scale_y_continuous(
           trans = log_trans(),
@@ -277,7 +273,7 @@ plot_transfers <- function(from_component,
           ymax = upper_CI
         ), color = "grey") +
         geom_point(size = 0.5) +
-        labs(x = paste(time_from, "to", time_to, "\n (hr/week)"),
+        labs(x = paste(from_component, "to", to_component, "\n (hr/week)"),
              y = y_label) +
         geom_vline(xintercept = 0)
     }
