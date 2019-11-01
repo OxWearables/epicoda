@@ -93,7 +93,7 @@ make_new_data <- function(from_component,
   }
   for (label in comp_labels) {
     if (label == to_component) {
-      this_col <- data.frame(vary_time_of_interest(dataset[, label],
+      this_col <- data.frame(vary_component_of_interest(dataset[, label],
                                                    lower_quantile,
                                                    upper_quantile))
       new_data[label] <- this_col
