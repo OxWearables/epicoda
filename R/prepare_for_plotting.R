@@ -8,17 +8,14 @@
 generate_fixed_values <- function(data, comp_labels){
   fixed_values <- data.frame(matrix(ncol = 0, nrow = 1))
   others <- colnames(data)[!(colnames(data) %in% comp_labels)]
-  print(others)
   for (colname in others){
     if (is.factor(data[, colname])== TRUE){
-      print(paste("treating ", colname , "as factor"))
       fixed_values[colname] <- (Mode(data[,colname]))
     }
     else {
       fixed_values[colname] <- median(data[, colname], na.rm = TRUE)
     }
   }
-  print(head(fixed_values))
   cm <- comp_mean(data, comp_labels)
   fixed_values <- cbind(cm, fixed_values)
   return(fixed_values)
@@ -105,6 +102,10 @@ make_new_data <- function(from_component,
       this_col <- data.frame(rep(fixed_values[1, label], by = 10000))
       new_data[label] <- this_col
     }
+  }
+  for (label in colnames(dataset)[!(colnames(dataset) %in% comp_labels)]){
+    this_col <- data.frame(rep(fixed_values[1, label], by = 10000))
+    new_data[label] <- this_col
   }
   tf <- rep(comp_sum, by = 10000)
   for (label in comp_labels){
