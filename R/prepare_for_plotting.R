@@ -5,7 +5,7 @@
 #' @param data Data used for model development.
 #' @param comp_labels Labels of the compositional componenets.Should be column names of columns in \code{data}.
 #' @return dataframe with a single row of fixed_values.
-generate_fixed_values <- function(data){
+generate_fixed_values <- function(data, comp_labels){
   fixed_values <- data.frame(matrix(ncol = 0, nrow = 1))
   others <- colnames(data)[!(colnames(data) %in% comp_labels)]
   for (colname in others){
