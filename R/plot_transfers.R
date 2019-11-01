@@ -81,16 +81,15 @@ plot_transfers <- function(from_component,
     }
   }
   new_data <-
-    make_new_data(
-      from_component,
-      to_component,
-      fixed_values,
-      dataset,
-      units,
-      comp_labels,
-      lower_quantile,
-      upper_quantile
-    )
+    make_new_data(from_component,
+               to_component,
+               fixed_values,
+               dataset,
+               units = units,
+               comp_labels = comp_labels,
+               lower_quantile = 0.05,
+               upper_quantile = 0.95,
+               granularity = 10000)
   new_data <-
     transform_comp(new_data,
                    comp_labels,

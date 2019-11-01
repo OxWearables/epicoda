@@ -31,14 +31,16 @@ generate_fixed_values <- function(data, comp_labels){
 #' @param component_of_interest The variable of interest.
 #' @param lower_quantile The lower quantile to vary from.
 #' @param upper_quantile The upper quantile to vary to.
+#' #' @param granularity Doesn't usually need setting. Parameter indicating how many predictions to make. If too low, plotted curve has gaps. If too high, calculation is slow.
 #' @return Vector of values going from \code{lower_quantile} to \code{upper_quantile} of the distribution of the varaible of interest.
 vary_component_of_interest <- function(component_of_interest,
                                   lower_quantile = 0.05,
-                                  upper_quantile = 0.95) {
+                                  upper_quantile = 0.95,
+                                  granularity = 10000) {
   component_values <- seq(
     from = quantile(component_of_interest, 0.05, na.rm = TRUE),
     to = quantile(component_of_interest, 0.95, na.rm = TRUE),
-    length.out = 10000
+    length.out = granularity
   )
   return(component_values)
 }
@@ -110,9 +112,9 @@ make_new_data <- function(from_component,
   tf <- rep(comp_sum, by = 10000)
   for (label in comp_labels){
     tf <- tf - new_data[, label]
+    print(tf)
   }
   tf <- tf + new_data[,to_component]
   new_data[, from_component]<- tf
-  print(head(new_data))
   return(new_data)
 }
