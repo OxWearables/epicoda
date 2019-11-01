@@ -96,7 +96,7 @@ plot_transfers <- function(from_component,
                    component_1 = component_1,
                    comparison_component = comparison_component,
                    rounded_zeroes = FALSE)
-
+  print(head(new_data))
   if (type == "logistic") {
     print("Note that the confidence intervals on this plot include uncertainty driven by other, non-compositional variables.")
     predictions <- predict(model,
