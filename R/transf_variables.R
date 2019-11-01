@@ -9,7 +9,7 @@ transf_labels <- function(comp_labels, transformation_type, comparison_component
   if (transformation_type == "ilr"){
     l <- (length(comp_labels)-1)
     transf <- comp_labels[1:l]
-    first_labels_transf <- paste0(1:l, "-", transf)
+    first_labels_transf <- paste0(1:l, "_", transf)
     transf_with_labels <- paste("ilr_", first_labels_transf, "_vs_remaining", sep = "")
   }
   if (transformation_type == "alr"){
