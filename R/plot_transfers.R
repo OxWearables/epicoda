@@ -69,9 +69,9 @@ plot_transfers <- function(from_component,
   }
 
   if (is.null(fixed_values)){
-    fixed_values <- generate_fixed_values(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = unitss)
+    fixed_values <- generate_fixed_values(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)
   }
-  cm <- comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = unitss)
+  cm <- comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)
   if (!(is.null(fixed_values))){
     if (!is.null(colnames(fixed_values)[colnames(fixed_values) %in% comp_labels])){
       warning("fixed_values will be updated to have compositional components fixed at the compositional mean. For technical and pragmatic reasons, use of a different reference for the compositional components is not currently possible.")
@@ -106,7 +106,7 @@ plot_transfers <- function(from_component,
                            se.fit = TRUE)
 
     dNew <- data.frame(new_data, predictions)
-    dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = unitss)[[to_component]]
+    dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
     dNew$normalised_predictions <- model$family$linkinv(dNew$fit)
 
     dNew$lower_CI <-
@@ -165,7 +165,7 @@ plot_transfers <- function(from_component,
                            terms = transf_vec_for_here)
 
     dNew <- data.frame(new_data, predictions)
-    dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = unitss)[[to_component]]
+    dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
 
     vector_for_args <-   paste("dNew$fit.", transf_vec_for_here, sep = "")
     sum_for_args <- paste0(vector_for_args, collapse = "+")
@@ -229,7 +229,7 @@ plot_transfers <- function(from_component,
     predictions <- predict(model, newdata = new_data,
                            se.fit = TRUE)
     dNew <- data.frame(new_data, predictions)
-    dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = unitss)[[to_component]]
+    dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
 
     dNew$lower_CI <- dNew$fit - 1.96 * dNew$se.fit
     dNew$upper_CI <- dNew$fit + 1.96 * dNew$se.fit
