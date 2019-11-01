@@ -10,9 +10,27 @@
 #' @return Vector which is the compositional mean.
 #' @examples #TBA
 #' @export
-comp_mean <- function(data, comp_labels, rounded_zeroes = FALSE, det_limit = NULL){
+comp_mean <- function(data, comp_labels, rounded_zeroes = FALSE, det_limit = NULL, units = "unitless"){
 
   compos_mean <- c()
+  if (units == "hr/wk"){
+    comp_sum <- 24*7
+  }
+  if (units == "unitless"){
+    comp_sum <- 1
+  }
+  if (units == "hr/day"){
+    comp_sum <- 24
+  }
+  if (units == "min/day"){
+    comp_sum <- 60*24
+  }
+  if (units == "min/wk"){
+    comp_sum <- 60*24*7
+  }
+  if (!(units %in% c("hr/wk", "hr/day", "min/wk", "min/day", "unitless"))){
+    stop("Unrecognised value for units. units should be \"hr/wk\", \"hr/day\", \"min/wk\", \"min/day\" or \"unitless\"")
+  }
   if (rounded_zeroes & is.null(det_limit)){
     stop("det_limit must be set for zeroes to be imputed. It should be the minimum measurable value in the compositional
          columns of data.")
@@ -36,6 +54,6 @@ comp_mean <- function(data, comp_labels, rounded_zeroes = FALSE, det_limit = NUL
   tot_time <- sum(compos_mean)
   comp_mean_normalised <- compos_mean/tot_time
   names(comp_mean_normalised) <- comp_labels
-  cm <- comp_mean_normalised*sum(data[1, comp_labels])
+  cm <- comp_mean_normalised*comp_sum
   return(cm)
 }
