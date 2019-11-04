@@ -98,7 +98,7 @@ plot_transfers <- function(from_component,
                    comparison_component = comparison_component,
                    rounded_zeroes = FALSE)
   if (type == "logistic") {
-    print("Note that the confidence intervals on this plot include uncertainty driven by other, non-compositional variables.")
+    message("Note that the confidence intervals on this plot include uncertainty driven by other, non-compositional variables.")
     predictions <- predict(model,
                            newdata = new_data,
                            type = "link",
@@ -224,7 +224,7 @@ plot_transfers <- function(from_component,
     }
   }
   if (type == "linear") {
-    print("Note that the confidence intervals on this plot include uncertainty driven by other, non-compositional variables.")
+    message("Note that the confidence intervals on this plot include uncertainty driven by other, non-compositional variables.")
     predictions <- predict(model, newdata = new_data,
                            se.fit = TRUE)
     dNew <- data.frame(new_data, predictions)

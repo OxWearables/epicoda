@@ -37,13 +37,13 @@ comp_mean <- function(data, comp_labels, rounded_zeroes = FALSE, det_limit = NUL
   }
   dCompOnly <- data[, comp_labels]
   if (any(dCompOnly ==0) & rounded_zeroes){
-    print(paste("Please note that zero values were imputed with detection limit", det_limit, "using zCompositions::lrEM"))
+    message(paste("Note that before calculating the compositional mean zero values were imputed with detection limit", det_limit, "using zCompositions::lrEM"))
     dCompOnly <- zCompositions::lrEM(dCompOnly, label = 0, dl = matrix(data = rep(det_limit,length(dCompOnly[,1])*ncol(dCompOnly)),
                                                                        nrow = length(dCompOnly[,1]),
                                                                        byrow = T), max.iter = 50)
   }
   else{
-    print("Please note that zero values were dropped.")
+    message("Note that before calculating the compositional mean zero values were dropped.")
     for (activity in comp_labels){
       dCompOnly <- dCompOnly[dCompOnly[,activity] != 0, ]
     }
