@@ -71,7 +71,7 @@ plot_transfers <- function(from_component,
   if (is.null(fixed_values)){
     fixed_values <- generate_fixed_values(dataset, comp_labels)
   }
-  cm <- comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)
+  cm <- suppressMessages(comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units))
   if (!(is.null(fixed_values))){
     if (!is.null(colnames(fixed_values)[colnames(fixed_values) %in% comp_labels])){
       warning("fixed_values will be updated to have compositional components fixed at the compositional mean. For technical and pragmatic reasons, use of a different reference for the compositional components is not currently possible.")
@@ -279,6 +279,7 @@ plot_transfers <- function(from_component,
         geom_vline(xintercept = 0)
     }
   }
+  message(paste("Covariate values were fixed at: "))
   return(plot_of_this)
 
 }
