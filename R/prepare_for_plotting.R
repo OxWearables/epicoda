@@ -114,6 +114,6 @@ make_new_data <- function(from_component,
     tf <- tf - new_data[, label]
   }
   new_data[, from_component] <- tf
-  print(head(new_data))
+
   return(new_data)
 }
