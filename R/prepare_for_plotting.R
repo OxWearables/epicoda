@@ -110,11 +110,9 @@ make_new_data <- function(from_component,
     new_data[label] <- this_col
   }
   tf <- rep(comp_sum, by = 10000)
-  for (label in comp_labels){
+  for (label in comp_labels[comp_labels != from_component]){
     tf <- tf - new_data[, label]
-    print(tf)
   }
-  tf <- tf + new_data[,to_component]
-  new_data[, from_component]<- tf
+  new_data[, from_component] <- tf
   return(new_data)
 }
