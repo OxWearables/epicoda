@@ -279,10 +279,13 @@ plot_transfers <- function(from_component,
         geom_vline(xintercept = 0)
     }
   }
-  message(paste("Covariate values were fixed at: "))
+  print(paste("Covariate values were fixed at: "))
   for (variable in all.vars(model)[!(all.vars(model) %in% transf_labels(comp_labels, transformation_type, comparison_component, component_1))]){
-    print(variable)
-    print(fixed_values[1, variable])
+    print(paste(variable, ":", fixed_values[1, variable]))
+  }
+  print(paste("Compositional variables not varied in the visualisation were fixed at:"))
+  for (variable in comp_labels){
+    print(paste(variable, ":", fixed_values[1, variable], units))
   }
   return(plot_of_this)
 

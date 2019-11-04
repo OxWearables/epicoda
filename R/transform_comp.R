@@ -20,22 +20,20 @@ transform_comp <- function(data, comp_labels, transformation_type = "ilr", round
          columns of data.")
   }
   if (transformation_type == "alr"){
-    print("Alr transformed variables shouldn't be used for any applications which are sensitive to distance, such as PCA (applications which are not affine-equivariant).")
+    message("Alr transformed variables shouldn't be used for any applications which are sensitive to distance, such as PCA (applications which are not affine-equivariant).")
   }
   if (transformation_type == "alr" & is.null(comparison_component)){
     stop("comparison_component must be set for alr transformation.")
   }
   if (transformation_type == "clr"){
-    print("Clr transformed variables are singular, so shouldn't be used for regression modelling.")
+    message("Clr transformed variables are singular, so shouldn't be used for regression modelling.")
   }
 
-  if (transformation_type == "ilr" & !is.null(component_1)){
-    comp_labels <- alter_order_comp_labels(comp_labels, component_1)
-  }
+
   dCompOnly <- data[, comp_labels]
   dDropped <- data
   if (any(dCompOnly ==0) & rounded_zeroes){
-    print(paste("imputing zeroes with detection limit", det_limit))
+    message(paste("imputing zeroes with detection limit", det_limit))
     dCompOnly <- zCompositions::lrEM(dCompOnly, label = 0, dl = matrix(data = rep(det_limit,length(dCompOnly[,1])*ncol(dCompOnly)),
                                                                        nrow = length(dCompOnly[,1]),
                                                                        byrow = T), max.iter = 50)
@@ -47,8 +45,11 @@ transform_comp <- function(data, comp_labels, transformation_type = "ilr", round
     }
   }
   if (transformation_type == "ilr"){
+    if (!is.null(component_1)){
+      comp_labels <- alter_order_comp_labels(comp_labels, component_1)
+    }
     dTransformed <- ilr_trans(dCompOnly)
-    transf_labels <- transf_labels(comp_labels, "ilr")
+    transf_labels <- transf_labels(comp_labels, "ilr", component_1 = component_1)
     colnames(dTransformed) <- transf_labels
   }
 

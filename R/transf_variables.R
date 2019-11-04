@@ -2,11 +2,14 @@
 #'
 #' @param comp_labels List of compositional column labels.
 #' @export
-transf_labels <- function(comp_labels, transformation_type, comparison_component = NULL){
+transf_labels <- function(comp_labels, transformation_type, comparison_component = NULL, component_1 = NULL){
   if (!(transformation_type %in% c("ilr", "alr", "clr"))){
     stop("transformation_type should be \"ilr\", \"alr\" or \"clr\"")
   }
   if (transformation_type == "ilr"){
+    if (!is.null(component_1)){
+      comp_labels <- alter_order_comp_labels(comp_labels, component_1)
+    }
     l <- (length(comp_labels)-1)
     transf <- comp_labels[1:l]
     first_labels_transf <- paste0(1:l, "_", transf)
