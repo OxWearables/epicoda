@@ -280,6 +280,10 @@ plot_transfers <- function(from_component,
     }
   }
   message(paste("Covariate values were fixed at: "))
+  for (variable in all.vars(model)[!(all.vars(model) %in% transf_labels(comp_labels, transformation_type, comparison_component, component_1))]){
+    print(variable)
+    print(fixed_values[1, variable])
+  }
   return(plot_of_this)
 
 }
