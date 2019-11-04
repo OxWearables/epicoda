@@ -69,7 +69,7 @@ plot_transfers <- function(from_component,
   }
 
   if (is.null(fixed_values)){
-    fixed_values <- generate_fixed_values(dataset, comp_labels)
+    fixed_values <- generate_fixed_values(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit)
   }
   cm <- suppressMessages(comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units))
   if (!(is.null(fixed_values))){
