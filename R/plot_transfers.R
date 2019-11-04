@@ -69,7 +69,7 @@ plot_transfers <- function(from_component,
   }
 
   if (is.null(fixed_values)){
-    fixed_values <- generate_fixed_values(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit)
+    fixed_values <- generate_fixed_values(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)
   }
   cm <- suppressMessages(comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units))
   if (!(is.null(fixed_values))){
@@ -281,7 +281,7 @@ plot_transfers <- function(from_component,
   }
   print(paste("Covariate values were fixed at: "))
   print(all.vars(formula(model)))
-  for (variable in all.vars(formula(model))[!(all.vars(model) %in% transf_labels(comp_labels, transformation_type, comparison_component, component_1))]){
+  for (variable in all.vars(formula(model)))]){
     print(paste(variable, ":", fixed_values[1, variable]))
   }
   print(paste("Compositional variables not varied in the visualisation were fixed at:"))
