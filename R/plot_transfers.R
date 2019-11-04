@@ -281,7 +281,7 @@ plot_transfers <- function(from_component,
   }
   print(paste("Covariate values were fixed at: "))
   print(all.vars(formula(model)))
-  for (variable in all.vars(formula(model)))]){
+  for (variable in all.vars(formula(model))){
     print(paste(variable, ":", fixed_values[1, variable]))
   }
   print(paste("Compositional variables not varied in the visualisation were fixed at:"))
