@@ -17,3 +17,5 @@ Imports:
     ggplot2 (>= 3.2.0), 
     survival (>= 2.44-1.1)
 RoxygenNote: 6.1.1
+Suggests: 
+    testthat
