@@ -6,6 +6,9 @@ transf_labels <- function(comp_labels, transformation_type, comparison_component
   if (!(transformation_type %in% c("ilr", "alr", "clr"))){
     stop("transformation_type should be \"ilr\", \"alr\" or \"clr\"")
   }
+  if (length(comp_labels)<2){
+    stop("comp_labels should label at least two compositional components of the data.")
+  }
   if (transformation_type == "ilr"){
     if (!is.null(component_1)){
       comp_labels <- alter_order_comp_labels(comp_labels, component_1)
