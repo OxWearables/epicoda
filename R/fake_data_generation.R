@@ -1,4 +1,4 @@
-nobs <- 100
+nobs <- 100000
 M <- matrix(c(1, 0.6, 0.15, -0.1,
             0.6, 1, 0.35, -0.2,
             0.15, .35, 1, -0.3,
@@ -21,3 +21,5 @@ simdata$ilr_2_compB_vs_remaining <- -1.3 + 0.5*rdata$ilr_2_compB_vs_remaining
 simdata$ilr_3_compC_vs_remaining <- -0.8 + 0.4*rdata$ilr_3_compC_vs_remaining
 simdata$ilr_4_compD_vs_remaining <- 0.1 + 0.2*rdata$ilr_4_compD_vs_remaining
 
+sim_ilr_data <- simdata
+simdata <- epicoda::ilr_trans_inv(simdata)
