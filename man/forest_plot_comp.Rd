@@ -4,8 +4,9 @@
 \alias{forest_plot_comp}
 \title{Produce a forest plot indicating model prediction at given compositions}
 \usage{
-forest_plot_comp(data, model, comp_labels, transformation_type = "ilr",
-  comparison_component = NULL, component_1 = NULL)
+forest_plot_comp(data, model, composition_data_frame, comp_labels,
+  transformation_type = "ilr", comparison_component = NULL,
+  component_1 = NULL)
 }
 \arguments{
 \item{model}{Should be a Cox model.}

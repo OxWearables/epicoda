@@ -4,12 +4,18 @@
 \alias{comp_mean}
 \title{Compositional mean}
 \usage{
-comp_mean(data, comp_labels)
+comp_mean(data, comp_labels, rounded_zeroes = FALSE, det_limit = NULL,
+  units = "unitless")
 }
 \arguments{
 \item{data}{Dataset to calculate compositional mean of.}
 
 \item{comp_labels}{The labels of the compositional component.}
+
+\item{rounded_zeroes}{Are zeroes rounded zeroes?}
+
+\item{det_limit}{Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
+minimum measurable value in the compositional columns of data.}
 }
 \value{
 Vector which is the compositional mean.

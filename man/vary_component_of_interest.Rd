@@ -5,14 +5,15 @@
 \title{Varies component of interest.}
 \usage{
 vary_component_of_interest(component_of_interest, lower_quantile = 0.05,
-  upper_quantile = 0.95)
+  upper_quantile = 0.95, granularity = 10000)
 }
 \arguments{
 \item{component_of_interest}{The variable of interest.}
 
 \item{lower_quantile}{The lower quantile to vary from.}
 
-\item{upper_quantile}{The upper quantile to vary to.}
+\item{upper_quantile}{The upper quantile to vary to.
+#' @param granularity Doesn't usually need setting. Parameter indicating how many predictions to make. If too low, plotted curve has gaps. If too high, calculation is slow.}
 }
 \value{
 Vector of values going from \code{lower_quantile} to \code{upper_quantile} of the distribution of the varaible of interest.

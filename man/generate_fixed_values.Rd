@@ -4,7 +4,7 @@
 \alias{generate_fixed_values}
 \title{Generates list of fixed_values based on median/modal values in dataset}
 \usage{
-generate_fixed_values(data)
+generate_fixed_values(data, comp_labels, rounded_zeroes, det_limit, units)
 }
 \arguments{
 \item{data}{Data used for model development.}

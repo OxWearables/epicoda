@@ -18,4 +18,4 @@ Imports:
     survival (>= 2.44-1.1)
 RoxygenNote: 6.1.1
 Suggests: 
-    testthat
+    testthat (>= 2.1.0)
