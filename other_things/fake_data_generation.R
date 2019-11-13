@@ -43,6 +43,7 @@ linear_model <- lm(outcome ~ sex + agegroup + ilr_1_compA_vs_remaining + ilr_2_c
 summary(linear_model)
 
 simdata[, c("compA", "compB", "compC", "compD", "compE")] <- 24*simdata[, c("compA", "compB", "compC", "compD", "compE")]
+simdata[, c("compA", "compB", "compC", "compD", "compE")][simdata[, c("compA", "compB", "compC", "compD", "compE")] < 0.0083 ] <- 0
 write.csv(simdata, "simulated_compositional_dataset.csv")
 write.csv(simdata[ , !(colnames(simdata) %in% colnames(sim_ilr_data))], "simulated_compositional_dataset_without_ilr.csv")
 simdataplain <- read.csv("simulated_compositional_dataset_without_ilr.csv")
