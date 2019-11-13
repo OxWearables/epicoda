@@ -38,9 +38,11 @@ simdata$outcome <- rnorm( n = nobs, mean = 25, sd = 4) +
   rnorm(n = nobs, mean = -0.7*simdata$ilr_3_compC_vs_remaining, sd = 0.04) +
   rnorm(n = nobs, mean = 2*simdata$ilr_4_compD_vs_remaining, sd = 0.08)
 
-sd(simdata$outcome)
+
 linear_model <- lm(outcome ~ sex + agegroup + ilr_1_compA_vs_remaining + ilr_2_compB_vs_remaining + ilr_3_compC_vs_remaining + ilr_4_compD_vs_remaining, simdata)
 summary(linear_model)
+
+simdata[, c("compA", "compB", "compC", "compD", "compE")] <- 24*simdata[, c("compA", "compB", "compC", "compD", "compE")]
 write.csv(simdata, "simulated_compositional_dataset.csv")
 write.csv(simdata[ , !(colnames(simdata) %in% colnames(sim_ilr_data))], "simulated_compositional_dataset_without_ilr.csv")
 simdataplain <- read.csv("simulated_compositional_dataset_without_ilr.csv")
