@@ -46,6 +46,7 @@ One last thing: from the above, we can already see that we'll often be using the
 ```{r}
 comp_labels <- c("compA", "compB", "compC", "compD", "compE")
 ```
+There should be at least 2, and there can be an unlimited number. 
 ## Investigating the data
 A summary statistic that we often wish to calculate is the compositional mean. Mathematically speaking, where there are $n$ individuals in the dataset, and individual $k$ has composition $(comp_{k, 1}, comp_{k, 2}, ..., comp_{k, D}$, this is: 
 \begin{equation}
@@ -90,6 +91,17 @@ data_ilr_impute_zeroes <- transform_comp(data = simdata,
                                    det_limit = 0.0083)
 ```
 There are also a few other things we can do with this function, like specifying a given 'first component' (which can be useful when it conmes to reporting). To learn more, run ?transform_comp.
-## Epidemiological modelling 
+## Health association analysis 
+Now we've done the transformations, we're ready to do health association analysis. For this, we run our usual statistical models for health association analysis, but with the transformed variables, rather than the original compositional variables, as exposure variables. To get the names of the variables we'll be using, we can use a helper function in the package (although you might also have renamed these columns, in which case you can specify them straight out in the model) and another helper function to pack them up as a sum. 
+```{r}
+transf_vec <- transf_labels(comp_labels = comp_labels, transformation_type = "ilr")
+transf_sum <- vector_to_sum(transf_vec)
+```
+Now we're ready to run a model.
+```{r}
 
+```
+If you are modelling an outcome for which logistic regression is apppropriate, transf_sum can similarly be inserted into the standard analysis. 
 ## Presenting the results
+As we saw, the model summary is quite hard to interpret. (Although it is possible - additional functionality making this easier by making it possible to generate the different sets of pivot coordinates, wrap the repeated models, and summarise their output to follow!!)  
+One way to get round this is to look at model predictions as the 
