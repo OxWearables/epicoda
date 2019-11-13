@@ -28,9 +28,29 @@ head(simdataplain)
 
 This dataset has 5 columns which make up a hypothetical composition, along with a hypothetical sex column and age group column.  
 In what sense are the compositional columns 'compositional'?
-Compositional data is data where the information is contained in the *relative*, rather than the absolute, values of the components. 
+Compositional data is data where the information is contained in the *relative*, rather than the absolute, values of the components.  
+Here, we have one common case: the compositional columns all sum to the same total i.e. they can be represented as proportions of a whole without any loss of information. 
 
+```{r}
+head(apply(simdataplain[, c("compA", "compB", "compC", "compD", "compE")], 1, sum))
+```
+In this case, the sum is 24-  these data are actually a simulated version of a time use dataset i.e. the five columns are different behaviours, which together make up the whole day.  
+Note that this property, sometimes referred to as *closure* isn't necesssary for the data to be Compositional Data: the only requirement is that it is the *relative*, not the absolute, information which matters. In other words, if we move to the *closure* ($\mathcal{C}(comp_{1}, comp_{2}, ..., comp_{n})$) we don't lose information: 
+
+\begin{equation}
+  \mathcal{C}(comp_{1}, comp_{2}, ..., comp_{n}) = \Big(\frac{comp_{1}}{\sum_{i =1}^{n}{comp_i}}, \frac{comp_{2}}{\sum_{i =1}^{n}{comp_i}}, ..., \frac{comp_{n}}{\sum_{i =1}^{n}{comp_i}}\Big)
+\end{equation}
+
+
+
+From the above, we can already see that we'll often be using the set of labels of the compositional columns. So let's just record those so we don't have to keep typing them: 
+```{r}
+comp_labels <- c("compA", "compB", "compC", "compD", "compE")
+```
 ## Investigating the data
+A summary statistic that we often wish to calculate is the compositional mean. Mathematically speaking, this is: 
+ LATEX EXTRACT SAYING WHAT IT IS
+
 
 ## Log-ratio transformations 
 
