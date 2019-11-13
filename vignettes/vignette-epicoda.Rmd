@@ -17,3 +17,23 @@ knitr::opts_chunk$set(
 ```{r setup}
 devtools::load_all()
 ```
+
+## Getting started
+We start by loading a (simulated) compositional dataset. 
+
+```{r}
+simdataplain <- epicoda::simdataplain
+head(simdataplain)
+```
+
+This dataset has 5 columns which make up a hypothetical composition, along with a hypothetical sex column and age group column.  
+In what sense are the compositional columns 'compositional'?
+Compositional data is data where the information is contained in the *relative*, rather than the absolute, values of the components. 
+
+## Investigating the data
+
+## Log-ratio transformations 
+
+## Epidemiological modelling 
+
+## Presenting the results
