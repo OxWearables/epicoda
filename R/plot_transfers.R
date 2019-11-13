@@ -6,7 +6,7 @@
 #' @param to_component Should be an element of \code{comp_labels}. Should have compositional mean less than \code{from_component}.
 #' @param model
 #' @param dataset Should be dataset used to develop \code{model}. Used to set reasonable values to display predictions for based on range of the data.
-#' @param fixed_values If desired, fixed_values for variables in \code{dataset} which aren't in \code{comp_labels}. These will be used when making predictions
+#' @param fixed_values If desired, fixed_values for variables in \code{dataset} which aren't in \code{comp_labels}. These will be used when making predictions if \code{terms = FALSE}.
 #' @param transformation_type Should match transformation used in \code{transform_comp} when developing models.
 #' @param comparison_component If used, should match transformation used in \code{transform_comp} when developing models.
 #' @param component_1 If used, should match transformation used in \code{transform_comp} when developing models.
@@ -18,6 +18,7 @@
 #' @param lower_quantile See \code{vary_time_of_interest} and \code{make_new_data}
 #' @param upper_quantile See \code{vary_time_of_interest} and \code{make_new_data}
 #' @param units What are the units of the compositional variables? E.g. for activity data "hr/day". Currently all non-activity exposure variables should be specified as unitless until support for alternatives units is added.
+#' @param terms Are predictions for terms,or are they absolute?
 #' @return Plot with balance of two components plotted as exposure/ independent variable.
 #' @examples
 
@@ -38,7 +39,8 @@ plot_transfers <- function(from_component,
                                 upper_quantile = 0.95,
                                 units,
                                 rounded_zeroes = FALSE,
-                                det_limit = NULL) {
+                                det_limit = NULL,
+                           terms = TRUE) {
   if (is.null(transformation_type)){
     stop("transformation_type must be specified and must match the transformation used in transform_comp earlier (which defaults to \"ilr\")")
   }
@@ -97,7 +99,7 @@ plot_transfers <- function(from_component,
                    component_1 = component_1,
                    comparison_component = comparison_component,
                    rounded_zeroes = FALSE)
-  if (type == "logistic") {
+  if (type == "logistic" & (terms == FALSE)) {
     message("Note that the confidence intervals on this plot include uncertainty driven by other, non-compositional variables.")
     predictions <- predict(model,
                            newdata = new_data,
@@ -151,6 +153,137 @@ plot_transfers <- function(from_component,
         geom_vline(xintercept = 0)
     }
   }
+
+
+
+
+
+
+  if (type == "logistic" & (terms)) {
+    if (transformation_type == "ilr"){
+      if (!is.null(component_1)){
+        comp_labels <- alter_order_comp_labels(comp_labels, component_1)
+      }
+      transf_labels <- transf_labels(comp_labels, "ilr", component_1 = component_1)
+    }
+
+    if (transformation_type == "alr"){
+      transf_labels <- transf_labels(comp_labels, "alr", comparison_component)
+    }
+
+    if (transformation_type == "clr"){
+      transf_labels <- transf_labels(comp_labels, "clr")
+    }
+    predictions <- predict(model,
+                           newdata = new_data,
+                           type = "terms", terms =
+                           se.fit = TRUE)
+
+    dNew <- data.frame(new_data, predictions)
+    dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
+    dNew$normalised_predictions <- model$family$linkinv(dNew$fit)
+
+    dNew$lower_CI <-
+      model$family$linkinv(dNew$fit - 1.96 * dNew$se.fit)
+    dNew$upper_CI <-
+      model$family$linkinv(dNew$fit + 1.96 * dNew$se.fit)
+    dNew$lower_CI <-
+      pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
+    dNew$upper_CI <-
+      pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
+
+    if (plot_log == TRUE) {
+      plot_of_this <-
+        ggplot2::ggplot(data = dNew,
+                        mapping = aes(x = axis_vals, y = normalised_predictions)) +
+        geom_errorbar(aes(
+          x = axis_vals,
+          ymin = lower_CI,
+          ymax = upper_CI
+        ), color = "grey") +
+        geom_point(size = 0.5) +
+        labs(x = paste(from_component, "to", to_component, "\n (hr/week)"),
+             y = y_label) +
+        scale_y_continuous(
+          trans = log_trans(),
+          limits = c(yllimit, yulimit)
+        ) +
+        geom_vline(xintercept = 0)
+    }
+    else {
+      plot_of_this <-
+        ggplot2::ggplot(data = dNew,
+                        mapping = aes(x = axis_vals, y = normalised_predictions)) +
+        ylim(yllimit, yulimit) +
+        geom_errorbar(aes(
+          x = axis_vals,
+          ymin = lower_CI,
+          ymax = upper_CI
+        ), color = "grey") +
+        geom_point(size = 0.5) +
+        labs(x = paste(from_component, "to", to_component, "\n (hr/week)"),
+             y = y_label) +
+        geom_vline(xintercept = 0)
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
