@@ -67,3 +67,6 @@ transform_comp <- function(data, comp_labels, transformation_type = "ilr", round
 
   return(dOut)
 }
+
+
+
