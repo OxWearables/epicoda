@@ -35,23 +35,32 @@ Here, we have one common case: the compositional columns all sum to the same tot
 head(apply(simdataplain[, c("compA", "compB", "compC", "compD", "compE")], 1, sum))
 ```
 In this case, the sum is 24-  these data are actually a simulated version of a time use dataset i.e. the five columns are different behaviours, which together make up the whole day.  
-Note that this property, sometimes referred to as *closure* isn't necesssary for the data to be Compositional Data: the only requirement is that it is the *relative*, not the absolute, information which matters. In other words, if we move to the *closure* ($\mathcal{C}(comp_{1}, comp_{2}, ..., comp_{n})$) we don't lose information: 
-
+Note that this property, sometimes referred to as a *closure* prpoerty isn't necesssary for the data to be Compositional Data: the only requirement is that it is the *relative*, not the absolute, information which matters. In other words, we do not lose relevant information when we just consider the *closure*, written: $\mathcal{C}(comp_{1}, comp_{2}, ..., comp_{D})$ and defined as: 
 \begin{equation}
-  \mathcal{C}(comp_{1}, comp_{2}, ..., comp_{n}) = \Big(\frac{comp_{1}}{\sum_{i =1}^{n}{comp_i}}, \frac{comp_{2}}{\sum_{i =1}^{n}{comp_i}}, ..., \frac{comp_{n}}{\sum_{i =1}^{n}{comp_i}}\Big)
+  \mathcal{C}(comp_{1}, comp_{2}, ..., comp_{D}) = \Big(\frac{comp_{1}}{\sum_{i =1}^{D}{comp_i}}, \frac{comp_{2}}{\sum_{i =1}^{D}{comp_i}}, ..., \frac{comp_{D}}{\sum_{i =1}^{D}{comp_i}}\Big)
 \end{equation}
 
 
 
-From the above, we can already see that we'll often be using the set of labels of the compositional columns. So let's just record those so we don't have to keep typing them: 
+One last thing: from the above, we can already see that we'll often be using the set of labels of the compositional columns. So let's just record those so we don't have to keep typing them: 
 ```{r}
 comp_labels <- c("compA", "compB", "compC", "compD", "compE")
 ```
 ## Investigating the data
-A summary statistic that we often wish to calculate is the compositional mean. Mathematically speaking, this is: 
- LATEX EXTRACT SAYING WHAT IT IS
+A summary statistic that we often wish to calculate is the compositional mean. Mathematically speaking, where there are $n$ individuals in the dataset, and individual $k$ has composition $(comp_{k, 1}, comp_{k, 2}, ..., comp_{k, D}$, this is: 
+\begin{equation}
+  \mathcal{C}\Bigg(\sqrt[n]{\prod_{k=1}^{n}{comp_{k, 1}}}, \sqrt[n]{\prod_{k=1}^{n}{comp_{k, 2}}}, ..., \sqrt[n]{\prod_{k=1}^{n}{comp_{k, D}}}\Bigg)
+\end{equation}
+To calculate this using \code{epicoda}, we run: 
+```{r}
+comp_mean(data = simdataplain, # this is the dataset
+          comp_labels = comp_labels # this is the labels of the compositional columns, which we specified above
+          )
+```
+There are a few things to notice about this. Even though we started out with sums which added to 24, the mean seems to add to 1. This is because we didn't specify the units - and so the package didn't know what units to return it to us in. But it could still return it as a sum to 1, without loss of information, as per the definition of Compositional data. 
 
 
+We've also got a message about zeroes. Compositional data analysis can't automatically include zero values. For more information about this issue, see Palarea-Albaladejo J et al (Chemometrics and Intelligent Laboratory Systems), 2015. There's a couple of options. The default in the function is to drop them. But we can also impute them, if we know the minimum value detectable in the data (in practice, this can be the smallest value observed in the data). Here, the shortest period of an activity we could detect was 0.00119 hr/day (due to the length of an epoch in accelerometer data processing)
 ## Log-ratio transformations 
 
 ## Epidemiological modelling 

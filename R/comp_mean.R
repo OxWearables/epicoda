@@ -7,10 +7,12 @@
 #' @param rounded_zeroes Are zeroes rounded zeroes?
 #' @param det_limit Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
 #' minimum measurable value in the compositional columns of data.
+#' @param units
+#' @param specified_units If units are being specified via the composition sum, this is where it is done. It should be a vector
 #' @return Vector which is the compositional mean.
 #' @examples #TBA
 #' @export
-comp_mean <- function(data, comp_labels, rounded_zeroes = FALSE, det_limit = NULL, units = "unitless", composition_sum = NULL){
+comp_mean <- function(data, comp_labels, rounded_zeroes = FALSE, det_limit = NULL, units = "unitless", specified_units = NULL){
 
   compos_mean <- c()
   if (units == "hr/wk"){
@@ -29,11 +31,14 @@ comp_mean <- function(data, comp_labels, rounded_zeroes = FALSE, det_limit = NUL
     comp_sum <- 60*24*7
   }
   if (units == "specified"){
-    if (is.null(composition_sum)){
+    if (is.null(specified_units)){
       stop("composition_sum must be given if units = \"specified\" ")
     }
-    if (!is.numeric(composition_sum)){
-      stop("composition_sum must be a number specifying the sum of a composition.")
+    if (!is.character(specified_units[1])){
+      stop("The first argument of specified_units must be a string describing the units.")
+    }
+    if (!is.numeric(specified_units[2])){
+      stop("The first argument of specified_units must be a number specifying the sum of a composition.")
     }
     else {
       comp_sum <- composition_sum
