@@ -1,8 +1,8 @@
 ---
-title: "epicoda-vignette"
+title: "epicoda: Introduction and Examples"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{epicoda-vignette}
+  %\VignetteIndexEntry{vignette-epicoda}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,5 +15,5 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(epicoda)
+devtools::load_all()
 ```
