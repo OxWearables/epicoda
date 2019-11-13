@@ -10,7 +10,7 @@
 #' @return Vector which is the compositional mean.
 #' @examples #TBA
 #' @export
-comp_mean <- function(data, comp_labels, rounded_zeroes = FALSE, det_limit = NULL, units = "unitless"){
+comp_mean <- function(data, comp_labels, rounded_zeroes = FALSE, det_limit = NULL, units = "unitless", composition_sum = NULL){
 
   compos_mean <- c()
   if (units == "hr/wk"){
@@ -28,7 +28,18 @@ comp_mean <- function(data, comp_labels, rounded_zeroes = FALSE, det_limit = NUL
   if (units == "min/wk"){
     comp_sum <- 60*24*7
   }
-  if (!(units %in% c("hr/wk", "hr/day", "min/wk", "min/day", "unitless"))){
+  if (units == "specified"){
+    if (is.null(composition_sum)){
+      stop("composition_sum must be given if units = \"specified\" ")
+    }
+    if (!is.numeric(composition_sum)){
+      stop("composition_sum must be a number specifying the sum of a composition.")
+    }
+    else {
+      comp_sum <- composition_sum
+    }
+  }
+  if (!(units %in% c("hr/wk", "hr/day", "min/wk", "min/day", "unitless", "specified"))){
     stop("Unrecognised value for units. units should be \"hr/wk\", \"hr/day\", \"min/wk\", \"min/day\" or \"unitless\"")
   }
   if (rounded_zeroes & is.null(det_limit)){
