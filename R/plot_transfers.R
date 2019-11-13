@@ -40,7 +40,7 @@ plot_transfers <- function(from_component,
                                 units,
                                 rounded_zeroes = FALSE,
                                 det_limit = NULL,
-                           terms = FALSE) {
+                                terms = FALSE) {
   if (is.null(transformation_type)){
     stop("transformation_type must be specified and must match the transformation used in transform_comp earlier (which defaults to \"ilr\")")
   }
@@ -85,6 +85,7 @@ plot_transfers <- function(from_component,
       fixed_values[, label] <- cm[[label]]
     }
   }
+  print(fixed_values)
   new_data <-
     make_new_data(from_component,
                to_component,
