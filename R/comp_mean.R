@@ -8,7 +8,7 @@
 #' @param det_limit Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
 #' minimum measurable value in the compositional columns of data.
 #' @param units
-#' @param specified_units If units are being specified via the composition sum, this is where it is done. It should be a vector
+#' @param specified_units If units are being specified via the composition sum, this is where it is done. It should be a vector where the first argument is a string describing the units, and the second argument is the expected sum of a composition e.g. \code{c("hr/day", 24)}
 #' @return Vector which is the compositional mean.
 #' @examples #TBA
 #' @export
