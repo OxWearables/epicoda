@@ -40,7 +40,7 @@ plot_transfers <- function(from_component,
                                 units,
                                 rounded_zeroes = FALSE,
                                 det_limit = NULL,
-                           terms = TRUE) {
+                           terms = FALSE) {
   if (is.null(transformation_type)){
     stop("transformation_type must be specified and must match the transformation used in transform_comp earlier (which defaults to \"ilr\")")
   }
@@ -63,8 +63,11 @@ plot_transfers <- function(from_component,
   if (is.null(yulimit) & type == "cox") {
     yulimit <- 1.75
   }
-  if (is.null(yllimit) & type == "logistic") {
+  if (is.null(yllimit) & type == "logistic" & terms == FALSE) {
     yllimit <- 0
+  }
+  if (is.null(yllimit) & type == "logistic" & terms == TRUE) {
+    yllimit <- -1
   }
   if (is.null(yulimit) & type == "logistic") {
     yulimit <- 1
@@ -100,7 +103,7 @@ plot_transfers <- function(from_component,
                    comparison_component = comparison_component,
                    rounded_zeroes = FALSE)
   if (type == "logistic" & (terms == FALSE)) {
-    message("Note that the confidence intervals on this plot include uncertainty driven by other, non-compositional variables.")
+    message("Note that the confidence intervals on this plot include uncertainty driven by other, non-compositional variables. To look at compositional variables only, use terms = TRUE")
     predictions <- predict(model,
                            newdata = new_data,
                            type = "link",
@@ -174,9 +177,12 @@ plot_transfers <- function(from_component,
     if (transformation_type == "clr"){
       transf_labels <- transf_labels(comp_labels, "clr")
     }
+
+
+
     predictions <- predict(model,
                            newdata = new_data,
-                           type = "terms", terms =
+                           type = "terms", terms = transf_labels,
                            se.fit = TRUE)
 
     dNew <- data.frame(new_data, predictions)
@@ -288,7 +294,7 @@ plot_transfers <- function(from_component,
 
 
 
-  if (type == "cox") {
+  if (type == "cox" & (terms)) {
     transf_vec_for_here <- transf_labels(comp_labels, transformation_type, comparison_component)
     predictions <- predict(model,
                            newdata = new_data,
@@ -356,7 +362,28 @@ plot_transfers <- function(from_component,
         geom_vline(xintercept = 0)
     }
   }
-  if (type == "linear") {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  if (type == "linear" & (terms == FALSE)) {
     message("Note that the confidence intervals on this plot include uncertainty driven by other, non-compositional variables.")
     predictions <- predict(model, newdata = new_data,
                            se.fit = TRUE)
@@ -412,10 +439,115 @@ plot_transfers <- function(from_component,
         geom_vline(xintercept = 0)
     }
   }
-  print(paste("Covariate values were fixed at: "))
-  print(all.vars(formula(model)))
-  for (variable in all.vars(formula(model))){
+
+
+
+
+
+
+
+
+
+
+
+  if (type == "linear" & (terms)) {
+
+    if (transformation_type == "ilr"){
+      if (!is.null(component_1)){
+        comp_labels <- alter_order_comp_labels(comp_labels, component_1)
+      }
+      transf_labels <- transf_labels(comp_labels, "ilr", component_1 = component_1)
+    }
+
+    if (transformation_type == "alr"){
+      transf_labels <- transf_labels(comp_labels, "alr", comparison_component)
+    }
+
+    if (transformation_type == "clr"){
+      transf_labels <- transf_labels(comp_labels, "clr")
+    }
+
+
+
+
+    predictions <- predict(model, newdata = new_data, type = terms, terms = transf_labels,
+                           se.fit = TRUE)
+    dNew <- data.frame(new_data, predictions)
+    dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
+
+    dNew$lower_CI <- dNew$fit - 1.96 * dNew$se.fit
+    dNew$upper_CI <- dNew$fit + 1.96 * dNew$se.fit
+    if (is.null(yllimit)) {
+      yllimit <- min(dNew$lower_CI)
+    }
+    if (is.null(yulimit)) {
+      yulimit <- max(dNew$upper_CI)
+    }
+    dNew$lower_CI <-
+      pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
+    dNew$upper_CI <-
+      pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
+
+    if (plot_log == TRUE) {
+      plot_of_this <-
+        ggplot2::ggplot(data = dNew,
+                        mapping = aes(x = axis_vals, y = fit)) +
+        ylim(yllimit, yulimit) +
+        geom_errorbar(aes(
+          x = axis_vals,
+          ymin = lower_CI,
+          ymax = upper_CI
+        ), color = "grey") +
+        geom_point(size = 0.5) +
+        labs(x = paste(from_component, "to", to_component, "\n ", units),
+             y = y_label) +
+        scale_y_continuous(
+          trans = log_trans(),
+          breaks = seq(yllimit, yulimit, by = 0.1),
+          labels = seq(yllimit, yulimit, by = 0.1)
+        ) +
+        geom_vline(xintercept = 0)
+    }
+    else {
+      plot_of_this <-
+        ggplot2::ggplot(data = dNew,
+                        mapping = aes(x = axis_vals, y = fit)) +
+        ylim(yllimit, yulimit) +
+        geom_errorbar(aes(
+          x = axis_vals,
+          ymin = lower_CI,
+          ymax = upper_CI
+        ), color = "grey") +
+        geom_point(size = 0.5) +
+        labs(x = paste(from_component, "to", to_component, "\n (hr/week)"),
+             y = y_label) +
+        geom_vline(xintercept = 0)
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  if (terms == FALSE){
+    print(paste("Covariate values were fixed at: "))
+    for (variable in all.vars(formula(model))){
     print(paste(variable, ":", fixed_values[1, variable]))
+  }
   }
   print(paste("Compositional variables not varied in the visualisation were fixed at:"))
   for (variable in comp_labels){
