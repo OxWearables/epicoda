@@ -1,4 +1,4 @@
-nobs <- 100000
+  nobs <- 1000
 M <- matrix(c(1, 0.6, 0.15, -0.1,
             0.6, 1, 0.35, -0.2,
             0.15, .35, 1, -0.3,
@@ -21,5 +21,26 @@ simdata$ilr_2_compB_vs_remaining <- -1.3 + 0.5*rdata$ilr_2_compB_vs_remaining
 simdata$ilr_3_compC_vs_remaining <- -0.8 + 0.4*rdata$ilr_3_compC_vs_remaining
 simdata$ilr_4_compD_vs_remaining <- 0.1 + 0.2*rdata$ilr_4_compD_vs_remaining
 
+
 sim_ilr_data <- simdata
 simdata <- ilr_trans_inv(simdata)
+colnames(simdata) <- c("compA", "compB", "compC", "compD", "compE")
+simdata <- cbind(simdata,sim_ilr_data)
+simdata$sex <- rbinom(n = nobs, size = 1, prob = 0.5)
+simdata$sex[simdata$sex == 1] <- "Female"
+simdata$sex[simdata$sex == 0] <- "Male"
+simdata$agegroup <- rbinom(n = nobs, size = 4, prob = 0.5)
+simdata$outcome <- rnorm( n = nobs, mean = 25, sd = 4) +
+                   rnorm(n = nobs, mean = (simdata$sex == "Female"), sd = 0.03) +
+                  rnorm(n = nobs, mean = simdata$agegroup/4 - 0.25, sd = 0.05) +
+  rnorm(n = nobs, mean = -0.4*simdata$ilr_1_compA_vs_remaining, sd = 0.01) +
+  rnorm(n = nobs, mean = -1.2*simdata$ilr_2_compB_vs_remaining, sd = 0.04) +
+  rnorm(n = nobs, mean = -0.7*simdata$ilr_3_compC_vs_remaining, sd = 0.04) +
+  rnorm(n = nobs, mean = 2*simdata$ilr_4_compD_vs_remaining, sd = 0.08)
+
+sd(simdata$outcome)
+linear_model <- lm(outcome ~ sex + agegroup + ilr_1_compA_vs_remaining + ilr_2_compB_vs_remaining + ilr_3_compC_vs_remaining + ilr_4_compD_vs_remaining, simdata)
+summary(linear_model)
+write.csv(simdata, "simulated_compositional_dataset.csv")
+write.csv(simdata[ , !(colnames(simdata) %in% colnames(sim_ilr_data))], "simulated_compositional_dataset_without_ilr.csv")
+simdataplain <- read.csv("simulated_compositional_dataset_without_ilr.csv")
