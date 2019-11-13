@@ -54,15 +54,42 @@ A summary statistic that we often wish to calculate is the compositional mean. M
 To calculate this using \code{epicoda}, we run: 
 ```{r}
 comp_mean(data = simdataplain, # this is the dataset
-          comp_labels = comp_labels # this is the labels of the compositional columns, which we specified above
+          comp_labels = comp_labels # this is the labels of the compositional columns, 
+          # which we specified above
           )
 ```
 There are a few things to notice about this. Even though we started out with sums which added to 24, the mean seems to add to 1. This is because we didn't specify the units - and so the package didn't know what units to return it to us in. But it could still return it as a sum to 1, without loss of information, as per the definition of Compositional data. 
 
 
-We've also got a message about zeroes. Compositional data analysis can't automatically include zero values. For more information about this issue, see Palarea-Albaladejo J et al (Chemometrics and Intelligent Laboratory Systems), 2015. There's a couple of options. The default in the function is to drop them. But we can also impute them, if we know the minimum value detectable in the data (in practice, this can be the smallest value observed in the data). Here, the shortest period of an activity we could detect was 0.00119 hr/day (due to the length of an epoch in accelerometer data processing)
-## Log-ratio transformations 
+We've also got a message about zeroes. Compositional data analysis can't automatically include zero values. For more information about this issue, see Palarea-Albaladejo J et al (Chemometrics and Intelligent Laboratory Systems), 2015. There's a couple of options: 
+*The default in the function is to drop them (this is the right option if they're so called 'true zeroes', and not related to a limit in the precision with which we can measure).
+*We can also impute them. This is the right option if they're so-called 'rounded zeroes' i.e. they're related to a limit to the precision with which we can measure (for example, with activity data, it might be that if we recorded data for long enough, we would eventually see some vigorous activity, but our measurement period wasn't long enough. Or it might be that our measurement device can't record values lower than a certain level). To impute them, we need to specify the minimum value detectable in the data (in practice, if we don't know this, it can be the smallest value observed in the data).
+So we can now find the mean again, this time imputing the zeroes and specifying the units.  In the simulated data, the shortest period of an activity we could detect was $0.0083 hr/day$ (this is due to the length of an epoch- 30 seconds- in wearable sensor data processing). 
 
+```{r}
+comp_mean(data = simdataplain, # this is the dataset
+          comp_labels = comp_labels, # this is the labels of the compositional columns, 
+          # which we specified above
+          rounded_zeroes = TRUE, # this option specifies that we'll treat the zeroes 
+          # as rounded zeroes i.e. we'll impute them
+          det_limit = 0.0083, # this is the smallest value observable in the data
+          units = "hr/day" # this is the units. There are pre-specified options "hr/day",
+          # "hr/wk", "min/day", "min/wk" and "unitless". 
+          # If you set units = "specified", you can also specify your own units using 
+          # specified = c("my_units_name", sum of a composition in these units)
+          )
+```
+The 'No interations to converge' relates to imputing zeroes, and we don't need to worry about it. 
+## Log-ratio transformations 
+There are several different kinds of transformations we can do in order to work with compositional data (alr, ilr, clr). These transform the variables into coordinates which are capable of representing all the variation in the data. Different transformations have different pros/cons, and alr and clr can only be used for certain applications.  All the functions default to ilr (isometric log ratio) transformation using so-called 'pivot coordinates', which is fairly standard in the physical activity literature (and is appropriate for the applications which the other transformations are used for). If you want to learn more, see    . Otherwise, the default is fine! 
+```{r}
+data_ilr_impute_zeroes <- transform_comp(data = simdata,
+                                   comp_labels = comp_labels,
+                                   transformation_type = "ilr",
+                                   rounded_zeroes = TRUE,
+                                   det_limit = 0.0083)
+```
+There are also a few other things we can do with this function, like specifying a given 'first component' (which can be useful when it conmes to reporting). To learn more, run ?transform_comp.
 ## Epidemiological modelling 
 
 ## Presenting the results
