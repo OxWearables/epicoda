@@ -24,7 +24,6 @@ ilr_trans <- function(data){
 #'
 #' Takes ilr-transformed columns and inverts the ilr transformation.
 #'
-#'
 #' @param data Dataset to have the transformation reversed
 #' @return Compositional columns
 #' @examples # TBA
