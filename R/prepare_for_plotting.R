@@ -70,6 +70,7 @@ make_new_data <- function(from_component,
                           fixed_values,
                           dataset,
                           units = NULL,
+                          specified_units = NULL,
                           comp_labels,
                           lower_quantile = 0.05,
                           upper_quantile = 0.95,
@@ -90,8 +91,20 @@ make_new_data <- function(from_component,
   if (units == "min/wk"){
     comp_sum <- 60*24*7
   }
-  if (!(units %in% c("hr/wk", "hr/day", "min/wk", "min/day", "unitless"))){
-    stop("Unrecognised value for units. units should be \"hr/wk\", \"hr/day\", \"min/wk\", \"min/day\" or \"unitless\"")
+  if (units == "specified"){
+    if (is.null(specified_units)){
+      stop("composition_sum must be given if units = \"specified\" ")
+    }
+    if (!is.character(specified_units[1])){
+      stop("The first argument of specified_units must be a string describing the units.")
+    }
+    if (!is.numeric(specified_units[2])){
+      stop("The first argument of specified_units must be a number specifying the sum of a composition.")
+    }
+    units <- specified_units[1]
+  }
+  if (!(units %in% c("hr/wk", "hr/day", "min/wk", "min/day", "unitless", "specified"))){
+    stop("Unrecognised value for units. units should be \"hr/wk\", \"hr/day\", \"min/wk\", \"min/day\", \"unitless\" or \"specified\" with the specified_units argument also given.")
   }
   for (label in comp_labels) {
     if (label == to_component) {
