@@ -124,7 +124,7 @@ process_zeroes <- function(data, comp_labels, rounded_zeroes, det_limit){
     }
   }
   non_comp_cols <- colnames(data)[!(colnames(data) %in% comp_labels)]
-  data <- merge(data[,non_comp_cols], comp_data, by = row_labels)
+  data <- merge(data[,non_comp_cols], comp_data, by = "row_labels")
   data <- data[, colnames(data)[colnames(data) != "row_labels"]]
   return(data)
 }
