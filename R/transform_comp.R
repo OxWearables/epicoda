@@ -25,7 +25,6 @@ transform_comp <- function(data, comp_labels, transformation_type = "ilr", round
     message("Clr transformed variables are singular, so shouldn't be used for regression modelling.")
   }
 
-
   dCompOnly <- data[, comp_labels]
 
   dCompOnly <- process_zeroes(dCompOnly, comp_labels, rounded_zeroes, det_limit)
@@ -45,10 +44,10 @@ transform_comp <- function(data, comp_labels, transformation_type = "ilr", round
   }
 
   if (transformation_type == "clr"){
-    dTransformed <- clr_trans(data)
+    dTransformed <- clr_trans(dCompOnly)
     colnames(dTransformed) <- transf_labels(comp_labels, "clr")
   }
-  dOut <- data.frame(dDropped[, !colnames(dDropped) %in% colnames(dCompOnly)], dCompOnly, dTransformed)
+  dOut <- data.frame(data[, !colnames(data) %in% colnames(dCompOnly)], dCompOnly, dTransformed)
 
 
   return(dOut)
