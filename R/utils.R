@@ -121,9 +121,10 @@ process_zeroes <- function(data, comp_labels, rounded_zeroes, det_limit){
     for (activity in comp_labels){
       comp_data<- comp_data[comp_data[,activity] != 0, ]
     }
+  }
   non_comp_cols <- colnames(data)[!(colnames(data) %in% comp_labels)]
   data <- cbind(data[,non_comp_cols], comp_data)
+  return(data)
 }
-
 
 
