@@ -3,7 +3,8 @@
 #' @param x Vector to take the mode of.
 Mode <- function(x) {
   ux <- unique(x)
-  ux[which.max(tabulate(match(x, ux)))]
+  tab <- tabulate(match(x, ux))
+  ux[tab == max(tab)]
 }
 
 
