@@ -15,10 +15,6 @@
 #' @examples # TBA
 #' @export
 transform_comp <- function(data, comp_labels, transformation_type = "ilr", rounded_zeroes = TRUE, det_limit = NULL, comparison_component = NULL, component_1 = NULL){
-  if (rounded_zeroes & is.null(det_limit)){
-    stop("det_limit must be set for zeroes to be imputed. It should be the minimum measurable value in the compositional
-         columns of data.")
-  }
   if (transformation_type == "alr"){
     message("Alr transformed variables shouldn't be used for any applications which are sensitive to distance, such as PCA (applications which are not affine-equivariant).")
   }
@@ -31,19 +27,9 @@ transform_comp <- function(data, comp_labels, transformation_type = "ilr", round
 
 
   dCompOnly <- data[, comp_labels]
-  dDropped <- data
-  if (any(dCompOnly ==0) & rounded_zeroes){
-    message(paste("imputing zeroes with detection limit", det_limit))
-    dCompOnly <- zCompositions::lrEM(dCompOnly, label = 0, dl = matrix(data = rep(det_limit,length(dCompOnly[,1])*ncol(dCompOnly)),
-                                                                       nrow = length(dCompOnly[,1]),
-                                                                       byrow = T), max.iter = 50)
-  }
-  else{
-    for (activity in comp_labels){
-      dDropped <- dDropped[dCompOnly[,activity] != 0, ]
-      dCompOnly <- dCompOnly[dCompOnly[,activity] != 0, ]
-    }
-  }
+
+  dCompOnly <- process_zeroes(dCompOnly, comp_labels, rounded_zeroes, det_limit)
+
   if (transformation_type == "ilr"){
     if (!is.null(component_1)){
       comp_labels <- alter_order_comp_labels(comp_labels, component_1)
