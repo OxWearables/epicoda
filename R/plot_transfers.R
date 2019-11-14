@@ -38,6 +38,7 @@ plot_transfers <- function(from_component,
                                 lower_quantile = 0.05,
                                 upper_quantile = 0.95,
                                 units,
+                                specified_units,
                                 rounded_zeroes = FALSE,
                                 det_limit = NULL,
                                 terms = FALSE) {
@@ -57,19 +58,19 @@ plot_transfers <- function(from_component,
   if (type == "unassigned"){
     stop("model is not a recognised type of model.")
   }
-  if (is.null(yllimit) & type == "cox") {
+  if (is.null(yllimit) & (type == "cox")) {
     yllimit <- 0.5
   }
-  if (is.null(yulimit) & type == "cox") {
+  if (is.null(yulimit) & (type == "cox")) {
     yulimit <- 1.75
   }
-  if (is.null(yllimit) & type == "logistic" & terms == FALSE) {
+  if (is.null(yllimit) & (type == "logistic") & (terms == FALSE)) {
     yllimit <- 0
   }
-  if (is.null(yllimit) & type == "logistic" & terms == TRUE) {
+  if (is.null(yllimit) & (type == "logistic") & (terms == TRUE)) {
     yllimit <- -1
   }
-  if (is.null(yulimit) & type == "logistic") {
+  if (is.null(yulimit) & (type == "logistic")) {
     yulimit <- 1
   }
 
@@ -85,7 +86,6 @@ plot_transfers <- function(from_component,
       fixed_values[, label] <- cm[[label]]
     }
   }
-  print(fixed_values)
   new_data <-
     make_new_data(from_component,
                to_component,
@@ -126,35 +126,35 @@ plot_transfers <- function(from_component,
     if (plot_log == TRUE) {
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
-                        mapping = aes(x = axis_vals, y = normalised_predictions)) +
-        geom_errorbar(aes(
+                        mapping = ggplot2::aes(x = axis_vals, y = normalised_predictions)) +
+        ggplot2::geom_errorbar(ggplot2::aes(
           x = axis_vals,
           ymin = lower_CI,
           ymax = upper_CI
         ), color = "grey") +
-        geom_point(size = 0.5) +
-        labs(x = paste(from_component, "to", to_component, "\n (hr/week)"),
+        ggplot2::geom_point(size = 0.5) +
+        ggplot2::labs(x = paste(from_component, "to", to_component, "\n", units_name),
              y = y_label) +
-        scale_y_continuous(
+        ggplot2::scale_y_continuous(
           trans = log_trans(),
           limits = c(yllimit, yulimit)
         ) +
-        geom_vline(xintercept = 0)
+        ggplot2::geom_vline(xintercept = 0)
     }
     else {
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
-                        mapping = aes(x = axis_vals, y = normalised_predictions)) +
-        ylim(yllimit, yulimit) +
-        geom_errorbar(aes(
+                        mapping = ggplot2::aes(x = axis_vals, y = normalised_predictions)) +
+        ggplot2::ylim(yllimit, yulimit) +
+        ggplot2::geom_errorbar(ggplot2::aes(
           x = axis_vals,
           ymin = lower_CI,
           ymax = upper_CI
         ), color = "grey") +
-        geom_point(size = 0.5) +
-        labs(x = paste(from_component, "to", to_component, "\n (hr/week)"),
+        ggplot2::geom_point(size = 0.5) +
+        ggplot2::labs(x = paste(from_component, "to", to_component, "\n (hr/week)"),
              y = y_label) +
-        geom_vline(xintercept = 0)
+        ggplot2::geom_vline(xintercept = 0)
     }
   }
 
@@ -202,35 +202,35 @@ plot_transfers <- function(from_component,
     if (plot_log == TRUE) {
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
-                        mapping = aes(x = axis_vals, y = normalised_predictions)) +
-        geom_errorbar(aes(
+                        mapping = ggplot2::aes(x = axis_vals, y = normalised_predictions)) +
+        ggplot2::geom_errorbar(ggplot2::aes(
           x = axis_vals,
           ymin = lower_CI,
           ymax = upper_CI
         ), color = "grey") +
-        geom_point(size = 0.5) +
-        labs(x = paste(from_component, "to", to_component, "\n (hr/week)"),
+        ggplot2::geom_point(size = 0.5) +
+        ggplot2::labs(x = paste(from_component, "to", to_component, "\n (hr/week)"),
              y = y_label) +
-        scale_y_continuous(
+        ggplot2::scale_y_continuous(
           trans = log_trans(),
           limits = c(yllimit, yulimit)
         ) +
-        geom_vline(xintercept = 0)
+        ggplot2::geom_vline(xintercept = 0)
     }
     else {
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
-                        mapping = aes(x = axis_vals, y = normalised_predictions)) +
-        ylim(yllimit, yulimit) +
-        geom_errorbar(aes(
+                        mapping = ggplot2::aes(x = axis_vals, y = normalised_predictions)) +
+        ggplot2::ylim(yllimit, yulimit) +
+        ggplot2::geom_errorbar(ggplot2::aes(
           x = axis_vals,
           ymin = lower_CI,
           ymax = upper_CI
         ), color = "grey") +
-        geom_point(size = 0.5) +
-        labs(x = paste(from_component, "to", to_component, "\n (hr/week)"),
+        ggplot2::geom_point(size = 0.5) +
+        ggplot2::labs(x = paste(from_component, "to", to_component, "\n (hr/week)"),
              y = y_label) +
-        geom_vline(xintercept = 0)
+        ggplot2::geom_vline(xintercept = 0)
     }
   }
 
@@ -325,20 +325,20 @@ plot_transfers <- function(from_component,
     if (plot_log == TRUE) {
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
-                        mapping = aes(x = axis_vals, y = predictions)) +
-        ylim(yllimit, yulimit) +
-        geom_errorbar(aes(
+                        mapping = ggplot2::aes(x = axis_vals, y = predictions)) +
+        ggplot2::ylim(yllimit, yulimit) +
+        ggplot2::geom_errorbar(ggplot2::aes(
           x = axis_vals,
           ymin = lower_CI,
           ymax = upper_CI
         ), color = "grey") +
-        geom_point(size = 0.5) +
-        labs(
+        ggplot2::geom_point(size = 0.5) +
+        ggplot2::labs(
           x = paste(from_component, "to", to_component, "\n ", units),
           y = y_label) +
         geom_hline(yintercept = 1) +
-        geom_vline(xintercept = 0) +
-        scale_y_continuous(
+        ggplot2::geom_vline(xintercept = 0) +
+        ggplot2::scale_y_continuous(
           trans = log_trans(),
           breaks = seq(yllimit, yulimit, by = 0.2),
           labels = seq(yllimit, yulimit, by = 0.2),
@@ -348,19 +348,19 @@ plot_transfers <- function(from_component,
     else {
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
-                        mapping = aes(x = axis_vals, y = predictions)) +
-        ylim(yllimit, yulimit) +
-        geom_errorbar(aes(
+                        mapping = ggplot2::aes(x = axis_vals, y = predictions)) +
+        ggplot2::ylim(yllimit, yulimit) +
+        ggplot2::geom_errorbar(ggplot2::aes(
           x = axis_vals,
           ymin = lower_CI,
           ymax = upper_CI
         ), color = "grey") +
-        geom_point(size = 0.5) +
-        labs(
+        ggplot2::geom_point(size = 0.5) +
+        ggplot2::labs(
           x = paste(from_component, "to", to_component, "\n ", units),
           y = y_label) +
         geom_hline(yintercept = 1) +
-        geom_vline(xintercept = 0)
+        ggplot2::geom_vline(xintercept = 0)
     }
   }
 
@@ -386,8 +386,9 @@ plot_transfers <- function(from_component,
 
   if (type == "linear" & (terms == FALSE)) {
     message("Note that the confidence intervals on this plot include uncertainty driven by other, non-compositional variables.")
-    predictions <- predict(model, newdata = new_data,
+    predictions <- predict(model, newdata = new_data, type = "response",
                            se.fit = TRUE)
+    print(head(predictions))
     dNew <- data.frame(new_data, predictions)
     dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
 
@@ -407,37 +408,37 @@ plot_transfers <- function(from_component,
     if (plot_log == TRUE) {
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
-                        mapping = aes(x = axis_vals, y = fit)) +
-        ylim(yllimit, yulimit) +
-        geom_errorbar(aes(
+                        mapping = ggplot2::aes(x = axis_vals, y = fit)) +
+        ggplot2::ylim(yllimit, yulimit) +
+        ggplot2::geom_errorbar(ggplot2::aes(
           x = axis_vals,
           ymin = lower_CI,
           ymax = upper_CI
         ), color = "grey") +
-        geom_point(size = 0.5) +
-        labs(x = paste(from_component, "to", to_component, "\n ", units),
+        ggplot2::geom_point(size = 0.5) +
+        ggplot2::labs(x = paste(from_component, "to", to_component, "\n ", units),
              y = y_label) +
-        scale_y_continuous(
+        ggplot2::scale_y_continuous(
           trans = log_trans(),
           breaks = seq(yllimit, yulimit, by = 0.1),
           labels = seq(yllimit, yulimit, by = 0.1)
         ) +
-        geom_vline(xintercept = 0)
+        ggplot2::geom_vline(xintercept = 0)
     }
     else {
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
-                        mapping = aes(x = axis_vals, y = fit)) +
-        ylim(yllimit, yulimit) +
-        geom_errorbar(aes(
+                        mapping = ggplot2::aes(x = axis_vals, y = fit)) +
+        ggplot2::ylim(yllimit, yulimit) +
+        ggplot2::geom_errorbar(ggplot2::aes(
           x = axis_vals,
           ymin = lower_CI,
           ymax = upper_CI
         ), color = "grey") +
-        geom_point(size = 0.5) +
-        labs(x = paste(from_component, "to", to_component, "\n (hr/week)"),
+        ggplot2::geom_point(size = 0.5) +
+        ggplot2::labs(x = paste(from_component, "to", to_component, "\n (hr/week)"),
              y = y_label) +
-        geom_vline(xintercept = 0)
+        ggplot2::geom_vline(xintercept = 0)
     }
   }
 
@@ -492,37 +493,37 @@ plot_transfers <- function(from_component,
     if (plot_log == TRUE) {
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
-                        mapping = aes(x = axis_vals, y = fit)) +
-        ylim(yllimit, yulimit) +
-        geom_errorbar(aes(
+                        mapping = ggplot2::aes(x = axis_vals, y = fit)) +
+        ggplot2::ylim(yllimit, yulimit) +
+        ggplot2::geom_errorbar(ggplot2::aes(
           x = axis_vals,
           ymin = lower_CI,
           ymax = upper_CI
         ), color = "grey") +
-        geom_point(size = 0.5) +
-        labs(x = paste(from_component, "to", to_component, "\n ", units),
+        ggplot2::geom_point(size = 0.5) +
+        ggplot2::labs(x = paste(from_component, "to", to_component, "\n ", units),
              y = y_label) +
-        scale_y_continuous(
+        ggplot2::scale_y_continuous(
           trans = log_trans(),
           breaks = seq(yllimit, yulimit, by = 0.1),
           labels = seq(yllimit, yulimit, by = 0.1)
         ) +
-        geom_vline(xintercept = 0)
+        ggplot2::geom_vline(xintercept = 0)
     }
     else {
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
-                        mapping = aes(x = axis_vals, y = fit)) +
-        ylim(yllimit, yulimit) +
-        geom_errorbar(aes(
+                        mapping = ggplot2::aes(x = axis_vals, y = fit)) +
+        ggplot2::ylim(yllimit, yulimit) +
+        ggplot2::geom_errorbar(ggplot2::aes(
           x = axis_vals,
           ymin = lower_CI,
           ymax = upper_CI
         ), color = "grey") +
-        geom_point(size = 0.5) +
-        labs(x = paste(from_component, "to", to_component, "\n (hr/week)"),
+        ggplot2::geom_point(size = 0.5) +
+        ggplot2::labs(x = paste(from_component, "to", to_component, "\n", units),
              y = y_label) +
-        geom_vline(xintercept = 0)
+        ggplot2::geom_vline(xintercept = 0)
     }
   }
 
