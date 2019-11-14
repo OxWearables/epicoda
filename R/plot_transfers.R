@@ -53,7 +53,13 @@ plot_transfers <- function(from_component,
   units <- process_units(units, specified_units)[1]
 
 
-
+  # We label what the transformed cols will be
+  if (transformation_type == "ilr"){
+    if (!is.null(component_1)){
+      comp_labels <- alter_order_comp_labels(comp_labels, component_1)
+    }
+  }
+  transf_labels <- transf_labels(comp_labels, transformation_type, comparison_component = comparison_component, component_1 = component_1)
 
 
 
@@ -91,7 +97,6 @@ plot_transfers <- function(from_component,
   if (is.null(fixed_values)){
     fixed_values <- generate_fixed_values(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units, specified_units = specified_units)
   }
-  print(type)
   cm <- comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units, specified_units = specified_units)
   if (!(is.null(fixed_values))){
     if (!is.null(colnames(fixed_values)[colnames(fixed_values) %in% comp_labels])){
@@ -121,8 +126,6 @@ plot_transfers <- function(from_component,
                    rounded_zeroes = FALSE)
 
 
-  print(head(new_data))
-  "Before any plotting"
   # We begin the plotting
   if (type == "logistic" && (terms == FALSE)) {
     message("Note that the confidence intervals on this plot include uncertainty driven by other, non-compositional variables. To look at compositional variables only, use terms = TRUE")
@@ -185,20 +188,6 @@ plot_transfers <- function(from_component,
 
 
   if (type == "logistic" && (terms)) {
-    if (transformation_type == "ilr"){
-      if (!is.null(component_1)){
-        comp_labels <- alter_order_comp_labels(comp_labels, component_1)
-      }
-      transf_labels <- transf_labels(comp_labels, "ilr", component_1 = component_1)
-    }
-
-    if (transformation_type == "alr"){
-      transf_labels <- transf_labels(comp_labels, "alr", comparison_component)
-    }
-
-    if (transformation_type == "clr"){
-      transf_labels <- transf_labels(comp_labels, "clr")
-    }
 
 
 
@@ -270,12 +259,11 @@ plot_transfers <- function(from_component,
 
 
   if (type == "cox" && (terms)) {
-    transf_vec_for_here <- transf_labels(comp_labels, transformation_type, comparison_component)
     predictions <- predict(model,
                            newdata = new_data,
                            type = "terms",
                            se.fit = TRUE,
-                           terms = transf_vec_for_here)
+                           terms = transf_labels)
 
     dNew <- data.frame(new_data, predictions)
     dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
@@ -362,8 +350,7 @@ plot_transfers <- function(from_component,
     message("Note that the confidence intervals on this plot include uncertainty driven by other, non-compositional variables.")
     predictions <- predict(model, newdata = new_data, type = "response",
                            se.fit = TRUE)
-    print("after predictions")
-    print(head(new_data))
+
     dNew <- data.frame(new_data, predictions)
     dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
 
@@ -429,21 +416,9 @@ plot_transfers <- function(from_component,
 
   if (type == "linear" && (terms)) {
 
-    if (transformation_type == "ilr"){
-      if (!is.null(component_1)){
-        comp_labels <- alter_order_comp_labels(comp_labels, component_1)
-      }
-    }
-    transf_labels <- transf_labels(comp_labels, transformation_type, comparison_component = comparison_component, component_1 = component_1)
-
-
-
-
-    print(head(new_data))
-
     predictions <- predict(model, newdata = new_data, type = terms, terms = transf_labels,
                            se.fit = TRUE)
-    print(head(new_data))
+
     dNew <- data.frame(new_data, predictions)
     dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
 
