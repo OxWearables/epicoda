@@ -120,8 +120,11 @@ Let's have a look at the model:
 summary(lm_outcome)
 plot(lm_outcome)
 ```
+
+
 So, the model diagnostics all looks fine (and can be interpreted as usual). However, the summary is hard to interpret because the coordinates do not relate in a straightforward way to the original composition. 
 (It is possible to intepret - additional functionality making this easier by making it possible to generate the different sets of pivot coordinates, wrap the repeated models, and summarise their output to follow!!)  
+
 ## Presenting the results
 As we saw, the model summary is quite hard to interpret.  
 One way to get round this is to look at model predictions. There are various options- we can look at predictions as we hold most of the composition fixed and vary the balance between the final two components. This is what the plot_transfers function does: 
@@ -138,3 +141,5 @@ plot_transfers(from_component = "sedentary",
                det_limit = 0.0083,
                terms = TRUE)
 ```
+
+

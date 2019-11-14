@@ -21,7 +21,6 @@
 #' @param terms Are predictions for terms,or are they absolute?
 #' @return Plot with balance of two components plotted as exposure/ independent variable.
 #' @examples
-
 plot_transfers <- function(from_component,
                            to_component,
                                 model,
@@ -37,19 +36,33 @@ plot_transfers <- function(from_component,
                                 plot_log = FALSE,
                                 lower_quantile = 0.05,
                                 upper_quantile = 0.95,
-                                units,
-                                specified_units,
+                                units = "unitless",
+                                specified_units = NULL,
                                 rounded_zeroes = FALSE,
                                 det_limit = NULL,
                                 terms = FALSE) {
+
   if (is.null(transformation_type)){
     stop("transformation_type must be specified and must match the transformation used in transform_comp earlier (which defaults to \"ilr\")")
   }
+
+
+
+  # We set units
+  comp_sum <- as.numeric(process_units(units, specified_units)[2])
+  units <- process_units(units, specified_units)[1]
+
+
+
+
+
+
+  # We assign some internal parameters
   type <- "unassigned"
   if (class(model)=="lm"){
     type <- "linear"
   }
-  if ((class(model)[1] == "glm") & (family(model)[[1]] == "binomial")){
+  if ((class(model)[1] == "glm") && (family(model)[[1]] == "binomial")){
     type <- "logistic"
   }
   if ((class(model) == "coxph")){
@@ -58,34 +71,37 @@ plot_transfers <- function(from_component,
   if (type == "unassigned"){
     stop("model is not a recognised type of model.")
   }
-  if (is.null(yllimit) & (type == "cox")) {
+  if (is.null(yllimit) && (type == "cox")) {
     yllimit <- 0.5
   }
-  if (is.null(yulimit) & (type == "cox")) {
+  if (is.null(yulimit) && (type == "cox")) {
     yulimit <- 1.75
   }
-  if (is.null(yllimit) & (type == "logistic") & (terms == FALSE)) {
+  if (is.null(yllimit) && (type == "logistic") && (terms == FALSE)) {
     yllimit <- 0
   }
-  if (is.null(yllimit) & (type == "logistic") & (terms == TRUE)) {
+  if (is.null(yllimit) && (type == "logistic") && (terms == TRUE)) {
     yllimit <- -1
   }
-  if (is.null(yulimit) & (type == "logistic")) {
+  if (is.null(yulimit) && (type == "logistic")) {
     yulimit <- 1
   }
 
+  # We assign some fixed_values to use in plotting
   if (is.null(fixed_values)){
-    fixed_values <- generate_fixed_values(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)
+    fixed_values <- generate_fixed_values(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units, specified_units = specified_units)
   }
-  cm <- suppressMessages(comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units))
+  print(type)
+  cm <- comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units, specified_units = specified_units)
   if (!(is.null(fixed_values))){
     if (!is.null(colnames(fixed_values)[colnames(fixed_values) %in% comp_labels])){
       warning("fixed_values will be updated to have compositional components fixed at the compositional mean. For technical and pragmatic reasons, use of a different reference for the compositional components is not currently possible.")
     }
-    for (label in comp_labels){
-      fixed_values[, label] <- cm[[label]]
-    }
+    fixed_values <- cbind(fixed_values, cm)
   }
+
+
+  # We make some new data for predictions
   new_data <-
     make_new_data(from_component,
                to_component,
@@ -103,7 +119,12 @@ plot_transfers <- function(from_component,
                    component_1 = component_1,
                    comparison_component = comparison_component,
                    rounded_zeroes = FALSE)
-  if (type == "logistic" & (terms == FALSE)) {
+
+
+  print(head(new_data))
+  "Before any plotting"
+  # We begin the plotting
+  if (type == "logistic" && (terms == FALSE)) {
     message("Note that the confidence intervals on this plot include uncertainty driven by other, non-compositional variables. To look at compositional variables only, use terms = TRUE")
     predictions <- predict(model,
                            newdata = new_data,
@@ -152,7 +173,7 @@ plot_transfers <- function(from_component,
           ymax = upper_CI
         ), color = "grey") +
         ggplot2::geom_point(size = 0.5) +
-        ggplot2::labs(x = paste(from_component, "to", to_component, "\n (hr/week)"),
+        ggplot2::labs(x = paste(from_component, "to", to_component, "\n " , units),
              y = y_label) +
         ggplot2::geom_vline(xintercept = 0)
     }
@@ -163,7 +184,7 @@ plot_transfers <- function(from_component,
 
 
 
-  if (type == "logistic" & (terms)) {
+  if (type == "logistic" && (terms)) {
     if (transformation_type == "ilr"){
       if (!is.null(component_1)){
         comp_labels <- alter_order_comp_labels(comp_labels, component_1)
@@ -209,7 +230,7 @@ plot_transfers <- function(from_component,
           ymax = upper_CI
         ), color = "grey") +
         ggplot2::geom_point(size = 0.5) +
-        ggplot2::labs(x = paste(from_component, "to", to_component, "\n (hr/week)"),
+        ggplot2::labs(x = paste(from_component, "to", to_component, "\n " , units),
              y = y_label) +
         ggplot2::scale_y_continuous(
           trans = log_trans(),
@@ -228,7 +249,7 @@ plot_transfers <- function(from_component,
           ymax = upper_CI
         ), color = "grey") +
         ggplot2::geom_point(size = 0.5) +
-        ggplot2::labs(x = paste(from_component, "to", to_component, "\n (hr/week)"),
+        ggplot2::labs(x = paste(from_component, "to", to_component, "\n " , units),
              y = y_label) +
         ggplot2::geom_vline(xintercept = 0)
     }
@@ -248,54 +269,7 @@ plot_transfers <- function(from_component,
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  if (type == "cox" & (terms)) {
+  if (type == "cox" && (terms)) {
     transf_vec_for_here <- transf_labels(comp_labels, transformation_type, comparison_component)
     predictions <- predict(model,
                            newdata = new_data,
@@ -384,11 +358,12 @@ plot_transfers <- function(from_component,
 
 
 
-  if (type == "linear" & (terms == FALSE)) {
+  if (type == "linear" && (terms == FALSE)) {
     message("Note that the confidence intervals on this plot include uncertainty driven by other, non-compositional variables.")
     predictions <- predict(model, newdata = new_data, type = "response",
                            se.fit = TRUE)
-    print(head(predictions))
+    print("after predictions")
+    print(head(new_data))
     dNew <- data.frame(new_data, predictions)
     dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
 
@@ -436,7 +411,7 @@ plot_transfers <- function(from_component,
           ymax = upper_CI
         ), color = "grey") +
         ggplot2::geom_point(size = 0.5) +
-        ggplot2::labs(x = paste(from_component, "to", to_component, "\n (hr/week)"),
+        ggplot2::labs(x = paste(from_component, "to", to_component, "\n " , units),
              y = y_label) +
         ggplot2::geom_vline(xintercept = 0)
     }
@@ -452,28 +427,23 @@ plot_transfers <- function(from_component,
 
 
 
-  if (type == "linear" & (terms)) {
+  if (type == "linear" && (terms)) {
 
     if (transformation_type == "ilr"){
       if (!is.null(component_1)){
         comp_labels <- alter_order_comp_labels(comp_labels, component_1)
       }
-      transf_labels <- transf_labels(comp_labels, "ilr", component_1 = component_1)
     }
-
-    if (transformation_type == "alr"){
-      transf_labels <- transf_labels(comp_labels, "alr", comparison_component)
-    }
-
-    if (transformation_type == "clr"){
-      transf_labels <- transf_labels(comp_labels, "clr")
-    }
+    transf_labels <- transf_labels(comp_labels, transformation_type, comparison_component = comparison_component, component_1 = component_1)
 
 
 
+
+    print(head(new_data))
 
     predictions <- predict(model, newdata = new_data, type = terms, terms = transf_labels,
                            se.fit = TRUE)
+    print(head(new_data))
     dNew <- data.frame(new_data, predictions)
     dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
 
@@ -526,19 +496,6 @@ plot_transfers <- function(from_component,
         ggplot2::geom_vline(xintercept = 0)
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

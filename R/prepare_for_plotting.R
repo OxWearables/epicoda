@@ -5,7 +5,7 @@
 #' @param data Data used for model development.
 #' @param comp_labels Labels of the compositional componenets.Should be column names of columns in \code{data}.
 #' @return dataframe with a single row of fixed_values.
-generate_fixed_values <- function(data, comp_labels, rounded_zeroes, det_limit, units){
+generate_fixed_values <- function(data, comp_labels, rounded_zeroes, det_limit, units, specified_units){
   fixed_values <- data.frame(matrix(ncol = 0, nrow = 1))
   others <- colnames(data)[!(colnames(data) %in% comp_labels)]
   for (colname in others){
@@ -16,7 +16,8 @@ generate_fixed_values <- function(data, comp_labels, rounded_zeroes, det_limit, 
       fixed_values[colname] <- median(data[, colname], na.rm = TRUE)
     }
   }
-  cm <- suppressMessages(comp_mean(data, comp_labels, rounded_zeroes, det_limit, units))
+  cm <- suppressMessages(data.frame(comp_mean(data, comp_labels, rounded_zeroes, det_limit, units, specified_units)))
+  print(cm)
   fixed_values <- cbind(cm, fixed_values)
   return(fixed_values)
 }
@@ -76,36 +77,10 @@ make_new_data <- function(from_component,
                           upper_quantile = 0.95,
                           granularity = 10000) {
   new_data <- data.frame()[1:10000,]
-  if (units == "hr/wk"){
-    comp_sum <- 24*7
-  }
-  if (units == "unitless"){
-    comp_sum <- 1
-  }
-  if (units == "hr/day"){
-    comp_sum <- 24
-  }
-  if (units == "min/day"){
-    comp_sum <- 60*24
-  }
-  if (units == "min/wk"){
-    comp_sum <- 60*24*7
-  }
-  if (units == "specified"){
-    if (is.null(specified_units)){
-      stop("composition_sum must be given if units = \"specified\" ")
-    }
-    if (!is.character(specified_units[1])){
-      stop("The first argument of specified_units must be a string describing the units.")
-    }
-    if (!is.numeric(specified_units[2])){
-      stop("The first argument of specified_units must be a number specifying the sum of a composition.")
-    }
-    units <- specified_units[1]
-  }
-  if (!(units %in% c("hr/wk", "hr/day", "min/wk", "min/day", "unitless", "specified"))){
-    stop("Unrecognised value for units. units should be \"hr/wk\", \"hr/day\", \"min/wk\", \"min/day\", \"unitless\" or \"specified\" with the specified_units argument also given.")
-  }
+
+  comp_sum <- as.numeric(process_units(units, specified_units)[2])
+  units <- process_units(units, specified_units)[1]
+
   for (label in comp_labels) {
     if (label == to_component) {
       this_col <- data.frame(vary_component_of_interest(dataset[, label],

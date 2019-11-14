@@ -14,20 +14,22 @@
 #' @export
 comp_mean <- function(data, comp_labels, rounded_zeroes = FALSE, det_limit = NULL, units = "unitless", specified_units = NULL){
 
-  compos_mean <- c()
+  compos_mean <- data.frame(matrix(nrow = 1, ncol = 0))
 
-  comp_sum <- process_units(units, specified_units)[2]
+  comp_sum <- as.numeric(process_units(units, specified_units)[2])
   units <- process_units(units, specified_units)[1]
 
   dCompOnly <- data[, comp_labels]
   dCompOnly <- process_zeroes(dCompOnly, comp_labels, rounded_zeroes, det_limit)
 
   for (activity_type in comp_labels){
-    compos_mean[activity_type] <- gm(dCompOnly[,activity_type])
+    compos_mean[,activity_type] <- gm(dCompOnly[,activity_type])
   }
-  tot_time <- sum(compos_mean)
+  tot_time <- apply(compos_mean[1, ], 1, sum)
+
   comp_mean_normalised <- compos_mean/tot_time
   names(comp_mean_normalised) <- comp_labels
   cm <- comp_mean_normalised*comp_sum
+  print(cm)
   return(cm)
 }

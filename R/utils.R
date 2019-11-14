@@ -94,6 +94,7 @@ process_units <- function(units, specified_units){
   if (!(units %in% c("hr/wk", "hr/day", "min/wk", "min/day", "unitless", "specified"))){
     stop("Unrecognised value for units. units should be \"hr/wk\", \"hr/day\", \"min/wk\", \"min/day\", \"unitless\" or \"specified\" with the specified_units argument also given.")
   }
+  return(c(units, comp_sum))
 }
 
 
