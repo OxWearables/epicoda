@@ -105,28 +105,35 @@ process_units <- function(units, specified_units){
 #' @param det_limit Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
 #' minimum measurable value in the compositional columns of data.
 process_zeroes <- function(data, comp_labels, rounded_zeroes, det_limit){
+
   if (rounded_zeroes & is.null(det_limit)){
     stop("det_limit must be set for zeroes to be imputed. It should be the minimum measurable value in the compositional
          columns of data.")
   }
+
   data$row_labels <- 1:nrow(data)
   comp_data <- data[, c(comp_labels, "row_labels")]
+
   if (any(comp_data ==0) & rounded_zeroes){
     message(paste("Note that zeroes were imputed with detection limit \n", det_limit, "using zCompositions::lrEM"))
     comp_data[, comp_labels] <- suppressMessages(zCompositions::lrEM(comp_data[, comp_labels], label = 0, dl = matrix(data = rep(det_limit,length(comp_data[,1])*ncol(comp_data[, comp_labels])),
                                                                                       nrow = length(comp_data[,1]),
                                                                                       byrow = T), max.iter = 50))
   }
-  else{
-   message("Note that before calculating the compositional mean zero values were dropped.")
+
+  if (!rounded_zeroes){
+   message("Note that any zero values were dropped.")
     for (activity in comp_labels){
       comp_data <- comp_data[comp_data[,activity] != 0, ]
     }
   }
+
   non_comp_cols <- colnames(data)[!(colnames(data) %in% comp_labels)]
-  if (ncol(data[, non_comp_cols]) >1.5){
+
+  if (length(non_comp_cols) > 1.5){
     data <- merge(data[,non_comp_cols], comp_data, by = "row_labels")
   }
+
   else {
     data <- comp_data
   }
