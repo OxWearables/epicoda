@@ -113,14 +113,14 @@ process_zeroes <- function(data, comp_labels, rounded_zeroes, det_limit){
   comp_data <- data[, c(comp_labels, row_labels)]
   if (any(comp_data ==0) & rounded_zeroes){
     message(paste("Note that zeroes were imputed with detection limit \n", det_limit, "using zCompositions::lrEM"))
-    comp_data <- suppressMessages(zCompositions::lrEM(comp_data, label = 0, dl = matrix(data = rep(det_limit,length(comp_data[,1])*ncol(comp_data)),
+    comp_data[, comp_labels] <- suppressMessages(zCompositions::lrEM(comp_data[, comp_labels], label = 0, dl = matrix(data = rep(det_limit,length(comp_data[,1])*ncol(comp_data[, comp_labels])),
                                                                                       nrow = length(comp_data[,1]),
                                                                                       byrow = T), max.iter = 50))
   }
   else{
    message("Note that before calculating the compositional mean zero values were dropped.")
     for (activity in comp_labels){
-      comp_data<- comp_data[comp_data[,activity] != 0, ]
+      comp_data <- comp_data[comp_data[,activity] != 0, ]
     }
   }
   non_comp_cols <- colnames(data)[!(colnames(data) %in% comp_labels)]
