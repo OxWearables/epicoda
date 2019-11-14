@@ -124,9 +124,7 @@ process_zeroes <- function(data, comp_labels, rounded_zeroes, det_limit){
     }
   }
   non_comp_cols <- colnames(data)[!(colnames(data) %in% comp_labels)]
-  print(head(data))
-  print(head(comp_data))
-  if (ncol(data[, non_comp_cols] >1.5)){
+  if (ncol(data[, non_comp_cols]) >1.5){
     data <- merge(data[,non_comp_cols], comp_data, by = "row_labels")
   }
   else {
