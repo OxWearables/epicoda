@@ -10,7 +10,7 @@ generate_fixed_values <- function(data, comp_labels, rounded_zeroes, det_limit, 
   others <- colnames(data)[!(colnames(data) %in% comp_labels)]
   for (colname in others){
     if (is.factor(data[, colname])){
-      fixed_values[colname] <- (Mode(data[,colname]))
+      fixed_values[colname] <- (Mode(data[,colname]))[1]
     }
     if (!(is.factor(data[, colname]))) {
       fixed_values[colname] <- median(data[, colname], na.rm = TRUE)
