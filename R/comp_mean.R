@@ -15,55 +15,13 @@
 comp_mean <- function(data, comp_labels, rounded_zeroes = FALSE, det_limit = NULL, units = "unitless", specified_units = NULL){
 
   compos_mean <- c()
-  if (units == "hr/wk"){
-    comp_sum <- 24*7
-  }
-  if (units == "unitless"){
-    comp_sum <- 1
-  }
-  if (units == "hr/day"){
-    comp_sum <- 24
-  }
-  if (units == "min/day"){
-    comp_sum <- 60*24
-  }
-  if (units == "min/wk"){
-    comp_sum <- 60*24*7
-  }
-  if (units == "specified"){
-    if (is.null(specified_units)){
-      stop("composition_sum must be given if units = \"specified\" ")
-    }
-    if (!is.character(specified_units[1])){
-      stop("The first argument of specified_units must be a string describing the units.")
-    }
-    if (!is.numeric(specified_units[2])){
-      stop("The first argument of specified_units must be a number specifying the sum of a composition.")
-    }
-    else {
-      comp_sum <- composition_sum
-    }
-  }
-  if (!(units %in% c("hr/wk", "hr/day", "min/wk", "min/day", "unitless", "specified"))){
-    stop("Unrecognised value for units. units should be \"hr/wk\", \"hr/day\", \"min/wk\", \"min/day\" or \"unitless\"")
-  }
-  if (rounded_zeroes & is.null(det_limit)){
-    stop("det_limit must be set for zeroes to be imputed. It should be the minimum measurable value in the compositional
-         columns of data.")
-  }
+
+  comp_sum <- process_units(units, specified_units)[2]
+  units <- process_units(units, specified_units)[1]
+
   dCompOnly <- data[, comp_labels]
-  if (any(dCompOnly ==0) & rounded_zeroes){
-    message(paste("Note that before calculating the compositional mean zero values were imputed with detection limit \n", det_limit, "using zCompositions::lrEM"))
-    dCompOnly <- suppressMessages(zCompositions::lrEM(dCompOnly, label = 0, dl = matrix(data = rep(det_limit,length(dCompOnly[,1])*ncol(dCompOnly)),
-                                                                       nrow = length(dCompOnly[,1]),
-                                                                       byrow = T), max.iter = 50))
-  }
-  else{
-    message("Note that before calculating the compositional mean zero values were dropped.")
-    for (activity in comp_labels){
-      dCompOnly <- dCompOnly[dCompOnly[,activity] != 0, ]
-    }
-  }
+  dCompOnly <- process_zeroes(dCompOnly, comp_labels, rounded_zeroes, det_limit)
+
   for (activity_type in comp_labels){
     compos_mean[activity_type] <- gm(dCompOnly[,activity_type])
   }
