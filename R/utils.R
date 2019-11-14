@@ -112,7 +112,7 @@ process_zeroes <- function(data, comp_labels, rounded_zeroes, det_limit){
   comp_data <- data[, comp_labels]
   if (any(comp_data ==0) & rounded_zeroes){
     message(paste("Note that zeroes were imputed with detection limit \n", det_limit, "using zCompositions::lrEM"))
-    comp_data <- suppressMessages(zCompositions::lrEM(comp_data, label = 0, dl = matrix(comp_data = rep(det_limit,length(comp_data[,1])*ncol(comp_data)),
+    comp_data <- suppressMessages(zCompositions::lrEM(comp_data, label = 0, dl = matrix(data = rep(det_limit,length(comp_data[,1])*ncol(comp_data)),
                                                                                       nrow = length(comp_data[,1]),
                                                                                       byrow = T), max.iter = 50))
   }
