@@ -119,8 +119,6 @@ plot_transfers <- function(from_component,
                upper_quantile = 0.95,
                granularity = 10000)
 
-  print(head(new_data))
-  print("in between")
   new_data <-
     transform_comp(new_data,
                    comp_labels,
@@ -129,7 +127,6 @@ plot_transfers <- function(from_component,
                    comparison_component = comparison_component,
                    rounded_zeroes = FALSE)
 
-  print(head(new_data))
 
 
   # We begin the plotting
@@ -478,7 +475,7 @@ plot_transfers <- function(from_component,
     }
   }
 
-
+  print("Please note that plotting may take some time.")
 
   if (terms == FALSE){
     short_form <- gsub( ".*~", "",as.character(formula(model)))
