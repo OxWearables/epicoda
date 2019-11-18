@@ -32,7 +32,7 @@ plot_transfers <- function(from_component,
                                 comp_labels,
                                 yllimit = NULL,
                                 yulimit = NULL,
-                                y_label,
+                                y_label = NULL,
                                 plot_log = FALSE,
                                 lower_quantile = 0.05,
                                 upper_quantile = 0.95,
@@ -40,13 +40,19 @@ plot_transfers <- function(from_component,
                                 specified_units = NULL,
                                 rounded_zeroes = FALSE,
                                 det_limit = NULL,
-                                terms = FALSE) {
+                                terms = FALSE){
 
   if (is.null(transformation_type)){
     stop("transformation_type must be specified and must match the transformation used in transform_comp earlier (which defaults to \"ilr\")")
   }
 
-
+  # We make sure there will be a y_label
+  if ((is.null(y_label)) & terms){
+    y_label <- "Model-predicted change in outcome"
+  }
+  if ((is.null(y_label)) & (terms == FALSE)){
+    y_label <- "Model-predicted outcome"
+  }
 
   # We set units
   comp_sum <- as.numeric(process_units(units, specified_units)[2])
@@ -418,15 +424,18 @@ plot_transfers <- function(from_component,
 
 
   if (type == "linear" && (terms)) {
-
-    predictions <- predict(model, newdata = new_data, type = terms, terms = transf_labels,
+    print(transf_labels)
+    predictions <- predict(model, newdata = new_data, type = "terms", terms = transf_labels,
                            se.fit = TRUE)
-
+    print(head(predictions))
     dNew <- data.frame(new_data, predictions)
     dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
+    print(head(dNew))
+    for (label in transf_labels){
+       dNew$lower_CI <- dNew$fit - 1.96 * dNew$se.fit
+      dNew$upper_CI <- dNew$fit + 1.96 * dNew$se.fit
+    }
 
-    dNew$lower_CI <- dNew$fit - 1.96 * dNew$se.fit
-    dNew$upper_CI <- dNew$fit + 1.96 * dNew$se.fit
     if (is.null(yllimit)) {
       yllimit <- min(dNew$lower_CI)
     }
@@ -477,7 +486,7 @@ plot_transfers <- function(from_component,
 
   print("Please note that plotting may take some time.")
 #
-#   if (terms == FALSE){
+ if (terms == FALSE)#{
 #     short_form <- gsub( ".*~", "",as.character(formula(model)))
 #     print(paste("Covariate values were fixed at: "))
 #     for (variable in all.vars(as.formula(short_form[3]))[!(all.vars(as.formula(short_form[3])) %in% comp_labels)]){
@@ -491,7 +500,6 @@ plot_transfers <- function(from_component,
     print(paste(variable, ":", fixed_values[1, variable], units))
   }
   return(plot_of_this)
-
-}
+ }
 
 
