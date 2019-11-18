@@ -129,17 +129,17 @@ So, the model diagnostics all looks fine (and can be interpreted as usual). Howe
 As we saw, the model summary is quite hard to interpret.  
 One way to get round this is to look at model predictions. There are various options- we can look at predictions as we hold most of the composition fixed and vary the balance between the final two components. This is what the plot_transfers function does: 
 ```{r}
-plot_transfers(from_component = "sedentary",
-               to_component = "vigorous",
+plot_transfers(from_component = "compD",
+               to_component = "compA",
                model = lm_outcome ,
                dataset = data_ilr_impute_zeroes,
                transformation_type = "ilr",
                comp_labels = comp_labels,
                y_label = "Model-predicted change in outcome",
-               units = "hr/wk",
+               units = "hr/day",
                rounded_zeroes = TRUE,
                det_limit = 0.0083,
-               terms = TRUE)
+               terms = FALSE)
 ```
 
 
