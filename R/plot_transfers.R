@@ -61,8 +61,7 @@ plot_transfers <- function(from_component,
   }
   transf_labels <- transf_labels(comp_labels, transformation_type, comparison_component = comparison_component, component_1 = component_1)
 
-
-
+  dataset_ready <- dataset[, !(colnames(dataset) %in% transf_labels)]
   # We assign some internal parameters
   type <- "unassigned"
   if (class(model)=="lm"){
@@ -93,6 +92,8 @@ plot_transfers <- function(from_component,
     yulimit <- 1
   }
 
+
+
   # We assign some fixed_values to use in plotting
   if (is.null(fixed_values)){
     fixed_values <- generate_fixed_values(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units, specified_units = specified_units)
@@ -111,12 +112,15 @@ plot_transfers <- function(from_component,
     make_new_data(from_component,
                to_component,
                fixed_values,
-               dataset,
+               dataset_ready,
                units = units,
                comp_labels = comp_labels,
                lower_quantile = 0.05,
                upper_quantile = 0.95,
                granularity = 10000)
+
+  print(head(new_data))
+  print("in between")
   new_data <-
     transform_comp(new_data,
                    comp_labels,
@@ -124,6 +128,8 @@ plot_transfers <- function(from_component,
                    component_1 = component_1,
                    comparison_component = comparison_component,
                    rounded_zeroes = FALSE)
+
+  print(head(new_data))
 
 
   # We begin the plotting
@@ -474,13 +480,13 @@ plot_transfers <- function(from_component,
 
 
 
-
-
-
   if (terms == FALSE){
+    short_form <- gsub( ".*~", "",as.character(formula(model)))
     print(paste("Covariate values were fixed at: "))
-    for (variable in all.vars(formula(model))){
-    print(paste(variable, ":", fixed_values[1, variable]))
+    for (variable in all.vars(as.formula(short_form[3]))[!(all.vars(as.formula(short_form[3])) %in% comp_labels)]){
+      print(variable)
+      print(fixed_values)
+      print(paste(variable, ":", fixed_values[1, variable]))
   }
   }
   print(paste("Compositional variables not varied in the visualisation were fixed at:"))
