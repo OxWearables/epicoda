@@ -142,4 +142,6 @@ plot_transfers(from_component = "compD",
                terms = FALSE)
 ```
 
+## Common problems 
+It looks gappy: Set 'granularity' in plot_all_transfers to be something > 10000. 
 
