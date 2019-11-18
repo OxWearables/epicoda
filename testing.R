@@ -24,3 +24,4 @@ plot_transfers(from_component = "compD",
                rounded_zeroes = TRUE,
                det_limit = 0.0083,
                terms = FALSE)
+
