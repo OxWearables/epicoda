@@ -19,9 +19,9 @@ plot_transfers(from_component = "compD",
                dataset = data_ilr_impute_zeroes,
                transformation_type = "ilr",
                comp_labels = comp_labels,
-               y_label = "Model-predicted change in outcome",
+               y_label = NULL,
                units = "hr/day",
                rounded_zeroes = TRUE,
                det_limit = 0.0083,
-               terms = FALSE)
+               terms = TRUE)
 
