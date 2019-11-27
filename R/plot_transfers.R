@@ -40,7 +40,8 @@ plot_transfers <- function(from_component,
                                 specified_units = NULL,
                                 rounded_zeroes = FALSE,
                                 det_limit = NULL,
-                                terms = FALSE){
+                                terms = FALSE,
+                                granularity = 10000){
 
   if (is.null(transformation_type)){
     stop("transformation_type must be specified and must match the transformation used in transform_comp earlier (which defaults to \"ilr\")")
@@ -123,7 +124,7 @@ plot_transfers <- function(from_component,
                comp_labels = comp_labels,
                lower_quantile = 0.05,
                upper_quantile = 0.95,
-               granularity = 10000)
+               granularity = granularity)
 
   new_data <-
     transform_comp(new_data,
@@ -425,7 +426,7 @@ plot_transfers <- function(from_component,
 
   if (type == "linear" && (terms)) {
     print(transf_labels)
-    predictions <- predict(model, newdata = new_data, type = "terms", terms = transf_labels,
+    predictions <- predict(model, newdata = new_data, type = "terms", terms = transf_labels, interval = "confidence",
                            se.fit = TRUE)
     print(head(predictions))
     dNew <- data.frame(new_data, predictions)
