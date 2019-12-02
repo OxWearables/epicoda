@@ -48,7 +48,7 @@ transform_comp <- function(data, comp_labels, transformation_type = "ilr", round
     colnames(dTransformed) <- transf_labels(comp_labels, "clr")
   }
   dOut <- merge(dTransformationReady, dTransformed, by = "row_labels_master")
-  dOut <- dOut[, !(colnames(dOut) %in% c("row_labels_master", "row_labels"))]
+  dOut <- dOut[, colnames(dOut)[!(colnames(dOut) %in% c("row_labels_master", "row_labels"))]]
 
   return(dOut)
 }
