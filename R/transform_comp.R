@@ -47,7 +47,7 @@ transform_comp <- function(data, comp_labels, transformation_type = "ilr", round
     dTransformed <- clr_trans(dCompOnly)
     colnames(dTransformed) <- transf_labels(comp_labels, "clr")
   }
-  dOut <- data.frame(data[, !colnames(data) %in% colnames(dCompOnly)], dCompOnly, dTransformed)
+  dOut <- data.frame(data[, !(colnames(data) %in% colnames(dCompOnly))], dCompOnly, dTransformed)
 
 
   return(dOut)
