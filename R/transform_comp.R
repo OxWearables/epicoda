@@ -25,30 +25,30 @@ transform_comp <- function(data, comp_labels, transformation_type = "ilr", round
     message("Clr transformed variables are singular, so shouldn't be used for regression modelling.")
   }
 
-  dCompOnly <- data[, comp_labels]
-
-  dCompOnly <- process_zeroes(dCompOnly, comp_labels, rounded_zeroes, det_limit)
+  dTransformationReady <- data
+  dTransformationReady$row_labels_master <- 1:nrow(dTransformationReady)
+  dTransformationReady <- process_zeroes(dTransformationReady, comp_labels, rounded_zeroes, det_limit)
 
   if (transformation_type == "ilr"){
     if (!is.null(component_1)){
       comp_labels <- alter_order_comp_labels(comp_labels, component_1)
     }
-    dTransformed <- ilr_trans(dCompOnly)
+    dTransformed <- ilr_trans(dTransformationReady)
     transf_labels <- transf_labels(comp_labels, "ilr", component_1 = component_1)
     colnames(dTransformed) <- transf_labels
   }
 
   if (transformation_type == "alr"){
-    dTransformed <- alr_trans(dCompOnly, comp_labels, comparison_component)
+    dTransformed <- alr_trans(dTransformationReady, comp_labels, comparison_component)
     colnames(dTransformed) <- transf_labels(comp_labels, "alr", comparison_component)
   }
 
   if (transformation_type == "clr"){
-    dTransformed <- clr_trans(dCompOnly)
+    dTransformed <- clr_trans(dTransformationReady)
     colnames(dTransformed) <- transf_labels(comp_labels, "clr")
   }
-  dOut <- data.frame(data[, !(colnames(data) %in% colnames(dCompOnly))], dCompOnly, dTransformed)
-
+  dOut <- merge(dTransformationReady, dTransformed, by = "row_labels_master")
+  dOut <- dOut[, !(colnames(dOut) %in% c("row_labels_master", "row_labels"))]
 
   return(dOut)
 }
