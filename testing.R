@@ -25,3 +25,4 @@ plot_transfers(from_component = "compD",
                det_limit = 0.0083,
                terms = TRUE)
 
+head(data_ilr_impute_zeroes)

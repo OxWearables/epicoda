@@ -340,7 +340,66 @@ plot_transfers <- function(from_component,
 
 
 
+  if (type == "cox" && !(terms)) {
+    predictions <- predict(model,
+                           newdata = new_data, type = "risk",
+                           se.fit = TRUE)
 
+    dNew <- data.frame(new_data, predictions)
+    dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
+
+    dNew$predictions <- dNew$fit
+
+    dNew$lower_CI <-
+      dNew$predictions * exp(-1.96 *dNew$se.fit)
+    dNew$upper_CI <-
+      dNew$predictions * exp(1.96 *dNew$se.fit)
+    dNew$lower_CI <-
+      pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
+    dNew$upper_CI <-
+      pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
+
+    if (plot_log == TRUE) {
+      plot_of_this <-
+        ggplot2::ggplot(data = dNew,
+                        mapping = ggplot2::aes(x = axis_vals, y = predictions)) +
+        ggplot2::ylim(yllimit, yulimit) +
+        ggplot2::geom_errorbar(ggplot2::aes(
+          x = axis_vals,
+          ymin = lower_CI,
+          ymax = upper_CI
+        ), color = "grey") +
+        ggplot2::geom_point(size = 0.5) +
+        ggplot2::labs(
+          x = paste(from_component, "to", to_component, "\n ", units),
+          y = y_label) +
+        geom_hline(yintercept = 1) +
+        ggplot2::geom_vline(xintercept = 0) +
+        ggplot2::scale_y_continuous(
+          trans = log_trans(),
+          breaks = seq(yllimit, yulimit, by = 0.2),
+          labels = seq(yllimit, yulimit, by = 0.2),
+          limits = c(yllimit, yulimit)
+        )
+    }
+    else {
+      plot_of_this <-
+        ggplot2::ggplot(data = dNew,
+                        mapping = ggplot2::aes(x = axis_vals, y = predictions)) +
+        ggplot2::ylim(yllimit, yulimit) +
+        ggplot2::geom_errorbar(ggplot2::aes(
+          x = axis_vals,
+          ymin = lower_CI,
+          ymax = upper_CI
+        ), color = "grey") +
+        ggplot2::geom_point(size = 0.5) +
+        ggplot2::labs(
+          x = paste(from_component, "to", to_component, "\n ", units),
+          y = y_label) +
+        geom_hline(yintercept = 1) +
+        ggplot2::geom_vline(xintercept = 0)
+    }
+  }
 
 
 
@@ -425,16 +484,19 @@ plot_transfers <- function(from_component,
 
 
   if (type == "linear" && (terms)) {
-    print(transf_labels)
     predictions <- predict(model, newdata = new_data, type = "terms", terms = transf_labels, interval = "confidence",
                            se.fit = TRUE)
-    print(head(predictions))
     dNew <- data.frame(new_data, predictions)
+    vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
+    sum_for_args <- paste0(vector_for_args, collapse = "+")
+
+    dNew$predictions <- sum(eval(parse(text = sum_for_args)))
+
     dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
-    print(head(dNew))
+
     for (label in transf_labels){
-       dNew$lower_CI <- dNew$fit - 1.96 * dNew$se.fit
-      dNew$upper_CI <- dNew$fit + 1.96 * dNew$se.fit
+      dNew$lower_CI <-0 # dNew$fit - 1.96 * dNew$se.fit
+      dNew$upper_CI <-50 #dNew$fit + 1.96 * dNew$se.fit
     }
 
     if (is.null(yllimit)) {

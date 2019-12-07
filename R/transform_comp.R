@@ -24,28 +24,35 @@ transform_comp <- function(data, comp_labels, transformation_type = "ilr", round
   if (transformation_type == "clr"){
     message("Clr transformed variables are singular, so shouldn't be used for regression modelling.")
   }
+  if (rounded_zeroes == TRUE & is.null(det_limit)){
+    stop("If zeroes will be imputed in transform_comp, an argument must be passed to det_limit.")
+  }
 
   dTransformationReady <- data
+  print(head(dTransformationReady))
   dTransformationReady$row_labels_master <- 1:nrow(dTransformationReady)
   dTransformationReady <- process_zeroes(dTransformationReady, comp_labels, rounded_zeroes, det_limit)
-
+  print(head(dTransformationReady))
   if (transformation_type == "ilr"){
     if (!is.null(component_1)){
       comp_labels <- alter_order_comp_labels(comp_labels, component_1)
     }
-    dTransformed <- ilr_trans(dTransformationReady)
+    dTransformed <- ilr_trans(dTransformationReady[,comp_labels])
     transf_labels <- transf_labels(comp_labels, "ilr", component_1 = component_1)
     colnames(dTransformed) <- transf_labels
+    dTransformed$row_labels_master <- dTransformationReady$row_labels_master
   }
 
   if (transformation_type == "alr"){
-    dTransformed <- alr_trans(dTransformationReady, comp_labels, comparison_component)
+    dTransformed <- alr_trans(dTransformationReady[, comp_labels], comp_labels, comparison_component)
     colnames(dTransformed) <- transf_labels(comp_labels, "alr", comparison_component)
+    dTransformed$row_labels_master <- dTransformationReady$row_labels_master
   }
 
   if (transformation_type == "clr"){
-    dTransformed <- clr_trans(dTransformationReady)
+    dTransformed <- clr_trans(dTransformationReady[, comp_labels])
     colnames(dTransformed) <- transf_labels(comp_labels, "clr")
+    dTransformed$row_labels_master <- dTransformationReady
   }
   dOut <- merge(dTransformationReady, dTransformed, by = "row_labels_master")
   dOut <- dOut[, colnames(dOut)[!(colnames(dOut) %in% c("row_labels_master", "row_labels"))]]
