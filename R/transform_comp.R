@@ -27,12 +27,9 @@ transform_comp <- function(data, comp_labels, transformation_type = "ilr", round
   if (rounded_zeroes == TRUE & is.null(det_limit)){
     stop("If zeroes will be imputed in transform_comp, an argument must be passed to det_limit.")
   }
-
   dTransformationReady <- data
-  print(head(dTransformationReady))
   dTransformationReady$row_labels_master <- 1:nrow(dTransformationReady)
   dTransformationReady <- process_zeroes(dTransformationReady, comp_labels, rounded_zeroes, det_limit)
-  print(head(dTransformationReady))
   if (transformation_type == "ilr"){
     if (!is.null(component_1)){
       comp_labels <- alter_order_comp_labels(comp_labels, component_1)

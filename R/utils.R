@@ -105,7 +105,7 @@ process_units <- function(units, specified_units){
 #' @param rounded_zeroes Are zeroes rounded zeroes?
 #' @param det_limit Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
 #' minimum measurable value in the compositional columns of data.
-process_zeroes <- function(data, comp_labels, rounded_zeroes, det_limit){
+process_zeroes <- function(data, comp_labels, rounded_zeroes, det_limit = NULL){
 
   if (rounded_zeroes & is.null(det_limit)){
     stop("det_limit must be set for zeroes to be imputed. It should be the minimum measurable value in the compositional

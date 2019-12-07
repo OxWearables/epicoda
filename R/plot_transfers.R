@@ -102,9 +102,7 @@ plot_transfers <- function(from_component,
 
 
   # We assign some fixed_values to use in plotting
-  if (is.null(fixed_values)){
-    fixed_values <- generate_fixed_values(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units, specified_units = specified_units)
-  }
+
   cm <- comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units, specified_units = specified_units)
   if (!(is.null(fixed_values))){
     if (!is.null(colnames(fixed_values)[colnames(fixed_values) %in% comp_labels])){
@@ -112,8 +110,10 @@ plot_transfers <- function(from_component,
     }
     fixed_values <- cbind(fixed_values, cm)
   }
-
-
+  if (is.null(fixed_values)){
+    fixed_values <- generate_fixed_values(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units, specified_units = specified_units)
+  }
+  print(fixed_values)
   # We make some new data for predictions
   new_data <-
     make_new_data(from_component,
@@ -490,13 +490,12 @@ plot_transfers <- function(from_component,
     vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
     sum_for_args <- paste0(vector_for_args, collapse = "+")
 
-    dNew$predictions <- sum(eval(parse(text = sum_for_args)))
-
+    dNew$fit <- eval(parse(text = sum_for_args))
     dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
 
     for (label in transf_labels){
-      dNew$lower_CI <-0 # dNew$fit - 1.96 * dNew$se.fit
-      dNew$upper_CI <-50 #dNew$fit + 1.96 * dNew$se.fit
+      dNew$lower_CI <--10# dNew$fit - 1.96 * dNew$se.fit
+      dNew$upper_CI <-10 #dNew$fit + 1.96 * dNew$se.fit
     }
 
     if (is.null(yllimit)) {
@@ -547,20 +546,18 @@ plot_transfers <- function(from_component,
     }
   }
 
-  print("Please note that plotting may take some time.")
-#
- if (terms == FALSE)#{
-#     short_form <- gsub( ".*~", "",as.character(formula(model)))
-#     print(paste("Covariate values were fixed at: "))
-#     for (variable in all.vars(as.formula(short_form[3]))[!(all.vars(as.formula(short_form[3])) %in% comp_labels)]){
-#       print(variable)
-#       print(fixed_values)
-#       print(paste(variable, ":", fixed_values[1, variable]))
-#   }
-#   }
-  print(paste("Compositional variables not varied in the visualisation were fixed at:"))
+ print("Please note that plotting may take some time.")
+ if (terms == FALSE){
+     short_form <- gsub( ".*~", "",as.character(formula(model)))
+     print(paste("Covariate values were fixed at: "))
+     variables <- strsplit(short_form[3], " + ", fixed = TRUE)[[1]]
+    for (variable in variables[!(variables %in% transf_labels)]){
+         print(paste(variable, ":", fixed_values[1, variable]))
+      }
+     }
+  print("Compositional variables not varied in the visualisation were fixed at:")
   for (variable in comp_labels){
-    print(paste(variable, ":", fixed_values[1, variable], units))
+    print(paste(variable, ":", signif(fixed_values[1, variable], 2), units))
   }
   return(plot_of_this)
  }
