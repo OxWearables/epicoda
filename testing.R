@@ -25,10 +25,14 @@ epicoda::plot_transfers(from_component = "compD",
                transformation_type = "ilr",
                comp_labels = comp_labels,
                y_label = NULL,
+               yllimit = -1,
+               yulimit = 1,
                units = "hr/day",
                rounded_zeroes = TRUE,
                det_limit = 0.0083,
-               terms = FALSE)
+               terms = TRUE)
 
 head(data_ilr_impute_zeroes)
 epicoda::plot_transfers
+
+

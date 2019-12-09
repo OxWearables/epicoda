@@ -493,9 +493,53 @@ plot_transfers <- function(from_component,
     dNew$fit <- eval(parse(text = sum_for_args))
     dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
 
+
+
+    m <- (model.matrix(model)[, transf_labels])
+    middle_matrix <- solve(t(m) %*% m)
+    x <- data.matrix(new_data[, transf_labels])
+    # t_x <- t(as.matrix(new_data[, transf_labels], rownames= TRUE)[2:nrow(new_data),])
+    # t_x <- data.matrix(t_x)
+    # print(head(t_x))
+
+    in_sqrt_1 <- ( x %*%middle_matrix )
+    t_x <- as.matrix(t(x))
+    in_sqrt_true <- c()
+    for (i in 1:nrow(in_sqrt_1)){
+
+      in_sqrt_true <- c(in_sqrt_true, (in_sqrt_1[i, ] %*% data.matrix(t_x)[, i]))
+    }
+
+    value <- sqrt(data.matrix(in_sqrt_true))
+    mse <- mean(model$residuals^2, na.rm = TRUE)
+    sigma_est <- sqrt(mse)
+
+    scaling <- sigma_est * value
+
+    t_value <- qt(0.025, df = (nrow(m) - 1- length(transf_labels)))[[1]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     for (label in transf_labels){
-      dNew$lower_CI <--10# dNew$fit - 1.96 * dNew$se.fit
-      dNew$upper_CI <-10 #dNew$fit + 1.96 * dNew$se.fit
+      dNew$lower_CI <- dNew$fit - t_value*scaling
+      dNew$upper_CI <- dNew$fit + t_value*scaling
     }
 
     if (is.null(yllimit)) {
