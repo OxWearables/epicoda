@@ -114,7 +114,7 @@ transf_sum <- vector_to_sum(transf_vec)
 ```
 Now we're ready to run a model.
 ```{r}
-lm_outcome <- lm(as.formula(paste("outcome ~ agegroup + sex + ", transf_sum)),
+lm_outcome <- lm(as.formula(paste("linear_outcome ~ agegroup + sex + ", transf_sum)),
                             data_ilr_impute_zeroes)
 ```
 If you are modelling an outcome for which logistic regression is apppropriate, transf_sum can similarly be inserted into the standard analysis. If you are modelling follow-up time using Cox regression (from the package survival), transf_sum can similarly be inserted into the standard analysis.  
@@ -133,7 +133,7 @@ So, the model diagnostics all looks fine (and can be interpreted as usual). Howe
 ## Presenting the results
 As we saw, the model summary is quite hard to interpret.  
 
-One way to get round this is to look at model predictions. There are various options- we can look at predictions as we hold most of the composition fixed and vary the balance between the final two components. The plot_transfers function can do this: 
+One way to get round this is to look at model predictions. There are various options- we can look at predictions as we hold most of the composition fixed and vary the balance between the final two components. The plot_transfers function can do this (for linear, logistic and Cox regression models): 
 ```{r}
  plot_transfers(from_component = "compD",
                to_component = "compA",
@@ -157,11 +157,12 @@ There's one problem with this: the predictions and confidence intervals on this 
                dataset = data_ilr_impute_zeroes,
                transformation_type = "ilr",
                comp_labels = comp_labels,
-               y_label = "Model-predicted change in outcome",
+               y_label = "Model-predicted difference in outcome",
                units = "hr/day",
                rounded_zeroes = TRUE,
                det_limit = 0.0083)
 ```
+Exactly as expected, this shows exactly the same shape, but the confidence intervals are narrower (as this only captures uncertainty due to compositional components), and the y-axis gives the difference in outcome. 
      
 ## Common problems 
 It looks gappy: Set 'granularity' in plot_all_transfers to be something > 10000. 

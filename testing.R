@@ -13,20 +13,23 @@ data_ilr_impute_zeroes <- epicoda::transform_comp(data = simdataplain,
 data_ilr_impute_zeroes
 transf_vec <- transf_labels(comp_labels = comp_labels, transformation_type = "ilr")
 transf_sum <- vector_to_sum(transf_vec)
-lm_outcome <- lm(as.formula(paste("outcome ~ agegroup + sex + ", transf_sum)),
+lm_outcome <- lm(as.formula(paste("linear_outcome ~ agegroup + sex + ", transf_sum)),
                  data_ilr_impute_zeroes)
 
+log_outcome <- glm(as.formula(paste("binary_outcome ~ agegroup + sex + ", transf_sum)),
+                   data_ilr_impute_zeroes, family = "binomial")
+
+summary(log_outcome)
 data_ilr_impute_zeroes
 summary(lm_outcome)
+summary(log_outcome)
 epicoda::plot_transfers(from_component = "compD",
                to_component = "compA",
-               model = lm_outcome ,
+               model = log_outcome ,
                dataset = data_ilr_impute_zeroes,
                transformation_type = "ilr",
                comp_labels = comp_labels,
                y_label = NULL,
-               yllimit = -1,
-               yulimit = 1,
                units = "hr/day",
                rounded_zeroes = TRUE,
                det_limit = 0.0083,
