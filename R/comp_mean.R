@@ -30,6 +30,5 @@ comp_mean <- function(data, comp_labels, rounded_zeroes = FALSE, det_limit = NUL
   comp_mean_normalised <- compos_mean/tot_time
   names(comp_mean_normalised) <- comp_labels
   cm <- comp_mean_normalised*comp_sum
-  print(cm)
   return(cm)
 }
