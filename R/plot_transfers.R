@@ -83,19 +83,19 @@ plot_transfers <- function(from_component,
   if (type == "unassigned"){
     stop("model is not a recognised type of model.")
   }
-  if (is.null(yllimit) && (type == "cox")) {
+  if (is.null(yllimit) & (type == "cox")) {
     yllimit <- 0.5
   }
-  if (is.null(yulimit) && (type == "cox")) {
+  if (is.null(yulimit) & (type == "cox")) {
     yulimit <- 1.75
   }
-  if (is.null(yllimit) && (type == "logistic") && (terms == FALSE)) {
+  if (is.null(yllimit) & (type == "logistic") && (terms == FALSE)) {
     yllimit <- 0
   }
-  if (is.null(yllimit) && (type == "logistic") && (terms == TRUE)) {
+  if (is.null(yllimit) & (type == "logistic") && (terms == TRUE)) {
     yllimit <- -1
   }
-  if (is.null(yulimit) && (type == "logistic")) {
+  if (is.null(yulimit) & (type == "logistic")) {
     yulimit <- 1
   }
 
@@ -515,7 +515,7 @@ plot_transfers <- function(from_component,
 
     scaling <- sigma_est * value
 
-    t_value <- qt(0.025, df = (nrow(m) - 1- length(transf_labels)))[[1]]
+    t_value <- qt(0.975, df = (nrow(m) - 1- length(transf_labels)))[[1]]
 
 
 
@@ -540,7 +540,6 @@ plot_transfers <- function(from_component,
       dNew$lower_CI <- dNew$fit - t_value*scaling
       dNew$upper_CI <- dNew$fit + t_value*scaling
     }
-
     if (is.null(yllimit)) {
       yllimit <- min(dNew$lower_CI)
     }
