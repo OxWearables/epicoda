@@ -1,6 +1,6 @@
 #' plot_transfers: Plots model predictions.
 #'
-#' Plots model predictions for the transfer of time given.
+#' Plots model predictions for transfers between the given components.
 #'
 #' @param from_component Should be an element of \code{comp_labels}.
 #' @param to_component Should be an element of \code{comp_labels}. Should have compositional mean less than \code{from_component}.
@@ -49,7 +49,7 @@ plot_transfers <- function(from_component,
 
   # We make sure there will be a y_label
   if ((is.null(y_label)) & terms){
-    y_label <- "Model-predicted change in outcome"
+    y_label <- "Model-predicted difference in outcome"
   }
   if ((is.null(y_label)) & (terms == FALSE)){
     y_label <- "Model-predicted outcome"
@@ -71,33 +71,35 @@ plot_transfers <- function(from_component,
   dataset_ready <- dataset[, !(colnames(dataset) %in% transf_labels)]
   # We assign some internal parameters
   type <- "unassigned"
-  if (class(model)=="lm"){
+  if (class(model)[1] =="lm"){
     type <- "linear"
   }
-  if ((class(model)[1] == "glm") && (family(model)[[1]] == "binomial")){
+  if ((class(model)[1] == "glm") & (family(model)[[1]] == "binomial")){
     type <- "logistic"
   }
-  if ((class(model) == "coxph")){
+  if ((class(model)[1]  == "coxph")){
     type <- "cox"
   }
   if (type == "unassigned"){
     stop("model is not a recognised type of model.")
   }
-  if (is.null(yllimit) & (type == "cox")) {
-    yllimit <- 0.5
-  }
-  if (is.null(yulimit) & (type == "cox")) {
-    yulimit <- 1.75
-  }
-  if (is.null(yllimit) & (type == "logistic") && (terms == FALSE)) {
-    yllimit <- 0
-  }
-  if (is.null(yllimit) & (type == "logistic") && (terms == TRUE)) {
-    yllimit <- -1
-  }
-  if (is.null(yulimit) & (type == "logistic")) {
-    yulimit <- 1
-  }
+
+
+  # if (is.null(yllimit) & (type == "cox")) {
+  #   yllimit <- 0.5
+  # }
+  # if (is.null(yulimit) & (type == "cox")) {
+  #   yulimit <- 1.75
+  # }
+  # if (is.null(yllimit) & (type == "logistic") && (terms == FALSE)) {
+  #   yllimit <- 0
+  # }
+  # if (is.null(yllimit) & (type == "logistic") && (terms == TRUE)) {
+  #   yllimit <- -1
+  # }
+  # if (is.null(yulimit) & (type == "logistic")) {
+  #   yulimit <- 1
+  # }
 
 
 
@@ -113,6 +115,9 @@ plot_transfers <- function(from_component,
   if (is.null(fixed_values)){
     fixed_values <- generate_fixed_values(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units, specified_units = specified_units)
   }
+
+
+
   # We make some new data for predictions
   new_data <-
     make_new_data(from_component,
@@ -151,6 +156,14 @@ plot_transfers <- function(from_component,
       model$family$linkinv(dNew$fit - 1.96 * dNew$se.fit)
     dNew$upper_CI <-
       model$family$linkinv(dNew$fit + 1.96 * dNew$se.fit)
+
+    if (is.null(yllimit)){
+      yllimit <- min(dNew$lower_CI)
+    }
+    if (is.null(yulimit)){
+      yulimit <- max(dNew$upper_CI)
+    }
+
     dNew$lower_CI <-
       pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
     dNew$upper_CI <-
@@ -198,60 +211,142 @@ plot_transfers <- function(from_component,
 
   if (type == "logistic" && (terms)) {
 
+      predictions <- predict(model, newdata = new_data, type = "terms", terms = transf_labels, interval = "confidence",
+                             se.fit = TRUE)
+      dNew <- data.frame(new_data, predictions)
+      p <- predict(model, newdata = new_data, )
+
+      vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
+      sum_for_args <- paste0(vector_for_args, collapse = "+")
+      dNew$fit <- eval(parse(text = sum_for_args))
+      dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
 
 
-    predictions <- predict(model,
-                           newdata = new_data,
-                           type = "terms", terms = transf_labels,
-                           se.fit = TRUE)
 
-    dNew <- data.frame(new_data, predictions)
-    dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
-    dNew$normalised_predictions <- model$family$linkinv(dNew$fit)
+      m <- (model.matrix(model)[, transf_labels])
+      middle_matrix <- solve(t(m) %*% m)
+      x <- data.matrix(new_data[, transf_labels])
+      in_sqrt_1 <- ( x %*%middle_matrix )
+      t_x <- as.matrix(t(x))
+      in_sqrt_true <- c()
+      for (i in 1:nrow(in_sqrt_1)){
 
-    dNew$lower_CI <-
-      model$family$linkinv(dNew$fit - 1.96 * dNew$se.fit)
-    dNew$upper_CI <-
-      model$family$linkinv(dNew$fit + 1.96 * dNew$se.fit)
-    dNew$lower_CI <-
-      pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
-    dNew$upper_CI <-
-      pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
+        in_sqrt_true <- c(in_sqrt_true, (in_sqrt_1[i, ] %*% data.matrix(t_x)[, i]))
+      }
 
-    if (plot_log == TRUE) {
-      plot_of_this <-
-        ggplot2::ggplot(data = dNew,
-                        mapping = ggplot2::aes(x = axis_vals, y = normalised_predictions)) +
-        ggplot2::geom_errorbar(ggplot2::aes(
-          x = axis_vals,
-          ymin = lower_CI,
-          ymax = upper_CI
-        ), color = "grey") +
-        ggplot2::geom_point(size = 0.5) +
-        ggplot2::labs(x = paste(from_component, "to", to_component, "\n " , units),
-             y = y_label) +
-        ggplot2::scale_y_continuous(
-          trans = log_trans(),
-          limits = c(yllimit, yulimit)
-        ) +
-        ggplot2::geom_vline(xintercept = 0)
+      value <- sqrt(data.matrix(in_sqrt_true))
+      mse <- mean(model$residuals^2, na.rm = TRUE)
+      sigma_est <- sqrt(mse)
+
+      scaling <- sigma_est * value
+
+      t_value <- qt(0.975, df = (nrow(m) - 1- length(transf_labels)))[[1]]
+
+
+      for (label in transf_labels){
+        dNew$lower_CI <- model$family$linkinv(dNew$fit - t_value*scaling)
+        dNew$upper_CI <- model$family$linkinv(dNew$fit + t_value*scaling)
+      }
+      if (is.null(yllimit)) {
+        yllimit <- min(dNew$lower_CI)
+      }
+      if (is.null(yulimit)) {
+        yulimit <- max(dNew$upper_CI)
+      }
+      dNew$lower_CI <-
+        pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
+      dNew$upper_CI <-
+        pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
+
+      if (plot_log == TRUE) {
+        plot_of_this <-
+          ggplot2::ggplot(data = dNew,
+                          mapping = ggplot2::aes(x = axis_vals, y = fit)) +
+          ggplot2::ylim(yllimit, yulimit) +
+          ggplot2::geom_errorbar(ggplot2::aes(
+            x = axis_vals,
+            ymin = lower_CI,
+            ymax = upper_CI
+          ), color = "grey") +
+          ggplot2::geom_point(size = 0.5) +
+          ggplot2::labs(x = paste(from_component, "to", to_component, "\n ", units),
+                        y = y_label) +
+          ggplot2::scale_y_continuous(
+            trans = log_trans(),
+            breaks = seq(yllimit, yulimit, by = 0.1),
+            labels = seq(yllimit, yulimit, by = 0.1)
+          ) +
+          ggplot2::geom_vline(xintercept = 0)
+      }
+      else {
+        plot_of_this <-
+          ggplot2::ggplot(data = dNew,
+                          mapping = ggplot2::aes(x = axis_vals, y = fit)) +
+          ggplot2::ylim(yllimit, yulimit) +
+          ggplot2::geom_errorbar(ggplot2::aes(
+            x = axis_vals,
+            ymin = lower_CI,
+            ymax = upper_CI
+          ), color = "grey") +
+          ggplot2::geom_point(size = 0.5) +
+          ggplot2::labs(x = paste(from_component, "to", to_component, "\n", units),
+                        y = y_label) +
+          ggplot2::geom_vline(xintercept = 0)
+      }
     }
-    else {
-      plot_of_this <-
-        ggplot2::ggplot(data = dNew,
-                        mapping = ggplot2::aes(x = axis_vals, y = normalised_predictions)) +
-        ggplot2::ylim(yllimit, yulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes(
-          x = axis_vals,
-          ymin = lower_CI,
-          ymax = upper_CI
-        ), color = "grey") +
-        ggplot2::geom_point(size = 0.5) +
-        ggplot2::labs(x = paste(from_component, "to", to_component, "\n " , units),
-             y = y_label) +
-        ggplot2::geom_vline(xintercept = 0)
-    }
-  }
+
+  #   predictions <- predict(model,
+  #                          newdata = new_data,
+  #                          type = "terms", terms = transf_labels,
+  #                          se.fit = TRUE)
+  #
+  #   dNew <- data.frame(new_data, predictions)
+  #   dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
+  #   dNew$normalised_predictions <- model$family$linkinv(dNew$fit)
+  #
+  #   dNew$lower_CI <-
+  #     model$family$linkinv(dNew$fit - 1.96 * dNew$se.fit)
+  #   dNew$upper_CI <-
+  #     model$family$linkinv(dNew$fit + 1.96 * dNew$se.fit)
+  #   dNew$lower_CI <-
+  #     pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
+  #   dNew$upper_CI <-
+  #     pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
+  #
+  #   if (plot_log == TRUE) {
+  #     plot_of_this <-
+  #       ggplot2::ggplot(data = dNew,
+  #                       mapping = ggplot2::aes(x = axis_vals, y = normalised_predictions)) +
+  #       ggplot2::geom_errorbar(ggplot2::aes(
+  #         x = axis_vals,
+  #         ymin = lower_CI,
+  #         ymax = upper_CI
+  #       ), color = "grey") +
+  #       ggplot2::geom_point(size = 0.5) +
+  #       ggplot2::labs(x = paste(from_component, "to", to_component, "\n " , units),
+  #            y = y_label) +
+  #       ggplot2::scale_y_continuous(
+  #         trans = log_trans(),
+  #         limits = c(yllimit, yulimit)
+  #       ) +
+  #       ggplot2::geom_vline(xintercept = 0)
+  #   }
+  #   else {
+  #     plot_of_this <-
+  #       ggplot2::ggplot(data = dNew,
+  #                       mapping = ggplot2::aes(x = axis_vals, y = normalised_predictions)) +
+  #       ggplot2::ylim(yllimit, yulimit) +
+  #       ggplot2::geom_errorbar(ggplot2::aes(
+  #         x = axis_vals,
+  #         ymin = lower_CI,
+  #         ymax = upper_CI
+  #       ), color = "grey") +
+  #       ggplot2::geom_point(size = 0.5) +
+  #       ggplot2::labs(x = paste(from_component, "to", to_component, "\n " , units),
+  #            y = y_label) +
+  #       ggplot2::geom_vline(xintercept = 0)
+  #   }
+  # }
 
 
 
@@ -288,6 +383,15 @@ plot_transfers <- function(from_component,
       dNew$predictions * exp(-1.96 * eval(parse(text = sum_for_se)))
     dNew$upper_CI <-
       dNew$predictions * exp(1.96 * eval(parse(text = sum_for_se)))
+
+    if (is.null(yllimit)){
+      yllimit <- min(dNew$lower_CI)
+    }
+    if (is.null(yulimit)){
+      yulimit <- max(dNew$upper_CI)
+    }
+
+
     dNew$lower_CI <-
       pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
     dNew$upper_CI <-
@@ -353,6 +457,14 @@ plot_transfers <- function(from_component,
       dNew$predictions * exp(-1.96 *dNew$se.fit)
     dNew$upper_CI <-
       dNew$predictions * exp(1.96 *dNew$se.fit)
+
+    if (is.null(yllimit)){
+      yllimit <- min(dNew$lower_CI)
+    }
+    if (is.null(yulimit)){
+      yulimit <- max(dNew$upper_CI)
+    }
+
     dNew$lower_CI <-
       pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
     dNew$upper_CI <-
@@ -424,12 +536,15 @@ plot_transfers <- function(from_component,
 
     dNew$lower_CI <- dNew$fit - 1.96 * dNew$se.fit
     dNew$upper_CI <- dNew$fit + 1.96 * dNew$se.fit
+
     if (is.null(yllimit)) {
       yllimit <- min(dNew$lower_CI)
     }
     if (is.null(yulimit)) {
       yulimit <- max(dNew$upper_CI)
     }
+
+
     dNew$lower_CI <-
       pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
     dNew$upper_CI <-
@@ -497,10 +612,6 @@ plot_transfers <- function(from_component,
     m <- (model.matrix(model)[, transf_labels])
     middle_matrix <- solve(t(m) %*% m)
     x <- data.matrix(new_data[, transf_labels])
-    # t_x <- t(as.matrix(new_data[, transf_labels], rownames= TRUE)[2:nrow(new_data),])
-    # t_x <- data.matrix(t_x)
-    # print(head(t_x))
-
     in_sqrt_1 <- ( x %*%middle_matrix )
     t_x <- as.matrix(t(x))
     in_sqrt_true <- c()
@@ -518,34 +629,18 @@ plot_transfers <- function(from_component,
     t_value <- qt(0.975, df = (nrow(m) - 1- length(transf_labels)))[[1]]
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     for (label in transf_labels){
       dNew$lower_CI <- dNew$fit - t_value*scaling
       dNew$upper_CI <- dNew$fit + t_value*scaling
     }
+
     if (is.null(yllimit)) {
       yllimit <- min(dNew$lower_CI)
     }
     if (is.null(yulimit)) {
       yulimit <- max(dNew$upper_CI)
     }
+
     dNew$lower_CI <-
       pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
     dNew$upper_CI <-
