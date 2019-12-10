@@ -401,7 +401,7 @@ plot_transfers <- function(from_component,
     if (plot_log == TRUE) {
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
-                        mapping = ggplot2::aes(x = axis_vals, y = predictions)) +
+                        mapping = ggplot2::aes(x = axis_vals, y = fit)) +
         ggplot2::ylim(yllimit, yulimit) +
         ggplot2::geom_errorbar(ggplot2::aes(
           x = axis_vals,
@@ -424,7 +424,7 @@ plot_transfers <- function(from_component,
     else {
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
-                        mapping = ggplot2::aes(x = axis_vals, y = predictions)) +
+                        mapping = ggplot2::aes(x = axis_vals, y = fit)) +
         ggplot2::ylim(yllimit, yulimit) +
         ggplot2::geom_errorbar(ggplot2::aes(
           x = axis_vals,
