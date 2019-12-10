@@ -462,8 +462,14 @@ plot_transfers <- function(from_part,
                            se.fit = TRUE)
 
     dNew <- data.frame(new_data, predictions)
+    transf_fixed_vals <- transform_comp(fixed_values,
+                                        comp_labels,
+                                        transformation_type = transformation_type,
+                                        part_1 = part_1,
+                                        comparison_part = comparison_part,
+                                        rounded_zeroes = FALSE)
     acm <- predict(model,
-                   newdata = fixed_values, type = "risk")
+                   newdata = transf_fixed_vals, type = "risk")
     dNew$axis_vals <-  dNew[, to_part] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_part]]
 
     dNew$predictions <- dNew$fit/acm
