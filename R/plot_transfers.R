@@ -320,86 +320,86 @@ plot_transfers <- function(from_component,
 
   if (type == "cox" && (terms)) {
     predictions <- predict(model,
-                           newdata = new_data,
-                           type = "terms",
-                           se.fit = TRUE,
-                           terms = transf_labels)
+                          newdata = new_data,
+                          type = "terms",
+                          se.fit = TRUE,
+                          terms = transf_labels)
 
+    # dNew <- data.frame(new_data, predictions)
+    # dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE,
+    #                                                     det_limit = det_limit, units = units)[[to_component]]
+    #
+    # vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
+    # sum_for_args <- paste0(vector_for_args, collapse = "+")
+    #
+    # dNew$log_hazard_change <- eval(parse(text = sum_for_args))
+    # dNew$fit <- exp(dNew$log_hazard_change)
+    #
+    # m <- log(model.matrix(model)[, transf_labels]))
+    # middle_matrix <- solve(t(m) %*% m)
+    # x <- data.matrix(new_data[, transf_labels])
+    # in_sqrt_1 <- (x %*% middle_matrix)
+    # t_x <- as.matrix(t(x))
+    # in_sqrt_true <- c()
+    #
+    # for (i in 1:nrow(in_sqrt_1)){
+    #   in_sqrt_true <- c(in_sqrt_true, (in_sqrt_1[i, ] %*% data.matrix(t_x)[, i]))
+    # }
+    #
+    # value <- sqrt(data.matrix(in_sqrt_true))
+    # mse <- mean(model$residuals^2, na.rm = TRUE)
+    # sigma_est <- sqrt(mse)
+    # scaling <- sigma_est * value
+    # t_value <- qt(0.975, df = (nrow(m) - 1- length(transf_labels)))[[1]]
+    # print(scaling)
+    #
+    # alpha_lower <- dNew$log_hazard_change - t_value*scaling
+    # alpha_upper <- dNew$log_hazard_change + t_value*scaling
+    #
+    # dNew$lower_CI <- exp(alpha_lower)
+    # dNew$upper_CI <- exp(alpha_upper)
+    #
+    # print(head(dNew[, c("fit", "lower_CI", "upper_CI")]))
+    #
+    # if (is.null(yllimit)) {
+    #   yllimit <- min(dNew$lower_CI)
+    # }
+    # if (is.null(yulimit)) {
+    #   yulimit <- max(dNew$upper_CI)
+    # }
+    #
+    # dNew$lower_CI <-
+    #   pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
+    # dNew$upper_CI <-
+    #   pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
+    message("Please note that currently the confidence intervals are too wide, as they are based on the CIs on the individual terms. Using terms = FALSE will give CIs taking into account all uncertainty in compositional and non-compositional covariates, which may be more easily interpretable.")
     dNew <- data.frame(new_data, predictions)
-    dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE,
-                                                        det_limit = det_limit, units = units)[[to_component]]
+    dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
 
-    vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
+    vector_for_args <-   paste("dNew$fit.", transf_vec_for_here, sep = "")
     sum_for_args <- paste0(vector_for_args, collapse = "+")
 
-    dNew$log_hazard_change <- eval(parse(text = sum_for_args))
-    dNew$fit <- exp(dNew$log_hazard_change)
+    vector_for_se <- paste("dNew$se.fit.", transf_vec_for_here, sep = "")
+    sum_for_se <- paste0(vector_for_se, collapse = "+")
+    dNew$predictions <- exp(eval(parse(text = sum_for_args)))
 
-    m <- (model.matrix(model)[, transf_labels])
-    middle_matrix <- solve(t(m) %*% m)
-    x <- data.matrix(new_data[, transf_labels])
-    in_sqrt_1 <- (x %*% middle_matrix)
-    t_x <- as.matrix(t(x))
-    in_sqrt_true <- c()
+    dNew$lower_CI <-
+      dNew$predictions * exp(-1.96 * eval(parse(text = sum_for_se)))
+    dNew$upper_CI <-
+      dNew$predictions * exp(1.96 * eval(parse(text = sum_for_se)))
 
-    for (i in 1:nrow(in_sqrt_1)){
-      in_sqrt_true <- c(in_sqrt_true, (in_sqrt_1[i, ] %*% data.matrix(t_x)[, i]))
-    }
-
-    value <- sqrt(data.matrix(in_sqrt_true))
-    mse <- mean(model$residuals^2, na.rm = TRUE)
-    sigma_est <- sqrt(mse)
-    scaling <- sigma_est * value
-    t_value <- qt(0.975, df = (nrow(m) - 1- length(transf_labels)))[[1]]
-    print(scaling)
-
-    alpha_lower <- dNew$log_hazard_change - t_value*scaling
-    alpha_upper <- dNew$log_hazard_change + t_value*scaling
-
-    dNew$lower_CI <- exp(alpha_lower)
-    dNew$upper_CI <- exp(alpha_upper)
-
-    print(head(dNew[, c("fit", "lower_CI", "upper_CI")]))
-
-    if (is.null(yllimit)) {
+    if (is.null(yllimit)){
       yllimit <- min(dNew$lower_CI)
     }
-    if (is.null(yulimit)) {
+    if (is.null(yulimit)){
       yulimit <- max(dNew$upper_CI)
     }
+
 
     dNew$lower_CI <-
       pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
     dNew$upper_CI <-
       pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
-#
-#     dNew <- data.frame(new_data, predictions)
-#     dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
-#
-#     vector_for_args <-   paste("dNew$fit.", transf_vec_for_here, sep = "")
-#     sum_for_args <- paste0(vector_for_args, collapse = "+")
-#
-#     vector_for_se <- paste("dNew$se.fit.", transf_vec_for_here, sep = "")
-#     sum_for_se <- paste0(vector_for_se, collapse = "+")
-#     dNew$predictions <- exp(eval(parse(text = sum_for_args)))
-#
-#     dNew$lower_CI <-
-#       dNew$predictions * exp(-1.96 * eval(parse(text = sum_for_se)))
-#     dNew$upper_CI <-
-#       dNew$predictions * exp(1.96 * eval(parse(text = sum_for_se)))
-#
-#     if (is.null(yllimit)){
-#       yllimit <- min(dNew$lower_CI)
-#     }
-#     if (is.null(yulimit)){
-#       yulimit <- max(dNew$upper_CI)
-#     }
-#
-#
-#     dNew$lower_CI <-
-#       pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
-#     dNew$upper_CI <-
-#       pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
 
     if (plot_log == TRUE) {
       plot_of_this <-
