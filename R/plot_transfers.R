@@ -351,12 +351,15 @@ plot_transfers <- function(from_component,
     sigma_est <- sqrt(mse)
     scaling <- sigma_est * value
     t_value <- qt(0.975, df = (nrow(m) - 1- length(transf_labels)))[[1]]
+    print(scaling)
 
     alpha_lower <- dNew$log_hazard_change - t_value*scaling
     alpha_upper <- dNew$log_hazard_change + t_value*scaling
 
     dNew$lower_CI <- exp(alpha_lower)
     dNew$upper_CI <- exp(alpha_upper)
+
+    print(head(dNew[, c("fit", "lower_CI", "upper_CI")]))
 
     if (is.null(yllimit)) {
       yllimit <- min(dNew$lower_CI)
