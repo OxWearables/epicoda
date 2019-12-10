@@ -68,7 +68,7 @@ plot_transfers <- function(from_component,
   if (class(model)[1] =="lm"){
     type <- "linear"
   }
-  if ((class(model)[1] == "glm") & (family(model)[[1]] == "binomial")){
+  if ((class(model)[1] == "glm") && (family(model)[[1]] == "binomial")){
     type <- "logistic"
   }
   if ((class(model)[1]  == "coxph")){
