@@ -245,7 +245,9 @@ plot_transfers <- function(from_component,
       }
 
       value <- sqrt(data.matrix(in_sqrt_true))
-      mse <- mean(model$residuals^2, na.rm = TRUE)
+      mse <- mean(model$residuals^2, na.rm = TRUE) # Note that for a glm, model$residuals is the working
+      # residuals from the IWLS fit (i.e. the residuals on the final log odds), which is what is relevant here
+      # Some further work needed on this theory.
       sigma_est <- sqrt(mse)
       scaling <- sigma_est * value
       t_value <- qt(0.975, df = (nrow(m) - 1- length(transf_labels)))[[1]]
