@@ -47,13 +47,7 @@ plot_transfers <- function(from_component,
     stop("transformation_type must be specified and must match the transformation used in transform_comp earlier (which defaults to \"ilr\")")
   }
 
-  # We make sure there will be a y_label
-  if ((is.null(y_label)) & terms){
-    y_label <- "Model-predicted difference in outcome"
-  }
-  if ((is.null(y_label)) & (terms == FALSE)){
-    y_label <- "Model-predicted outcome"
-  }
+
 
   # We set units
   comp_sum <- as.numeric(process_units(units, specified_units)[2])
@@ -84,6 +78,21 @@ plot_transfers <- function(from_component,
     stop("model is not a recognised type of model.")
   }
 
+
+
+  # We make sure there will be a y_label
+  if ((is.null(y_label)) & (terms) & (type == "linear")){
+    y_label <- "Model-predicted difference in outcome"
+  }
+  if ((is.null(y_label)) & (terms) & (type == "logistic")){
+    y_label <- "Model-predicted OR"
+  }
+  if ((is.null(y_label)) & (terms) & (type == "cox")){
+    y_label <- "Model-predicted HR"
+  }
+  if ((is.null(y_label)) & (terms == FALSE)){
+    y_label <- "Model-predicted outcome"
+  }
 
   # if (is.null(yllimit) & (type == "cox")) {
   #   yllimit <- 0.5
@@ -226,7 +235,7 @@ plot_transfers <- function(from_component,
       sum_for_args <- paste0(vector_for_args, collapse = "+")
 
       dNew$log_odds_change <- eval(parse(text = sum_for_args))
-      dNew$fit <- dNew$probs*(1-dNew$probs)*(exp(dNew$log_odds_change)-1)*(1/(1-dNew$probs + dNew$probs * exp(dNew$log_odds_change)))
+      dNew$fit <- exp(dNew$log_odds_change)
 
       m <- (model.matrix(model)[, transf_labels])
       middle_matrix <- solve(t(m) %*% m)
@@ -248,8 +257,8 @@ plot_transfers <- function(from_component,
       alpha_lower <- dNew$log_odds_change - t_value*scaling
       alpha_upper <- dNew$log_odds_change + t_value*scaling
 
-      dNew$lower_CI <- dNew$probs*(1-dNew$probs)*(exp(alpha_lower)-1)*(1/(1-dNew$probs + dNew$probs * exp(alpha_lower)))
-      dNew$upper_CI <- dNew$probs*(1-dNew$probs)*(exp(alpha_upper)-1)*(1/(1-dNew$probs + dNew$probs * exp(alpha_upper)))
+      dNew$lower_CI <- exp(alpha_lower)
+      dNew$upper_CI <- exp(alpha_upper)
 
       if (is.null(yllimit)) {
         yllimit <- min(dNew$lower_CI)
