@@ -333,7 +333,7 @@ plot_transfers <- function(from_component,
     sum_for_args <- paste0(vector_for_args, collapse = "+")
 
     dNew$log_hazard_change <- eval(parse(text = sum_for_args))
-    dNew$fit <- exp(dNew$log_hazard_change
+    dNew$fit <- exp(dNew$log_hazard_change)
 
     m <- (model.matrix(model)[, transf_labels])
     middle_matrix <- solve(t(m) %*% m)
