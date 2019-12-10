@@ -3,7 +3,7 @@
 #'  Calculates the compositional mean of a dataset.
 #'
 #' @param data Dataset to calculate compositional mean of.
-#' @param comp_labels The labels of the compositional component.
+#' @param comp_labels The labels of the compositional parts.
 #' @param rounded_zeroes Are zeroes rounded zeroes?
 #' @param det_limit Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
 #' minimum measurable value in the compositional columns of data.

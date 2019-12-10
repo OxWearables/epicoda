@@ -1,15 +1,15 @@
 #' plot_transfers: Plots model predictions.
 #'
-#' Plots model predictions for transfers between the given components.
+#' Plots model predictions for transfers between the given parts.
 #'
-#' @param from_component Should be an element of \code{comp_labels}.
-#' @param to_component Should be an element of \code{comp_labels}. Should have compositional mean less than \code{from_component}.
+#' @param from_part Should be an element of \code{comp_labels}.
+#' @param to_part Should be an element of \code{comp_labels}. Should have compositional mean less than \code{from_part}.
 #' @param model
 #' @param dataset Should be dataset used to develop \code{model}. Used to set reasonable values to display predictions for based on range of the data.
 #' @param fixed_values If desired, fixed_values for variables in \code{dataset} which aren't in \code{comp_labels}. These will be used when making predictions if \code{terms = FALSE}.
 #' @param transformation_type Should match transformation used in \code{transform_comp} when developing models.
-#' @param comparison_component If used, should match transformation used in \code{transform_comp} when developing models.
-#' @param component_1 If used, should match transformation used in \code{transform_comp} when developing models.
+#' @param comparison_part If used, should match transformation used in \code{transform_comp} when developing models.
+#' @param part_1 If used, should match transformation used in \code{transform_comp} when developing models.
 #' @param comp_labels
 #' @param yllimit Upper limit to show on y-axis on plot.
 #' @param yulimit Lower limit to show on y-axis on plot.
@@ -19,16 +19,16 @@
 #' @param upper_quantile See \code{vary_time_of_interest} and \code{make_new_data}
 #' @param units What are the units of the compositional variables? E.g. for activity data "hr/day". Currently all non-activity exposure variables should be specified as unitless until support for alternatives units is added.
 #' @param terms Are predictions for terms,or are they absolute?
-#' @return Plot with balance of two components plotted as exposure/ independent variable.
+#' @return Plot with balance of two parts plotted as exposure/ independent variable.
 #' @examples
-plot_transfers <- function(from_component,
-                           to_component,
+plot_transfers <- function(from_part,
+                           to_part,
                                 model,
                                 dataset,
                                 fixed_values = NULL,
                                 transformation_type = NULL,
-                                comparison_component = NULL,
-                                component_1 = NULL,
+                                comparison_part = NULL,
+                                part_1 = NULL,
                                 comp_labels,
                                 yllimit = NULL,
                                 yulimit = NULL,
@@ -56,11 +56,11 @@ plot_transfers <- function(from_component,
 
   # We label what the transformed cols will be
   if (transformation_type == "ilr"){
-    if (!is.null(component_1)){
-      comp_labels <- alter_order_comp_labels(comp_labels, component_1)
+    if (!is.null(part_1)){
+      comp_labels <- alter_order_comp_labels(comp_labels, part_1)
     }
   }
-  transf_labels <- transf_labels(comp_labels, transformation_type, comparison_component = comparison_component, component_1 = component_1)
+  transf_labels <- transf_labels(comp_labels, transformation_type, comparison_part = comparison_part, part_1 = part_1)
 
   dataset_ready <- dataset[, !(colnames(dataset) %in% transf_labels)]
   # We assign some internal parameters
@@ -117,7 +117,7 @@ plot_transfers <- function(from_component,
   cm <- comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units, specified_units = specified_units)
   if (!(is.null(fixed_values))){
     if (!is.null(colnames(fixed_values)[colnames(fixed_values) %in% comp_labels])){
-      warning("fixed_values will be updated to have compositional components fixed at the compositional mean. For technical and pragmatic reasons, use of a different reference for the compositional components is not currently possible.")
+      warning("fixed_values will be updated to have compositional parts fixed at the compositional mean. For technical and pragmatic reasons, use of a different reference for the compositional parts is not currently possible.")
     }
     fixed_values <- cbind(fixed_values, cm)
   }
@@ -129,8 +129,8 @@ plot_transfers <- function(from_component,
 
   # We make some new data for predictions
   new_data <-
-    make_new_data(from_component,
-               to_component,
+    make_new_data(from_part,
+               to_part,
                fixed_values,
                dataset_ready,
                units = units,
@@ -143,8 +143,8 @@ plot_transfers <- function(from_component,
     transform_comp(new_data,
                    comp_labels,
                    transformation_type = transformation_type,
-                   component_1 = component_1,
-                   comparison_component = comparison_component,
+                   part_1 = part_1,
+                   comparison_part = comparison_part,
                    rounded_zeroes = FALSE)
 
 
@@ -158,7 +158,7 @@ plot_transfers <- function(from_component,
                            se.fit = TRUE)
 
     dNew <- data.frame(new_data, predictions)
-    dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
+    dNew$axis_vals <-  dNew[, to_part] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_part]]
     dNew$normalised_predictions <- model$family$linkinv(dNew$fit)
 
     dNew$lower_CI <-
@@ -188,7 +188,7 @@ plot_transfers <- function(from_component,
           ymax = upper_CI
         ), color = "grey") +
         ggplot2::geom_point(size = 0.5) +
-        ggplot2::labs(x = paste(from_component, "to", to_component, "\n", units_name),
+        ggplot2::labs(x = paste(from_part, "to", to_part, "\n", units_name),
              y = y_label) +
         ggplot2::scale_y_continuous(
           trans = log_trans(),
@@ -207,7 +207,7 @@ plot_transfers <- function(from_component,
           ymax = upper_CI
         ), color = "grey") +
         ggplot2::geom_point(size = 0.5) +
-        ggplot2::labs(x = paste(from_component, "to", to_component, "\n " , units),
+        ggplot2::labs(x = paste(from_part, "to", to_part, "\n " , units),
              y = y_label) +
         ggplot2::geom_vline(xintercept = 0)
     }
@@ -223,8 +223,8 @@ plot_transfers <- function(from_component,
       predictions <- predict(model, newdata = new_data, type = "terms", terms = transf_labels, interval = "confidence",
                              se.fit = TRUE)
       dNew <- data.frame(new_data, predictions)
-      dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE,
-                                                          det_limit = det_limit, units = units)[[to_component]]
+      dNew$axis_vals <-  dNew[, to_part] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE,
+                                                          det_limit = det_limit, units = units)[[to_part]]
 
 
       vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
@@ -288,7 +288,7 @@ plot_transfers <- function(from_component,
             ymax = upper_CI
           ), color = "grey") +
           ggplot2::geom_point(size = 0.5) +
-          ggplot2::labs(x = paste(from_component, "to", to_component, "\n ", units),
+          ggplot2::labs(x = paste(from_part, "to", to_part, "\n ", units),
                         y = y_label) +
           ggplot2::scale_y_continuous(
             trans = log_trans(),
@@ -308,7 +308,7 @@ plot_transfers <- function(from_component,
             ymax = upper_CI
           ), color = "grey") +
           ggplot2::geom_point(size = 0.5) +
-          ggplot2::labs(x = paste(from_component, "to", to_component, "\n", units),
+          ggplot2::labs(x = paste(from_part, "to", to_part, "\n", units),
                         y = y_label) +
           ggplot2::geom_vline(xintercept = 0)
       }
@@ -335,8 +335,8 @@ plot_transfers <- function(from_component,
                           terms = transf_labels)
 
     # dNew <- data.frame(new_data, predictions)
-    # dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE,
-    #                                                     det_limit = det_limit, units = units)[[to_component]]
+    # dNew$axis_vals <-  dNew[, to_part] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE,
+    #                                                     det_limit = det_limit, units = units)[[to_part]]
     #
     # vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
     # sum_for_args <- paste0(vector_for_args, collapse = "+")
@@ -383,7 +383,7 @@ plot_transfers <- function(from_component,
     #   pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
     message("Please note that currently the confidence intervals are inaccurate, as they don't take into account correlation between explanatory variables. Using terms = FALSE will give CIs taking into account all uncertainty in compositional and non-compositional covariates, which may be more easily interpretable.")
     dNew <- data.frame(new_data, predictions)
-    dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
+    dNew$axis_vals <-  dNew[, to_part] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_part]]
 
     vector_for_args <-   paste("dNew$fit.", transf_vec_for_here, sep = "")
     sum_for_args <- paste0(vector_for_args, collapse = "+")
@@ -422,7 +422,7 @@ plot_transfers <- function(from_component,
         ), color = "grey") +
         ggplot2::geom_point(size = 0.5) +
         ggplot2::labs(
-          x = paste(from_component, "to", to_component, "\n ", units),
+          x = paste(from_part, "to", to_part, "\n ", units),
           y = y_label) +
         geom_hline(yintercept = 1) +
         ggplot2::geom_vline(xintercept = 0) +
@@ -445,7 +445,7 @@ plot_transfers <- function(from_component,
         ), color = "grey") +
         ggplot2::geom_point(size = 0.5) +
         ggplot2::labs(
-          x = paste(from_component, "to", to_component, "\n ", units),
+          x = paste(from_part, "to", to_part, "\n ", units),
           y = y_label) +
         geom_hline(yintercept = 1) +
         ggplot2::geom_vline(xintercept = 0)
@@ -462,7 +462,7 @@ plot_transfers <- function(from_component,
                            se.fit = TRUE)
 
     dNew <- data.frame(new_data, predictions)
-    dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
+    dNew$axis_vals <-  dNew[, to_part] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_part]]
 
     dNew$predictions <- dNew$fit
 
@@ -495,7 +495,7 @@ plot_transfers <- function(from_component,
         ), color = "grey") +
         ggplot2::geom_point(size = 0.5) +
         ggplot2::labs(
-          x = paste(from_component, "to", to_component, "\n ", units),
+          x = paste(from_part, "to", to_part, "\n ", units),
           y = y_label) +
         geom_hline(yintercept = 1) +
         ggplot2::geom_vline(xintercept = 0) +
@@ -518,7 +518,7 @@ plot_transfers <- function(from_component,
         ), color = "grey") +
         ggplot2::geom_point(size = 0.5) +
         ggplot2::labs(
-          x = paste(from_component, "to", to_component, "\n ", units),
+          x = paste(from_part, "to", to_part, "\n ", units),
           y = y_label) +
         geom_hline(yintercept = 1) +
         ggplot2::geom_vline(xintercept = 0)
@@ -545,7 +545,7 @@ plot_transfers <- function(from_component,
                            se.fit = TRUE)
 
     dNew <- data.frame(new_data, predictions)
-    dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
+    dNew$axis_vals <-  dNew[, to_part] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_part]]
 
     dNew$lower_CI <- dNew$fit - 1.96 * dNew$se.fit
     dNew$upper_CI <- dNew$fit + 1.96 * dNew$se.fit
@@ -574,7 +574,7 @@ plot_transfers <- function(from_component,
           ymax = upper_CI
         ), color = "grey") +
         ggplot2::geom_point(size = 0.5) +
-        ggplot2::labs(x = paste(from_component, "to", to_component, "\n ", units),
+        ggplot2::labs(x = paste(from_part, "to", to_part, "\n ", units),
              y = y_label) +
         ggplot2::scale_y_continuous(
           trans = log_trans(),
@@ -594,7 +594,7 @@ plot_transfers <- function(from_component,
           ymax = upper_CI
         ), color = "grey") +
         ggplot2::geom_point(size = 0.5) +
-        ggplot2::labs(x = paste(from_component, "to", to_component, "\n " , units),
+        ggplot2::labs(x = paste(from_part, "to", to_part, "\n " , units),
              y = y_label) +
         ggplot2::geom_vline(xintercept = 0)
     }
@@ -618,7 +618,7 @@ plot_transfers <- function(from_component,
     sum_for_args <- paste0(vector_for_args, collapse = "+")
 
     dNew$fit <- eval(parse(text = sum_for_args))
-    dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
+    dNew$axis_vals <-  dNew[, to_part] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_part]]
 
 
 
@@ -670,7 +670,7 @@ plot_transfers <- function(from_component,
           ymax = upper_CI
         ), color = "grey") +
         ggplot2::geom_point(size = 0.5) +
-        ggplot2::labs(x = paste(from_component, "to", to_component, "\n ", units),
+        ggplot2::labs(x = paste(from_part, "to", to_part, "\n ", units),
              y = y_label) +
         ggplot2::scale_y_continuous(
           trans = log_trans(),
@@ -690,7 +690,7 @@ plot_transfers <- function(from_component,
           ymax = upper_CI
         ), color = "grey") +
         ggplot2::geom_point(size = 0.5) +
-        ggplot2::labs(x = paste(from_component, "to", to_component, "\n", units),
+        ggplot2::labs(x = paste(from_part, "to", to_part, "\n", units),
              y = y_label) +
         ggplot2::geom_vline(xintercept = 0)
     }

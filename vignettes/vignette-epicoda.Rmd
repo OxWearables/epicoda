@@ -28,7 +28,7 @@ head(simdataplain)
 
 This dataset has 5 columns which make up a hypothetical composition, along with a hypothetical sex column and age group column.  
 In what sense are the compositional columns 'compositional'?
-Compositional data is data where the information is contained in the *relative*, rather than the absolute, values of the components.  
+Compositional data is data where the information is contained in the *relative*, rather than the absolute, values of the parts.  
 Here, we have one common case: the compositional columns all sum to the same total i.e. they can be represented as proportions of a whole without any loss of information. 
 
 ```{r}
@@ -104,7 +104,7 @@ data_ilr_impute_zeroes <- transform_comp(data = simdataplain,
                                    det_limit = 0.0083)
 print(head(data_ilr_impute_zeroes))
 ```
-There are also a few other things we can do with this function, like specifying a given 'first component' (which can be useful when it comes to reporting). To learn more, run ?transform_comp.  
+There are also a few other things we can do with this function, like specifying a given 'first part' (which can be useful when it comes to reporting). To learn more, run ?transform_comp.  
 
 ## Health association analysis 
 Now we've done the transformations, we're ready to do health association analysis. For this, we run our usual statistical models for health association analysis, but with the transformed variables, rather than the original compositional variables, as exposure variables. To get the names of the variables we'll be using, we can use a helper function in the package (although you might also have renamed these columns, in which case you can specify them straight out in the model) and another helper function to pack them up as a sum. 
@@ -133,10 +133,10 @@ So, the model diagnostics all looks fine (and can be interpreted as usual). Howe
 ## Presenting the results
 As we saw, the model summary is quite hard to interpret.  
 
-One way to get round this is to look at model predictions. There are various options- we can look at predictions as we hold most of the composition fixed and vary the balance between the final two components. The plot_transfers function can do this (for linear, logistic and Cox regression models): 
+One way to get round this is to look at model predictions. There are various options- we can look at predictions as we hold most of the composition fixed and vary the balance between the final two parts. The plot_transfers function can do this (for linear, logistic and Cox regression models): 
 ```{r}
- plot_transfers(from_component = "compD",
-               to_component = "compA",
+ plot_transfers(from_part = "compD",
+               to_part = "compA",
                model = lm_outcome ,
                dataset = data_ilr_impute_zeroes,
                transformation_type = "ilr",
@@ -148,11 +148,11 @@ One way to get round this is to look at model predictions. There are various opt
                terms = FALSE)
 ```
 
-There's one problem with this: the predictions and confidence intervals on this plot capture the uncertainty in the predictions due to all variables in the model- including the covariates. To avoid this, we can look at the predicted difference in the outcome due to just the compositional components. This is done by setting terms = TRUE (in fact, the default) in the plot_transfers function. 
+There's one problem with this: the predictions and confidence intervals on this plot capture the uncertainty in the predictions due to all variables in the model- including the covariates. To avoid this, we can look at the predicted difference in the outcome due to just the compositional parts. This is done by setting terms = TRUE (in fact, the default) in the plot_transfers function. 
 
 ```{r}
- plot_transfers(from_component = "compD",
-               to_component = "compA",
+ plot_transfers(from_part = "compD",
+               to_part = "compA",
                model = lm_outcome ,
                dataset = data_ilr_impute_zeroes,
                transformation_type = "ilr",
@@ -162,7 +162,7 @@ There's one problem with this: the predictions and confidence intervals on this 
                rounded_zeroes = TRUE,
                det_limit = 0.0083)
 ```
-Exactly as expected, this shows exactly the same shape, but the confidence intervals are narrower (as this only captures uncertainty due to compositional components), and the y-axis gives the difference in outcome. 
+Exactly as expected, this shows exactly the same shape, but the confidence intervals are narrower (as this only captures uncertainty due to compositional parts), and the y-axis gives the difference in outcome. 
      
 ## Common problems 
 It looks gappy: Set 'granularity' in plot_all_transfers to be something > 10000. 

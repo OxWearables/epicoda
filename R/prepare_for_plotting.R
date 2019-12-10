@@ -25,25 +25,25 @@ generate_fixed_values <- function(data, comp_labels, rounded_zeroes, det_limit, 
 
 
 
-#' Varies component of interest.
+#' Varies part of interest.
 #'
-#' Produces variable going between percentiles of the component of interest in the data.
+#' Produces variable going between percentiles of the part of interest in the data.
 #'
-#' @param component_of_interest The variable of interest.
+#' @param part_of_interest The variable of interest.
 #' @param lower_quantile The lower quantile to vary from.
 #' @param upper_quantile The upper quantile to vary to.
 #' #' @param granularity Doesn't usually need setting. Parameter indicating how many predictions to make. If too low, plotted curve has gaps. If too high, calculation is slow.
 #' @return Vector of values going from \code{lower_quantile} to \code{upper_quantile} of the distribution of the varaible of interest.
-vary_component_of_interest <- function(component_of_interest,
+vary_part_of_interest <- function(part_of_interest,
                                   lower_quantile = 0.05,
                                   upper_quantile = 0.95,
                                   granularity = 10000) {
-  component_values <- seq(
-    from = quantile(component_of_interest, 0.05, na.rm = TRUE),
-    to = quantile(component_of_interest, 0.95, na.rm = TRUE),
+  part_values <- seq(
+    from = quantile(part_of_interest, 0.05, na.rm = TRUE),
+    to = quantile(part_of_interest, 0.95, na.rm = TRUE),
     length.out = granularity
   )
-  return(component_values)
+  return(part_values)
 }
 
 
@@ -53,11 +53,11 @@ vary_component_of_interest <- function(component_of_interest,
 #'
 #' Generates a new dataset to feed into the plotting functions.
 #'
-#' @param from_component Component to plot transfer out of. Of the two being considered, should be component with generally higher values (e.g. higher median)
-#' @param to_component Component to plot transfer into. Of the two being considered, should be component with generally lower values (e.g. lower median.)
+#' @param from_part part to plot transfer out of. Of the two being considered, should be part with generally higher values (e.g. higher median)
+#' @param to_part part to plot transfer into. Of the two being considered, should be part with generally lower values (e.g. lower median.)
 #' @param comp_sum Numeric value indicating the value compositional columns should sum to (e.g. 1, 24, 168, 10080).
-#' @param fixed_values Should be a dataframe with a column for each component and containing a single value for each of those.
-#' @param dataset Dataset to take distribution of \code{from_component} from.
+#' @param fixed_values Should be a dataframe with a column for each part and containing a single value for each of those.
+#' @param dataset Dataset to take distribution of \code{from_part} from.
 #' @param comp_labels Labels of compositional columns.
 #' @param lower_quantile See \code{vary_time_of_interest}
 #' @param upper_quantile See \code{vary_time_of_interest}
@@ -66,8 +66,8 @@ vary_component_of_interest <- function(component_of_interest,
 #' @examples
 #'
 #' @export
-make_new_data <- function(from_component,
-                          to_component,
+make_new_data <- function(from_part,
+                          to_part,
                           fixed_values,
                           dataset,
                           units = NULL,
@@ -82,8 +82,8 @@ make_new_data <- function(from_component,
   units <- process_units(units, specified_units)[1]
 
   for (label in comp_labels) {
-    if (label == to_component) {
-      this_col <- data.frame(vary_component_of_interest(dataset[, label],
+    if (label == to_part) {
+      this_col <- data.frame(vary_part_of_interest(dataset[, label],
                                                    lower_quantile,
                                                    upper_quantile))
       new_data[label] <- this_col
@@ -98,10 +98,10 @@ make_new_data <- function(from_component,
     new_data[label] <- this_col
   }
   tf <- rep(comp_sum, by = 10000)
-  for (label in comp_labels[comp_labels != from_component]){
+  for (label in comp_labels[comp_labels != from_part]){
     tf <- tf - new_data[, label]
   }
-  new_data[, from_component] <- tf
+  new_data[, from_part] <- tf
 
   return(new_data)
 }

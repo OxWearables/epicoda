@@ -5,11 +5,11 @@
 #' @param model Should be a Cox model.
 #' @param comp_labels The labels of the compositional columns.
 #' @param transformation_type
-#' @param comparison_component Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of component that all other components will be compared to.
-#' @param component_1 Only used if First component in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.
+#' @param comparison_part Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of part that all other parts will be compared to.
+#' @param part_1 Only used if First part in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.
 
 #' @export
-forest_plot_comp <- function(data, model, composition_data_frame,  comp_labels, transformation_type = "ilr", comparison_component = NULL, component_1 = NULL){
+forest_plot_comp <- function(data, model, composition_data_frame,  comp_labels, transformation_type = "ilr", comparison_part = NULL, part_1 = NULL){
   if (class(model) != "coxph"){
     stop("forest_plot_comp is only implemented for Cox models.")
   }

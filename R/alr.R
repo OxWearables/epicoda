@@ -2,20 +2,20 @@
 #'
 #' @param data Compositional columns of dataframe
 #' @param comp_labels The labels of the compositional columns.
-#' @param comparison_component Name of component that all other components will be compared to.
+#' @param comparison_part Name of part that all other parts will be compared to.
 #' @export
-alr_trans <- function(data, comparison_component = NULL, comp_labels) {
-  if (is.null(comparison_component)){
-    stop("comparison_component must be specified for alr transformation. It is the component which all other components will be expressed as ratios relative to.")
+alr_trans <- function(data, comparison_part = NULL, comp_labels) {
+  if (is.null(comparison_part)){
+    stop("comparison_part must be specified for alr transformation. It is the part which all other parts will be expressed as ratios relative to.")
   }
-  if (!(comparison_component %in% comp_labels)){
-    stop("comparison_component must appear in comp_labels")
+  if (!(comparison_part %in% comp_labels)){
+    stop("comparison_part must appear in comp_labels")
   }
-  comp_labels_without_cc <- comp_labels[comp_labels != comparison_component]
+  comp_labels_without_cc <- comp_labels[comp_labels != comparison_part]
   y <- data[, comp_labels_without_cc]
   for (label in comp_labels_without_cc){
-    y[, label]<- log(y[, label]/data[, comparison_component])
+    y[, label]<- log(y[, label]/data[, comparison_part])
   }
-  colnames(y) <- paste0("alr_",colnames(y), comparison_component)
+  colnames(y) <- paste0("alr_",colnames(y), comparison_part)
   return(y)
 }

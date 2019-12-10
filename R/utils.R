@@ -18,7 +18,7 @@ gm <- function(vector) {
 
 #' Create transformation matrix from clr to ilr pivot coordinates
 #'
-#' @param nrow Number of rows of transformation matrix to be created (= number of components in composition)
+#' @param nrow Number of rows of transformation matrix to be created (= number of parts in composition)
 create_transformation_matrix <- function(nrow) {
   tm <- matrix(nrow = nrow, ncol = 0)
   for (i in 1:(nrow - 1)){
@@ -44,16 +44,16 @@ create_transformation_matrix <- function(nrow) {
 #' Alter order of compositional column labels.
 #'
 #' @param comp_labels List of compositional column labels.
-#' @param component_1 Component which should be moved to front.
+#' @param part_1 part which should be moved to front.
 #' @return \code{comp_labels} in new order.
-alter_order_comp_labels <- function(comp_labels, component_1){
-  if (component_1 %in% comp_labels){
-    comp_red <- comp_labels[comp_labels != component_1]
-    comp_labels <- c(component_1, comp_red)
+alter_order_comp_labels <- function(comp_labels, part_1){
+  if (part_1 %in% comp_labels){
+    comp_red <- comp_labels[comp_labels != part_1]
+    comp_labels <- c(part_1, comp_red)
     return(comp_labels)
   }
   else{
-    stop("Specified component_1 does not appear in comp_labels.")
+    stop("Specified part_1 does not appear in comp_labels.")
   }
 }
 
@@ -61,7 +61,7 @@ alter_order_comp_labels <- function(comp_labels, component_1){
 #' Process units argument
 #'
 #' @param units List of compositional column labels.
-#' @param specified_units Component which should be moved to front.
+#' @param specified_units part which should be moved to front.
 process_units <- function(units, specified_units){
   if (units == "hr/wk"){
     comp_sum <- 24*7
