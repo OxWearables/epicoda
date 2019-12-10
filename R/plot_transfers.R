@@ -214,39 +214,43 @@ plot_transfers <- function(from_component,
       predictions <- predict(model, newdata = new_data, type = "terms", terms = transf_labels, interval = "confidence",
                              se.fit = TRUE)
       dNew <- data.frame(new_data, predictions)
-      p <- predict(model, newdata = new_data, )
+
+      dNew$probs <- rep(predict(model, newdata = fixed_values, type = "response"), by = nrow(dNew))
+
+      print(head(dNew$probs))
+
+      dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE,
+                                                          det_limit = det_limit, units = units)[[to_component]]
 
       vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
       sum_for_args <- paste0(vector_for_args, collapse = "+")
-      dNew$fit <- eval(parse(text = sum_for_args))
-      dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
 
-
+      dNew$log_odds_change <- eval(parse(text = sum_for_args))
+      dNew$fit <- dNew$probs*(1-dNew$probs)*(exp(dNew$log_odds_change)-1)*(1/(1-dNew$probs + dNew$probs * exp(dNew$log_odds_change)))
 
       m <- (model.matrix(model)[, transf_labels])
       middle_matrix <- solve(t(m) %*% m)
       x <- data.matrix(new_data[, transf_labels])
-      in_sqrt_1 <- ( x %*%middle_matrix )
+      in_sqrt_1 <- (x %*% middle_matrix)
       t_x <- as.matrix(t(x))
       in_sqrt_true <- c()
-      for (i in 1:nrow(in_sqrt_1)){
 
+      for (i in 1:nrow(in_sqrt_1)){
         in_sqrt_true <- c(in_sqrt_true, (in_sqrt_1[i, ] %*% data.matrix(t_x)[, i]))
       }
 
       value <- sqrt(data.matrix(in_sqrt_true))
       mse <- mean(model$residuals^2, na.rm = TRUE)
       sigma_est <- sqrt(mse)
-
       scaling <- sigma_est * value
-
       t_value <- qt(0.975, df = (nrow(m) - 1- length(transf_labels)))[[1]]
 
+      alpha_lower <- dNew$log_odds_change - t_value*scaling
+      alpha_upper <- dNew$log_odds_change + t_value*scaling
 
-      for (label in transf_labels){
-        dNew$lower_CI <- model$family$linkinv(dNew$fit - t_value*scaling)
-        dNew$upper_CI <- model$family$linkinv(dNew$fit + t_value*scaling)
-      }
+      dNew$lower_CI <- dNew$probs*(1-dNew$probs)*(exp(alpha_lower)-1)*(1/(1-dNew$probs + dNew$probs * exp(alpha_lower)))
+      dNew$upper_CI <- dNew$probs*(1-dNew$probs)*(exp(alpha_upper)-1)*(1/(1-dNew$probs + dNew$probs * exp(alpha_upper)))
+
       if (is.null(yllimit)) {
         yllimit <- min(dNew$lower_CI)
       }
