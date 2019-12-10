@@ -391,7 +391,7 @@ plot_transfers <- function(from_part,
     vector_for_se <- paste("dNew$se.fit.", transf_labels, sep = "")
     sum_for_se <- paste0(vector_for_se, collapse = "^2 +")
     dNew$predictions <- exp(eval(parse(text = sum_for_args)))
-
+    dNew$fit <- dNew$predictions
     dNew$lower_CI <-
       dNew$predictions * exp(-1.96 * sqrt(eval(parse(text = sum_for_se))))
     dNew$upper_CI <-
