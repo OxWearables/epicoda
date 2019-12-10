@@ -385,10 +385,10 @@ plot_transfers <- function(from_part,
     dNew <- data.frame(new_data, predictions)
     dNew$axis_vals <-  dNew[, to_part] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_part]]
 
-    vector_for_args <-   paste("dNew$fit.", transf_vec_for_here, sep = "")
+    vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
     sum_for_args <- paste0(vector_for_args, collapse = "+")
 
-    vector_for_se <- paste("dNew$se.fit.", transf_vec_for_here, sep = "")
+    vector_for_se <- paste("dNew$se.fit.", transf_labels, sep = "")
     sum_for_se <- paste0(vector_for_se, collapse = "^2 +")
     dNew$predictions <- exp(eval(parse(text = sum_for_args)))
 
