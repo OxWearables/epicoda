@@ -223,13 +223,9 @@ plot_transfers <- function(from_component,
       predictions <- predict(model, newdata = new_data, type = "terms", terms = transf_labels, interval = "confidence",
                              se.fit = TRUE)
       dNew <- data.frame(new_data, predictions)
-
-      dNew$probs <- rep(predict(model, newdata = fixed_values, type = "response"), by = nrow(dNew))
-
-      print(head(dNew$probs))
-
       dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE,
                                                           det_limit = det_limit, units = units)[[to_component]]
+
 
       vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
       sum_for_args <- paste0(vector_for_args, collapse = "+")
@@ -266,6 +262,7 @@ plot_transfers <- function(from_component,
       if (is.null(yulimit)) {
         yulimit <- max(dNew$upper_CI)
       }
+
       dNew$lower_CI <-
         pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
       dNew$upper_CI <-
@@ -308,60 +305,6 @@ plot_transfers <- function(from_component,
       }
     }
 
-  #   predictions <- predict(model,
-  #                          newdata = new_data,
-  #                          type = "terms", terms = transf_labels,
-  #                          se.fit = TRUE)
-  #
-  #   dNew <- data.frame(new_data, predictions)
-  #   dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
-  #   dNew$normalised_predictions <- model$family$linkinv(dNew$fit)
-  #
-  #   dNew$lower_CI <-
-  #     model$family$linkinv(dNew$fit - 1.96 * dNew$se.fit)
-  #   dNew$upper_CI <-
-  #     model$family$linkinv(dNew$fit + 1.96 * dNew$se.fit)
-  #   dNew$lower_CI <-
-  #     pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
-  #   dNew$upper_CI <-
-  #     pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
-  #
-  #   if (plot_log == TRUE) {
-  #     plot_of_this <-
-  #       ggplot2::ggplot(data = dNew,
-  #                       mapping = ggplot2::aes(x = axis_vals, y = normalised_predictions)) +
-  #       ggplot2::geom_errorbar(ggplot2::aes(
-  #         x = axis_vals,
-  #         ymin = lower_CI,
-  #         ymax = upper_CI
-  #       ), color = "grey") +
-  #       ggplot2::geom_point(size = 0.5) +
-  #       ggplot2::labs(x = paste(from_component, "to", to_component, "\n " , units),
-  #            y = y_label) +
-  #       ggplot2::scale_y_continuous(
-  #         trans = log_trans(),
-  #         limits = c(yllimit, yulimit)
-  #       ) +
-  #       ggplot2::geom_vline(xintercept = 0)
-  #   }
-  #   else {
-  #     plot_of_this <-
-  #       ggplot2::ggplot(data = dNew,
-  #                       mapping = ggplot2::aes(x = axis_vals, y = normalised_predictions)) +
-  #       ggplot2::ylim(yllimit, yulimit) +
-  #       ggplot2::geom_errorbar(ggplot2::aes(
-  #         x = axis_vals,
-  #         ymin = lower_CI,
-  #         ymax = upper_CI
-  #       ), color = "grey") +
-  #       ggplot2::geom_point(size = 0.5) +
-  #       ggplot2::labs(x = paste(from_component, "to", to_component, "\n " , units),
-  #            y = y_label) +
-  #       ggplot2::geom_vline(xintercept = 0)
-  #   }
-  # }
-
-
 
 
 
@@ -383,32 +326,77 @@ plot_transfers <- function(from_component,
                            terms = transf_labels)
 
     dNew <- data.frame(new_data, predictions)
-    dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
+    dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE,
+                                                        det_limit = det_limit, units = units)[[to_component]]
 
-    vector_for_args <-   paste("dNew$fit.", transf_vec_for_here, sep = "")
+    vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
     sum_for_args <- paste0(vector_for_args, collapse = "+")
 
-    vector_for_se <- paste("dNew$se.fit.", transf_vec_for_here, sep = "")
-    sum_for_se <- paste0(vector_for_se, collapse = "+")
-    dNew$predictions <- exp(eval(parse(text = sum_for_args)))
+    dNew$log_hazard_change <- eval(parse(text = sum_for_args))
+    dNew$fit <- exp(dNew$log_hazard_change
 
-    dNew$lower_CI <-
-      dNew$predictions * exp(-1.96 * eval(parse(text = sum_for_se)))
-    dNew$upper_CI <-
-      dNew$predictions * exp(1.96 * eval(parse(text = sum_for_se)))
+    m <- (model.matrix(model)[, transf_labels])
+    middle_matrix <- solve(t(m) %*% m)
+    x <- data.matrix(new_data[, transf_labels])
+    in_sqrt_1 <- (x %*% middle_matrix)
+    t_x <- as.matrix(t(x))
+    in_sqrt_true <- c()
 
-    if (is.null(yllimit)){
+    for (i in 1:nrow(in_sqrt_1)){
+      in_sqrt_true <- c(in_sqrt_true, (in_sqrt_1[i, ] %*% data.matrix(t_x)[, i]))
+    }
+
+    value <- sqrt(data.matrix(in_sqrt_true))
+    mse <- mean(model$residuals^2, na.rm = TRUE)
+    sigma_est <- sqrt(mse)
+    scaling <- sigma_est * value
+    t_value <- qt(0.975, df = (nrow(m) - 1- length(transf_labels)))[[1]]
+
+    alpha_lower <- dNew$log_hazard_change - t_value*scaling
+    alpha_upper <- dNew$log_hazard_change + t_value*scaling
+
+    dNew$lower_CI <- exp(alpha_lower)
+    dNew$upper_CI <- exp(alpha_upper)
+
+    if (is.null(yllimit)) {
       yllimit <- min(dNew$lower_CI)
     }
-    if (is.null(yulimit)){
+    if (is.null(yulimit)) {
       yulimit <- max(dNew$upper_CI)
     }
-
 
     dNew$lower_CI <-
       pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
     dNew$upper_CI <-
       pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
+#
+#     dNew <- data.frame(new_data, predictions)
+#     dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
+#
+#     vector_for_args <-   paste("dNew$fit.", transf_vec_for_here, sep = "")
+#     sum_for_args <- paste0(vector_for_args, collapse = "+")
+#
+#     vector_for_se <- paste("dNew$se.fit.", transf_vec_for_here, sep = "")
+#     sum_for_se <- paste0(vector_for_se, collapse = "+")
+#     dNew$predictions <- exp(eval(parse(text = sum_for_args)))
+#
+#     dNew$lower_CI <-
+#       dNew$predictions * exp(-1.96 * eval(parse(text = sum_for_se)))
+#     dNew$upper_CI <-
+#       dNew$predictions * exp(1.96 * eval(parse(text = sum_for_se)))
+#
+#     if (is.null(yllimit)){
+#       yllimit <- min(dNew$lower_CI)
+#     }
+#     if (is.null(yulimit)){
+#       yulimit <- max(dNew$upper_CI)
+#     }
+#
+#
+#     dNew$lower_CI <-
+#       pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
+#     dNew$upper_CI <-
+#       pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
 
     if (plot_log == TRUE) {
       plot_of_this <-
