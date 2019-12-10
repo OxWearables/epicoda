@@ -372,7 +372,7 @@ plot_transfers <- function(from_component,
     #   pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
     # dNew$upper_CI <-
     #   pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
-    message("Please note that currently the confidence intervals are too wide, as they are based on the CIs on the individual terms. Using terms = FALSE will give CIs taking into account all uncertainty in compositional and non-compositional covariates, which may be more easily interpretable.")
+    message("Please note that currently the confidence intervals are slightly too wide, as they don't take into account correlation between explanatory variables. Using terms = FALSE will give CIs taking into account all uncertainty in compositional and non-compositional covariates, which may be more easily interpretable.")
     dNew <- data.frame(new_data, predictions)
     dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
 
