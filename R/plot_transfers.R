@@ -462,14 +462,16 @@ plot_transfers <- function(from_part,
                            se.fit = TRUE)
 
     dNew <- data.frame(new_data, predictions)
+    acm <- predict(model,
+                   newdata = fixed_values, type = "risk")
     dNew$axis_vals <-  dNew[, to_part] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_part]]
 
-    dNew$predictions <- dNew$fit
+    dNew$predictions <- dNew$fit/acm
 
     dNew$lower_CI <-
-      dNew$predictions * exp(-1.96 *dNew$se.fit)
+      dNew$predictions * exp(-1.96 *dNew$se.fit)/acm
     dNew$upper_CI <-
-      dNew$predictions * exp(1.96 *dNew$se.fit)
+      dNew$predictions * exp(1.96 *dNew$se.fit)/acm
 
     if (is.null(yllimit)){
       yllimit <- min(dNew$lower_CI)
