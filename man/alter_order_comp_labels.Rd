@@ -4,12 +4,12 @@
 \alias{alter_order_comp_labels}
 \title{Alter order of compositional column labels.}
 \usage{
-alter_order_comp_labels(comp_labels, component_1)
+alter_order_comp_labels(comp_labels, part_1)
 }
 \arguments{
 \item{comp_labels}{List of compositional column labels.}
 
-\item{component_1}{Component which should be moved to front.}
+\item{part_1}{part which should be moved to front.}
 }
 \value{
 \code{comp_labels} in new order.

@@ -4,8 +4,8 @@
 \alias{transf_labels}
 \title{Create columns headings for after the transformation.}
 \usage{
-transf_labels(comp_labels, transformation_type,
-  comparison_component = NULL, component_1 = NULL)
+transf_labels(comp_labels, transformation_type, comparison_part = NULL,
+  part_1 = NULL)
 }
 \arguments{
 \item{comp_labels}{List of compositional column labels.}

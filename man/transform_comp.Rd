@@ -5,8 +5,8 @@
 \title{Transform compositional variables to ilr (pivot), alr or clr coordinates}
 \usage{
 transform_comp(data, comp_labels, transformation_type = "ilr",
-  rounded_zeroes = TRUE, det_limit = NULL,
-  comparison_component = NULL, component_1 = NULL)
+  rounded_zeroes = TRUE, det_limit = NULL, comparison_part = NULL,
+  part_1 = NULL)
 }
 \arguments{
 \item{data}{Dataset to have the transformation applied to.}
@@ -20,9 +20,9 @@ transform_comp(data, comp_labels, transformation_type = "ilr",
 \item{det_limit}{Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
 minimum measurable value in the compositional columns of data.}
 
-\item{comparison_component}{Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of component that all other components will be compared to.}
+\item{comparison_part}{Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of part that all other parts will be compared to.}
 
-\item{component_1}{Only used if First component in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
+\item{part_1}{Only used if First part in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
 }
 \value{
 \code{data} with transformed activity columns.

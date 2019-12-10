@@ -13,7 +13,7 @@ ilr_trans(data)
 ilr-transformed columns.
 }
 \description{
-Takes activity columns and returns them after ilr transformation.
+Takes compositional columns and returns them after ilr transformation.
 }
 \details{
 This doesn't use compositions::ilr to insulate it from changes in the choice of

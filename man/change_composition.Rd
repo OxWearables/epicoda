@@ -4,12 +4,12 @@
 \alias{change_composition}
 \title{Change composition}
 \usage{
-change_composition(composition, main_component, main_change, comp_labels)
+change_composition(composition, main_part, main_change, comp_labels)
 }
 \arguments{
 \item{composition}{This should be the starting composition as a data frame.}
 
-\item{main_component}{Component the main change is happening to.}
+\item{main_part}{part the main change is happening to.}
 
 \item{main_change}{Magnitude and direction of change e.g. +1, -0.5.}
 

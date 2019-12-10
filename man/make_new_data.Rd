@@ -4,18 +4,18 @@
 \alias{make_new_data}
 \title{make_new_data: Generates a new dataset varying in the dimension of interest.}
 \usage{
-make_new_data(from_component, to_component, fixed_values, dataset,
-  units = NULL, comp_labels, lower_quantile = 0.05,
+make_new_data(from_part, to_part, fixed_values, dataset, units = NULL,
+  specified_units = NULL, comp_labels, lower_quantile = 0.05,
   upper_quantile = 0.95, granularity = 10000)
 }
 \arguments{
-\item{from_component}{Component to plot transfer out of. Of the two being considered, should be component with generally higher values (e.g. higher median)}
+\item{from_part}{part to plot transfer out of. Of the two being considered, should be part with generally higher values (e.g. higher median)}
 
-\item{to_component}{Component to plot transfer into. Of the two being considered, should be component with generally lower values (e.g. lower median.)}
+\item{to_part}{part to plot transfer into. Of the two being considered, should be part with generally lower values (e.g. lower median.)}
 
-\item{fixed_values}{Should be a dataframe with a column for each component and containing a single value for each of those.}
+\item{fixed_values}{Should be a dataframe with a column for each part and containing a single value for each of those.}
 
-\item{dataset}{Dataset to take distribution of \code{from_component} from.}
+\item{dataset}{Dataset to take distribution of \code{from_part} from.}
 
 \item{comp_labels}{Labels of compositional columns.}
 

@@ -4,12 +4,12 @@
 \alias{alr_trans}
 \title{Alr transformation}
 \usage{
-alr_trans(data, comparison_component = NULL, comp_labels)
+alr_trans(data, comparison_part = NULL, comp_labels)
 }
 \arguments{
 \item{data}{Compositional columns of dataframe}
 
-\item{comparison_component}{Name of component that all other components will be compared to.}
+\item{comparison_part}{Name of part that all other parts will be compared to.}
 
 \item{comp_labels}{The labels of the compositional columns.}
 }

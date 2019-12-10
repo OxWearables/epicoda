@@ -5,17 +5,16 @@
 \title{Produce a forest plot indicating model prediction at given compositions}
 \usage{
 forest_plot_comp(data, model, composition_data_frame, comp_labels,
-  transformation_type = "ilr", comparison_component = NULL,
-  component_1 = NULL)
+  transformation_type = "ilr", comparison_part = NULL, part_1 = NULL)
 }
 \arguments{
 \item{model}{Should be a Cox model.}
 
 \item{comp_labels}{The labels of the compositional columns.}
 
-\item{comparison_component}{Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of component that all other components will be compared to.}
+\item{comparison_part}{Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of part that all other parts will be compared to.}
 
-\item{component_1}{Only used if First component in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
+\item{part_1}{Only used if First part in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
 
 \item{composition_list}{List of compositions}
 }

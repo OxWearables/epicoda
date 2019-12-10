@@ -5,17 +5,19 @@
 \title{Compositional mean}
 \usage{
 comp_mean(data, comp_labels, rounded_zeroes = FALSE, det_limit = NULL,
-  units = "unitless")
+  units = "unitless", specified_units = NULL)
 }
 \arguments{
 \item{data}{Dataset to calculate compositional mean of.}
 
-\item{comp_labels}{The labels of the compositional component.}
+\item{comp_labels}{The labels of the compositional parts.}
 
 \item{rounded_zeroes}{Are zeroes rounded zeroes?}
 
 \item{det_limit}{Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
 minimum measurable value in the compositional columns of data.}
+
+\item{specified_units}{If units are being specified via the composition sum, this is where it is done. It should be a vector where the first argument is a string describing the units, and the second argument is the expected sum of a composition e.g. \code{c("hr/day", 24)}}
 }
 \value{
 Vector which is the compositional mean.
