@@ -245,9 +245,16 @@ plot_transfers <- function(from_component,
       }
 
       value <- sqrt(data.matrix(in_sqrt_true))
-      mse <- mean(model$residuals^2, na.rm = TRUE) # Note that for a glm, model$residuals is the working
+
+
+      # mse <- mean(model$residuals^2, na.rm = TRUE)
+      # message("More work is needed to get correct confidence intervals for this plot.")
+      # Note that for a glm, model$residuals is the working
       # residuals from the IWLS fit (i.e. the residuals on the final log odds), which is what is relevant here
-      # Some further work needed on this theory.
+      # Some further work needed on this theory. It is equivalent to using Efron's pseudo_r2 as a measure
+      # of explained variance.
+      # pseudo_r_2 <-
+      # pseudo_mse <- (1/nrow(m))*(1-pseudo_r_2)
       sigma_est <- sqrt(mse)
       scaling <- sigma_est * value
       t_value <- qt(0.975, df = (nrow(m) - 1- length(transf_labels)))[[1]]
@@ -374,7 +381,7 @@ plot_transfers <- function(from_component,
     #   pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
     # dNew$upper_CI <-
     #   pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
-    message("Please note that currently the confidence intervals are slightly too wide, as they don't take into account correlation between explanatory variables. Using terms = FALSE will give CIs taking into account all uncertainty in compositional and non-compositional covariates, which may be more easily interpretable.")
+    message("Please note that currently the confidence intervals are inaccurate, as they don't take into account correlation between explanatory variables. Using terms = FALSE will give CIs taking into account all uncertainty in compositional and non-compositional covariates, which may be more easily interpretable.")
     dNew <- data.frame(new_data, predictions)
     dNew$axis_vals <-  dNew[, to_component] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE, det_limit = det_limit, units = units)[[to_component]]
 
@@ -382,13 +389,13 @@ plot_transfers <- function(from_component,
     sum_for_args <- paste0(vector_for_args, collapse = "+")
 
     vector_for_se <- paste("dNew$se.fit.", transf_vec_for_here, sep = "")
-    sum_for_se <- paste0(vector_for_se, collapse = "+")
+    sum_for_se <- paste0(vector_for_se, collapse = "^2 +")
     dNew$predictions <- exp(eval(parse(text = sum_for_args)))
 
     dNew$lower_CI <-
-      dNew$predictions * exp(-1.96 * eval(parse(text = sum_for_se)))
+      dNew$predictions * exp(-1.96 * sqrt(eval(parse(text = sum_for_se))))
     dNew$upper_CI <-
-      dNew$predictions * exp(1.96 * eval(parse(text = sum_for_se)))
+      dNew$predictions * exp(1.96 * sqrt(eval(parse(text = sum_for_se))))
 
     if (is.null(yllimit)){
       yllimit <- min(dNew$lower_CI)
