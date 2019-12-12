@@ -489,7 +489,7 @@ plot_transfers <- function(from_part,
         geom_hline(yintercept = 1) +
         ggplot2::geom_vline(xintercept = 0, size = 1) +
         ggplot2::scale_y_continuous(
-          trans = log_trans(),
+          trans = ggplot2::log_trans(),
           breaks = seq(yllimit, yulimit, by = 0.2),
           labels = seq(yllimit, yulimit, by = 0.2),
           limits = c(yllimit, yulimit)
