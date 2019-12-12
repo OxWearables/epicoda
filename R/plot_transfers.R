@@ -243,7 +243,7 @@ plot_transfers <- function(from_part,
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label
        ) +
-        ggplot2::scale_y_continuous(trans = log_trans(),
+        ggplot2::scale_y_continuous(trans = scales::log_trans(),
                                     limits = c(yllimit, yulimit)) +
         ggplot2::geom_vline(xintercept = 0, size = 1) +
        theme_for_plots
@@ -356,7 +356,7 @@ plot_transfers <- function(from_part,
           y = y_label
         ) +
         ggplot2::scale_y_continuous(
-          trans = log_trans(),
+          trans = scales::log_trans(),
           breaks = seq(yllimit, yulimit, by = 0.1),
           labels = seq(yllimit, yulimit, by = 0.1)
         ) +
@@ -489,7 +489,7 @@ plot_transfers <- function(from_part,
         geom_hline(yintercept = 1) +
         ggplot2::geom_vline(xintercept = 0, size = 1) +
         ggplot2::scale_y_continuous(
-          trans = ggplot2::log_trans(),
+          trans = scales::log_trans(),
           breaks = seq(yllimit, yulimit, by = 0.2),
           labels = seq(yllimit, yulimit, by = 0.2),
           limits = c(yllimit, yulimit)
@@ -586,7 +586,7 @@ plot_transfers <- function(from_part,
         ggplot2::geom_hline(yintercept = 1, size = 1) +
         ggplot2::geom_vline(xintercept = 0, size = 1) +
         ggplot2::scale_y_continuous(
-          trans = log_trans(),
+          trans = scales::log_trans(),
           breaks = seq(yllimit, yulimit, by = 0.2),
           labels = seq(yllimit, yulimit, by = 0.2),
           limits = c(yllimit, yulimit)
@@ -676,7 +676,7 @@ plot_transfers <- function(from_part,
           y = y_label
         ) +
         ggplot2::scale_y_continuous(
-          trans = log_trans(),
+          trans = scales::log_trans(),
           breaks = seq(yllimit, yulimit, by = 0.1),
           labels = seq(yllimit, yulimit, by = 0.1)
         ) +
@@ -794,7 +794,7 @@ plot_transfers <- function(from_part,
             y = y_label
           ) +
           ggplot2::scale_y_continuous(
-            trans = log_trans(),
+            trans = scales::log_trans(),
             breaks = seq(yllimit, yulimit, by = 0.1),
             labels = seq(yllimit, yulimit, by = 0.1)
           ) +
