@@ -404,7 +404,7 @@ plot_transfers <- function(from_part,
     dNew$axis_vals <-  dNew[, to_part] - comp_mean(dataset, comp_labels, rounded_zeroes = FALSE,
                                                         det_limit = det_limit, units = units)[[to_part]]
 
-    vector_for_args <-   paste("log(dNew$fit.", transf_labels, ")", sep = "")
+    vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
     sum_for_args <- paste0(vector_for_args, collapse = "+")
 
     dNew$log_hazard_change <- eval(parse(text = sum_for_args))
