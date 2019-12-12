@@ -310,7 +310,7 @@ plot_transfers <- function(from_part,
     value <- sqrt(data.matrix(in_sqrt_true))
 
     t_value <-
-      qt(0.975, df = (nrow(m) - 1 - length(transf_labels)))[[1]]
+      qt(0.975, df = (nrow(model.matrix(model)) -1 - length(transf_labels)))[[1]]
 
 
     alpha_lower <- dNew$log_odds_change - t_value * value
@@ -415,7 +415,7 @@ plot_transfers <- function(from_part,
     value <- sqrt(data.matrix(in_sqrt_true))
 
     t_value <-
-      qt(0.975, df = (nrow(m) - 1 - length(transf_labels)))[[1]]
+      qt(0.975, df = (nrow(model.matrix(model)) -1 - length(transf_labels)))[[1]]
 
 
     dNew$lower_CI <- dNew$log_hazard_change - t_value * value
@@ -747,7 +747,7 @@ plot_transfers <- function(from_part,
       value <- sqrt(data.matrix(in_sqrt_true))
 
       t_value <-
-        qt(0.975, df = (nrow(m) - 1 - length(transf_labels)))[[1]]
+        qt(0.975, df = (nrow(model.matrix(model)) -1 - length(transf_labels)))[[1]]
 
       dNew$lower_CI <- dNew$fit - t_value * value
       dNew$upper_CI <- dNew$fit + t_value * value

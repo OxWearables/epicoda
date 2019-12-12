@@ -23,8 +23,8 @@ summary(log_outcome)
 data_ilr_impute_zeroes
 summary(lm_outcome)
 summary(log_outcome)
-epicoda::plot_transfers(from_component = "compD",
-               to_component = "compA",
+epicoda::plot_transfers(from_part = "compD",
+               to_part = "compB",
                model = log_outcome ,
                dataset = data_ilr_impute_zeroes,
                transformation_type = "ilr",
