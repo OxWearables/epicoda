@@ -53,7 +53,7 @@ plot_transfers <- function(from_part,
   theme_for_plots <-
     ggplot2::theme(
       line = ggplot2::element_line(size = 1.5),
-      axis.ticks = ggplot2::element_line(size = 3),
+      axis.ticks = ggplot2::element_line(size= 2),
       text = ggplot2::element_text(size = 15, face = "bold"),
       axis.text.y = ggplot2::element_text(
         size = 15,
@@ -230,7 +230,7 @@ plot_transfers <- function(from_part,
           ymax = upper_CI
         ),
         color = "grey") +
-        ggplot2::geom_point(size = 3) +
+        ggplot2::geom_point(size= 2) +
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label
@@ -253,7 +253,7 @@ plot_transfers <- function(from_part,
           ymax = upper_CI
         ),
         color = "grey") +
-        ggplot2::geom_point(size = 3) +
+        ggplot2::geom_point(size= 2) +
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label
@@ -353,7 +353,7 @@ plot_transfers <- function(from_part,
           ymax = upper_CI
         ),
         color = "grey") +
-        ggplot2::geom_point(size = 3) +
+        ggplot2::geom_point(size= 2) +
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label
@@ -377,7 +377,7 @@ plot_transfers <- function(from_part,
           ymax = upper_CI
         ),
         color = "grey") +
-        ggplot2::geom_point(size = 3) +
+        ggplot2::geom_point(size= 2) +
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label
@@ -499,7 +499,7 @@ plot_transfers <- function(from_part,
           ymax = upper_CI
         ),
         color = "grey") +
-        ggplot2::geom_point(size = 3) +
+        ggplot2::geom_point(size= 2) +
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label
@@ -525,7 +525,7 @@ plot_transfers <- function(from_part,
           ymax = upper_CI
         ),
         color = "grey") +
-        ggplot2::geom_point(size = 3) +
+        ggplot2::geom_point(size= 2) +
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label
@@ -596,7 +596,7 @@ plot_transfers <- function(from_part,
           ymax = upper_CI
         ),
         color = "grey") +
-        ggplot2::geom_point(size = 3) +
+        ggplot2::geom_point(size= 2) +
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label
@@ -622,7 +622,7 @@ plot_transfers <- function(from_part,
           ymax = upper_CI
         ),
         color = "grey") +
-        ggplot2::geom_point(size = 3) +
+        ggplot2::geom_point(size= 2) +
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label
@@ -688,7 +688,7 @@ plot_transfers <- function(from_part,
           ymax = upper_CI
         ),
         color = "grey") +
-        ggplot2::geom_point(size = 3) +
+        ggplot2::geom_point(size= 2) +
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label
@@ -714,8 +714,8 @@ plot_transfers <- function(from_part,
           ymax = upper_CI
         ),
         color = "grey") +
-        ggplot2::geom_point(size = 3) +
-        ggplot2::labs(x = paste(from_part, "to", to_part, "\n " , units),
+        ggplot2::geom_point(size= 2) +
+        ggplot2::labs(x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
                       y = y_label) +
         ggplot2::geom_vline(xintercept = 0, size = 1) +
         theme_for_plots
@@ -806,7 +806,7 @@ plot_transfers <- function(from_part,
             ymax = upper_CI
           ),
           color = "grey") +
-          ggplot2::geom_point(size = 3) +
+          ggplot2::geom_point(size= 2) +
           ggplot2::labs(
             x = paste(
               "More",
@@ -838,7 +838,7 @@ plot_transfers <- function(from_part,
             ymax = upper_CI
           ),
           color = "grey") +
-          ggplot2::geom_point(size = 3) +
+          ggplot2::geom_point(size= 2) +
           ggplot2::labs(x = paste(from_part, "to", to_part, "\n", units),
                         y = y_label) +
           ggplot2::geom_vline(xintercept = 0, size = 1) +
