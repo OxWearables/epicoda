@@ -127,7 +127,7 @@ plot_transfers <- function(from_part,
     comp_mean(
       dataset,
       comp_labels,
-      rounded_zeroes = TRUE,
+      rounded_zeroes = FALSE,
       det_limit = det_limit,
       units = units,
       specified_units = specified_units
@@ -153,7 +153,7 @@ plot_transfers <- function(from_part,
       generate_fixed_values(
         dataset,
         comp_labels,
-        rounded_zeroes = TRUE,
+        rounded_zeroes = FALSE,
         det_limit = det_limit,
         units = units,
         specified_units = specified_units
@@ -203,7 +203,7 @@ plot_transfers <- function(from_part,
       dNew[, to_part] - comp_mean(
         dataset,
         comp_labels,
-        rounded_zeroes = TRUE,
+        rounded_zeroes = FALSE,
         det_limit = det_limit,
         units = units
       )[[to_part]]
@@ -291,7 +291,7 @@ plot_transfers <- function(from_part,
       dNew[, to_part] - comp_mean(
         dataset,
         comp_labels,
-        rounded_zeroes = TRUE,
+        rounded_zeroes = FALSE,
         det_limit = det_limit,
         units = units
       )[[to_part]]
@@ -401,7 +401,7 @@ plot_transfers <- function(from_part,
     )
 
     dNew <- data.frame(new_data, predictions)
-    dNew$axis_vals <-  dNew[, to_part] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE,
+    dNew$axis_vals <-  dNew[, to_part] - comp_mean(dataset, comp_labels, rounded_zeroes = FALSE,
                                                         det_limit = det_limit, units = units)[[to_part]]
 
     vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
@@ -440,7 +440,7 @@ plot_transfers <- function(from_part,
     #   dNew[, to_part] - comp_mean(
     #     dataset,
     #     comp_labels,
-    #     rounded_zeroes = TRUE,
+    #     rounded_zeroes = FALSE,
     #     det_limit = det_limit,
     #     units = units
     #   )[[to_part]]
@@ -543,7 +543,7 @@ plot_transfers <- function(from_part,
       dNew[, to_part] - comp_mean(
         dataset,
         comp_labels,
-        rounded_zeroes = TRUE,
+        rounded_zeroes = FALSE,
         det_limit = det_limit,
         units = units
       )[[to_part]]
@@ -638,7 +638,7 @@ plot_transfers <- function(from_part,
       dNew[, to_part] - comp_mean(
         dataset,
         comp_labels,
-        rounded_zeroes = TRUE,
+        rounded_zeroes = FALSE,
         det_limit = det_limit,
         units = units
       )[[to_part]]
@@ -732,7 +732,7 @@ plot_transfers <- function(from_part,
         dNew[, to_part] - comp_mean(
           dataset,
           comp_labels,
-          rounded_zeroes = TRUE,
+          rounded_zeroes = FALSE,
           det_limit = det_limit,
           units = units
         )[[to_part]]
