@@ -296,13 +296,12 @@ plot_transfers <- function(from_part,
     dNew$log_odds_change <- eval(parse(text = sum_for_args))
     dNew$fit <- exp(dNew$log_odds_change)
 
-    m <- (model.matrix(model)[, transf_labels])
-    middle_matrix <- solve(t(m) %*% m)
+
+    middle_matrix <- vcov(model)[transf_labels, transf_labels]
     x <- data.matrix(new_data[, transf_labels])
     in_sqrt_1 <- (x %*% middle_matrix)
     t_x <- as.matrix(t(x))
     in_sqrt_true <- c()
-
     for (i in 1:nrow(in_sqrt_1)) {
       in_sqrt_true <-
         c(in_sqrt_true, (in_sqrt_1[i,] %*% data.matrix(t_x)[, i]))
@@ -310,22 +309,12 @@ plot_transfers <- function(from_part,
 
     value <- sqrt(data.matrix(in_sqrt_true))
 
-
-    mse <- mean(model$residuals ^ 2, na.rm = TRUE)
-    message("More work is needed to get correct confidence intervals for this plot.")
-    # Note that for a glm, model$residuals is the working
-    # residuals from the IWLS fit (i.e. the residuals on the final log odds), which is what is relevant here
-    # Some further work needed on this theory. It is equivalent to using Efron's pseudo_r2 as a measure
-    # of explained variance.
-    # pseudo_r_2 <-
-    # pseudo_mse <- (1/nrow(m))*(1-pseudo_r_2)
-    sigma_est <- sqrt(mse)
-    scaling <- sigma_est * value
     t_value <-
       qt(0.975, df = (nrow(m) - 1 - length(transf_labels)))[[1]]
 
-    alpha_lower <- dNew$log_odds_change - t_value * scaling
-    alpha_upper <- dNew$log_odds_change + t_value * scaling
+
+    alpha_lower <- dNew$log_odds_change - t_value * value
+    alpha_upper <- dNew$log_odds_change + t_value * value
 
     dNew$lower_CI <- exp(alpha_lower)
     dNew$upper_CI <- exp(alpha_upper)
@@ -403,77 +392,64 @@ plot_transfers <- function(from_part,
       terms = transf_labels
     )
 
-    # dNew <- data.frame(new_data, predictions)
-    # dNew$axis_vals <-  dNew[, to_part] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE,
-    #                                                     det_limit = det_limit, units = units)[[to_part]]
-    #
-    # vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
-    # sum_for_args <- paste0(vector_for_args, collapse = "+")
-    #
-    # dNew$log_hazard_change <- eval(parse(text = sum_for_args))
-    # dNew$fit <- exp(dNew$log_hazard_change)
-    #
-    # m <- log(model.matrix(model)[, transf_labels]))
-    # middle_matrix <- solve(t(m) %*% m)
-    # x <- data.matrix(new_data[, transf_labels])
-    # in_sqrt_1 <- (x %*% middle_matrix)
-    # t_x <- as.matrix(t(x))
-    # in_sqrt_true <- c()
-    #
-    # for (i in 1:nrow(in_sqrt_1)){
-    #   in_sqrt_true <- c(in_sqrt_true, (in_sqrt_1[i, ] %*% data.matrix(t_x)[, i]))
-    # }
-    #
-    # value <- sqrt(data.matrix(in_sqrt_true))
-    # mse <- mean(model$residuals^2, na.rm = TRUE)
-    # sigma_est <- sqrt(mse)
-    # scaling <- sigma_est * value
-    # t_value <- qt(0.975, df = (nrow(m) - 1- length(transf_labels)))[[1]]
-    # print(scaling)
-    #
-    # alpha_lower <- dNew$log_hazard_change - t_value*scaling
-    # alpha_upper <- dNew$log_hazard_change + t_value*scaling
-    #
-    # dNew$lower_CI <- exp(alpha_lower)
-    # dNew$upper_CI <- exp(alpha_upper)
-    #
-    # print(head(dNew[, c("fit", "lower_CI", "upper_CI")]))
-    #
-    # if (is.null(yllimit)) {
-    #   yllimit <- min(dNew$lower_CI)
-    # }
-    # if (is.null(yulimit)) {
-    #   yulimit <- max(dNew$upper_CI)
-    # }
-    #
-    # dNew$lower_CI <-
-    #   pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
-    # dNew$upper_CI <-
-    #   pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
-    message(
-      "Please note that currently the confidence intervals are inaccurate, as they don't take into account correlation between explanatory variables. Using terms = FALSE will give CIs taking into account all uncertainty in compositional and non-compositional covariates, which may be more easily interpretable."
-    )
     dNew <- data.frame(new_data, predictions)
-    dNew$axis_vals <-
-      dNew[, to_part] - comp_mean(
-        dataset,
-        comp_labels,
-        rounded_zeroes = TRUE,
-        det_limit = det_limit,
-        units = units
-      )[[to_part]]
+    dNew$axis_vals <-  dNew[, to_part] - comp_mean(dataset, comp_labels, rounded_zeroes = TRUE,
+                                                        det_limit = det_limit, units = units)[[to_part]]
 
     vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
     sum_for_args <- paste0(vector_for_args, collapse = "+")
 
-    vector_for_se <- paste("dNew$se.fit.", transf_labels, sep = "")
-    sum_for_se <- paste0(vector_for_se, collapse = "^2 +")
-    dNew$predictions <- exp(eval(parse(text = sum_for_args)))
-    dNew$fit <- dNew$predictions
-    dNew$lower_CI <-
-      dNew$predictions * exp(-1.96 * sqrt(eval(parse(text = sum_for_se))))
-    dNew$upper_CI <-
-      dNew$predictions * exp(1.96 * sqrt(eval(parse(text = sum_for_se))))
+    dNew$log_hazard_change <- eval(parse(text = sum_for_args))
+    dNew$fit <- exp(dNew$log_hazard_change)
+
+    middle_matrix <- vcov(model)[transf_labels, transf_labels]
+    x <- data.matrix(new_data[, transf_labels])
+    in_sqrt_1 <- (x %*% middle_matrix)
+    t_x <- as.matrix(t(x))
+    in_sqrt_true <- c()
+    for (i in 1:nrow(in_sqrt_1)) {
+      in_sqrt_true <-
+        c(in_sqrt_true, (in_sqrt_1[i,] %*% data.matrix(t_x)[, i]))
+    }
+
+    value <- sqrt(data.matrix(in_sqrt_true))
+
+    t_value <-
+      qt(0.975, df = (nrow(m) - 1 - length(transf_labels)))[[1]]
+
+
+    dNew$lower_CI <- dNew$log_hazard_change - t_value * value
+    dNew$upper_CI <- dNew$log_hazard_change + t_value * value
+
+    alpha_lower <- dNew$log_hazard_change - t_value*scaling
+    alpha_upper <- dNew$log_hazard_change + t_value*scaling
+
+    dNew$lower_CI <- exp(alpha_lower)
+    dNew$upper_CI <- exp(alpha_upper)
+
+
+
+    # dNew <- data.frame(new_data, predictions)
+    # dNew$axis_vals <-
+    #   dNew[, to_part] - comp_mean(
+    #     dataset,
+    #     comp_labels,
+    #     rounded_zeroes = TRUE,
+    #     det_limit = det_limit,
+    #     units = units
+    #   )[[to_part]]
+    #
+    # vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
+    # sum_for_args <- paste0(vector_for_args, collapse = "+")
+    #
+    # vector_for_se <- paste("dNew$se.fit.", transf_labels, sep = "")
+    # sum_for_se <- paste0(vector_for_se, collapse = "^2 +")
+    # dNew$predictions <- exp(eval(parse(text = sum_for_args)))
+    # dNew$fit <- dNew$predictions
+    # dNew$lower_CI <-
+    #   dNew$predictions * exp(-1.96 * sqrt(eval(parse(text = sum_for_se))))
+    # dNew$upper_CI <-
+    #   dNew$predictions * exp(1.96 * sqrt(eval(parse(text = sum_for_se))))
 
     if (is.null(yllimit)) {
       yllimit <- min(dNew$lower_CI)
@@ -757,8 +733,8 @@ plot_transfers <- function(from_part,
 
 
 
-      m <- (model.matrix(model)[, transf_labels])
-      middle_matrix <- solve(t(m) %*% m)
+
+      middle_matrix <- vcov(model)[transf_labels, transf_labels]
       x <- data.matrix(new_data[, transf_labels])
       in_sqrt_1 <- (x %*% middle_matrix)
       t_x <- as.matrix(t(x))
@@ -769,19 +745,12 @@ plot_transfers <- function(from_part,
       }
 
       value <- sqrt(data.matrix(in_sqrt_true))
-      mse <- mean(model$residuals ^ 2, na.rm = TRUE)
-      sigma_est <- sqrt(mse)
-
-      scaling <- sigma_est * value
 
       t_value <-
         qt(0.975, df = (nrow(m) - 1 - length(transf_labels)))[[1]]
 
-
-      for (label in transf_labels) {
-        dNew$lower_CI <- dNew$fit - t_value * scaling
-        dNew$upper_CI <- dNew$fit + t_value * scaling
-      }
+      dNew$lower_CI <- dNew$fit - t_value * value
+      dNew$upper_CI <- dNew$fit + t_value * value
 
       if (is.null(yllimit)) {
         yllimit <- min(dNew$lower_CI)
