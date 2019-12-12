@@ -195,7 +195,7 @@ plot_transfers <- function(from_part,
           limits = c(yllimit, yulimit)
         ) +
         ggplot2::geom_vline(xintercept = 0, size = 1) +
-        ggplot2::theme(line = ggplot2::element_line(size = 2), axis.ticks = ggplot2::element_line(size = 6), text = ggplot2::element_text(size = 40, face = "bold"), axis.text.y = ggplot2::element_text(size=30, face = "bold", colour = "black"), axis.text.x = ggplot2::element_text(size=30, face = "bold", colour = "black"))
+        ggplot2::theme(line = ggplot2::element_line(size = 1), axis.ticks = ggplot2::element_line(size = 6), text = ggplot2::element_text(size = 40, face = "bold"), axis.text.y = ggplot2::element_text(size=30, face = "bold", colour = "black"), axis.text.x = ggplot2::element_text(size=30, face = "bold", colour = "black"))
     }
     else {
       plot_of_this <-
@@ -211,7 +211,7 @@ plot_transfers <- function(from_part,
         ggplot2::labs(x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
              y = y_label) +
         ggplot2::geom_vline(xintercept = 0, size = 1) +
-        ggplot2::theme(line = ggplot2::element_line(size = 2), axis.ticks = ggplot2::element_line(size = 6), text = ggplot2::element_text(size = 40, face = "bold"), axis.text.y = ggplot2::element_text(size=30, face = "bold", colour = "black"), axis.text.x = ggplot2::element_text(size=30, face = "bold", colour = "black"))
+        ggplot2::theme(line = ggplot2::element_line(size = 1), axis.ticks = ggplot2::element_line(size = 6), text = ggplot2::element_text(size = 40, face = "bold"), axis.text.y = ggplot2::element_text(size=30, face = "bold", colour = "black"), axis.text.x = ggplot2::element_text(size=30, face = "bold", colour = "black"))
     }
   }
 
@@ -298,7 +298,7 @@ plot_transfers <- function(from_part,
             labels = seq(yllimit, yulimit, by = 0.1)
           ) +
           ggplot2::geom_vline(xintercept = 0, size = 1)+
-          ggplot2::theme(line = ggplot2::element_line(size = 2), axis.ticks = ggplot2::element_line(size = 6), text = ggplot2::element_text(size = 40, face = "bold"), axis.text.y = ggplot2::element_text(size=30, face = "bold", colour = "black"), axis.text.x = ggplot2::element_text(size=30, face = "bold", colour = "black"))
+          ggplot2::theme(line = ggplot2::element_line(size = 1), axis.ticks = ggplot2::element_line(size = 6), text = ggplot2::element_text(size = 40, face = "bold"), axis.text.y = ggplot2::element_text(size=30, face = "bold", colour = "black"), axis.text.x = ggplot2::element_text(size=30, face = "bold", colour = "black"))
       }
       else {
         plot_of_this <-
@@ -314,7 +314,7 @@ plot_transfers <- function(from_part,
           ggplot2::labs(x = paste(from_part, "to", to_part, "\n", units),
                         y = y_label) +
           ggplot2::geom_vline(xintercept = 0, size = 1)+
-          ggplot2::theme(line = ggplot2::element_line(size = 2), axis.ticks = ggplot2::element_line(size = 6), text = ggplot2::element_text(size = 40, face = "bold"), axis.text.y = ggplot2::element_text(size=30, face = "bold", colour = "black"), axis.text.x = ggplot2::element_text(size=30, face = "bold", colour = "black"))
+          ggplot2::theme(line = ggplot2::element_line(size = 1), axis.ticks = ggplot2::element_line(size = 6), text = ggplot2::element_text(size = 40, face = "bold"), axis.text.y = ggplot2::element_text(size=30, face = "bold", colour = "black"), axis.text.x = ggplot2::element_text(size=30, face = "bold", colour = "black"))
       }
     }
 
@@ -435,7 +435,7 @@ plot_transfers <- function(from_part,
           breaks = seq(yllimit, yulimit, by = 0.2),
           labels = seq(yllimit, yulimit, by = 0.2),
           limits = c(yllimit, yulimit)
-        )+  ggplot2::theme(line = ggplot2::element_line(size = 2), axis.ticks = ggplot2::element_line(size = 6), text = ggplot2::element_text(size = 40, face = "bold"), axis.text.y = ggplot2::element_text(size=30, face = "bold", colour = "black"), axis.text.x = ggplot2::element_text(size=30, face = "bold", colour = "black"))
+        )+  ggplot2::theme(line = ggplot2::element_line(size = 1), axis.ticks = ggplot2::element_line(size = 6), text = ggplot2::element_text(size = 40, face = "bold"), axis.text.y = ggplot2::element_text(size=30, face = "bold", colour = "black"), axis.text.x = ggplot2::element_text(size=30, face = "bold", colour = "black"))
     }
     else {
       plot_of_this <-
@@ -452,7 +452,7 @@ plot_transfers <- function(from_part,
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label) +
         geom_hline(yintercept = 1) +
-        ggplot2::geom_vline(xintercept = 0, size = 1)+  ggplot2::theme(line = ggplot2::element_line(size = 2), axis.ticks = ggplot2::element_line(size = 6), text = ggplot2::element_text(size = 40, face = "bold"), axis.text.y = ggplot2::element_text(size=30, face = "bold", colour = "black"), axis.text.x = ggplot2::element_text(size=30, face = "bold", colour = "black"))
+        ggplot2::geom_vline(xintercept = 0, size = 1)+  ggplot2::theme(line = ggplot2::element_line(size = 1), axis.ticks = ggplot2::element_line(size = 6), text = ggplot2::element_text(size = 40, face = "bold"), axis.text.y = ggplot2::element_text(size=30, face = "bold", colour = "black"), axis.text.x = ggplot2::element_text(size=30, face = "bold", colour = "black"))
     }
   }
 
@@ -516,7 +516,7 @@ plot_transfers <- function(from_part,
           breaks = seq(yllimit, yulimit, by = 0.2),
           labels = seq(yllimit, yulimit, by = 0.2),
           limits = c(yllimit, yulimit)
-        )+  ggplot2::theme(line = ggplot2::element_line(size = 2), axis.ticks = ggplot2::element_line(size = 6), text = ggplot2::element_text(size = 40, face = "bold"), axis.text.y = ggplot2::element_text(size=30, face = "bold", colour = "black"), axis.text.x = ggplot2::element_text(size=30, face = "bold", colour = "black"))
+        )+  ggplot2::theme(line = ggplot2::element_line(size = 1), axis.ticks = ggplot2::element_line(size = 6), text = ggplot2::element_text(size = 40, face = "bold"), axis.text.y = ggplot2::element_text(size=30, face = "bold", colour = "black"), axis.text.x = ggplot2::element_text(size=30, face = "bold", colour = "black"))
     }
     else {
       plot_of_this <-
@@ -533,7 +533,7 @@ plot_transfers <- function(from_part,
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label) +
         geom_hline(yintercept = 1) +
-        ggplot2::geom_vline(xintercept = 0, size = 1)+  ggplot2::theme(line = ggplot2::element_line(size = 2), axis.ticks = ggplot2::element_line(size = 6), text = ggplot2::element_text(size = 40, face = "bold"), axis.text.y = ggplot2::element_text(size=30, face = "bold", colour = "black"), axis.text.x = ggplot2::element_text(size=30, face = "bold", colour = "black"))
+        ggplot2::geom_vline(xintercept = 0, size = 1)+  ggplot2::theme(line = ggplot2::element_line(size = 1), axis.ticks = ggplot2::element_line(size = 6), text = ggplot2::element_text(size = 40, face = "bold"), axis.text.y = ggplot2::element_text(size=30, face = "bold", colour = "black"), axis.text.x = ggplot2::element_text(size=30, face = "bold", colour = "black"))
     }
   }
 
@@ -594,7 +594,7 @@ plot_transfers <- function(from_part,
           labels = seq(yllimit, yulimit, by = 0.1)
         ) +
         ggplot2::geom_vline(xintercept = 0, size = 1, size= 1)+
-        ggplot2::theme(line = ggplot2::element_line(size = 2), axis.ticks = ggplot2::element_line(size = 6), text = ggplot2::element_text(size = 40, face = "bold"), axis.text.y = ggplot2::element_text(size=30, face = "bold", colour = "black"), axis.text.x = ggplot2::element_text(size=30, face = "bold", colour = "black"))
+        ggplot2::theme(line = ggplot2::element_line(size = 1), axis.ticks = ggplot2::element_line(size = 6), text = ggplot2::element_text(size = 40, face = "bold"), axis.text.y = ggplot2::element_text(size=30, face = "bold", colour = "black"), axis.text.x = ggplot2::element_text(size=30, face = "bold", colour = "black"))
     }
     else {
       plot_of_this <-
@@ -610,7 +610,7 @@ plot_transfers <- function(from_part,
         ggplot2::labs(x = paste(from_part, "to", to_part, "\n " , units),
              y = y_label) +
         ggplot2::geom_vline(xintercept = 0, size = 1)+
-        ggplot2::theme(line = ggplot2::element_line(size = 2), axis.ticks = ggplot2::element_line(size = 6), text = ggplot2::element_text(size = 40, face = "bold"), axis.text.y = ggplot2::element_text(size=30, face = "bold", colour = "black"), axis.text.x = ggplot2::element_text(size=30, face = "bold", colour = "black"))
+        ggplot2::theme(line = ggplot2::element_line(size = 1), axis.ticks = ggplot2::element_line(size = 6), text = ggplot2::element_text(size = 40, face = "bold"), axis.text.y = ggplot2::element_text(size=30, face = "bold", colour = "black"), axis.text.x = ggplot2::element_text(size=30, face = "bold", colour = "black"))
     }
   }
 
@@ -706,7 +706,7 @@ plot_transfers <- function(from_part,
         ggplot2::geom_point(size = 3) +
         ggplot2::labs(x = paste(from_part, "to", to_part, "\n", units),
              y = y_label) +
-        ggplot2::geom_vline(xintercept = 0, size = 1)+  ggplot2::theme(line = ggplot2::element_line(size = 2), axis.ticks = ggplot2::element_line(size = 6), text = ggplot2::element_text(size = 40, face = "bold"), axis.text.y = ggplot2::element_text(size=30, face = "bold", colour = "black"), axis.text.x = ggplot2::element_text(size=30, face = "bold", colour = "black"))
+        ggplot2::geom_vline(xintercept = 0, size = 1)+  ggplot2::theme(line = ggplot2::element_line(size = 1), axis.ticks = ggplot2::element_line(size = 6), text = ggplot2::element_text(size = 40, face = "bold"), axis.text.y = ggplot2::element_text(size=30, face = "bold", colour = "black"), axis.text.x = ggplot2::element_text(size=30, face = "bold", colour = "black"))
     }
   }
 
