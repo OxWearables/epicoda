@@ -187,7 +187,7 @@ plot_transfers <- function(from_part,
           ymin = lower_CI,
           ymax = upper_CI
         ), color = "grey") +
-        ggplot2::geom_point(size = 0.5) +
+        ggplot2::geom_point(size = 3) +
         ggplot2::labs(x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),,
              y = y_label) +
         ggplot2::scale_y_continuous(
@@ -207,7 +207,7 @@ plot_transfers <- function(from_part,
           ymin = lower_CI,
           ymax = upper_CI
         ), color = "grey") +
-        ggplot2::geom_point(size = 0.5) +
+        ggplot2::geom_point(size = 3) +
         ggplot2::labs(x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
              y = y_label) +
         ggplot2::geom_vline(xintercept = 0) +
@@ -289,7 +289,7 @@ plot_transfers <- function(from_part,
             ymin = lower_CI,
             ymax = upper_CI
           ), color = "grey") +
-          ggplot2::geom_point(size = 0.5) +
+          ggplot2::geom_point(size = 3) +
           ggplot2::labs(x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
                         y = y_label) +
           ggplot2::scale_y_continuous(
@@ -310,7 +310,7 @@ plot_transfers <- function(from_part,
             ymin = lower_CI,
             ymax = upper_CI
           ), color = "grey") +
-          ggplot2::geom_point(size = 0.5) +
+          ggplot2::geom_point(size = 3) +
           ggplot2::labs(x = paste(from_part, "to", to_part, "\n", units),
                         y = y_label) +
           ggplot2::geom_vline(xintercept = 0)+
@@ -424,7 +424,7 @@ plot_transfers <- function(from_part,
           ymin = lower_CI,
           ymax = upper_CI
         ), color = "grey") +
-        ggplot2::geom_point(size = 0.5) +
+        ggplot2::geom_point(size = 3) +
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label) +
@@ -447,7 +447,7 @@ plot_transfers <- function(from_part,
           ymin = lower_CI,
           ymax = upper_CI
         ), color = "grey") +
-        ggplot2::geom_point(size = 0.5) +
+        ggplot2::geom_point(size = 3) +
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label) +
@@ -505,7 +505,7 @@ plot_transfers <- function(from_part,
           ymin = lower_CI,
           ymax = upper_CI
         ), color = "grey") +
-        ggplot2::geom_point(size = 0.5) +
+        ggplot2::geom_point(size = 3) +
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label) +
@@ -528,7 +528,7 @@ plot_transfers <- function(from_part,
           ymin = lower_CI,
           ymax = upper_CI
         ), color = "grey") +
-        ggplot2::geom_point(size = 0.5) +
+        ggplot2::geom_point(size = 3) +
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label) +
@@ -585,7 +585,7 @@ plot_transfers <- function(from_part,
           ymin = lower_CI,
           ymax = upper_CI
         ), color = "grey") +
-        ggplot2::geom_point(size = 0.5) +
+        ggplot2::geom_point(size = 3) +
         ggplot2::labs(x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
              y = y_label) +
         ggplot2::scale_y_continuous(
@@ -605,7 +605,7 @@ plot_transfers <- function(from_part,
           ymin = lower_CI,
           ymax = upper_CI
         ), color = "grey") +
-        ggplot2::geom_point(size = 0.5) +
+        ggplot2::geom_point(size = 3) +
         ggplot2::labs(x = paste(from_part, "to", to_part, "\n " , units),
              y = y_label) +
         ggplot2::geom_vline(xintercept = 0)+  ggplot2::theme(line = ggplot2::element_line(size = 2), axis.ticks = ggplot2::element_line(size = 6), text = ggplot2::element_text(size = 40, face = "bold"), axis.text.y = ggplot2::element_text(size=30, face = "bold", colour = "black"), axis.text.x = ggplot2::element_text(size=30, face = "bold", colour = "black"))
@@ -681,7 +681,7 @@ plot_transfers <- function(from_part,
           ymin = lower_CI,
           ymax = upper_CI
         ), color = "grey") +
-        ggplot2::geom_point(size = 0.5) +
+        ggplot2::geom_point(size = 3) +
         ggplot2::labs(x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
              y = y_label) +
         ggplot2::scale_y_continuous(
@@ -701,7 +701,7 @@ plot_transfers <- function(from_part,
           ymin = lower_CI,
           ymax = upper_CI
         ), color = "grey") +
-        ggplot2::geom_point(size = 0.5) +
+        ggplot2::geom_point(size = 3) +
         ggplot2::labs(x = paste(from_part, "to", to_part, "\n", units),
              y = y_label) +
         ggplot2::geom_vline(xintercept = 0)+  ggplot2::theme(line = ggplot2::element_line(size = 2), axis.ticks = ggplot2::element_line(size = 6), text = ggplot2::element_text(size = 40, face = "bold"), axis.text.y = ggplot2::element_text(size=30, face = "bold", colour = "black"), axis.text.x = ggplot2::element_text(size=30, face = "bold", colour = "black"))
