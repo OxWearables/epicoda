@@ -418,11 +418,9 @@ plot_transfers <- function(from_part,
       qt(0.975, df = (nrow(model.matrix(model)) -1 - length(transf_labels)))[[1]]
 
 
-    dNew$lower_CI <- dNew$log_hazard_change - t_value * value
-    dNew$upper_CI <- dNew$log_hazard_change + t_value * value
 
-    alpha_lower <- dNew$log_hazard_change - t_value*scaling
-    alpha_upper <- dNew$log_hazard_change + t_value*scaling
+    alpha_lower <- dNew$log_hazard_change - t_value*value
+    alpha_upper <- dNew$log_hazard_change + t_value*value
 
     dNew$lower_CI <- exp(alpha_lower)
     dNew$upper_CI <- exp(alpha_upper)
