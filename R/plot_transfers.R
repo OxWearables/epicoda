@@ -132,6 +132,14 @@ plot_transfers <- function(from_part,
       units = units,
       specified_units = specified_units
     )
+  cmdf <- data.frame(cm)
+  cm_transf_df <- transform_comp(cmdf, comp_labels,
+                                 transformation_type = transformation_type,
+                                 part_1 = part_1,
+                                 comparison_part = comparison_part,
+                                 rounded_zeroes = FALSE)
+
+
   if (!(is.null(fixed_values))) {
     if (!is.null(colnames(fixed_values)[colnames(fixed_values) %in% comp_labels])) {
       warning(
@@ -298,7 +306,7 @@ plot_transfers <- function(from_part,
 
 
     middle_matrix <- vcov(model)[transf_labels, transf_labels]
-    x <- data.matrix(new_data[, transf_labels])
+    x <- data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
     in_sqrt_1 <- (x %*% middle_matrix)
     t_x <- as.matrix(t(x))
     in_sqrt_true <- c()
@@ -403,7 +411,7 @@ plot_transfers <- function(from_part,
     dNew$fit <- exp(dNew$log_hazard_change)
 
     middle_matrix <- vcov(model)[transf_labels, transf_labels]
-    x <- data.matrix(new_data[, transf_labels])
+    x <- data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
     in_sqrt_1 <- (x %*% middle_matrix)
     t_x <- as.matrix(t(x))
     in_sqrt_true <- c()
@@ -731,9 +739,8 @@ plot_transfers <- function(from_part,
 
 
 
-
       middle_matrix <- vcov(model)[transf_labels, transf_labels]
-      x <- data.matrix(new_data[, transf_labels])
+      x <- data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
       in_sqrt_1 <- (x %*% middle_matrix)
       t_x <- as.matrix(t(x))
       in_sqrt_true <- c()
