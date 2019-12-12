@@ -40,7 +40,7 @@ plot_transfers <- function(from_part,
                            specified_units = NULL,
                            rounded_zeroes = FALSE,
                            det_limit = NULL,
-                           terms = FALSE,
+                           terms = TRUE,
                            granularity = 10000) {
   if (is.null(transformation_type)) {
     stop(
