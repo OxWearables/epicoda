@@ -208,7 +208,7 @@ plot_transfers <- function(from_part,
           ymax = upper_CI
         ), color = "grey") +
         ggplot2::geom_point(size = 0.5) +
-        ggplot2::labs(x = paste(from_part, "to", to_part, "\n " , units),
+        ggplot2::labs(x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
              y = y_label) +
         ggplot2::geom_vline(xintercept = 0) +
         ggplot2::theme(line = element_line(size = 2), axis.ticks = element_line(size = 6), text = element_text(size = 40, face = "bold"), axis.text.y = element_text(size=30, face = "bold", colour = "black"), axis.text.x = element_text(size=30, face = "bold", colour = "black"))
