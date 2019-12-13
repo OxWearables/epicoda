@@ -568,9 +568,9 @@ plot_transfers <- function(from_part,
     dNew$predictions <- dNew$fit / acm
 
     dNew$lower_CI <-
-      dNew$predictions * exp(-1.96 * dNew$se.fit) / acm
+      dNew$fit * exp(-1.96 * dNew$se.fit) / acm
     dNew$upper_CI <-
-      dNew$predictions * exp(1.96 * dNew$se.fit) / acm
+      dNew$fit * exp(1.96 * dNew$se.fit) / acm
 
     if (is.null(yllimit)) {
       yllimit <- min(dNew$lower_CI)
