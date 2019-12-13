@@ -731,7 +731,7 @@ plot_transfers <- function(from_part,
 
 
     if (type == "linear" && (terms)) {
-      print(head(new_data))
+   #   print(head(new_data))
       predictions <-
         predict(
           model,
@@ -758,12 +758,12 @@ plot_transfers <- function(from_part,
 
       dNew$main <- eval(parse(text = sum_for_args))
       dNew$mean_vals <- rep(sum(acm), by = nrow(dNew))
-      print(head(dNew$main))
-      print(head(dNew$mean_vals))
+    #  print(head(dNew$main))
+  #    print(head(dNew$mean_vals))
 
       dNew$fit <- dNew$main - dNew$mean_vals
 
-      print(head(dNew$fit))
+  #    print(head(dNew$fit))
       dNew$axis_vals <-
         dNew[, to_part] - comp_mean(
           dataset,
