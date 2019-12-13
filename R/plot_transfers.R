@@ -109,10 +109,13 @@ plot_transfers <- function(from_part,
   if ((is.null(y_label)) & (terms) & (type == "linear")) {
     y_label <- "Model-predicted difference in outcome"
   }
+  if ((is.null(y_label)) & !(terms) & (type == "logistic")) {
+    y_label <- "Model-predicted probability"
+  }
   if ((is.null(y_label)) & (terms) & (type == "logistic")) {
     y_label <- "Model-predicted OR"
   }
-  if ((is.null(y_label)) & (terms) & (type == "cox")) {
+  if ((is.null(y_label)) &  (type == "cox")) {
     y_label <- "Model-predicted HR"
   }
   if ((is.null(y_label)) & (terms == FALSE)) {
@@ -120,9 +123,7 @@ plot_transfers <- function(from_part,
   }
 
 
-
-  # We assign some fixed_values to use in plotting
-
+# We calculate the compositional mean so we can use it in future calculations
   cm <-
     comp_mean(
       dataset,
@@ -139,6 +140,7 @@ plot_transfers <- function(from_part,
                                  comparison_part = comparison_part,
                                  rounded_zeroes = FALSE)
 
+# We assign some fixed_values to use in plotting
 
   if (!(is.null(fixed_values))) {
     if (!is.null(colnames(fixed_values)[colnames(fixed_values) %in% comp_labels])) {
@@ -160,7 +162,14 @@ plot_transfers <- function(from_part,
       )
   }
 
-
+  transf_fixed_vals <- transform_comp(
+    fixed_values,
+    comp_labels,
+    transformation_type = transformation_type,
+    part_1 = part_1,
+    comparison_part = comparison_part,
+    rounded_zeroes = FALSE
+  )
 
   # We make some new data for predictions
   new_data <-
@@ -185,8 +194,6 @@ plot_transfers <- function(from_part,
       comparison_part = comparison_part,
       rounded_zeroes = FALSE
     )
-
-
 
   # We begin the plotting
   if (type == "logistic" && (terms == FALSE)) {
@@ -283,9 +290,15 @@ plot_transfers <- function(from_part,
         newdata = new_data,
         type = "terms",
         terms = transf_labels,
-        interval = "confidence",
         se.fit = TRUE
       )
+
+    acm <- predict(model,
+                   newdata = transf_fixed_vals,
+                   type = "terms",
+                   terms = transf_labels)
+
+
     dNew <- data.frame(new_data, predictions)
     dNew$axis_vals <-
       dNew[, to_part] - comp_mean(
@@ -301,7 +314,11 @@ plot_transfers <- function(from_part,
       paste("dNew$fit.", transf_labels, sep = "")
     sum_for_args <- paste0(vector_for_args, collapse = "+")
 
-    dNew$log_odds_change <- eval(parse(text = sum_for_args))
+    vector_for_acm <-
+      paste("acm$fit.", transf_labels, sep = "")
+    sum_for_acm <- paste0(vector_for_acm, collapse = "+")
+
+    dNew$log_odds_change <- eval(parse(text = sum_for_args)) - eval(parse(text = sum_for_acm))
     dNew$fit <- exp(dNew$log_odds_change)
 
 
@@ -400,14 +417,25 @@ plot_transfers <- function(from_part,
       terms = transf_labels
     )
 
+    acm <- predict(model,
+                   newdata = transf_fixed_vals,
+                   type = "terms",
+                   terms = transf_labels)
+
+
     dNew <- data.frame(new_data, predictions)
+
+
     dNew$axis_vals <-  dNew[, to_part] - comp_mean(dataset, comp_labels, rounded_zeroes = FALSE,
                                                         det_limit = det_limit, units = units)[[to_part]]
 
     vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
     sum_for_args <- paste0(vector_for_args, collapse = "+")
 
-    dNew$log_hazard_change <- eval(parse(text = sum_for_args))
+    vector_for_acm <- paste("dNew$fit.", transf_labels, sep = "")
+    sum_for_acm <- paste0(vector_for_acm, collapse = "+")
+
+    dNew$log_hazard_change <- eval(parse(text = sum_for_args)) - eval(parse(text = sum_for_acm))
     dNew$fit <- exp(dNew$log_hazard_change)
 
     middle_matrix <- vcov(model)[transf_labels, transf_labels]
@@ -529,14 +557,7 @@ plot_transfers <- function(from_part,
                            se.fit = TRUE)
 
     dNew <- data.frame(new_data, predictions)
-    transf_fixed_vals <- transform_comp(
-      fixed_values,
-      comp_labels,
-      transformation_type = transformation_type,
-      part_1 = part_1,
-      comparison_part = comparison_part,
-      rounded_zeroes = FALSE
-    )
+
     acm <- predict(model,
                    newdata = transf_fixed_vals, type = "risk")
     dNew$axis_vals <-
@@ -720,14 +741,22 @@ plot_transfers <- function(from_part,
           newdata = new_data,
           type = "terms",
           terms = transf_labels,
-          interval = "confidence",
           se.fit = TRUE
         )
+
+      acm <- predict(model,
+                     newdata = transf_fixed_vals,
+                     type = "terms",
+                     terms = transf_labels)
+
       dNew <- data.frame(new_data, predictions)
       vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
       sum_for_args <- paste0(vector_for_args, collapse = "+")
 
-      dNew$fit <- eval(parse(text = sum_for_args))
+      vector_for_acm <-   paste("dNew$fit.", transf_labels, sep = "")
+      sum_for_acm <- paste0(vector_for_acm, collapse = "+")
+
+      dNew$fit <- eval(parse(text = sum_for_args)) - eval(parse(text = sum_for_acm))
       dNew$axis_vals <-
         dNew[, to_part] - comp_mean(
           dataset,
