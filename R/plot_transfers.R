@@ -514,8 +514,8 @@ plot_transfers <- function(from_part,
         ggplot2::geom_vline(xintercept = 0, size = 1) +
         ggplot2::scale_y_continuous(
           trans = scales::log_trans(),
-          breaks = seq(signif(yllimit, digits = 1), signif(yulimit, digits = 1), by = 0.2),
-          labels = seq(signif(yllimit, digits = 1), signif(yulimit, digits = 1), by = 0.2),
+          breaks = seq(signif(yllimit, digits = 1), signif(yulimit, digits = 1), by = 0.1),
+          labels = seq(signif(yllimit, digits = 1), signif(yulimit, digits = 1), by = 0.1),
           limits = c(yllimit, yulimit)
         )+
         theme_for_plots
