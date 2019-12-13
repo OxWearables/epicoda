@@ -513,7 +513,7 @@ plot_transfers <- function(from_part,
         geom_hline(yintercept = 1) +
         ggplot2::geom_vline(xintercept = 0, size = 1) +
         ggplot2::scale_y_continuous(
-          trans = scales::log_trans()#,
+          trans = scales::log_trans(),
         #  breaks = seq(signif(yllimit, digits = 2), signif(yullimit, digits = 2), by = 0.2),
         #  labels = seq(signif(yllimit, digits = 2), signif(yullimit, digits = 2), by = 0.2),
           limits = c(yllimit, yulimit)
@@ -603,7 +603,7 @@ plot_transfers <- function(from_part,
         ggplot2::geom_hline(yintercept = 1, size = 1) +
         ggplot2::geom_vline(xintercept = 0, size = 1) +
         ggplot2::scale_y_continuous(
-          trans = scales::log_trans()#,
+          trans = scales::log_trans(),
        #   breaks = seq(signif(yllimit, digits = 2), signif(yullimit, digits = 2), by = 0.2),
        #   labels = seq(signif(yllimit, digits = 2), signif(yullimit, digits = 2), by = 0.2),
           limits = c(yllimit, yulimit)
