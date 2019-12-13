@@ -163,7 +163,7 @@ plot_transfers <- function(from_part,
   }
 
   transf_fixed_vals <- transform_comp(
-    fixed_values,
+    fixed_values[, colnames(fixed_values)[!(colnames(fixed_values) %in% transf_labels)]],
     comp_labels,
     transformation_type = transformation_type,
     part_1 = part_1,
@@ -314,11 +314,8 @@ plot_transfers <- function(from_part,
       paste("dNew$fit.", transf_labels, sep = "")
     sum_for_args <- paste0(vector_for_args, collapse = "+")
 
-    vector_for_acm <-
-      paste("acm$fit.", transf_labels, sep = "")
-    sum_for_acm <- paste0(vector_for_acm, collapse = "+")
 
-    dNew$log_odds_change <- eval(parse(text = sum_for_args)) - eval(parse(text = sum_for_acm))
+    dNew$log_odds_change <- eval(parse(text = sum_for_args)) - sum(acm)
     dNew$fit <- exp(dNew$log_odds_change)
 
 
@@ -432,10 +429,9 @@ plot_transfers <- function(from_part,
     vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
     sum_for_args <- paste0(vector_for_args, collapse = "+")
 
-    vector_for_acm <- paste("dNew$fit.", transf_labels, sep = "")
-    sum_for_acm <- paste0(vector_for_acm, collapse = "+")
 
-    dNew$log_hazard_change <- eval(parse(text = sum_for_args)) - eval(parse(text = sum_for_acm))
+
+    dNew$log_hazard_change <- eval(parse(text = sum_for_args)) - sum(acm)
     dNew$fit <- exp(dNew$log_hazard_change)
 
     middle_matrix <- vcov(model)[transf_labels, transf_labels]
@@ -735,6 +731,7 @@ plot_transfers <- function(from_part,
 
 
     if (type == "linear" && (terms)) {
+      print(head(new_data))
       predictions <-
         predict(
           model,
@@ -744,19 +741,29 @@ plot_transfers <- function(from_part,
           se.fit = TRUE
         )
 
+
+
       acm <- predict(model,
                      newdata = transf_fixed_vals,
                      type = "terms",
                      terms = transf_labels)
 
+
+
       dNew <- data.frame(new_data, predictions)
       vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
       sum_for_args <- paste0(vector_for_args, collapse = "+")
 
-      vector_for_acm <-   paste("dNew$fit.", transf_labels, sep = "")
-      sum_for_acm <- paste0(vector_for_acm, collapse = "+")
 
-      dNew$fit <- eval(parse(text = sum_for_args)) - eval(parse(text = sum_for_acm))
+
+      dNew$main <- eval(parse(text = sum_for_args))
+      dNew$mean_vals <- rep(sum(acm), by = nrow(dNew))
+      print(head(dNew$main))
+      print(head(dNew$mean_vals))
+
+      dNew$fit <- dNew$main - dNew$mean_vals
+
+      print(head(dNew$fit))
       dNew$axis_vals <-
         dNew[, to_part] - comp_mean(
           dataset,
