@@ -33,7 +33,7 @@ epicoda::plot_transfers(from_part = "compD",
                units = "hr/day",
                rounded_zeroes = TRUE,
                det_limit = 0.0083,
-               terms = TRUE)
+               terms = TRUE, plot_log = TRUE)
 
 head(data_ilr_impute_zeroes)
 epicoda::plot_transfers
