@@ -1,6 +1,7 @@
 ---
 title: "epicoda: Introduction and Examples"
 output: rmarkdown::html_vignette
+bibliography: library.bib
 vignette: >
   %\VignetteIndexEntry{vignette-epicoda}
   %\VignetteEngine{knitr::rmarkdown}
@@ -28,36 +29,36 @@ head(simdataplain)
 
 This dataset has 5 columns which make up a hypothetical composition, along with a hypothetical sex column and age group column.  
 In what sense are the compositional columns 'compositional'?
-Compositional data is data where the information is contained in the *relative*, rather than the absolute, values of the parts.  
-Here, we have one common case: the compositional columns all sum to the same total i.e. they can be represented as proportions of a whole without any loss of information. 
+Compositional data is data where the information is contained in the *relative*, rather than the absolute, values of the parts[@Filzmoser2018].  
+Here, we have one common case: the compositional columns all sum to the same total i.e. they can be represented as proportions of a whole without any loss of information. However, compositional columns do not have to sum to the same total (e.g. vote counts in an election). 
 
 ```{r}
-head(apply(simdataplain[, c("compA", "compB", "compC", "compD", "compE")], 1, sum))
+head(apply(simdataplain[, c("partA", "partB", "partC", "partD", "partE")], 1, sum))
 ```
 In this case, the sum is 24-  these data are actually a simulated version of a time use dataset i.e. the five columns are different behaviours, which together make up the whole day.  
 Note that this property, sometimes referred to as a *closure* property isn't necesssary for the data to be treated as compositional data: the only requirement is that it is the *relative*, not the absolute, information which is relevant to the problem being considered.
-In other words, we do not lose relevant information when we just consider the *closure*, written: $\mathcal{C}(comp_{1}, comp_{2}, ..., comp_{D})$ and defined as: 
+In other words, we do not lose relevant information when we just consider the *closure*, written: $\mathcal{C}(part_{1}, part_{2}, ..., part_{D})$ and defined as: 
 \begin{equation}
-  \mathcal{C}(comp_{1}, comp_{2}, ..., comp_{D}) = \Big(\frac{comp_{1}}{\sum_{i =1}^{D}{comp_i}}, \frac{comp_{2}}{\sum_{i =1}^{D}{comp_i}}, ..., \frac{comp_{D}}{\sum_{i =1}^{D}{comp_i}}\Big)
+  \mathcal{C}(part_{1}, part_{2}, ..., part_{D}) = \Big(\frac{part_{1}}{\sum_{i =1}^{D}{part_i}}, \frac{part_{2}}{\sum_{i =1}^{D}{part_i}}, ..., \frac{part_{D}}{\sum_{i =1}^{D}{part_i}}\Big)
 \end{equation}
 
 
 
-A couple of other things: from the above, we can already see that we'll often be using the set of labels of the compositional columns. So let's just record those so we don't have to keep typing them: 
+From the above, we can already see that we'll often be using the set of labels of the compositional columns. So let's just record those so we don't have to keep typing them: 
 ```{r}
-comp_labels <- c("compA", "compB", "compC", "compD", "compE")
+comp_labels <- c("partA", "partB", "partC", "partD", "partE")
 ```
 There should be at least 2, and there can be an unlimited number.   
 
-If we want to use some of the covariates as factors in R, and the functions to deal with them correctly, we need to tell R they are factors (categorical variables):
+Note that in R, we need to set any categorical covariates as factor variables:
 ```{r}
 simdataplain$sex <- as.factor(simdataplain$sex)
 simdataplain$agegroup <- as.factor(simdataplain$agegroup)
 ```
 ## Investigating the data
-A summary statistic that we often wish to calculate is the compositional mean. Mathematically speaking, where there are $n$ individuals in the dataset, and individual $k$ has composition $(comp_{k, 1}, comp_{k, 2}, ..., comp_{k, D}$, this is: 
+A summary statistic that we often wish to calculate is the compositional mean. Mathematically speaking, where there are $n$ individuals in the dataset, and individual $k$ has composition $(part_{k, 1}, part_{k, 2}, ..., part_{k, D}$, this is: 
 \begin{equation}
-  \mathcal{C}\Bigg(\sqrt[n]{\prod_{k=1}^{n}{comp_{k, 1}}}, \sqrt[n]{\prod_{k=1}^{n}{comp_{k, 2}}}, ..., \sqrt[n]{\prod_{k=1}^{n}{comp_{k, D}}}\Bigg)
+  \mathcal{C}\Bigg(\sqrt[n]{\prod_{k=1}^{n}{part_{k, 1}}}, \sqrt[n]{\prod_{k=1}^{n}{part_{k, 2}}}, ..., \sqrt[n]{\prod_{k=1}^{n}{part_{k, D}}}\Bigg)
 \end{equation}
 
 To calculate this using \code{epicoda}, we run: 
@@ -70,7 +71,7 @@ comp_mean(data = simdataplain, # this is the dataset
 There are a few things to notice about this. Even though we started out with sums which added to 24, the mean seems to add to 1. This is because we didn't specify the units - and so the package didn't know what units to return it to us in. But it could still return it as a sum to 1, without loss of information, as per the definition of compositional data. 
 
 
-We've also got a message about zeroes. Compositional data analysis can't automatically include zero values. For more information about this issue, see Palarea-Albaladejo J et al (Chemometrics and Intelligent Laboratory Systems), 2015. There's a couple of options: 
+We've also got a message about zeroes. Compositional data analysis can't automatically include zero values. For more information about this issue, see [@Palarea-Albaladejo2015]. There's a couple of options: 
 
 * The default in the function is to drop them (this is the right option if they're so called 'true zeroes', and not related to a limit in the precision with which we can measure).
 
@@ -95,7 +96,9 @@ comp_mean(data = simdataplain, # this is the dataset
 The 'No iterations to converge' relates to imputing zeroes, and we don't need to worry about it.   
 
 ## Log-ratio transformations 
-There are several different kinds of transformations we can do in order to work with compositional data (alr, ilr, clr). These transform the variables into coordinates which are capable of representing all the variation in the data. Different transformations have different pros/cons, and alr and clr can only be used for certain applications.  All the functions default to ilr (isometric log ratio) transformation using so-called 'pivot coordinates', which is fairly standard in the physical activity literature (and is appropriate for the applications which the other transformations are used for). If you want to learn more, see    . Otherwise, the default is fine! 
+There are several different kinds of transformations we can do in order to work with compositional data (alr, ilr, clr). These transform the variables into coordinates which are capable of representing all the variation in the data. Different transformations have different pros/cons, and alr and clr can only be used for certain applications.  All the functions default to ilr (isometric log ratio) transformation using so-called 'pivot coordinates', which is fairly standard in the physical activity literature (and is appropriate for the applications which the other transformations are used for). If you want to learn more, see [@Filzmoser2018, @Glahn2011].
+
+Note that this functionality is implemented in other R packages, such as `compositions` and `robCompositions`. It is reimplemented here to ensure that future changes to the defaults in those packages do not affect this package.
 ```{r}
 data_ilr_impute_zeroes <- transform_comp(data = simdataplain,
                                    comp_labels = comp_labels,
@@ -104,7 +107,7 @@ data_ilr_impute_zeroes <- transform_comp(data = simdataplain,
                                    det_limit = 0.0083)
 print(head(data_ilr_impute_zeroes))
 ```
-There are also a few other things we can do with this function, like specifying a given 'first part' (which can be useful when it comes to reporting). To learn more, run ?transform_comp.  
+There are also a few other things we can do with this function, like specifying a given 'first part' (which can be useful when it comes to reporting). To learn more, run `?transform_comp`.  
 
 ## Health association analysis 
 Now we've done the transformations, we're ready to do health association analysis. For this, we run our usual statistical models for health association analysis, but with the transformed variables, rather than the original compositional variables, as exposure variables. To get the names of the variables we'll be using, we can use a helper function in the package (although you might also have renamed these columns, in which case you can specify them straight out in the model) and another helper function to pack them up as a sum. 
@@ -117,7 +120,7 @@ Now we're ready to run a model.
 lm_outcome <- lm(as.formula(paste("linear_outcome ~ agegroup + sex + ", transf_sum)),
                             data_ilr_impute_zeroes)
 ```
-If you are modelling an outcome for which logistic regression is apppropriate, transf_sum can similarly be inserted into the standard analysis. If you are modelling follow-up time using Cox regression (from the package survival), transf_sum can similarly be inserted into the standard analysis.  
+If you are modelling an outcome for which logistic regression is apppropriate, `transf_sum` can similarly be inserted into the standard analysis. If you are modelling follow-up time using Cox regression (from the package `survival`), `transf_sum` can similarly be inserted into the standard analysis.  
 
 Let's have a look at the model: 
 ```{r}
@@ -133,10 +136,13 @@ So, the model diagnostics all looks fine (and can be interpreted as usual). Howe
 ## Presenting the results
 As we saw, the model summary is quite hard to interpret.  
 
-One way to get round this is to look at model predictions. There are various options- we can look at predictions as we hold most of the composition fixed and vary the balance between the final two parts. The plot_transfers function can do this (for linear, logistic and Cox regression models): 
+However, we can look at model-predicted difference in the outcome when varying the compositional exposure in different ways. This is implemented here. Note that the * LINK TO HOW UNCERTAINTY DERIVED* 
+
+# Want to rewrite everything which follows to make it more standard
+One way to get round this is to look at model predictions. There are various options- we can look at predictions as we hold most of the composition fixed and vary the balance between the final two parts. The `plot_transfers` function can do this (for linear, logistic and Cox regression models): 
 ```{r}
- plot_transfers(from_part = "compD",
-               to_part = "compA",
+ plot_transfers(from_part = "partD",
+               to_part = "partA",
                model = lm_outcome ,
                dataset = data_ilr_impute_zeroes,
                transformation_type = "ilr",
@@ -148,11 +154,11 @@ One way to get round this is to look at model predictions. There are various opt
                terms = FALSE)
 ```
 
-There's one problem with this: the predictions and confidence intervals on this plot capture the uncertainty in the predictions due to all variables in the model- including the covariates. To avoid this, we can look at the predicted difference in the outcome due to just the compositional parts. This is done by setting terms = TRUE (in fact, the default) in the plot_transfers function. 
+There's one problem with this: the predictions and confidence intervals on this plot capture the uncertainty in the predictions due to all variables in the model- including the covariates. To avoid this, we can look at the predicted difference in the outcome due to just the compositional parts. This is done by setting `terms = TRUE` (in fact, the default) in the `plot_transfers` function. 
 
 ```{r}
- plot_transfers(from_part = "compD",
-               to_part = "compA",
+ plot_transfers(from_part = "partD",
+               to_part = "partA",
                model = lm_outcome ,
                dataset = data_ilr_impute_zeroes,
                transformation_type = "ilr",
