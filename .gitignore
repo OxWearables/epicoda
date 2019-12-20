@@ -2,6 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-.csv
 *.csv
+*.bib
 inst/doc
