@@ -1,7 +1,7 @@
 devtools::load_all()
 simdataplain <- epicoda::simdataplain
 simdata <- epicoda::simdata
-comp_labels <- c("compA", "compB", "compC", "compD", "compE")
+comp_labels <- c("partA", "partB", "partC", "partD", "partE")
 
 simdata$sex <- as.factor(simdataplain$sex)
 simdata$agegroup <- as.factor(simdataplain$agegroup)
@@ -23,8 +23,8 @@ summary(log_outcome)
 data_ilr_impute_zeroes
 summary(lm_outcome)
 summary(log_outcome)
-epicoda::plot_transfers(from_part = "compD",
-               to_part = "compB",
+epicoda::plot_transfers(from_part = "partD",
+               to_part = "partB",
                model = log_outcome ,
                dataset = data_ilr_impute_zeroes,
                transformation_type = "ilr",

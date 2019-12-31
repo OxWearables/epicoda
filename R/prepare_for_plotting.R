@@ -32,7 +32,7 @@ generate_fixed_values <- function(data, comp_labels, rounded_zeroes, det_limit, 
 #' @param part_of_interest The variable of interest.
 #' @param lower_quantile The lower quantile to vary from.
 #' @param upper_quantile The upper quantile to vary to.
-#' #' @param granularity Doesn't usually need setting. Parameter indicating how many predictions to make. If too low, plotted curve has gaps. If too high, calculation is slow.
+#' @param granularity Doesn't usually need setting. Parameter indicating how many predictions to make. If too low, plotted curve has gaps. If too high, calculation is slow.
 #' @return Vector of values going from \code{lower_quantile} to \code{upper_quantile} of the distribution of the varaible of interest.
 vary_part_of_interest <- function(part_of_interest,
                                   lower_quantile = 0.05,
@@ -63,9 +63,6 @@ vary_part_of_interest <- function(part_of_interest,
 #' @param upper_quantile See \code{vary_time_of_interest}
 #' @param granularity Doesn't usually need setting. Parameter indicating how many predictions to make. If too low, plotted curve has gaps. If too high, calculation is slow.
 #' @return Dataframe varying in time of interest.
-#' @examples
-#'
-#' @export
 make_new_data <- function(from_part,
                           to_part,
                           fixed_values,

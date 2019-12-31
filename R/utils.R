@@ -124,8 +124,8 @@ process_zeroes <- function(data, comp_labels, rounded_zeroes, det_limit = NULL){
 
   if (!rounded_zeroes){
    message("Note that any zero values were dropped.")
-    for (activity in comp_labels){
-      comp_data <- comp_data[comp_data[,activity] != 0, ]
+    for (part in comp_labels){
+      comp_data <- comp_data[comp_data[,part] != 0, ]
     }
   }
 

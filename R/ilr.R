@@ -8,8 +8,6 @@
 #'
 #' @param data Dataset to have the transformation applied to.
 #' @return ilr-transformed columns.
-#' @examples # TBA
-#' @export
 ilr_trans <- function(data){
   dClr <- clr_trans(data)
   mClr <- as.matrix(dClr)
@@ -26,8 +24,6 @@ ilr_trans <- function(data){
 #'
 #' @param data Dataset to have the transformation reversed
 #' @return Compositional columns
-#' @examples # TBA
-#' @export
 ilr_trans_inv <- function(data){
   transformation_matrix <- create_transformation_matrix(ncol(data) + 1)
   transformation_matrix_t <- t(transformation_matrix)

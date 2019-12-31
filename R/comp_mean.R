@@ -10,7 +10,10 @@
 #' @param units
 #' @param specified_units If units are being specified via the composition sum, this is where it is done. It should be a vector where the first argument is a string describing the units, and the second argument is the expected sum of a composition e.g. \code{c("hr/day", 24)}
 #' @return Vector which is the compositional mean.
-#' @examples #TBA
+#' @examples
+#' comp_mean(data - simdata,
+#'           comp_labels = c("partA", "partB", "partC", "partD", "partE"),
+#'           units = "hr/day")
 #' @export
 comp_mean <- function(data, comp_labels, rounded_zeroes = FALSE, det_limit = NULL, units = "unitless", specified_units = NULL){
 
