@@ -5,12 +5,8 @@
 #' @param model
 #' @param dataset  Should be dataset used to develop \code{model}.
 #' @param new_data Data for predictions.
-#' @param transformation_type Should match transformation used in \code{transform_comp} when developing models.
-#' @param comparison_part If used, should match transformation used in \code{transform_comp} when developing models.
-#' @param part_1 If used, should match transformation used in \code{transform_comp} when developing models.
-#' @param comp_labels
-#' @param units What are the units of the compositional variables? E.g. for activity data "hr/day". Currently all non-activity exposure variables should be specified as unitless until support for alternatives units is added.
-#' @param specified_units
+#' @inheritParams transform_comp
+#' @inheritParams process_units
 #' @param terms Are predictions for terms,or are they absolute?
 #' @return Plot with balance of two parts plotted as exposure/ independent variable.
 #' @examples

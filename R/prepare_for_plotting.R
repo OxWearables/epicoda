@@ -3,7 +3,7 @@
 #' If fixed values are not set, this will set them to modal/ median values.
 #'
 #' @param data Data used for model development.
-#' @param comp_labels Labels of the compositional componenets.Should be column names of columns in \code{data}.
+#' @inheritParams plot_transfers
 #' @return dataframe with a single row of fixed_values.
 generate_fixed_values <- function(data, comp_labels, rounded_zeroes, det_limit, units, specified_units){
   fixed_values <- data.frame(matrix(ncol = 0, nrow = 1))
@@ -30,9 +30,7 @@ generate_fixed_values <- function(data, comp_labels, rounded_zeroes, det_limit, 
 #' Produces variable going between percentiles of the part of interest in the data.
 #'
 #' @param part_of_interest The variable of interest.
-#' @param lower_quantile The lower quantile to vary from.
-#' @param upper_quantile The upper quantile to vary to.
-#' @param granularity Doesn't usually need setting. Parameter indicating how many predictions to make. If too low, plotted curve has gaps. If too high, calculation is slow.
+#' @inheritParams plot_transfers
 #' @return Vector of values going from \code{lower_quantile} to \code{upper_quantile} of the distribution of the varaible of interest.
 vary_part_of_interest <- function(part_of_interest,
                                   lower_quantile = 0.05,
@@ -53,16 +51,7 @@ vary_part_of_interest <- function(part_of_interest,
 #'
 #' Generates a new dataset to feed into the plotting functions.
 #'
-#' @param from_part part to plot transfer out of. Of the two being considered, should be part with generally higher values (e.g. higher median)
-#' @param to_part part to plot transfer into. Of the two being considered, should be part with generally lower values (e.g. lower median.)
-#' @param comp_sum Numeric value indicating the value compositional columns should sum to (e.g. 1, 24, 168, 10080).
-#' @param fixed_values Should be a dataframe with a column for each part and containing a single value for each of those.
-#' @param dataset Dataset to take distribution of \code{from_part} from.
-#' @param comp_labels Labels of compositional columns.
-#' @param lower_quantile See \code{vary_time_of_interest}
-#' @param upper_quantile See \code{vary_time_of_interest}
-#' @param granularity Doesn't usually need setting. Parameter indicating how many predictions to make. If too low, plotted curve has gaps. If too high, calculation is slow.
-#' @return Dataframe varying in time of interest.
+#' @inheritParams plot_transfers
 make_new_data <- function(from_part,
                           to_part,
                           fixed_values,
@@ -84,8 +73,8 @@ make_new_data <- function(from_part,
                                                    lower_quantile,
                                                    upper_quantile))
       new_data[label] <- this_col
-    }
-    else{
+      }
+    if (label != to_part){
       this_col <- data.frame(rep(fixed_values[1, label], by = 10000))
       new_data[label] <- this_col
     }

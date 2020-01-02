@@ -4,11 +4,8 @@
 #'
 #' @param data Dataset to calculate compositional mean of.
 #' @param comp_labels The labels of the compositional parts.
-#' @param rounded_zeroes Are zeroes rounded zeroes?
-#' @param det_limit Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
-#' minimum measurable value in the compositional columns of data.
-#' @param units
-#' @param specified_units If units are being specified via the composition sum, this is where it is done. It should be a vector where the first argument is a string describing the units, and the second argument is the expected sum of a composition e.g. \code{c("hr/day", 24)}
+#' @inheritParams process_zeroes
+#' @inheritParams process_units
 #' @return Vector which is the compositional mean.
 #' @examples
 #' comp_mean(data - simdata,

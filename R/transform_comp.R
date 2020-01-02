@@ -6,9 +6,7 @@
 #' @param data Dataset to have the transformation applied to.
 #' @param comp_labels The labels of the compositional columns.
 #' @param transformation_type The type of transformation desired. Should be \code{"ilr", "alr"} or \code{"clr"}.
-#' @param rounded_zeroes Are zeroes rounded zeroes?
-#' @param det_limit Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
-#' minimum measurable value in the compositional columns of data.
+#' @inheritParams process_zeroes
 #' @param comparison_part Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of part that all other parts will be compared to.
 #' @param part_1 Only used if First part in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.
 #' @return \code{data} with transformed activity columns.

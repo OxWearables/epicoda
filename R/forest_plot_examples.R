@@ -1,22 +1,75 @@
 #' Produce a forest plot indicating model prediction at given compositions
 #'
-#'
-#' @param composition_list List of compositions
-#' @param model Should be a Cox model.
-#' @param comp_labels The labels of the compositional columns.
-#' @param transformation_type
-#' @param comparison_part Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of part that all other parts will be compared to.
-#' @param part_1 Only used if First part in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.
-
+#' @param composition_list Named list of compositions. Note each composition should be stored as a data frame. For example, use the output of \code{change_composition}.
+#' @param x_label
+#' @param xllimit
+#' @param xulimit
+#' @inheritParams predict_fit_and_ci
+#' @inheritDotParams forestplot::forestplot
+#' @return Forest plot illustrating prediction of the model at given compositions.
 #' @export
-forest_plot_comp <- function(data, model, composition_data_frame,  comp_labels, transformation_type = "ilr", comparison_part = NULL, part_1 = NULL){
-  if (class(model) != "coxph"){
-    stop("forest_plot_comp is only implemented for Cox models.")
+forest_plot_comp <-
+  function(composition_list,
+           model,
+           dataset,
+           fixed_values = NULL,
+           transformation_type = NULL,
+           comparison_part = NULL,
+           part_1 = NULL,
+           comp_labels,
+           units = "unitless",
+           specified_units = NULL,
+           rounded_zeroes = FALSE,
+           det_limit = NULL,
+           terms = TRUE,
+           x_label,
+           xllimit,
+           xulimit,
+           ...) {
+    if (class(model) != "coxph") {
+      stop("forest_plot_comp is only implemented for Cox models.")
+    }
+    if (!is.list(composition_list)) {
+      stop('`composition_list` should be a list.')
+    }
+    col_of_names <- names(composition_list)
+    df <- rbindlist(composition_list, use.names = TRUE)
+    dNew <- predict_fit_and_ci(
+      model = model,
+      dataset = dataset,
+      new_data = df,
+      fixed_values = fixed_values,
+      transformation_type = transformation_type,
+      comparison_part = comparison_part,
+      part_1 = part_1,
+      comp_labels = comp_labels,
+      units = units,
+      specified_units = specified_units,
+      rounded_zeroes = rounded_zeroes,
+      det_limit = det_limit,
+      terms = terms
+    )
+
+
+    fp <- forestplot(
+      tabletext,
+      graph.pos = 2,
+      data_frame_for_forest_plot,
+      xlog = TRUE,
+      xticks = c(0.8, 0.9, 1.0, 1.1, 1.2),
+      boxsize = .15,
+      lwd.ci = 3,
+      lwd.zero = 3,
+      lwd.xaxis = 3,
+      lwd.xticks = 3,
+      clr.line = "black",
+      clip = c(xllimit, xulimit),
+      xlab = x_label
+      ,
+      ...
+    )
+    return(fp)
   }
-
-
-  return(y)
-}
 
 
 

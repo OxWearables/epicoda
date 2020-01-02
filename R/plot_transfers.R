@@ -4,22 +4,15 @@
 #'
 #' @param from_part Should be an element of \code{comp_labels}.
 #' @param to_part Should be an element of \code{comp_labels}. Should have compositional mean less than \code{from_part}.
-#' @param model
-#' @param dataset Should be dataset used to develop \code{model}. Used to set reasonable values to display predictions for based on range of the data.
-#' @param fixed_values If desired, fixed_values for variables in \code{dataset} which aren't in \code{comp_labels}. These will be used when making predictions if \code{terms = FALSE}.
-#' @param transformation_type Should match transformation used in \code{transform_comp} when developing models.
-#' @param comparison_part If used, should match transformation used in \code{transform_comp} when developing models.
-#' @param part_1 If used, should match transformation used in \code{transform_comp} when developing models.
-#' @param comp_labels
+#' @inheritParams predict_fit_and_ci
 #' @param yllimit Upper limit to show on y-axis on plot.
 #' @param yulimit Lower limit to show on y-axis on plot.
 #' @param y_label Label for y-axis on plot.
 #' @param plot_log If this is \code{TRUE}, the y-axis will be log-transformed.
 #' @param lower_quantile See \code{vary_time_of_interest} and \code{make_new_data}
 #' @param upper_quantile See \code{vary_time_of_interest} and \code{make_new_data}
-#' @param units What are the units of the compositional variables? E.g. for activity data "hr/day". Currently all non-activity exposure variables should be specified as unitless until support for alternatives units is added.
-#' @param terms Are predictions for terms,or are they absolute?
-#' @param theme Optional `theme` argument which can be set as a `ggplot2::theme` object and will control how the plot appears.
+#' @param granularity Doesn't usually need setting. Parameter indicating how many predictions to make. If too low, plotted curve has gaps. If too high, calculation is slow.
+#' @param theme Optional \code{theme} argument which can be set as a \code{ggplot2::theme} object and will control how the plot appears.
 #' @return Plot with balance of two parts plotted as exposure/ independent variable.
 #' @examples
 plot_transfers <- function(from_part,

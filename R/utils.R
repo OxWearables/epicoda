@@ -60,8 +60,8 @@ alter_order_comp_labels <- function(comp_labels, part_1){
 
 #' Process units argument
 #'
-#' @param units List of compositional column labels.
-#' @param specified_units part which should be moved to front.
+#' @param units What are the units of the compositional variables? Currently available are "unitless" (where working in terms of proportions), "hr/day", "hr/wk", "min/day", "min/wk" and "specified", in which case the \code{specified_units} argument should be set.
+#' @param specified_units If units are being specified via the composition sum, this is where it is done. It should be a vector where the first argument is a string describing the units, and the second argument is the expected sum of a composition e.g. \code{c("hr/day", 24)}
 process_units <- function(units, specified_units){
   if (units == "hr/wk"){
     comp_sum <- 24*7
