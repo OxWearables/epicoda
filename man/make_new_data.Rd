@@ -9,30 +9,24 @@ make_new_data(from_part, to_part, fixed_values, dataset, units = NULL,
   upper_quantile = 0.95, granularity = 10000)
 }
 \arguments{
-\item{from_part}{part to plot transfer out of. Of the two being considered, should be part with generally higher values (e.g. higher median)}
+\item{from_part}{Should be an element of \code{comp_labels}.}
 
-\item{to_part}{part to plot transfer into. Of the two being considered, should be part with generally lower values (e.g. lower median.)}
+\item{to_part}{Should be an element of \code{comp_labels}. Should have compositional mean less than \code{from_part}.}
 
-\item{fixed_values}{Should be a dataframe with a column for each part and containing a single value for each of those.}
+\item{dataset}{Should be dataset used to develop \code{model}.}
 
-\item{dataset}{Dataset to take distribution of \code{from_part} from.}
+\item{units}{What are the units of the compositional variables? Currently available are "unitless" (where working in terms of proportions), "hr/day", "hr/wk", "min/day", "min/wk" and "specified", in which case the \code{specified_units} argument should be set.}
 
-\item{comp_labels}{Labels of compositional columns.}
+\item{specified_units}{If units are being specified via the composition sum, this is where it is done. It should be a vector where the first argument is a string describing the units, and the second argument is the expected sum of a composition e.g. \code{c("hr/day", 24)}}
 
-\item{lower_quantile}{See \code{vary_time_of_interest}}
+\item{comp_labels}{The labels of the compositional columns.}
 
-\item{upper_quantile}{See \code{vary_time_of_interest}}
+\item{lower_quantile}{See \code{vary_time_of_interest} and \code{make_new_data}}
+
+\item{upper_quantile}{See \code{vary_time_of_interest} and \code{make_new_data}}
 
 \item{granularity}{Doesn't usually need setting. Parameter indicating how many predictions to make. If too low, plotted curve has gaps. If too high, calculation is slow.}
-
-\item{comp_sum}{Numeric value indicating the value compositional columns should sum to (e.g. 1, 24, 168, 10080).}
-}
-\value{
-Dataframe varying in time of interest.
 }
 \description{
 Generates a new dataset to feed into the plotting functions.
-}
-\examples{
-
 }

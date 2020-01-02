@@ -4,19 +4,44 @@
 \alias{forest_plot_comp}
 \title{Produce a forest plot indicating model prediction at given compositions}
 \usage{
-forest_plot_comp(data, model, composition_data_frame, comp_labels,
-  transformation_type = "ilr", comparison_part = NULL, part_1 = NULL)
+forest_plot_comp(composition_list, model, dataset, fixed_values = NULL,
+  transformation_type = NULL, comparison_part = NULL, part_1 = NULL,
+  comp_labels, units = "unitless", specified_units = NULL,
+  rounded_zeroes = FALSE, det_limit = NULL, terms = TRUE,
+  x_label = NULL, xllimit = NULL, xulimit = NULL, plot_log = FALSE,
+  ...)
 }
 \arguments{
-\item{model}{Should be a Cox model.}
+\item{composition_list}{Named list of compositions. Note each composition should be stored as a data frame. For example, use the output of \code{change_composition}.}
 
-\item{comp_labels}{The labels of the compositional columns.}
+\item{dataset}{Should be dataset used to develop \code{model}.}
+
+\item{transformation_type}{The type of transformation desired. Should be \code{"ilr", "alr"} or \code{"clr"}.}
 
 \item{comparison_part}{Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of part that all other parts will be compared to.}
 
 \item{part_1}{Only used if First part in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
 
-\item{composition_list}{List of compositions}
+\item{comp_labels}{The labels of the compositional columns.}
+
+\item{units}{What are the units of the compositional variables? Currently available are "unitless" (where working in terms of proportions), "hr/day", "hr/wk", "min/day", "min/wk" and "specified", in which case the \code{specified_units} argument should be set.}
+
+\item{specified_units}{If units are being specified via the composition sum, this is where it is done. It should be a vector where the first argument is a string describing the units, and the second argument is the expected sum of a composition e.g. \code{c("hr/day", 24)}}
+
+\item{rounded_zeroes}{Are zeroes rounded zeroes?}
+
+\item{det_limit}{Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
+minimum measurable value in the compositional columns of data.}
+
+\item{terms}{Are predictions for terms,or are they absolute?}
+
+\item{...}{Arguments passed on to \code{forestplot::forestplot}
+\describe{
+  \item{}{}
+}}
+}
+\value{
+Forest plot illustrating prediction of the model at given compositions.
 }
 \description{
 Produce a forest plot indicating model prediction at given compositions

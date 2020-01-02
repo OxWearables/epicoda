@@ -9,22 +9,23 @@ plot_transfers(from_part, to_part, model, dataset, fixed_values = NULL,
   comp_labels, yllimit = NULL, yulimit = NULL, y_label = NULL,
   plot_log = FALSE, lower_quantile = 0.05, upper_quantile = 0.95,
   units = "unitless", specified_units = NULL, rounded_zeroes = FALSE,
-  det_limit = NULL, terms = TRUE, granularity = 10000)
+  det_limit = NULL, terms = TRUE, granularity = 10000,
+  theme = NULL)
 }
 \arguments{
 \item{from_part}{Should be an element of \code{comp_labels}.}
 
 \item{to_part}{Should be an element of \code{comp_labels}. Should have compositional mean less than \code{from_part}.}
 
-\item{dataset}{Should be dataset used to develop \code{model}. Used to set reasonable values to display predictions for based on range of the data.}
+\item{dataset}{Should be dataset used to develop \code{model}.}
 
-\item{fixed_values}{If desired, fixed_values for variables in \code{dataset} which aren't in \code{comp_labels}. These will be used when making predictions if \code{terms = FALSE}.}
+\item{transformation_type}{The type of transformation desired. Should be \code{"ilr", "alr"} or \code{"clr"}.}
 
-\item{transformation_type}{Should match transformation used in \code{transform_comp} when developing models.}
+\item{comparison_part}{Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of part that all other parts will be compared to.}
 
-\item{comparison_part}{If used, should match transformation used in \code{transform_comp} when developing models.}
+\item{part_1}{Only used if First part in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
 
-\item{part_1}{If used, should match transformation used in \code{transform_comp} when developing models.}
+\item{comp_labels}{The labels of the compositional columns.}
 
 \item{yllimit}{Upper limit to show on y-axis on plot.}
 
@@ -38,9 +39,20 @@ plot_transfers(from_part, to_part, model, dataset, fixed_values = NULL,
 
 \item{upper_quantile}{See \code{vary_time_of_interest} and \code{make_new_data}}
 
-\item{units}{What are the units of the compositional variables? E.g. for activity data "hr/day". Currently all non-activity exposure variables should be specified as unitless until support for alternatives units is added.}
+\item{units}{What are the units of the compositional variables? Currently available are "unitless" (where working in terms of proportions), "hr/day", "hr/wk", "min/day", "min/wk" and "specified", in which case the \code{specified_units} argument should be set.}
+
+\item{specified_units}{If units are being specified via the composition sum, this is where it is done. It should be a vector where the first argument is a string describing the units, and the second argument is the expected sum of a composition e.g. \code{c("hr/day", 24)}}
+
+\item{rounded_zeroes}{Are zeroes rounded zeroes?}
+
+\item{det_limit}{Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
+minimum measurable value in the compositional columns of data.}
 
 \item{terms}{Are predictions for terms,or are they absolute?}
+
+\item{granularity}{Doesn't usually need setting. Parameter indicating how many predictions to make. If too low, plotted curve has gaps. If too high, calculation is slow.}
+
+\item{theme}{Optional \code{theme} argument which can be set as a \code{ggplot2::theme} object and will control how the plot appears.}
 }
 \value{
 Plot with balance of two parts plotted as exposure/ independent variable.

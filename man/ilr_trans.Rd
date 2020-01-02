@@ -20,6 +20,3 @@ This doesn't use compositions::ilr to insulate it from changes in the choice of
 basis used. As pivot coordinates are currently standard in physical activity epidemiology this
 is specified.
 }
-\examples{
-# TBA
-}

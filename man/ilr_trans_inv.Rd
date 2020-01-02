@@ -15,6 +15,3 @@ Compositional columns
 \description{
 Takes ilr-transformed columns and inverts the ilr transformation.
 }
-\examples{
-# TBA
-}

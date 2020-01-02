@@ -10,7 +10,16 @@ generate_fixed_values(data, comp_labels, rounded_zeroes, det_limit, units,
 \arguments{
 \item{data}{Data used for model development.}
 
-\item{comp_labels}{Labels of the compositional componenets.Should be column names of columns in \code{data}.}
+\item{comp_labels}{The labels of the compositional columns.}
+
+\item{rounded_zeroes}{Are zeroes rounded zeroes?}
+
+\item{det_limit}{Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
+minimum measurable value in the compositional columns of data.}
+
+\item{units}{What are the units of the compositional variables? Currently available are "unitless" (where working in terms of proportions), "hr/day", "hr/wk", "min/day", "min/wk" and "specified", in which case the \code{specified_units} argument should be set.}
+
+\item{specified_units}{If units are being specified via the composition sum, this is where it is done. It should be a vector where the first argument is a string describing the units, and the second argument is the expected sum of a composition e.g. \code{c("hr/day", 24)}}
 }
 \value{
 dataframe with a single row of fixed_values.
