@@ -3,7 +3,8 @@
 #' Principally intended as input to forest_plot_examples and plot_transfers.
 #'
 #' @param model
-#' @param fixed_values If desired, fixed_values for variables in \code{dataset} which aren't in \code{comp_labels}. These will be used when making predictions if \code{terms = FALSE}.
+#' @param dataset  Should be dataset used to develop \code{model}.
+#' @param new_data Data for predictions.
 #' @param transformation_type Should match transformation used in \code{transform_comp} when developing models.
 #' @param comparison_part If used, should match transformation used in \code{transform_comp} when developing models.
 #' @param part_1 If used, should match transformation used in \code{transform_comp} when developing models.
@@ -15,7 +16,7 @@
 #' @examples
 predict_fit_and_ci <- function(model,
                            dataset,
-                           fixed_values = NULL,
+                           new_data,
                            transformation_type = NULL,
                            comparison_part = NULL,
                            part_1 = NULL,
@@ -71,8 +72,7 @@ predict_fit_and_ci <- function(model,
 
 
   # We calculate the compositional mean so we can use it in future calculations
-  cm <-
-    comp_mean(
+  cm <- comp_mean(
       dataset,
       comp_labels,
       rounded_zeroes = FALSE,
@@ -87,65 +87,13 @@ predict_fit_and_ci <- function(model,
                                  comparison_part = comparison_part,
                                  rounded_zeroes = FALSE)
 
-  # We assign some fixed_values to use in plotting
 
-  if (!(is.null(fixed_values))) {
-    if (!is.null(colnames(fixed_values)[colnames(fixed_values) %in% comp_labels])) {
-      warning(
-        "fixed_values will be updated to have compositional parts fixed at the compositional mean. For technical and pragmatic reasons, use of a different reference for the compositional parts is not currently possible."
-      )
-    }
-    fixed_values <- cbind(fixed_values, cm)
-  }
-  if (is.null(fixed_values)) {
-    fixed_values <-
-      generate_fixed_values(
-        dataset,
-        comp_labels,
-        rounded_zeroes = FALSE,
-        det_limit = det_limit,
-        units = units,
-        specified_units = specified_units
-      )
-  }
 
-  transf_fixed_vals <- transform_comp(
-    fixed_values[, colnames(fixed_values)[!(colnames(fixed_values) %in% transf_labels)]],
-    comp_labels,
-    transformation_type = transformation_type,
-    part_1 = part_1,
-    comparison_part = comparison_part,
-    rounded_zeroes = FALSE
-  )
-
-  # We make some new data for predictions
-  new_data <-
-    make_new_data(
-      from_part,
-      to_part,
-      fixed_values,
-      dataset_ready,
-      units = units,
-      comp_labels = comp_labels,
-      lower_quantile = 0.05,
-      upper_quantile = 0.95,
-      granularity = granularity
-    )
-
-  new_data <-
-    transform_comp(
-      new_data,
-      comp_labels,
-      transformation_type = transformation_type,
-      part_1 = part_1,
-      comparison_part = comparison_part,
-      rounded_zeroes = FALSE
-    )
 
   # We begin the plotting
   if (type == "logistic" && (terms == FALSE)) {
     message(
-      "Note that the confidence intervals on this plot include uncertainty driven by other, non-compositional variables. To look at compositional variables only, use terms = TRUE"
+      "Note that the confidence intervals on these predictions include uncertainty driven by other, non-compositional variables. To look at compositional variables only, use terms = TRUE"
     )
     predictions <- predict(model,
                            newdata = new_data,
@@ -168,61 +116,7 @@ predict_fit_and_ci <- function(model,
     dNew$upper_CI <-
       model$family$linkinv(dNew$fit + 1.96 * dNew$se.fit)
 
-    if (is.null(yllimit)) {
-      yllimit <- min(dNew$lower_CI)
-    }
-    if (is.null(yulimit)) {
-      yulimit <- max(dNew$upper_CI)
-    }
 
-    dNew$lower_CI <-
-      pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
-    dNew$upper_CI <-
-      pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
-
-    if (plot_log == TRUE) {
-      plot_of_this <-
-        ggplot2::ggplot(
-          data = dNew,
-          mapping = ggplot2::aes(x = axis_vals, y = normalised_predictions)
-        ) +
-        ggplot2::geom_errorbar(ggplot2::aes(
-          x = axis_vals,
-          ymin = lower_CI,
-          ymax = upper_CI
-        ),
-        color = "grey") +
-        ggplot2::geom_point(size= 2) +
-        ggplot2::labs(
-          x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
-          y = y_label
-        ) +
-        ggplot2::scale_y_continuous(trans = scales::log_trans(),
-                                    limits = c(yllimit, yulimit)) +
-        ggplot2::geom_vline(xintercept = 0, size = 1) +
-        theme_for_plots
-    }
-    else {
-      plot_of_this <-
-        ggplot2::ggplot(
-          data = dNew,
-          mapping = ggplot2::aes(x = axis_vals, y = normalised_predictions)
-        ) +
-        ggplot2::ylim(yllimit, yulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes(
-          x = axis_vals,
-          ymin = lower_CI,
-          ymax = upper_CI
-        ),
-        color = "grey") +
-        ggplot2::geom_point(size= 2) +
-        ggplot2::labs(
-          x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
-          y = y_label
-        ) +
-        ggplot2::geom_vline(xintercept = 0, size = 1) +
-        theme_for_plots
-    }
   }
 
 
@@ -288,61 +182,6 @@ predict_fit_and_ci <- function(model,
     dNew$lower_CI <- exp(alpha_lower)
     dNew$upper_CI <- exp(alpha_upper)
 
-    if (is.null(yllimit)) {
-      yllimit <- min(dNew$lower_CI)
-    }
-    if (is.null(yulimit)) {
-      yulimit <- max(dNew$upper_CI)
-    }
-
-    dNew$lower_CI <-
-      pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
-    dNew$upper_CI <-
-      pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
-
-    if (plot_log == TRUE) {
-      plot_of_this <-
-        ggplot2::ggplot(data = dNew,
-                        mapping = ggplot2::aes(x = axis_vals, y = fit)) +
-        ggplot2::ylim(yllimit, yulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes(
-          x = axis_vals,
-          ymin = lower_CI,
-          ymax = upper_CI
-        ),
-        color = "grey") +
-        ggplot2::geom_point(size= 2) +
-        ggplot2::labs(
-          x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
-          y = y_label
-        ) +
-        ggplot2::scale_y_continuous(
-          trans = scales::log_trans(),
-          breaks = seq(signif(yllimit, digits = 1), signif(yulimit, digits = 1), by = 0.2),
-          labels = seq(signif(yllimit, digits = 1), signif(yulimit, digits = 1), by = 0.2)
-        ) +
-        ggplot2::geom_vline(xintercept = 0, size = 1) +
-        theme_for_plots
-    }
-    else {
-      plot_of_this <-
-        ggplot2::ggplot(data = dNew,
-                        mapping = ggplot2::aes(x = axis_vals, y = fit)) +
-        ggplot2::ylim(yllimit, yulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes(
-          x = axis_vals,
-          ymin = lower_CI,
-          ymax = upper_CI
-        ),
-        color = "grey") +
-        ggplot2::geom_point(size= 2) +
-        ggplot2::labs(
-          x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
-          y = y_label
-        ) +
-        ggplot2::geom_vline(xintercept = 0, size = 1) +
-        theme_for_plots
-    }
   }
 
 
@@ -403,90 +242,6 @@ predict_fit_and_ci <- function(model,
 
     dNew$lower_CI <- exp(alpha_lower)
     dNew$upper_CI <- exp(alpha_upper)
-
-
-
-    # dNew <- data.frame(new_data, predictions)
-    # dNew$axis_vals <-
-    #   dNew[, to_part] - comp_mean(
-    #     dataset,
-    #     comp_labels,
-    #     rounded_zeroes = FALSE,
-    #     det_limit = det_limit,
-    #     units = units
-    #   )[[to_part]]
-    #
-    # vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
-    # sum_for_args <- paste0(vector_for_args, collapse = "+")
-    #
-    # vector_for_se <- paste("dNew$se.fit.", transf_labels, sep = "")
-    # sum_for_se <- paste0(vector_for_se, collapse = "^2 +")
-    # dNew$predictions <- exp(eval(parse(text = sum_for_args)))
-    # dNew$fit <- dNew$predictions
-    # dNew$lower_CI <-
-    #   dNew$predictions * exp(-1.96 * sqrt(eval(parse(text = sum_for_se))))
-    # dNew$upper_CI <-
-    #   dNew$predictions * exp(1.96 * sqrt(eval(parse(text = sum_for_se))))
-
-    if (is.null(yllimit)) {
-      yllimit <- min(dNew$lower_CI)
-    }
-    if (is.null(yulimit)) {
-      yulimit <- max(dNew$upper_CI)
-    }
-
-
-    dNew$lower_CI <-
-      pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
-    dNew$upper_CI <-
-      pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
-
-    if (plot_log == TRUE) {
-      plot_of_this <-
-        ggplot2::ggplot(data = dNew,
-                        mapping = ggplot2::aes(x = axis_vals, y = fit)) +
-        ggplot2::ylim(yllimit, yulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes(
-          x = axis_vals,
-          ymin = lower_CI,
-          ymax = upper_CI
-        ),
-        color = "grey") +
-        ggplot2::geom_point(size= 2) +
-        ggplot2::labs(
-          x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
-          y = y_label
-        ) +
-        geom_hline(yintercept = 1) +
-        ggplot2::geom_vline(xintercept = 0, size = 1) +
-        ggplot2::scale_y_continuous(
-          trans = scales::log_trans(),
-          breaks = seq(signif(yllimit, digits = 1), signif(yulimit, digits = 1), by = 0.1),
-          labels = seq(signif(yllimit, digits = 1), signif(yulimit, digits = 1), by = 0.1),
-          limits = c(yllimit, yulimit)
-        )+
-        theme_for_plots
-    }
-    else {
-      plot_of_this <-
-        ggplot2::ggplot(data = dNew,
-                        mapping = ggplot2::aes(x = axis_vals, y = fit)) +
-        ggplot2::ylim(yllimit, yulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes(
-          x = axis_vals,
-          ymin = lower_CI,
-          ymax = upper_CI
-        ),
-        color = "grey") +
-        ggplot2::geom_point(size= 2) +
-        ggplot2::labs(
-          x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
-          y = y_label
-        ) +
-        geom_hline(yintercept = 1) +
-        ggplot2::geom_vline(xintercept = 0, size = 1) +
-        theme_for_plots
-    }
   }
 
 
@@ -518,65 +273,6 @@ predict_fit_and_ci <- function(model,
       dNew$fit * exp(-1.96 * dNew$se.fit) / acm
     dNew$upper_CI <-
       dNew$fit * exp(1.96 * dNew$se.fit) / acm
-
-    if (is.null(yllimit)) {
-      yllimit <- min(dNew$lower_CI)
-    }
-    if (is.null(yulimit)) {
-      yulimit <- max(dNew$upper_CI)
-    }
-
-    dNew$lower_CI <-
-      pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
-    dNew$upper_CI <-
-      pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
-
-    if (plot_log == TRUE) {
-      plot_of_this <-
-        ggplot2::ggplot(data = dNew,
-                        mapping = ggplot2::aes(x = axis_vals, y = predictions)) +
-        ggplot2::ylim(yllimit, yulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes(
-          x = axis_vals,
-          ymin = lower_CI,
-          ymax = upper_CI
-        ),
-        color = "grey") +
-        ggplot2::geom_point(size= 2) +
-        ggplot2::labs(
-          x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
-          y = y_label
-        ) +
-        ggplot2::geom_hline(yintercept = 1, size = 1) +
-        ggplot2::geom_vline(xintercept = 0, size = 1) +
-        ggplot2::scale_y_continuous(
-          trans = scales::log_trans(),
-          breaks = seq(signif(yllimit, digits = 1), signif(yulimit, digits = 1), by = 0.2),
-          labels = seq(signif(yllimit, digits = 1), signif(yulimit, digits = 1), by = 0.2),
-          limits = c(yllimit, yulimit)
-        ) +
-        theme_for_plots
-    }
-    else {
-      plot_of_this <-
-        ggplot2::ggplot(data = dNew,
-                        mapping = ggplot2::aes(x = axis_vals, y = predictions)) +
-        ggplot2::ylim(yllimit, yulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes(
-          x = axis_vals,
-          ymin = lower_CI,
-          ymax = upper_CI
-        ),
-        color = "grey") +
-        ggplot2::geom_point(size= 2) +
-        ggplot2::labs(
-          x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
-          y = y_label
-        ) +
-        geom_hline(yintercept = 1) +
-        ggplot2::geom_vline(xintercept = 0, size = 1) +
-        theme_for_plots
-    }
   }
 
 
@@ -610,62 +306,7 @@ predict_fit_and_ci <- function(model,
     dNew$lower_CI <- dNew$fit - 1.96 * dNew$se.fit
     dNew$upper_CI <- dNew$fit + 1.96 * dNew$se.fit
 
-    if (is.null(yllimit)) {
-      yllimit <- min(dNew$lower_CI)
-    }
-    if (is.null(yulimit)) {
-      yulimit <- max(dNew$upper_CI)
-    }
 
-
-    dNew$lower_CI <-
-      pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
-    dNew$upper_CI <-
-      pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
-
-    if (plot_log == TRUE) {
-      plot_of_this <-
-        ggplot2::ggplot(data = dNew,
-                        mapping = ggplot2::aes(x = axis_vals, y = fit)) +
-        ggplot2::ylim(yllimit, yulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes(
-          x = axis_vals,
-          ymin = lower_CI,
-          ymax = upper_CI
-        ),
-        color = "grey") +
-        ggplot2::geom_point(size= 2) +
-        ggplot2::labs(
-          x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
-          y = y_label
-        ) +
-        ggplot2::scale_y_continuous(
-          trans = scales::log_trans(),
-          breaks = seq(signif(yllimit, digits = 1), signif(yulimit, digits = 1), by = 0.2),
-          labels = seq(signif(yllimit, digits = 1), signif(yulimit, digits = 1), by = 0.2)
-        ) +
-        ggplot2::geom_vline(xintercept = 0,
-                            size = 1,
-                            size = 1) +
-        theme_for_plots
-    }
-    else {
-      plot_of_this <-
-        ggplot2::ggplot(data = dNew,
-                        mapping = ggplot2::aes(x = axis_vals, y = fit)) +
-        ggplot2::ylim(yllimit, yulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes(
-          x = axis_vals,
-          ymin = lower_CI,
-          ymax = upper_CI
-        ),
-        color = "grey") +
-        ggplot2::geom_point(size= 2) +
-        ggplot2::labs(x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
-                      y = y_label) +
-        ggplot2::geom_vline(xintercept = 0, size = 1) +
-        theme_for_plots
-    }
   }
 
 
@@ -678,7 +319,6 @@ predict_fit_and_ci <- function(model,
 
 
   if (type == "linear" && (terms)) {
-    #   print(head(new_data))
     predictions <-
       predict(
         model,
@@ -739,74 +379,9 @@ predict_fit_and_ci <- function(model,
 
     dNew$lower_CI <- dNew$fit - t_value * value
     dNew$upper_CI <- dNew$fit + t_value * value
-
-    if (is.null(yllimit)) {
-      yllimit <- min(dNew$lower_CI)
-    }
-    if (is.null(yulimit)) {
-      yulimit <- max(dNew$upper_CI)
-    }
-
-    dNew$lower_CI <-
-      pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
-    dNew$upper_CI <-
-      pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
-
-    if (plot_log == TRUE) {
-      plot_of_this <-
-        ggplot2::ggplot(data = dNew,
-                        mapping = ggplot2::aes(x = axis_vals, y = fit)) +
-        ggplot2::ylim(yllimit, yulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes(
-          x = axis_vals,
-          ymin = lower_CI,
-          ymax = upper_CI
-        ),
-        color = "grey") +
-        ggplot2::geom_point(size= 2) +
-        ggplot2::labs(
-          x = paste(
-            "More",
-            from_part,
-            "\U2194",
-            "More",
-            to_part,
-            "\n " ,
-            units
-          ),
-          y = y_label
-        ) +
-        ggplot2::scale_y_continuous(
-          trans = scales::log_trans(),
-          breaks = seq(signif(yllimit, digits = 1), signif(yulimit, digits = 1), by = 0.2),
-          labels = seq(signif(yllimit, digits = 1), signif(yulimit, digits = 1), by = 0.2)
-        ) +
-        ggplot2::geom_vline(xintercept = 0, size = 1) +
-        theme_for_plots
-    }
-    else {
-      plot_of_this <-
-        ggplot2::ggplot(data = dNew,
-                        mapping = ggplot2::aes(x = axis_vals, y = fit)) +
-        ggplot2::ylim(yllimit, yulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes(
-          x = axis_vals,
-          ymin = lower_CI,
-          ymax = upper_CI
-        ),
-        color = "grey") +
-        ggplot2::geom_point(size= 2) +
-        ggplot2::labs(x = paste(from_part, "to", to_part, "\n", units),
-                      y = y_label) +
-        ggplot2::geom_vline(xintercept = 0, size = 1) +
-        theme_for_plots
-    }
-  }
+ }
 
 
-
-
-  print("Please note that plotting may take some time.")
   if (terms == FALSE) {
     short_form <- gsub(".*~", "", as.character(formula(model)))
     print(paste("Covariate values were fixed at: "))
@@ -821,5 +396,5 @@ predict_fit_and_ci <- function(model,
   }
 
 
-  return(plot_of_this)
+  return(dNew)
 }
