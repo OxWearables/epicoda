@@ -91,39 +91,11 @@ plot_transfers <- function(from_part,
 
 
   # We assign some internal parameters
-  type <- "unassigned"
-  if (class(model)[1] == "lm") {
-    type <- "linear"
-  }
-  if ((class(model)[1] == "glm") &&
-      (family(model)[[1]] == "binomial")) {
-    type <- "logistic"
-  }
-  if ((class(model)[1]  == "coxph")) {
-    type <- "cox"
-  }
-  if (type == "unassigned") {
-    stop("model is not a recognised type of model.")
-  }
-
+  type <- process_model_type(model)
 
 
   # We make sure there will be a y_label
-  if ((is.null(y_label)) & (terms) & (type == "linear")) {
-    y_label <- "Model-predicted difference in outcome"
-  }
-  if ((is.null(y_label)) & !(terms) & (type == "logistic")) {
-    y_label <- "Model-predicted probability"
-  }
-  if ((is.null(y_label)) & (terms) & (type == "logistic")) {
-    y_label <- "Model-predicted OR"
-  }
-  if ((is.null(y_label)) &  (type == "cox")) {
-    y_label <- "Model-predicted HR"
-  }
-  if ((is.null(y_label)) & (terms == FALSE)) {
-    y_label <- "Model-predicted outcome"
-  }
+  y_label <- process_axis_label(label = y_label, type = type, terms = terms)
 
 
 # We calculate the compositional mean so we can use it in future calculations

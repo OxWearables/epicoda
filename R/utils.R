@@ -144,3 +144,63 @@ process_zeroes <- function(data, comp_labels, rounded_zeroes, det_limit = NULL){
 }
 
 
+
+#' Process model argument
+#'
+#' @param model
+process_model_type <- function(model){
+  # We assign some internal parameters
+  type <- "unassigned"
+  if (class(model)[1] == "lm") {
+    type <- "linear"
+  }
+  if ((class(model)[1] == "glm") &&
+      (family(model)[[1]] == "binomial")) {
+    type <- "logistic"
+  }
+  if ((class(model)[1]  == "coxph")) {
+    type <- "cox"
+  }
+  if (type == "unassigned") {
+    stop("model is not a recognised type of model.")
+  }
+
+  return(type)
+}
+
+
+
+
+#' Process axis labels
+#'
+#' @param label
+#' @param terms
+#' @param type
+process_axis_label <- function(label, terms, type){
+  if ((is.null(label)) & (terms) & (type == "linear")) {
+    label <- "Model-predicted difference in outcome"
+  }
+  if ((is.null(label)) & !(terms) & (type == "logistic")) {
+    label <- "Model-predicted probability"
+  }
+  if ((is.null(label)) & (terms) & (type == "logistic")) {
+    label <- "Model-predicted OR"
+  }
+  if ((is.null(label)) &  (type == "cox")) {
+    label <- "Model-predicted HR"
+  }
+  if ((is.null(label)) & (terms == FALSE)) {
+    label <- "Model-predicted outcome"
+  }
+  return(label)
+}
+
+
+
+
+
+
+
+# We make sure there will be a y_label
+
+

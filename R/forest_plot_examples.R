@@ -32,6 +32,8 @@ forest_plot_comp <-
     if (!is.list(composition_list)) {
       stop('`composition_list` should be a list.')
     }
+
+
     col_of_names <- names(composition_list)
     df <- rbindlist(composition_list, use.names = TRUE)
     dNew <- predict_fit_and_ci(

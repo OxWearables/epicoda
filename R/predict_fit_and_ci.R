@@ -52,21 +52,7 @@ predict_fit_and_ci <- function(model,
 
 
   # We assign some internal parameters
-  type <- "unassigned"
-  if (class(model)[1] == "lm") {
-    type <- "linear"
-  }
-  if ((class(model)[1] == "glm") &&
-      (family(model)[[1]] == "binomial")) {
-    type <- "logistic"
-  }
-  if ((class(model)[1]  == "coxph")) {
-    type <- "cox"
-  }
-  if (type == "unassigned") {
-    stop("model is not a recognised type of model.")
-  }
-
+  type <- process_model_type(model)
 
   # We calculate the compositional mean so we can use it in future calculations
   cm <- comp_mean(
@@ -116,6 +102,7 @@ predict_fit_and_ci <- function(model,
     comparison_part = comparison_part,
     rounded_zeroes = FALSE
   )
+
   # We begin the plotting
   if (type == "logistic" && (terms == FALSE)) {
     message(
