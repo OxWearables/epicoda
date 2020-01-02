@@ -22,10 +22,18 @@ log_outcome <- glm(as.formula(paste("binary_outcome ~ agegroup + sex + ", transf
 summary(log_outcome)
 data_ilr_impute_zeroes
 summary(lm_outcome)
+predict_fit_and_ci(lm_outcome,
+                   dataset = data_ilr_impute_zeroes,
+                   transformation_type = "ilr",
+                   comp_labels = comp_labels,
+                   units = "hr/day",
+                   rounded_zeroes = TRUE,
+                   det_limit = 0.0083,
+                   terms = TRUE )
 summary(log_outcome)
 epicoda::plot_transfers(from_part = "partD",
                to_part = "partB",
-               model = log_outcome ,
+               model = lm_outcome ,
                dataset = data_ilr_impute_zeroes,
                transformation_type = "ilr",
                comp_labels = comp_labels,
@@ -33,9 +41,29 @@ epicoda::plot_transfers(from_part = "partD",
                units = "hr/day",
                rounded_zeroes = TRUE,
                det_limit = 0.0083,
-               terms = TRUE, plot_log = TRUE)
+               terms = TRUE,  plot_log = FALSE)
 
 head(data_ilr_impute_zeroes)
 epicoda::plot_transfers
+
+composition_list <- list("trial" = data.frame("partA" = c(0.001), "partB" = 1.499, "partC" = 4.5, "partD" = 9, "partE" = 9))
+
+forest_plot_comp(composition_list = composition_list,
+         model = lm_outcome,
+         dataset = data_ilr_impute_zeroes,
+         fixed_values = NULL,
+         transformation_type = "ilr",
+         comparison_part = NULL,
+         part_1 = NULL,
+         comp_labels = comp_labels,
+         units = "hr/day",
+         specified_units = NULL,
+         rounded_zeroes = FALSE,
+         det_limit = NULL,
+         terms = TRUE,
+         x_label = NULL,
+         xllimit = NULL,
+         xulimit = NULL,
+         plot_log = FALSE)
 
 
