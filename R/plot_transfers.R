@@ -196,43 +196,47 @@ plot_transfers <- function(from_part,
       rounded_zeroes = FALSE
     )
 
+
+  dNew <- predict_fit_and_ci(model = model,
+                             dataset = dataset,
+                             new_data = new_data,
+                             fixed_values = fixed_values,
+                             transformation_type = transformation_type,
+                             comparison_part = comparison_part,
+                             part_1 = part_1,
+                             comp_labels = comp_labels,
+                             units = units,
+                             specified_units = specified_units,
+                             rounded_zeroes = rounded_zeroes,
+                             det_limit = det_limit,
+                             terms = terms)
+  dNew$axis_vals <-
+    dNew[, to_part] - suppressMessages(comp_mean(
+      dataset,
+      comp_labels,
+      rounded_zeroes = FALSE,
+      det_limit = det_limit,
+      units = units
+    ))[[to_part]]
+
+  if (is.null(yllimit)) {
+    yllimit <- min(dNew$lower_CI)
+  }
+  if (is.null(yulimit)) {
+    yulimit <- max(dNew$upper_CI)
+  }
+
+  dNew$lower_CI <-
+    pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
+  dNew$upper_CI <-
+    pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
+
+
+
+
+
   # We begin the plotting
   if (type == "logistic") {
-    dNew <- predict_fit_and_ci(model = model,
-             dataset = dataset,
-             new_data = new_data,
-             fixed_values = fixed_values,
-             transformation_type = transformation_type,
-             comparison_part = comparison_part,
-             part_1 = part_1,
-             comp_labels = comp_labels,
-             units = units,
-             specified_units = specified_units,
-             rounded_zeroes = rounded_zeroes,
-             det_limit = det_limit,
-             terms = terms)
-    dNew$axis_vals <-
-      dNew[, to_part] - suppressMessages(comp_mean(
-        dataset,
-        comp_labels,
-        rounded_zeroes = FALSE,
-        det_limit = det_limit,
-        units = units
-      ))[[to_part]]
-
-    if (is.null(yllimit)) {
-      yllimit <- min(dNew$lower_CI)
-    }
-    if (is.null(yulimit)) {
-      yulimit <- max(dNew$upper_CI)
-    }
-
-    dNew$lower_CI <-
-      pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
-    dNew$upper_CI <-
-      pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
-
-
     if (plot_log == TRUE) {
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
@@ -257,6 +261,7 @@ plot_transfers <- function(from_part,
         ggplot2::geom_vline(xintercept = 0, size = 1) +
         theme_for_plots
     }
+
     else {
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
@@ -285,95 +290,7 @@ plot_transfers <- function(from_part,
 
 
 
-  if (type == "cox" && (terms)) {
-    predictions <- predict(
-      model,
-      newdata = new_data,
-      type = "terms",
-      se.fit = TRUE,
-      terms = transf_labels
-    )
-
-    acm <- predict(model,
-                   newdata = transf_fixed_vals,
-                   type = "terms",
-                   terms = transf_labels)
-
-
-    dNew <- data.frame(new_data, predictions)
-
-
-    dNew$axis_vals <-  dNew[, to_part] - suppressMessages(comp_mean(dataset, comp_labels, rounded_zeroes = FALSE,
-                                                        det_limit = det_limit, units = units))[[to_part]]
-
-    vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
-    sum_for_args <- paste0(vector_for_args, collapse = "+")
-
-
-
-    dNew$log_hazard_change <- eval(parse(text = sum_for_args)) - sum(acm)
-    dNew$fit <- exp(dNew$log_hazard_change)
-
-    middle_matrix <- vcov(model)[transf_labels, transf_labels]
-    x <- data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
-    in_sqrt_1 <- (x %*% middle_matrix)
-    t_x <- as.matrix(t(x))
-    in_sqrt_true <- c()
-    for (i in 1:nrow(in_sqrt_1)) {
-      in_sqrt_true <-
-        c(in_sqrt_true, (in_sqrt_1[i,] %*% data.matrix(t_x)[, i]))
-    }
-
-    value <- sqrt(data.matrix(in_sqrt_true))
-
-    t_value <-
-      qt(0.975, df = (nrow(model.matrix(model)) -1 - length(transf_labels)))[[1]]
-
-
-
-    alpha_lower <- dNew$log_hazard_change - t_value*value
-    alpha_upper <- dNew$log_hazard_change + t_value*value
-
-    dNew$lower_CI <- exp(alpha_lower)
-    dNew$upper_CI <- exp(alpha_upper)
-
-
-
-    # dNew <- data.frame(new_data, predictions)
-    # dNew$axis_vals <-
-    #   dNew[, to_part] - suppressMessages(comp_mean(
-    #     dataset,
-    #     comp_labels,
-    #     rounded_zeroes = FALSE,
-    #     det_limit = det_limit,
-    #     units = units
-    #   )[[to_part]]
-    #
-    # vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
-    # sum_for_args <- paste0(vector_for_args, collapse = "+")
-    #
-    # vector_for_se <- paste("dNew$se.fit.", transf_labels, sep = "")
-    # sum_for_se <- paste0(vector_for_se, collapse = "^2 +")
-    # dNew$predictions <- exp(eval(parse(text = sum_for_args)))
-    # dNew$fit <- dNew$predictions
-    # dNew$lower_CI <-
-    #   dNew$predictions * exp(-1.96 * sqrt(eval(parse(text = sum_for_se))))
-    # dNew$upper_CI <-
-    #   dNew$predictions * exp(1.96 * sqrt(eval(parse(text = sum_for_se))))
-
-    if (is.null(yllimit)) {
-      yllimit <- min(dNew$lower_CI)
-    }
-    if (is.null(yulimit)) {
-      yulimit <- max(dNew$upper_CI)
-    }
-
-
-    dNew$lower_CI <-
-      pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
-    dNew$upper_CI <-
-      pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
-
+  if (type == "cox") {
     if (plot_log == TRUE) {
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
@@ -426,137 +343,9 @@ plot_transfers <- function(from_part,
 
 
 
-  if (type == "cox" && !(terms)) {
-    predictions <- predict(model,
-                           newdata = new_data,
-                           type = "risk",
-                           se.fit = TRUE)
 
-    dNew <- data.frame(new_data, predictions)
-
-    acm <- predict(model,
-                   newdata = transf_fixed_vals, type = "risk")
-    dNew$axis_vals <-
-      dNew[, to_part] - suppressMessages(comp_mean(
-        dataset,
-        comp_labels,
-        rounded_zeroes = FALSE,
-        det_limit = det_limit,
-        units = units
-      ))[[to_part]]
-
-    dNew$predictions <- dNew$fit / acm
-
-    dNew$lower_CI <-
-      dNew$fit * exp(-1.96 * dNew$se.fit) / acm
-    dNew$upper_CI <-
-      dNew$fit * exp(1.96 * dNew$se.fit) / acm
-
-    if (is.null(yllimit)) {
-      yllimit <- min(dNew$lower_CI)
-    }
-    if (is.null(yulimit)) {
-      yulimit <- max(dNew$upper_CI)
-    }
-
-    dNew$lower_CI <-
-      pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
-    dNew$upper_CI <-
-      pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
-
-    if (plot_log == TRUE) {
-      plot_of_this <-
-        ggplot2::ggplot(data = dNew,
-                        mapping = ggplot2::aes(x = axis_vals, y = predictions)) +
-        ggplot2::ylim(yllimit, yulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes(
-          x = axis_vals,
-          ymin = lower_CI,
-          ymax = upper_CI
-        ),
-        color = "grey") +
-        ggplot2::geom_point(size= 2) +
-        ggplot2::labs(
-          x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
-          y = y_label
-        ) +
-        ggplot2::geom_hline(yintercept = 1, size = 1) +
-        ggplot2::geom_vline(xintercept = 0, size = 1) +
-        ggplot2::scale_y_continuous(
-          trans = scales::log_trans(),
-          breaks = seq(signif(yllimit, digits = 1), signif(yulimit, digits = 1), by = 0.2),
-       labels = seq(signif(yllimit, digits = 1), signif(yulimit, digits = 1), by = 0.2),
-          limits = c(yllimit, yulimit)
-        ) +
-        theme_for_plots
-    }
-    else {
-      plot_of_this <-
-        ggplot2::ggplot(data = dNew,
-                        mapping = ggplot2::aes(x = axis_vals, y = predictions)) +
-        ggplot2::ylim(yllimit, yulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes(
-          x = axis_vals,
-          ymin = lower_CI,
-          ymax = upper_CI
-        ),
-        color = "grey") +
-        ggplot2::geom_point(size= 2) +
-        ggplot2::labs(
-          x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
-          y = y_label
-        ) +
-        geom_hline(yintercept = 1) +
-        ggplot2::geom_vline(xintercept = 0, size = 1) +
-        theme_for_plots
-    }
-  }
-
-
-
-
-
-
-
-
-
-  if (type == "linear" && (terms == FALSE)) {
-    message(
-      "Note that the confidence intervals on this plot include uncertainty driven by other, non-compositional variables."
-    )
-    predictions <-
-      predict(model,
-              newdata = new_data,
-              type = "response",
-              se.fit = TRUE)
-
-    dNew <- data.frame(new_data, predictions)
-    dNew$axis_vals <-
-      dNew[, to_part] - suppressMessages(comp_mean(
-        dataset,
-        comp_labels,
-        rounded_zeroes = FALSE,
-        det_limit = det_limit,
-        units = units
-      ))[[to_part]]
-
-    dNew$lower_CI <- dNew$fit - 1.96 * dNew$se.fit
-    dNew$upper_CI <- dNew$fit + 1.96 * dNew$se.fit
-
-    if (is.null(yllimit)) {
-      yllimit <- min(dNew$lower_CI)
-    }
-    if (is.null(yulimit)) {
-      yulimit <- max(dNew$upper_CI)
-    }
-
-
-    dNew$lower_CI <-
-      pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
-    dNew$upper_CI <-
-      pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
-
-    if (plot_log == TRUE) {
+  if (type == "linear") {
+  if (plot_log == TRUE) {
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
                         mapping = ggplot2::aes(x = axis_vals, y = fit)) +
@@ -603,143 +392,7 @@ plot_transfers <- function(from_part,
 
 
 
-
-
-
-
-
-
-
-    if (type == "linear" && (terms)) {
-   #   print(head(new_data))
-      predictions <-
-        predict(
-          model,
-          newdata = new_data,
-          type = "terms",
-          terms = transf_labels,
-          se.fit = TRUE
-        )
-
-
-
-      acm <- predict(model,
-                     newdata = transf_fixed_vals,
-                     type = "terms",
-                     terms = transf_labels)
-
-
-
-      dNew <- data.frame(new_data, predictions)
-      vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
-      sum_for_args <- paste0(vector_for_args, collapse = "+")
-
-
-
-      dNew$main <- eval(parse(text = sum_for_args))
-      dNew$mean_vals <- rep(sum(acm), by = nrow(dNew))
-    #  print(head(dNew$main))
-  #    print(head(dNew$mean_vals))
-
-      dNew$fit <- dNew$main - dNew$mean_vals
-
-  #    print(head(dNew$fit))
-      dNew$axis_vals <-
-        dNew[, to_part] - suppressMessages(comp_mean(
-          dataset,
-          comp_labels,
-          rounded_zeroes = FALSE,
-          det_limit = det_limit,
-          units = units
-        ))[[to_part]]
-
-
-
-      middle_matrix <- vcov(model)[transf_labels, transf_labels]
-      x <- data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
-      in_sqrt_1 <- (x %*% middle_matrix)
-      t_x <- as.matrix(t(x))
-      in_sqrt_true <- c()
-      for (i in 1:nrow(in_sqrt_1)) {
-        in_sqrt_true <-
-          c(in_sqrt_true, (in_sqrt_1[i,] %*% data.matrix(t_x)[, i]))
-      }
-
-      value <- sqrt(data.matrix(in_sqrt_true))
-
-      t_value <-
-        qt(0.975, df = (nrow(model.matrix(model)) -1 - length(transf_labels)))[[1]]
-
-      dNew$lower_CI <- dNew$fit - t_value * value
-      dNew$upper_CI <- dNew$fit + t_value * value
-
-      if (is.null(yllimit)) {
-        yllimit <- min(dNew$lower_CI)
-      }
-      if (is.null(yulimit)) {
-        yulimit <- max(dNew$upper_CI)
-      }
-
-      dNew$lower_CI <-
-        pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
-      dNew$upper_CI <-
-        pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
-
-      if (plot_log == TRUE) {
-        plot_of_this <-
-          ggplot2::ggplot(data = dNew,
-                          mapping = ggplot2::aes(x = axis_vals, y = fit)) +
-          ggplot2::ylim(yllimit, yulimit) +
-          ggplot2::geom_errorbar(ggplot2::aes(
-            x = axis_vals,
-            ymin = lower_CI,
-            ymax = upper_CI
-          ),
-          color = "grey") +
-          ggplot2::geom_point(size= 2) +
-          ggplot2::labs(
-            x = paste(
-              "More",
-              from_part,
-              "\U2194",
-              "More",
-              to_part,
-              "\n " ,
-              units
-            ),
-            y = y_label
-          ) +
-          ggplot2::scale_y_continuous(
-            trans = scales::log_trans(),
-            breaks = seq(signif(yllimit, digits = 1), signif(yulimit, digits = 1), by = 0.2),
-          labels = seq(signif(yllimit, digits = 1), signif(yulimit, digits = 1), by = 0.2)
-          ) +
-          ggplot2::geom_vline(xintercept = 0, size = 1) +
-          theme_for_plots
-      }
-      else {
-        plot_of_this <-
-          ggplot2::ggplot(data = dNew,
-                          mapping = ggplot2::aes(x = axis_vals, y = fit)) +
-          ggplot2::ylim(yllimit, yulimit) +
-          ggplot2::geom_errorbar(ggplot2::aes(
-            x = axis_vals,
-            ymin = lower_CI,
-            ymax = upper_CI
-          ),
-          color = "grey") +
-          ggplot2::geom_point(size= 2) +
-          ggplot2::labs(x = paste(from_part, "to", to_part, "\n", units),
-                        y = y_label) +
-          ggplot2::geom_vline(xintercept = 0, size = 1) +
-          theme_for_plots
-      }
-    }
-
-
-
-
-    print("Please note that plotting may take some time.")
+  print("Please note that plotting may take some time.")
     if (terms == FALSE) {
       short_form <- gsub(".*~", "", as.character(formula(model)))
       print(paste("Covariate values were fixed at: "))
