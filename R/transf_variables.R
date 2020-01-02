@@ -1,6 +1,6 @@
 #' Create columns headings for after the transformation.
 #'
-#' @param comp_labels List of compositional column labels.
+#' @inheritParams transform_comp
 #' @export
 transf_labels <- function(comp_labels, transformation_type, comparison_part = NULL, part_1 = NULL){
   if (!(transformation_type %in% c("ilr", "alr", "clr"))){
