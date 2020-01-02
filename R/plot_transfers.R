@@ -392,20 +392,6 @@ plot_transfers <- function(from_part,
 
 
 
-  print("Please note that plotting may take some time.")
-    if (terms == FALSE) {
-      short_form <- gsub(".*~", "", as.character(formula(model)))
-      print(paste("Covariate values were fixed at: "))
-      variables <- strsplit(short_form[3], " + ", fixed = TRUE)[[1]]
-      for (variable in variables[!(variables %in% transf_labels)]) {
-        print(paste(variable, ":", fixed_values[1, variable]))
-      }
-    }
-    print("Compositional variables not varied in the visualisation were fixed at:")
-    for (variable in comp_labels) {
-      print(paste(variable, ":", signif(fixed_values[1, variable], 2), units))
-    }
-
-
+    print("Please note that plotting may take some time.")
     return(plot_of_this)
   }
