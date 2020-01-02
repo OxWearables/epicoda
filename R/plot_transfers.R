@@ -133,14 +133,14 @@ plot_transfers <- function(from_part,
 
 # We calculate the compositional mean so we can use it in future calculations
   cm <-
-    comp_mean(
+    suppressMessages(comp_mean(
       dataset,
       comp_labels,
       rounded_zeroes = FALSE,
       det_limit = det_limit,
       units = units,
       specified_units = specified_units
-    )
+    ))
   cmdf <- data.frame(cm)
   cm_transf_df <- transform_comp(cmdf, comp_labels,
                                  transformation_type = transformation_type,
@@ -215,13 +215,13 @@ plot_transfers <- function(from_part,
 
     dNew <- data.frame(new_data, predictions)
     dNew$axis_vals <-
-      dNew[, to_part] - comp_mean(
+      dNew[, to_part] - suppressMessages(comp_mean(
         dataset,
         comp_labels,
         rounded_zeroes = FALSE,
         det_limit = det_limit,
         units = units
-      )[[to_part]]
+      ))[[to_part]]
     dNew$normalised_predictions <- model$family$linkinv(dNew$fit)
 
     dNew$lower_CI <-
@@ -309,13 +309,13 @@ plot_transfers <- function(from_part,
 
     dNew <- data.frame(new_data, predictions)
     dNew$axis_vals <-
-      dNew[, to_part] - comp_mean(
+      dNew[, to_part] - suppressMessages(comp_mean(
         dataset,
         comp_labels,
         rounded_zeroes = FALSE,
         det_limit = det_limit,
         units = units
-      )[[to_part]]
+      ))[[to_part]]
 
 
     vector_for_args <-
@@ -431,8 +431,8 @@ plot_transfers <- function(from_part,
     dNew <- data.frame(new_data, predictions)
 
 
-    dNew$axis_vals <-  dNew[, to_part] - comp_mean(dataset, comp_labels, rounded_zeroes = FALSE,
-                                                        det_limit = det_limit, units = units)[[to_part]]
+    dNew$axis_vals <-  dNew[, to_part] - suppressMessages(comp_mean(dataset, comp_labels, rounded_zeroes = FALSE,
+                                                        det_limit = det_limit, units = units))[[to_part]]
 
     vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
     sum_for_args <- paste0(vector_for_args, collapse = "+")
@@ -469,7 +469,7 @@ plot_transfers <- function(from_part,
 
     # dNew <- data.frame(new_data, predictions)
     # dNew$axis_vals <-
-    #   dNew[, to_part] - comp_mean(
+    #   dNew[, to_part] - suppressMessages(comp_mean(
     #     dataset,
     #     comp_labels,
     #     rounded_zeroes = FALSE,
@@ -565,13 +565,13 @@ plot_transfers <- function(from_part,
     acm <- predict(model,
                    newdata = transf_fixed_vals, type = "risk")
     dNew$axis_vals <-
-      dNew[, to_part] - comp_mean(
+      dNew[, to_part] - suppressMessages(comp_mean(
         dataset,
         comp_labels,
         rounded_zeroes = FALSE,
         det_limit = det_limit,
         units = units
-      )[[to_part]]
+      ))[[to_part]]
 
     dNew$predictions <- dNew$fit / acm
 
@@ -660,13 +660,13 @@ plot_transfers <- function(from_part,
 
     dNew <- data.frame(new_data, predictions)
     dNew$axis_vals <-
-      dNew[, to_part] - comp_mean(
+      dNew[, to_part] - suppressMessages(comp_mean(
         dataset,
         comp_labels,
         rounded_zeroes = FALSE,
         det_limit = det_limit,
         units = units
-      )[[to_part]]
+      ))[[to_part]]
 
     dNew$lower_CI <- dNew$fit - 1.96 * dNew$se.fit
     dNew$upper_CI <- dNew$fit + 1.96 * dNew$se.fit
@@ -773,13 +773,13 @@ plot_transfers <- function(from_part,
 
   #    print(head(dNew$fit))
       dNew$axis_vals <-
-        dNew[, to_part] - comp_mean(
+        dNew[, to_part] - suppressMessages(comp_mean(
           dataset,
           comp_labels,
           rounded_zeroes = FALSE,
           det_limit = det_limit,
           units = units
-        )[[to_part]]
+        ))[[to_part]]
 
 
 
