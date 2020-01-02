@@ -346,6 +346,9 @@ plot_transfers <- function(from_part,
 
   if (type == "linear") {
   if (plot_log == TRUE) {
+      if (terms){
+        warning('Taking the log transformation doesn\'t make sense for values near 0 and the graph is likely to look very strange')
+      }
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
                         mapping = ggplot2::aes(x = axis_vals, y = fit)) +
