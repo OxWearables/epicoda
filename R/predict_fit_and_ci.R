@@ -103,6 +103,12 @@ predict_fit_and_ci <- function(model,
     rounded_zeroes = FALSE
   )
 
+
+  for (colname in colnames(fixed_values)){
+    if (!(colname %in% colnames(new_data))){
+      new_data[, colname]<- rep(fixed_values[1, colname], by = nrow(new_data))
+    }
+  }
   # We begin the plotting
   if (type == "logistic" && (terms == FALSE)) {
     message(
