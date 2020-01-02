@@ -17,6 +17,7 @@
 predict_fit_and_ci <- function(model,
                            dataset,
                            new_data,
+                           fixed_values = NULL,
                            transformation_type = NULL,
                            comparison_part = NULL,
                            part_1 = NULL,
@@ -89,7 +90,36 @@ predict_fit_and_ci <- function(model,
 
 
 
+  # We assign some fixed_values to use in predicting
 
+  if (!(is.null(fixed_values))) {
+    if (!is.null(colnames(fixed_values)[colnames(fixed_values) %in% comp_labels])) {
+      warning(
+        "fixed_values will be updated to have compositional parts fixed at the compositional mean. For technical and pragmatic reasons, use of a different reference for the compositional parts is not currently possible."
+      )
+    }
+    fixed_values <- cbind(fixed_values, cm)
+  }
+  if (is.null(fixed_values)) {
+    fixed_values <-
+      generate_fixed_values(
+        dataset,
+        comp_labels,
+        rounded_zeroes = FALSE,
+        det_limit = det_limit,
+        units = units,
+        specified_units = specified_units
+      )
+  }
+
+  transf_fixed_vals <- transform_comp(
+    fixed_values[, colnames(fixed_values)[!(colnames(fixed_values) %in% transf_labels)]],
+    comp_labels,
+    transformation_type = transformation_type,
+    part_1 = part_1,
+    comparison_part = comparison_part,
+    rounded_zeroes = FALSE
+  )
   # We begin the plotting
   if (type == "logistic" && (terms == FALSE)) {
     message(
@@ -101,14 +131,6 @@ predict_fit_and_ci <- function(model,
                            se.fit = TRUE)
 
     dNew <- data.frame(new_data, predictions)
-    dNew$axis_vals <-
-      dNew[, to_part] - comp_mean(
-        dataset,
-        comp_labels,
-        rounded_zeroes = FALSE,
-        det_limit = det_limit,
-        units = units
-      )[[to_part]]
     dNew$normalised_predictions <- model$family$linkinv(dNew$fit)
 
     dNew$lower_CI <-
@@ -141,15 +163,6 @@ predict_fit_and_ci <- function(model,
 
 
     dNew <- data.frame(new_data, predictions)
-    dNew$axis_vals <-
-      dNew[, to_part] - comp_mean(
-        dataset,
-        comp_labels,
-        rounded_zeroes = FALSE,
-        det_limit = det_limit,
-        units = units
-      )[[to_part]]
-
 
     vector_for_args <-
       paste("dNew$fit.", transf_labels, sep = "")
@@ -208,10 +221,6 @@ predict_fit_and_ci <- function(model,
 
     dNew <- data.frame(new_data, predictions)
 
-
-    dNew$axis_vals <-  dNew[, to_part] - comp_mean(dataset, comp_labels, rounded_zeroes = FALSE,
-                                                   det_limit = det_limit, units = units)[[to_part]]
-
     vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
     sum_for_args <- paste0(vector_for_args, collapse = "+")
 
@@ -258,14 +267,6 @@ predict_fit_and_ci <- function(model,
 
     acm <- predict(model,
                    newdata = transf_fixed_vals, type = "risk")
-    dNew$axis_vals <-
-      dNew[, to_part] - comp_mean(
-        dataset,
-        comp_labels,
-        rounded_zeroes = FALSE,
-        det_limit = det_limit,
-        units = units
-      )[[to_part]]
 
     dNew$predictions <- dNew$fit / acm
 
@@ -294,14 +295,7 @@ predict_fit_and_ci <- function(model,
               se.fit = TRUE)
 
     dNew <- data.frame(new_data, predictions)
-    dNew$axis_vals <-
-      dNew[, to_part] - comp_mean(
-        dataset,
-        comp_labels,
-        rounded_zeroes = FALSE,
-        det_limit = det_limit,
-        units = units
-      )[[to_part]]
+
 
     dNew$lower_CI <- dNew$fit - 1.96 * dNew$se.fit
     dNew$upper_CI <- dNew$fit + 1.96 * dNew$se.fit
@@ -350,15 +344,7 @@ predict_fit_and_ci <- function(model,
 
     dNew$fit <- dNew$main - dNew$mean_vals
 
-    #    print(head(dNew$fit))
-    dNew$axis_vals <-
-      dNew[, to_part] - comp_mean(
-        dataset,
-        comp_labels,
-        rounded_zeroes = FALSE,
-        det_limit = det_limit,
-        units = units
-      )[[to_part]]
+
 
 
 

@@ -95,6 +95,8 @@ plot_transfers <- function(from_part,
 
   dataset_ready <-
     dataset[,!(colnames(dataset) %in% transf_labels)]
+
+
   # We assign some internal parameters
   type <- "unassigned"
   if (class(model)[1] == "lm") {
@@ -132,15 +134,14 @@ plot_transfers <- function(from_part,
 
 
 # We calculate the compositional mean so we can use it in future calculations
-  cm <-
-    suppressMessages(comp_mean(
+  cm <- comp_mean(
       dataset,
       comp_labels,
       rounded_zeroes = FALSE,
       det_limit = det_limit,
       units = units,
       specified_units = specified_units
-    ))
+    )
   cmdf <- data.frame(cm)
   cm_transf_df <- transform_comp(cmdf, comp_labels,
                                  transformation_type = transformation_type,
@@ -148,7 +149,7 @@ plot_transfers <- function(from_part,
                                  comparison_part = comparison_part,
                                  rounded_zeroes = FALSE)
 
-# We assign some fixed_values to use in plotting
+  # We assign some fixed_values to use in setting up new_data
 
   if (!(is.null(fixed_values))) {
     if (!is.null(colnames(fixed_values)[colnames(fixed_values) %in% comp_labels])) {
@@ -170,23 +171,15 @@ plot_transfers <- function(from_part,
       )
   }
 
-  transf_fixed_vals <- transform_comp(
-    fixed_values[, colnames(fixed_values)[!(colnames(fixed_values) %in% transf_labels)]],
-    comp_labels,
-    transformation_type = transformation_type,
-    part_1 = part_1,
-    comparison_part = comparison_part,
-    rounded_zeroes = FALSE
-  )
-
   # We make some new data for predictions
   new_data <-
     make_new_data(
       from_part,
       to_part,
-      fixed_values,
+      fixed_values = fixed_values,
       dataset_ready,
       units = units,
+      specified_units = specified_units,
       comp_labels = comp_labels,
       lower_quantile = 0.05,
       upper_quantile = 0.95,
@@ -204,16 +197,20 @@ plot_transfers <- function(from_part,
     )
 
   # We begin the plotting
-  if (type == "logistic" && (terms == FALSE)) {
-    message(
-      "Note that the confidence intervals on this plot include uncertainty driven by other, non-compositional variables. To look at compositional variables only, use terms = TRUE"
-    )
-    predictions <- predict(model,
-                           newdata = new_data,
-                           type = "link",
-                           se.fit = TRUE)
-
-    dNew <- data.frame(new_data, predictions)
+  if (type == "logistic") {
+    dNew <- predict_fit_and_ci(model = model,
+             dataset = dataset,
+             new_data = new_data,
+             fixed_values = fixed_values,
+             transformation_type = transformation_type,
+             comparison_part = comparison_part,
+             part_1 = part_1,
+             comp_labels = comp_labels,
+             units = units,
+             specified_units = specified_units,
+             rounded_zeroes = rounded_zeroes,
+             det_limit = det_limit,
+             terms = terms)
     dNew$axis_vals <-
       dNew[, to_part] - suppressMessages(comp_mean(
         dataset,
@@ -222,12 +219,6 @@ plot_transfers <- function(from_part,
         det_limit = det_limit,
         units = units
       ))[[to_part]]
-    dNew$normalised_predictions <- model$family$linkinv(dNew$fit)
-
-    dNew$lower_CI <-
-      model$family$linkinv(dNew$fit - 1.96 * dNew$se.fit)
-    dNew$upper_CI <-
-      model$family$linkinv(dNew$fit + 1.96 * dNew$se.fit)
 
     if (is.null(yllimit)) {
       yllimit <- min(dNew$lower_CI)
@@ -241,125 +232,6 @@ plot_transfers <- function(from_part,
     dNew$upper_CI <-
       pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
 
-    if (plot_log == TRUE) {
-      plot_of_this <-
-        ggplot2::ggplot(
-          data = dNew,
-          mapping = ggplot2::aes(x = axis_vals, y = normalised_predictions)
-        ) +
-        ggplot2::geom_errorbar(ggplot2::aes(
-          x = axis_vals,
-          ymin = lower_CI,
-          ymax = upper_CI
-        ),
-        color = "grey") +
-        ggplot2::geom_point(size= 2) +
-        ggplot2::labs(
-          x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
-          y = y_label
-       ) +
-        ggplot2::scale_y_continuous(trans = scales::log_trans(),
-                                    limits = c(yllimit, yulimit)) +
-        ggplot2::geom_vline(xintercept = 0, size = 1) +
-       theme_for_plots
-    }
-    else {
-      plot_of_this <-
-        ggplot2::ggplot(
-          data = dNew,
-          mapping = ggplot2::aes(x = axis_vals, y = normalised_predictions)
-        ) +
-        ggplot2::ylim(yllimit, yulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes(
-          x = axis_vals,
-          ymin = lower_CI,
-          ymax = upper_CI
-        ),
-        color = "grey") +
-        ggplot2::geom_point(size= 2) +
-        ggplot2::labs(
-          x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
-          y = y_label
-        ) +
-        ggplot2::geom_vline(xintercept = 0, size = 1) +
-        theme_for_plots
-    }
-  }
-
-
-
-
-
-
-  if (type == "logistic" && (terms)) {
-    predictions <-
-      predict(
-        model,
-        newdata = new_data,
-        type = "terms",
-        terms = transf_labels,
-        se.fit = TRUE
-      )
-
-    acm <- predict(model,
-                   newdata = transf_fixed_vals,
-                   type = "terms",
-                   terms = transf_labels)
-
-
-    dNew <- data.frame(new_data, predictions)
-    dNew$axis_vals <-
-      dNew[, to_part] - suppressMessages(comp_mean(
-        dataset,
-        comp_labels,
-        rounded_zeroes = FALSE,
-        det_limit = det_limit,
-        units = units
-      ))[[to_part]]
-
-
-    vector_for_args <-
-      paste("dNew$fit.", transf_labels, sep = "")
-    sum_for_args <- paste0(vector_for_args, collapse = "+")
-
-
-    dNew$log_odds_change <- eval(parse(text = sum_for_args)) - sum(acm)
-    dNew$fit <- exp(dNew$log_odds_change)
-
-
-    middle_matrix <- vcov(model)[transf_labels, transf_labels]
-    x <- data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
-    in_sqrt_1 <- (x %*% middle_matrix)
-    t_x <- as.matrix(t(x))
-    in_sqrt_true <- c()
-    for (i in 1:nrow(in_sqrt_1)) {
-      in_sqrt_true <-
-        c(in_sqrt_true, (in_sqrt_1[i,] %*% data.matrix(t_x)[, i]))
-    }
-
-    value <- sqrt(data.matrix(in_sqrt_true))
-
-    t_value <-
-      qt(0.975, df = (nrow(model.matrix(model)) -1 - length(transf_labels)))[[1]]
-
-
-    alpha_lower <- dNew$log_odds_change - t_value * value
-    alpha_upper <- dNew$log_odds_change + t_value * value
-
-    dNew$lower_CI <- exp(alpha_lower)
-    dNew$upper_CI <- exp(alpha_upper)
-
-    if (is.null(yllimit)) {
-      yllimit <- min(dNew$lower_CI)
-    }
-    if (is.null(yulimit)) {
-      yulimit <- max(dNew$upper_CI)
-    }
-
-    dNew$lower_CI <-
-      pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
-    dNew$upper_CI <-
-      pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
 
     if (plot_log == TRUE) {
       plot_of_this <-
