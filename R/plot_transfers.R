@@ -223,7 +223,7 @@ plot_transfers <- function(from_part,
          breaks = seq(signif(yllimit, digits = 1), signif(yulimit, digits = 1), by = 0.2),
         labels = seq(signif(yllimit, digits = 1), signif(yulimit, digits = 1), by = 0.2)
         ) +
-        ggplot2::geom_vline(xintercept = 0, size = 1) +
+        ggplot2::geom_vline(xintercept = 0) +
         theme_for_plots
     }
 
