@@ -51,9 +51,15 @@ comp_model <-
 
     if (type == "logistic") {
       model <-
-        glm(as.formula(paste(
-          outcome, "~", cov_sum, "+", transf_sum)),
-        data = data_ready, family = "binomial")
+        glm(as.formula(paste(outcome, "~", cov_sum, "+", transf_sum)),
+            data = data_ready, family = "binomial")
+    }
+    if (type == "cox") {
+      survival_object <- Surv(data[, follow_up_time], data[, event])
+      model <-
+        coxph(as.formula(paste(
+          "survival_object ~", cov_sum, "+", transf_sum
+        )))
     }
 
     return(model)
