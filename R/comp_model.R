@@ -36,10 +36,11 @@ comp_model <-
       rounded_zeroes = rounded_zeroes,
       det_limit = det_limit,
       comparison_part = comparison_part,
-      part_1
+      part_1 = part_1
     )
     transf_vec <-
-      transf_labels(comp_labels = comp_labels, transformation_type = transformation_type)
+      transf_labels(comp_labels = comp_labels, transformation_type = transformation_type, comparison_part = comparison_part,
+                    part_1 = part_1)
     transf_sum <- vector_to_sum(transf_vec)
     cov_sum <- vector_to_sum(covariates)
 
@@ -55,11 +56,11 @@ comp_model <-
             data = data_ready, family = "binomial")
     }
     if (type == "cox") {
-      survival_object <- Surv(data[, follow_up_time], data[, event])
+      survival_object <- survival::Surv(data[, follow_up_time], data[, event])
       model <-
-        coxph(as.formula(paste(
+        survival::coxph(as.formula(paste(
           "survival_object ~", cov_sum, "+", transf_sum
-        )))
+        )), data = data_ready)
     }
 
     return(model)
