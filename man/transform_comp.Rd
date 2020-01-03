@@ -4,9 +4,15 @@
 \alias{transform_comp}
 \title{Transform compositional variables to ilr (pivot), alr or clr coordinates}
 \usage{
-transform_comp(data, comp_labels, transformation_type = "ilr",
-  rounded_zeroes = TRUE, det_limit = NULL, comparison_part = NULL,
-  part_1 = NULL)
+transform_comp(
+  data,
+  comp_labels,
+  transformation_type = "ilr",
+  rounded_zeroes = TRUE,
+  det_limit = NULL,
+  comparison_part = NULL,
+  part_1 = NULL
+)
 }
 \arguments{
 \item{data}{Dataset to have the transformation applied to.}

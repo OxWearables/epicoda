@@ -4,10 +4,21 @@
 \alias{predict_fit_and_ci}
 \title{Predict fit and confidence interval}
 \usage{
-predict_fit_and_ci(model, dataset, new_data, fixed_values = NULL,
-  transformation_type = NULL, comparison_part = NULL, part_1 = NULL,
-  comp_labels, units = "unitless", specified_units = NULL,
-  rounded_zeroes = FALSE, det_limit = NULL, terms = TRUE)
+predict_fit_and_ci(
+  model,
+  dataset,
+  new_data,
+  fixed_values = NULL,
+  transformation_type = NULL,
+  comparison_part = NULL,
+  part_1 = NULL,
+  comp_labels,
+  units = "unitless",
+  specified_units = NULL,
+  rounded_zeroes = FALSE,
+  det_limit = NULL,
+  terms = TRUE
+)
 }
 \arguments{
 \item{dataset}{Should be dataset used to develop \code{model}.}

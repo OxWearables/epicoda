@@ -4,13 +4,30 @@
 \alias{plot_transfers}
 \title{plot_transfers: Plots model predictions.}
 \usage{
-plot_transfers(from_part, to_part, model, dataset, fixed_values = NULL,
-  transformation_type = NULL, comparison_part = NULL, part_1 = NULL,
-  comp_labels, yllimit = NULL, yulimit = NULL, y_label = NULL,
-  plot_log = FALSE, lower_quantile = 0.05, upper_quantile = 0.95,
-  units = "unitless", specified_units = NULL, rounded_zeroes = FALSE,
-  det_limit = NULL, terms = TRUE, granularity = 10000,
-  theme = NULL)
+plot_transfers(
+  from_part,
+  to_part,
+  model,
+  dataset,
+  fixed_values = NULL,
+  transformation_type = NULL,
+  comparison_part = NULL,
+  part_1 = NULL,
+  comp_labels,
+  yllimit = NULL,
+  yulimit = NULL,
+  y_label = NULL,
+  plot_log = FALSE,
+  lower_quantile = 0.05,
+  upper_quantile = 0.95,
+  units = "unitless",
+  specified_units = NULL,
+  rounded_zeroes = FALSE,
+  det_limit = NULL,
+  terms = TRUE,
+  granularity = 10000,
+  theme = NULL
+)
 }
 \arguments{
 \item{from_part}{Should be an element of \code{comp_labels}.}

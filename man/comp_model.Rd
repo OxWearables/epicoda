@@ -4,20 +4,50 @@
 \alias{comp_model}
 \title{Statistical models with compositional exposure variables}
 \usage{
-comp_model()
+comp_model(
+  type = NULL,
+  outcome = NULL,
+  covariates = NULL,
+  follow_up_time = NULL,
+  event = NULL,
+  data,
+  comp_labels,
+  transformation_type = "ilr",
+  rounded_zeroes = TRUE,
+  det_limit = NULL,
+  comparison_part = NULL,
+  part_1 = NULL
+)
 }
 \arguments{
-\item{composition}{This should be the starting composition as a data frame.}
+\item{type}{Type of statistical model to use. It should be one of "linear", "logistic", "cox".}
 
-\item{main_part}{part the main change is happening to.}
+\item{outcome}{Column name of outcome variable in data. If \code{type} is \code{"linear"}, this should be a continuous variable.  If \code{type} is \code{"logistic"}, this should be a binary outcome.  If \code{type} is \code{"cox"}, this should be left as \code{NULL} and instead \code{follow_up_time} and \code{event} should be set.}
 
-\item{main_change}{Magnitude and direction of change e.g. +1, -0.5.}
+\item{covariates}{Character vector of column names of covariates to adjust models for. As this is used as a character vector, special arguments to the standard models (like strata(variable) for a Cox model) can be used here.}
 
-\item{comp_labels}{Compositional column labels.}
+\item{follow_up_time}{Only needed if \code{type} is \code{"cox"}. Follow-up time.}
+
+\item{event}{Only needed if \code{type} is \code{"cox"}. Binary variable indicating whether or not an event was observed.}
+
+\item{data}{Dataset to have the transformation applied to.}
+
+\item{comp_labels}{The labels of the compositional columns.}
+
+\item{transformation_type}{The type of transformation desired. Should be \code{"ilr", "alr"} or \code{"clr"}.}
+
+\item{rounded_zeroes}{Are zeroes rounded zeroes?}
+
+\item{det_limit}{Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
+minimum measurable value in the compositional columns of data.}
+
+\item{comparison_part}{Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of part that all other parts will be compared to.}
+
+\item{part_1}{Only used if First part in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
 }
 \value{
-Composition after rebalancing in the described way.
+model
 }
 \description{
-This is a wrapper for \code{lm}, \code{glm} and \code{survival::coxph} which
+This is a wrapper for \code{lm}, \code{glm} and \code{survival::coxph} which performs the compositional transformation before generating the model.
 }

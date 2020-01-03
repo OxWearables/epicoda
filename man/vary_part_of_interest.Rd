@@ -4,8 +4,12 @@
 \alias{vary_part_of_interest}
 \title{Varies part of interest.}
 \usage{
-vary_part_of_interest(part_of_interest, lower_quantile = 0.05,
-  upper_quantile = 0.95, granularity = 10000)
+vary_part_of_interest(
+  part_of_interest,
+  lower_quantile = 0.05,
+  upper_quantile = 0.95,
+  granularity = 10000
+)
 }
 \arguments{
 \item{part_of_interest}{The variable of interest.}

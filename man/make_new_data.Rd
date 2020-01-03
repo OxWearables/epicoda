@@ -4,9 +4,18 @@
 \alias{make_new_data}
 \title{make_new_data: Generates a new dataset varying in the dimension of interest.}
 \usage{
-make_new_data(from_part, to_part, fixed_values, dataset, units = NULL,
-  specified_units = NULL, comp_labels, lower_quantile = 0.05,
-  upper_quantile = 0.95, granularity = 10000)
+make_new_data(
+  from_part,
+  to_part,
+  fixed_values,
+  dataset,
+  units = NULL,
+  specified_units = NULL,
+  comp_labels,
+  lower_quantile = 0.05,
+  upper_quantile = 0.95,
+  granularity = 10000
+)
 }
 \arguments{
 \item{from_part}{Should be an element of \code{comp_labels}.}

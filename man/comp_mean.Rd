@@ -4,8 +4,14 @@
 \alias{comp_mean}
 \title{Compositional mean}
 \usage{
-comp_mean(data, comp_labels, rounded_zeroes = FALSE, det_limit = NULL,
-  units = "unitless", specified_units = NULL)
+comp_mean(
+  data,
+  comp_labels,
+  rounded_zeroes = FALSE,
+  det_limit = NULL,
+  units = "unitless",
+  specified_units = NULL
+)
 }
 \arguments{
 \item{data}{Dataset to calculate compositional mean of.}

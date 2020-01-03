@@ -4,12 +4,26 @@
 \alias{forest_plot_comp}
 \title{Produce a forest plot indicating model prediction at given compositions}
 \usage{
-forest_plot_comp(composition_list, model, dataset, fixed_values = NULL,
-  transformation_type = NULL, comparison_part = NULL, part_1 = NULL,
-  comp_labels, units = "unitless", specified_units = NULL,
-  rounded_zeroes = FALSE, det_limit = NULL, terms = TRUE,
-  x_label = NULL, xllimit = NULL, xulimit = NULL, plot_log = FALSE,
-  ...)
+forest_plot_comp(
+  composition_list,
+  model,
+  dataset,
+  fixed_values = NULL,
+  transformation_type = NULL,
+  comparison_part = NULL,
+  part_1 = NULL,
+  comp_labels,
+  units = "unitless",
+  specified_units = NULL,
+  rounded_zeroes = FALSE,
+  det_limit = NULL,
+  terms = TRUE,
+  x_label = NULL,
+  xllimit = NULL,
+  xulimit = NULL,
+  plot_log = FALSE,
+  ...
+)
 }
 \arguments{
 \item{composition_list}{Named list of compositions. Note each composition should be stored as a data frame. For example, use the output of \code{change_composition}.}
@@ -35,10 +49,11 @@ minimum measurable value in the compositional columns of data.}
 
 \item{terms}{Are predictions for terms,or are they absolute?}
 
-\item{...}{Arguments passed on to \code{forestplot::forestplot}
-\describe{
-  \item{}{}
-}}
+\item{...}{
+  Arguments passed on to \code{\link[forestplot:forestplot]{forestplot::forestplot}}
+  \describe{
+    \item{\code{}}{}
+  }}
 }
 \value{
 Forest plot illustrating prediction of the model at given compositions.
