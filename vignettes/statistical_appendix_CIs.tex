@@ -1,0 +1,200 @@
+\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provides euro and other symbols
+\else % if luatex or xelatex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Statistical appendix: Derivation of Confidence Intervals},
+  pdfauthor={R-Walmsley},
+  pdfborder={0 0 0},
+  breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-2}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+% set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+
+\title{Statistical appendix: Derivation of Confidence Intervals}
+\author{R-Walmsley}
+\date{03/01/2020}
+
+\begin{document}
+\maketitle
+
+\hypertarget{derivation-of-confidence-intervals}{%
+\section{Derivation of Confidence
+Intervals}\label{derivation-of-confidence-intervals}}
+
+Note that throughout when referring to confidence intervals, the
+two-sided 95\% confidence interval is used. The theory easily
+generalises, but only the 95\% confidence interval is currently
+implemented.
+
+\hypertarget{plotting-results-of-compositional-data-analyses}{%
+\subsection{Plotting results of Compositional Data
+Analyses}\label{plotting-results-of-compositional-data-analyses}}
+
+Here, the results of Compositional Data Analyses are presented
+graphically, using plots of model predictions at given pairwise balances
+of parts (\texttt{plot\_transfers}) as well as model predictions at
+particular compositions (\texttt{forest\_plot\_comp}). Where results are
+presented, there are two options for how to do this. The default is to
+set \texttt{terms\ =\ TRUE}, and present the predicted difference in the
+outcome at the different levels of the compositional variables.
+Implicitly, in this case, all other covariates are fixed.
+
+The alternative is to set \texttt{terms\ =\ FALSE}. In this case, the
+\texttt{fixed\_values} argument is used (if \texttt{fixed\_values} is
+\texttt{NULL}, the default, the \texttt{generate\_fixed\_values}
+function is used to set this argument internally, using median, modal
+and compositional mean values as appropriate). The plot shows model
+predictions for the specified composition and for additional
+(non-compositional) covariate values as given in \texttt{fixed\_values}.
+
+\hypertarget{confidence-intervals-when-terms-true}{%
+\subsection{\texorpdfstring{Confidence intervals when
+\texttt{terms\ =\ TRUE}}{Confidence intervals when terms = TRUE}}\label{confidence-intervals-when-terms-true}}
+
+In all cases, using \texttt{predict} with \texttt{type\ =\ "terms"}
+gives fitted values of each specified term on the linear predictor scale
+i.e.~for \(x_1\) it returns \(\beta_1 x_1\). If the (transformed)
+compositional variables are \(z_1, z_2, ... z_n\) and these are the
+specified terms, then \texttt{predict} returns estimates of
+\(\beta_1 z_1, \beta_2 z_2, ... \beta_n z_n\) which can be used to
+calculate \$ \widehat{\Delta y} \beta\_1 z\_1 + \beta\_2 z\_2 + \ldots{}
++ \beta\_n z\_n \$. We now need to calculate the uncertainty on this
+quantity.
+
+\hypertarget{linear-models}{%
+\subsubsection{Linear models}\label{linear-models}}
+
+This is the simplest case. Using the above, we directly estimate \$
+\widehat{\Delta y} \beta\_1 z\_1 + \beta\_2 z\_2 + \ldots{} + \beta\_n
+z\_n \$ and the confidence interval on this,
+\((\widehat{\Delta y_{min}}, \widehat{\Delta y_{max}})\).
+
+\hypertarget{logistic-models}{%
+\subsubsection{Logistic models}\label{logistic-models}}
+
+Here, the terms given by the \texttt{predict} function are on the scale
+of the linear predictors i.e.~we estimate \$ \widehat{\Delta y} =
+\beta\_1 z\_1 + \beta\_2 z\_2 + \ldots{} + \beta\_n z\_n \$ and the
+confidence interval on this,
+\((\widehat{\Delta y_{min}}, \widehat{\Delta y_{max}})\). Then, the odds
+ratio and uncertainty on it is given by exponentiating the estimate
+(\(\exp(\widehat{\Delta y})\)) and confidence interval
+(\((\exp(\widehat{\Delta y_{min}}), \exp(\widehat{\Delta y_{max}}))\).
+
+\hypertarget{cox-models}{%
+\subsubsection{Cox models}\label{cox-models}}
+
+Here, the terms given by the \texttt{predict} function are on the scale
+of the linear predictors i.e.~we estimate \$ \widehat{\Delta y} =
+\beta\_1 z\_1 + \beta\_2 z\_2 + \ldots{} + \beta\_n z\_n \$ and the
+confidence interval on this,
+\((\widehat{\Delta y_{min}}, \widehat{\Delta y_{max}})\). Then, the
+hazard ratio and uncertainty on it is given by exponentiating the
+estimate (\(\exp(\widehat{\Delta y})\)) and confidence interval
+(\((\exp(\widehat{\Delta y_{min}}), \exp(\widehat{\Delta y_{max}}))\).
+
+\hypertarget{comparison-with-existing-literature}{%
+\subsubsection{Comparison with existing
+literature}\label{comparison-with-existing-literature}}
+
+Note that the treatment here takes inspiration from but slightly
+deviates from Dumuid et al (Dumuid et al. 2017). Dumuid et al deals with
+the case where one compositional part is considered at the expense of
+all others proportionately. By construction of the ilr pivot
+coordinates, the uncertainty on the estimate in this case can be derived
+entirely from the first pivot coordinate. More generally, however, and
+particularly when wishing to consider arbitrary compositions (as in the
+case of \texttt{forest\_plot\_comp}), this is not the case. Therefore,
+here we use the uncertainty on all compositional variables when deriving
+the estimated confidence intervals. This will never give a narrower
+confidence interval than approaches using uncertainty on only some
+compositional terms; it may give a wider (more conservative) confidence
+interval in some cases, as it considers the uncertainty on compositional
+variables that are in fact fixed when considering just a particular
+comparison of compositions/ pairwise balance. This is fully general, and
+fits well conceptually with considering the exposure of interest as the
+overall composition (perturbed and perturbable in various ways).
+
+-- a note on using balances. ** need to think more about this. -- need
+to compare systematically different approaches and do the derivation. To
+consider pairwise behaviour balances, \#\#\# Confidence intervals when
+\texttt{terms\ =\ FALSE} In this case, for linear, logistic and Cox
+models, the confidence intervals are the standard confidence intervals
+on the mean prediction,as calculated by the \texttt{predict} method.
+Note the intervals are \emph{not} the prediction intervals (the
+intervals within)
+
+\[
+\sqrt{27}
+\]
+
+\hypertarget{refs}{}
+\leavevmode\hypertarget{ref-Dumuid2017c}{}%
+Dumuid, Dorothea, Željko Pedišić, Tyman Everleigh Stanford, Josep Antoni
+Martín-Fernández, Karel Hron, Carol A. Maher, Lucy K. Lewis, and Timothy
+Olds. 2017. ``The compositional isotemporal substitution model: A method
+for estimating changes in a health outcome for reallocation of time
+between sleep, physical activity and sedentary behaviour.''
+\url{https://doi.org/10.1177/0962280217737805}.
+
+\end{document}
