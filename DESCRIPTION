@@ -16,7 +16,7 @@ Imports:
     zCompositions (>= 1.3.2-1), 
     ggplot2 (>= 3.2.0), 
     survival (>= 3.1.6) 
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 Suggests: 
     testthat (>= 2.1.0),
     knitr,
