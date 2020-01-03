@@ -272,7 +272,7 @@ plot_transfers <- function(from_part,
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label
         ) +
-        geom_hline(yintercept = 1) +
+        ggplot2::geom_hline(yintercept = 1) +
         ggplot2::geom_vline(xintercept = 0, size = 1) +
         ggplot2::scale_y_continuous(
           trans = scales::log_trans(),
@@ -298,7 +298,7 @@ plot_transfers <- function(from_part,
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label
         ) +
-        geom_hline(yintercept = 1) +
+        ggplot2::geom_hline(yintercept = 1) +
         ggplot2::geom_vline(xintercept = 0, size = 1) +
         theme_for_plots
     }
