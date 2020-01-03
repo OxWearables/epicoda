@@ -46,6 +46,34 @@ epicoda::plot_transfers(from_part = "partD",
 head(data_ilr_impute_zeroes)
 epicoda::plot_transfers
 
+cox_outcome <- comp_model(
+  type = "cox",
+  outcome = NULL,
+  covariates = c("agegroup", "sex"),
+  follow_up_time = "follow_up_time",
+  event = "event",
+  data = simdataplain,
+  comp_labels = comp_labels,
+  transformation_type = "ilr",
+  rounded_zeroes = TRUE,
+  det_limit = 0.0083,
+  comparison_part = NULL,
+  part_1 = NULL
+)
+summary(cox_outcome)
+plot_transfers(from_part = "partD",
+              to_part = "partB",
+              model = cox_outcome ,
+              dataset = simdataplain,
+              transformation_type = "ilr",
+              comp_labels = comp_labels,
+              y_label = NULL,
+              units = "hr/day",
+              rounded_zeroes = TRUE,
+              det_limit = 0.0083,
+              terms = TRUE,  plot_log = FALSE)
+
+head(simdata)
 composition_list <- list("trial" = data.frame("partA" = c(0.001), "partB" = 1.499, "partC" = 4.5, "partD" = 9, "partE" = 9))
 
 forest_plot_comp(composition_list = composition_list,
