@@ -107,13 +107,14 @@ process_units <- function(units, specified_units){
 #' minimum measurable value in the compositional columns of data.
 process_zeroes <- function(data, comp_labels, rounded_zeroes, det_limit = NULL){
 
-  if (rounded_zeroes & is.null(det_limit)){
-    stop("det_limit must be set for zeroes to be imputed. It should be the minimum measurable value in the compositional
-         columns of data.")
-  }
-
   data$row_labels <- 1:nrow(data)
   comp_data <- data[, c(comp_labels, "row_labels")]
+  if (rounded_zeroes & is.null(det_limit)){
+
+    warning("Did you mean to set rounded_zeroes to TRUE without setting a det_limit value? det_limit was imputed as the minimum value observed in the compositional
+         columns of data; if this is an unrealistic det_limit, the results may be unreliable.")
+    det_limit <- min(comp_data[, comp_labels], na.rm = TRUE)
+  }
 
   if (any(comp_data ==0) & rounded_zeroes){
     message(paste("Note that zeroes were imputed with detection limit \n", det_limit, "using zCompositions::lrEM"))
