@@ -32,21 +32,26 @@ transform_comp <- function(data, comp_labels, transformation_type = "ilr", round
     if (!is.null(part_1)){
       comp_labels <- alter_order_comp_labels(comp_labels, part_1)
     }
-    dTransformed <- ilr_trans(dTransformationReady[,comp_labels])
     transf_labels <- transf_labels(comp_labels, "ilr", part_1 = part_1)
+    dTransformationReady <- dTransformationReady[, colnames(dTransformationReady)[!(colnames(dTransformationReady) %in% transf_labels )]]
+    dTransformed <- ilr_trans(dTransformationReady[,comp_labels])
     colnames(dTransformed) <- transf_labels
     dTransformed$row_labels_master <- dTransformationReady$row_labels_master
   }
 
   if (transformation_type == "alr"){
+    transf_labels <- transf_labels(comp_labels, "alr", comparison_part)
+    dTransformationReady <- dTransformationReady[, colnames(dTransformationReady)[!(colnames(dTransformationReady) %in% transf_labels )]]
     dTransformed <- alr_trans(dTransformationReady[, comp_labels], comp_labels, comparison_part)
-    colnames(dTransformed) <- transf_labels(comp_labels, "alr", comparison_part)
+    colnames(dTransformed) <- transf_label
     dTransformed$row_labels_master <- dTransformationReady$row_labels_master
   }
 
   if (transformation_type == "clr"){
+    transf_labels <- transf_labels(comp_labels, "clr")
+    dTransformationReady <- dTransformationReady[, colnames(dTransformationReady)[!(colnames(dTransformationReady) %in% transf_labels )]]
     dTransformed <- clr_trans(dTransformationReady[, comp_labels])
-    colnames(dTransformed) <- transf_labels(comp_labels, "clr")
+    colnames(dTransformed) <- transf_labels
     dTransformed$row_labels_master <- dTransformationReady
   }
   dOut <- merge(dTransformationReady, dTransformed, by = "row_labels_master")
