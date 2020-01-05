@@ -28,7 +28,9 @@ comp_model <-
     if ((type != "linear") && (type != "logistic") && (type != "cox")) {
       stop("type must be \"linear\", \"logistic\", or \"cox\".")
     }
-
+    if (transformation_type == "clr"){
+      stop("clr variables are singular and shouldn't be used for regression modelling.")
+    }
     data_ready <- transform_comp(
       data = data,
       comp_labels = comp_labels,
