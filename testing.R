@@ -22,17 +22,20 @@ log_outcome <- glm(as.formula(paste("binary_outcome ~ agegroup + sex + ", transf
 summary(log_outcome)
 data_ilr_impute_zeroes
 summary(lm_outcome)
-predict_fit_and_ci(lm_outcome,
-                   dataset = data_ilr_impute_zeroes,
-                   transformation_type = "ilr",
-                   comp_labels = comp_labels,
-                   units = "hr/day",
-                   rounded_zeroes = TRUE,
-                   det_limit = 0.0083,
-                   terms = TRUE )
+tab_covariate_coefs(lm_outcome, comp_labels = comp_labels)
+tab_coefs( scale_type = "lp", level = 0.95, type = "cox",
+                outcome = NULL,
+                covariates = c("agegroup", "sex"),
+                follow_up_time = "follow_up_time",
+                event = "event",
+                data = simdataplain,
+                comp_labels = comp_labels,
+                rounded_zeroes = TRUE,
+                det_limit = 0.0083)
+
 summary(log_outcome)
-epicoda::plot_transfers(from_part = "partD",
-               to_part = "partB",
+epicoda::plot_transfers(from_part = "partB",
+               to_part = "partD",
                model = lm_outcome ,
                dataset = data_ilr_impute_zeroes,
                transformation_type = "ilr",
