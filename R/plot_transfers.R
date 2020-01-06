@@ -224,6 +224,7 @@ plot_transfers <- function(from_part,
         labels = seq(signif(yllimit, digits = 1), signif(yulimit, digits = 1), by = 0.2)
         ) +
         ggplot2::geom_vline(xintercept = 0) +
+        ggplot2::geom_hline(yintercept = 1) +
         theme_for_plots
     }
 
@@ -244,6 +245,7 @@ plot_transfers <- function(from_part,
           y = y_label
         ) +
         ggplot2::geom_vline(xintercept = 0) +
+        ggplot2::geom_hline(yintercept = 1) +
         theme_for_plots
     }
   }
@@ -335,6 +337,7 @@ plot_transfers <- function(from_part,
         labels = seq(signif(yllimit, digits = 1), signif(yulimit, digits = 1), by = 0.2)
         ) +
         ggplot2::geom_vline(xintercept = 0) +
+        ggplot2::geom_hline(yintercept = 0) +
         theme_for_plots
     }
     else {
@@ -352,6 +355,7 @@ plot_transfers <- function(from_part,
         ggplot2::labs(x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
                       y = y_label) +
         ggplot2::geom_vline(xintercept = 0) +
+        ggplot2::geom_hline(yintercept = 0) +
         theme_for_plots
     }
   }
