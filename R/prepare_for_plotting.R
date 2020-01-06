@@ -67,11 +67,18 @@ make_new_data <- function(from_part,
   comp_sum <- as.numeric(process_units(units, specified_units)[2])
   units <- process_units(units, specified_units)[1]
 
+  vpi_tp <- vary_part_of_interest(dataset[, to_part],
+                                  lower_quantile,
+                                  upper_quantile)
+  vpi_fp <- vary_part_of_interest(dataset[, from_part],
+                                  lower_quantile,
+                                  upper_quantile)
+  min_fp <- min(vpi_fp)
+  max_fp <- max(vpi_fp)
+
   for (label in comp_labels) {
     if (label == to_part) {
-      this_col <- data.frame(vary_part_of_interest(dataset[, label],
-                                                   lower_quantile,
-                                                   upper_quantile))
+      this_col <- data.frame(vpi_tp)
       new_data[label] <- this_col
       }
     if (label != to_part){
@@ -88,6 +95,8 @@ make_new_data <- function(from_part,
     tf <- tf - new_data[, label]
   }
   new_data[, from_part] <- tf
+  new_data <- new_data[new_data[, from_part] < max_fp, ]
+  new_data <- new_data[new_data[, from_part] > min_fp, ]
 
   return(new_data)
 }
