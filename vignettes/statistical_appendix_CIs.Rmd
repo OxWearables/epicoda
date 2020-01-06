@@ -26,7 +26,7 @@ In all cases, using `predict` with `type = "terms"` gives fitted values of each 
 
 This can be derived in the same way as the confidence interval on a model prediction is derived for a general model; the difference here is the use of a partial sum of terms, rather than the full sum of terms. For a generalised linear model (of which the linear model and the logistic model are examples), on the scale of the linear predictors the standard error of $\overline{\Delta y}$ is given by: $$ SE(\overline{\Delta y}) = \sigma \sqrt{diag\Big((x - \overline{x})(ZZ^{T})^{-1}(x-\overline{x})^T\Big)} $$ where $Z$ is the design matrix of the model, $\sigma$ is the residual variance, $x$ is the new values of the explanatory variables and $\overline{x}$ is the mean value of the explanatory variables in the data used to calculate the model. 
 
-As $\sigma ^2 (ZZ^{T})^{-1} $ is the variance-covariance matrix of the coefficients of the fitted model (henceforth written $V$), this can be calculated as: $$ SE(\overline{\Delta y}) =  \sqrt{diag\Big((x - \overline{x})V(x-\overline{x})^T\Big)} $$. This generalises immediately to the sum of linear predictors in the Cox model, and is the version implemented in the package.  
+As $$ \sigma ^2 (ZZ^{T})^{-1} $$ is the variance-covariance matrix of the coefficients of the fitted model (henceforth written $V$), this can be calculated as: $$ SE(\overline{\Delta y}) =  \sqrt{diag\Big((x - \overline{x})V(x-\overline{x})^T\Big)}. $$ This generalises immediately to the sum of linear predictors in the Cox model, and is the version implemented in the package.  
 
 
 
@@ -46,10 +46,10 @@ Here, we address the desire to consider different compositions in greater genera
 -- a note on using balances. ** need to think more about this. 
 -- need to compare systematically different approaches and do the derivation.
 
-### Confidence intervals when `terms = FALSE`
-In this case, for linear, logistic and Cox models, the confidence intervals are the standard confidence intervals on the mean prediction,as calculated by the `predict` method. Note the intervals are *not* the prediction intervals (the intervals within)
+## Confidence intervals when `terms = FALSE`
+In this case, for linear, logistic and Cox models, the confidence intervals are the standard confidence intervals on the mean prediction,as calculated by the `predict` method. Note the intervals are *not* the prediction intervals (the intervals within which 95% of new observations $\overline{\Delta y} $ might be expected to fall given their $x$ values). 
 
 ```{r}
 ```
 
-
+# References

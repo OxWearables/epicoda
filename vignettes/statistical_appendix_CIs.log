@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/W32TeX) (preloaded format=pdflatex 2020.1.3)  3 JAN 2020 13:13
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/W32TeX) (preloaded format=pdflatex 2020.1.6)  6 JAN 2020 07:59
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -725,18 +725,22 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <7> on input line 116.
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <5> on input line 116.
+[1
+
+{c:/Users/rosemaryw/AppData/Roaming/TinyTeX/texmf-var/fonts/map/pdftex/updmap/p
+dftex.map}]
 ! Missing $ inserted.
 <inserted text> 
                 $
-l.120 calculate \$ \widehat{\Delta y}
-                                      \beta\_1 z\_1 + \beta\_2 z\_2 + \ldots{} 
+l.147 \overline{\Delta y}
+                          \$ and the confidence interval on this, 
 Here is how much of TeX's memory you used:
- 10838 strings out of 494107
- 155447 string characters out of 6171962
- 217028 words of memory out of 5000000
- 14771 multiletter control sequences out of 15000+600000
- 47330 words of font info for 54 fonts, out of 8000000 for 9000
+ 10849 strings out of 494107
+ 155642 string characters out of 6171962
+ 219028 words of memory out of 5000000
+ 14772 multiletter control sequences out of 15000+600000
+ 50325 words of font info for 55 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 40i,6n,37p,249b,290s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 40i,6n,37p,249b,326s stack positions out of 5000i,500n,10000p,200000b,80000s
 
 !  ==> Fatal error occurred, no output PDF file produced!

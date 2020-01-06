@@ -117,76 +117,94 @@ i.e.~for \(x_1\) it returns \(\beta_1 x_1\). If the (transformed)
 compositional variables are \(z_1, z_2, ... z_n\) and these are the
 specified terms, then \texttt{predict} returns estimates of
 \(\beta_1 z_1, \beta_2 z_2, ... \beta_n z_n\) which can be used to
-calculate \$ \widehat{\Delta y} \beta\_1 z\_1 + \beta\_2 z\_2 + \ldots{}
-+ \beta\_n z\_n \$. We now need to calculate the uncertainty on this
-quantity.
+calculate
+\[ \overline{\Delta y} = \beta_1 z_1 + \beta_2 z_2 + ... + \beta_n z_n.\]
+We now need to calculate the uncertainty on this quantity.
+
+This can be derived in the same way as the confidence interval on a
+model prediction is derived for a general model; the difference here is
+the use of a partial sum of terms, rather than the full sum of terms.
+For a generalised linear model (of which the linear model and the
+logistic model are examples), on the scale of the linear predictors the
+standard error of \(\overline{\Delta y}\) is given by:
+\[ SE(\overline{\Delta y}) = \sigma \sqrt{diag\Big((x - \overline{x})(ZZ^{T})^{-1}(x-\overline{x})^T\Big)} \]
+where \(Z\) is the design matrix of the model, \(\sigma\) is the
+residual variance, \(x\) is the new values of the explanatory variables
+and \(\overline{x}\) is the mean value of the explanatory variables in
+the data used to calculate the model.
+
+As \[ \sigma ^2 (ZZ^{T})^{-1} \] is the variance-covariance matrix of
+the coefficients of the fitted model (henceforth written \(V\)), this
+can be calculated as:
+\[ SE(\overline{\Delta y}) =  \sqrt{diag\Big((x - \overline{x})V(x-\overline{x})^T\Big)} \].
+This generalises immediately to the sum of linear predictors in the Cox
+model, and is the version implemented in the package.
 
 \hypertarget{linear-models}{%
 \subsubsection{Linear models}\label{linear-models}}
 
 This is the simplest case. Using the above, we directly estimate \$
-\widehat{\Delta y} \beta\_1 z\_1 + \beta\_2 z\_2 + \ldots{} + \beta\_n
-z\_n \$ and the confidence interval on this,
-\((\widehat{\Delta y_{min}}, \widehat{\Delta y_{max}})\).
+\overline{\Delta y} \$ and the confidence interval on this,
+\((\overline{\Delta y_{min}}, \overline{\Delta y_{max}})\).
 
 \hypertarget{logistic-models}{%
 \subsubsection{Logistic models}\label{logistic-models}}
 
 Here, the terms given by the \texttt{predict} function are on the scale
-of the linear predictors i.e.~we estimate \$ \widehat{\Delta y} =
-\beta\_1 z\_1 + \beta\_2 z\_2 + \ldots{} + \beta\_n z\_n \$ and the
-confidence interval on this,
-\((\widehat{\Delta y_{min}}, \widehat{\Delta y_{max}})\). Then, the odds
-ratio and uncertainty on it is given by exponentiating the estimate
-(\(\exp(\widehat{\Delta y})\)) and confidence interval
-(\((\exp(\widehat{\Delta y_{min}}), \exp(\widehat{\Delta y_{max}}))\).
+of the linear predictors i.e.~we estimate \$ \overline{\Delta y} \$ on
+the scale of the linear predictors and the confidence interval on this,
+\((\overline{\Delta y_{min}}, \overline{\Delta y_{max}})\). Then, the
+odds ratio and uncertainty on it is given by exponentiating the estimate
+(\(\exp(\overline{\Delta y})\)) and confidence interval
+(\((\exp(\overline{\Delta y_{min}}), \exp(\overline{\Delta y_{max}}))\).
 
 \hypertarget{cox-models}{%
 \subsubsection{Cox models}\label{cox-models}}
 
 Here, the terms given by the \texttt{predict} function are on the scale
-of the linear predictors i.e.~we estimate \$ \widehat{\Delta y} =
-\beta\_1 z\_1 + \beta\_2 z\_2 + \ldots{} + \beta\_n z\_n \$ and the
-confidence interval on this,
-\((\widehat{\Delta y_{min}}, \widehat{\Delta y_{max}})\). Then, the
+of the linear predictors i.e.~we estimate \$ \overline{\Delta y} \$ on
+the scale of the linear predictors and the confidence interval on this,
+\((\overline{\Delta y_{min}}, \overline{\Delta y_{max}})\). Then, the
 hazard ratio and uncertainty on it is given by exponentiating the
-estimate (\(\exp(\widehat{\Delta y})\)) and confidence interval
-(\((\exp(\widehat{\Delta y_{min}}), \exp(\widehat{\Delta y_{max}}))\).
+estimate (\(\exp(\overline{\Delta y})\)) and confidence interval
+(\((\exp(\overline{\Delta y_{min}}), \exp(\overline{\Delta y_{max}}))\).
 
 \hypertarget{comparison-with-existing-literature}{%
 \subsubsection{Comparison with existing
 literature}\label{comparison-with-existing-literature}}
 
-Note that the treatment here takes inspiration from but slightly
-deviates from Dumuid et al (Dumuid et al. 2017). Dumuid et al deals with
-the case where one compositional part is considered at the expense of
-all others proportionately. By construction of the ilr pivot
-coordinates, the uncertainty on the estimate in this case can be derived
-entirely from the first pivot coordinate. More generally, however, and
-particularly when wishing to consider arbitrary compositions (as in the
-case of \texttt{forest\_plot\_comp}), this is not the case. Therefore,
-here we use the uncertainty on all compositional variables when deriving
-the estimated confidence intervals. This will never give a narrower
-confidence interval than approaches using uncertainty on only some
-compositional terms; it may give a wider (more conservative) confidence
-interval in some cases, as it considers the uncertainty on compositional
-variables that are in fact fixed when considering just a particular
-comparison of compositions/ pairwise balance. This is fully general, and
-fits well conceptually with considering the exposure of interest as the
-overall composition (perturbed and perturbable in various ways).
+Note that the treatment here takes inspiration from but deviates from
+Dumuid et al (Dumuid et al. 2017). Dumuid et al deal with the case where
+one compositional part is considered at the expense of all others
+proportionately. By construction of the ilr pivot coordinates, the
+uncertainty on the estimate in this case can be derived entirely from
+the first pivot coordinate. Here, we address the desire to consider
+different compositions in greater generality. In particular, no single
+set of pivot coordinates allow isolation of the uncertainty on arbitrary
+comparisons of compositions (as in the case of
+\texttt{forest\_plot\_comp}). Therefore, here we use the uncertainty on
+all compositional variables when deriving the estimated confidence
+intervals. This will never give a narrower confidence interval than
+approaches using uncertainty on only some compositional terms; it may
+give a wider (more conservative) confidence interval in some cases, as
+it considers the uncertainty on compositional variables that are in fact
+fixed when considering just a particular comparison of compositions/
+pairwise balance. The advantages of this are that it is fully general,
+and that it fits conceptually well with considering the exposure of
+interest as the overall composition (perturbed and perturbable in
+various ways).
 
 -- a note on using balances. ** need to think more about this. -- need
-to compare systematically different approaches and do the derivation. To
-consider pairwise behaviour balances, \#\#\# Confidence intervals when
-\texttt{terms\ =\ FALSE} In this case, for linear, logistic and Cox
-models, the confidence intervals are the standard confidence intervals
-on the mean prediction,as calculated by the \texttt{predict} method.
-Note the intervals are \emph{not} the prediction intervals (the
-intervals within)
+to compare systematically different approaches and do the derivation.
 
-\[
-\sqrt{27}
-\]
+\hypertarget{confidence-intervals-when-terms-false}{%
+\subsubsection{\texorpdfstring{Confidence intervals when
+\texttt{terms\ =\ FALSE}}{Confidence intervals when terms = FALSE}}\label{confidence-intervals-when-terms-false}}
+
+In this case, for linear, logistic and Cox models, the confidence
+intervals are the standard confidence intervals on the mean
+prediction,as calculated by the \texttt{predict} method. Note the
+intervals are \emph{not} the prediction intervals (the intervals within)
 
 \hypertarget{refs}{}
 \leavevmode\hypertarget{ref-Dumuid2017c}{}%
