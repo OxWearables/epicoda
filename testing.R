@@ -23,8 +23,8 @@ summary(log_outcome)
 data_ilr_impute_zeroes
 summary(lm_outcome)
 tab_covariate_coefs(lm_outcome, comp_labels = comp_labels)
-tab_coefs( scale_type = "lp", level = 0.95, type = "cox",
-                outcome = NULL,
+tab_coefs( scale_type = "lp", level = 0.95, type = "linear",
+                outcome = "linear_outcome",
                 covariates = c("agegroup", "sex"),
                 follow_up_time = "follow_up_time",
                 event = "event",
@@ -32,6 +32,16 @@ tab_coefs( scale_type = "lp", level = 0.95, type = "cox",
                 comp_labels = comp_labels,
                 rounded_zeroes = TRUE,
                 det_limit = 0.0083)
+
+tab_coefs( scale_type = "exp", level = 0.95, type = "cox",
+           outcome = NULL,
+           covariates = c("agegroup", "sex"),
+           follow_up_time = "follow_up_time",
+           event = "event",
+           data = simdataplain,
+           comp_labels = comp_labels,
+           rounded_zeroes = TRUE,
+           det_limit = 0.0083)
 
 summary(log_outcome)
 epicoda::plot_transfers(from_part = "partB",
