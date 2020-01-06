@@ -178,8 +178,8 @@ predict_fit_and_ci <- function(model,
       qt(0.975, df = (nrow(model.matrix(model)) -1 - length(transf_labels)))[[1]]
 
 
-    alpha_lower <- dNew$log_odds_change - t_value * value * sigma(model)
-    alpha_upper <- dNew$log_odds_change + t_value * value *sigma(model)
+    alpha_lower <- dNew$log_odds_change - t_value * value
+    alpha_upper <- dNew$log_odds_change + t_value * value
 
     dNew$lower_CI <- exp(alpha_lower)
     dNew$upper_CI <- exp(alpha_upper)
@@ -352,8 +352,8 @@ predict_fit_and_ci <- function(model,
     t_value <-
       qt(0.975, df = (nrow(model.matrix(model)) -1 - length(transf_labels)))[[1]]
 
-    dNew$lower_CI <- dNew$fit - t_value * value * sigma(model)
-    dNew$upper_CI <- dNew$fit + t_value * value * sigma(model)
+    dNew$lower_CI <- dNew$fit - t_value * value
+    dNew$upper_CI <- dNew$fit + t_value * value
  }
 
 
