@@ -1,3 +1,4 @@
+comp_labels <- c("partA", "partB", "partC", "partD", "partE")
 test_that("Plot unchanged from cached plot.", {
   expect_equal_to_reference(epicoda::plot_transfers(from_part = "partD",
                                                              to_part = "partB",
@@ -22,5 +23,5 @@ test_that("Plot unchanged from cached plot.", {
                                                              rounded_zeroes = TRUE,
                                                              det_limit = 0.0083,
                                                              terms = TRUE,
-                                                            plot_log = TRUE))
+                                                            plot_log = FALSE), file = "example_plot.rds")
 })
