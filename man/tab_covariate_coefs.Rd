@@ -15,6 +15,8 @@ tab_covariate_coefs(
 )
 }
 \arguments{
+\item{model}{Model for which extracting coefficients.}
+
 \item{scale_type}{Can take value "lp" (linear predictors) or "exp" (exponentiated- relevant for interpretation of logistic and Cox models).}
 
 \item{level}{The level argument of the confidence intervals. Passed directly to `stats::confint`.}
