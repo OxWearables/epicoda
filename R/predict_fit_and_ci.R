@@ -2,7 +2,7 @@
 #'
 #' Principally intended as input to forest_plot_examples and plot_transfers.
 #'
-#' @param model
+#' @param model Model to use in generating predictions.
 #' @param dataset  Should be dataset used to develop \code{model}.
 #' @param new_data Data for predictions.
 #' @inheritParams transform_comp
