@@ -2,7 +2,7 @@
 #'
 #' This pulls out a table of the coefficients of the covariates only in the model.
 #'
-#' @param model
+#' @param model Model for which extracting coefficients.
 #' @param scale_type Can take value "lp" (linear predictors) or "exp" (exponentiated- relevant for interpretation of logistic and Cox models).
 #' @param level The level argument of the confidence intervals. Passed directly to `stats::confint`.
 #' @inheritParams comp_model
