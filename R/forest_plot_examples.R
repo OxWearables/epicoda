@@ -1,9 +1,9 @@
 #' Produce a forest plot indicating model prediction at given compositions
 #'
 #' @param composition_list Named list of compositions. Note each composition should be stored as a data frame. For example, use the output of \code{change_composition}.
-#' @param x_label
-#' @param xllimit
-#' @param xulimit
+#' @param x_label Label for x axis in plot.
+#' @param xllimit Minimum value for x axis.
+#' @param xulimit Maximum value for x axis.
 #' @inheritParams predict_fit_and_ci
 #' @inheritDotParams forestplot::forestplot
 #' @return Forest plot illustrating prediction of the model at given compositions.
@@ -25,8 +25,7 @@ forest_plot_comp <-
            x_label = NULL,
            xllimit = NULL,
            xulimit = NULL,
-           plot_log = FALSE,
-           ...) {
+           plot_log = FALSE, ...) {
 
     if (!is.list(composition_list)) {
       stop('`composition_list` should be a list.')
