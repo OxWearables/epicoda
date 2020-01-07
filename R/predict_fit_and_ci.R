@@ -106,10 +106,12 @@ predict_fit_and_ci <- function(model,
 
 
   for (colname in colnames(fixed_values)){
-    if (!(colname %in% colnames(new_data))){
+    if (!(colname %in% colnames(new_data)) & !(colname %in% transf_labels)){
       new_data[, colname]<- rep(fixed_values[1, colname], by = nrow(new_data))
     }
   }
+
+  new_data <- transform_comp(data = new_data, comp_labels = comp_labels, transformation_type = transformation_type, rounded_zeroes = rounded_zeroes, det_limit = det_limit, comparison_part = comparison_part, part_1 = part_1)
   # We begin the plotting
   if (type == "logistic" && (terms == FALSE)) {
     message(
@@ -366,10 +368,7 @@ predict_fit_and_ci <- function(model,
       print(paste(variable, ":", fixed_values[1, variable]))
     }
   }
-  print("Compositional variables not varied in the visualisation were fixed at:")
-  for (variable in comp_labels) {
-    print(paste(variable, ":", signif(fixed_values[1, variable], 2), units))
-  }
+
 
 
   return(dNew)

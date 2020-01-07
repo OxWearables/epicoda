@@ -91,7 +91,7 @@ p <- plot_transfers(from_part = "partD",
 save_plot(p, filename = "testing1.tiff")
 
 head(simdata)
-composition_list <- list("trial" = data.frame("partA" = c(0.001), "partB" = 1.499, "partC" = 4.5, "partD" = 9, "partE" = 9))
+composition_list <- list("trial2" = data.frame("partA" = c(0.001), "partB" = 1.39, "partC" = 2.5, "partD" = 6, "partE" = 9))
 
 forest_plot_comp(composition_list = composition_list,
          model = lm_outcome,

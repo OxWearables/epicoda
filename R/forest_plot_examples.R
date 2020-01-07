@@ -54,11 +54,9 @@ forest_plot_comp <-
     x_label <- process_axis_label(label = x_label, type = type, terms = terms)
 
 
-
-
-
     col_of_names <- names(composition_list)
     df <- data.table::rbindlist(composition_list, use.names = TRUE)
+    print(df)
     dNew <- predict_fit_and_ci(
       model = model,
       dataset = dataset,
@@ -74,6 +72,7 @@ forest_plot_comp <-
       det_limit = det_limit,
       terms = terms
     )
+
 
     if (is.null(xllimit)){
       xllimit <- min(dNew$lower_CI)
@@ -97,7 +96,7 @@ forest_plot_comp <-
       xlog = plot_log,
       clr.line = "black",
       clip = c(xllimit, xulimit),
-      xticks = seq(signif(xllimit, digits = 2), signif(xulimit, digits = 2), by = signif(((xulimit- xllimit)/5), digits = 2)),
+      xticks = seq(signif(xllimit - ((xulimit- xllimit)/5), digits = 2), signif(xulimit+ ((xulimit- xllimit)/5), digits = 2), by = signif(((xulimit- xllimit)/5), digits = 2)),
       xlab = x_label,
       zero = NA,
       txt_gp = text_settings,

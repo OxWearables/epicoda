@@ -98,5 +98,10 @@ make_new_data <- function(from_part,
   new_data <- new_data[new_data[, from_part] < max_fp, ]
   new_data <- new_data[new_data[, from_part] > min_fp, ]
 
+  print("Compositional variables not varied in the visualisation were fixed at:")
+  for (variable in comp_labels[(comp_labels != from_part) & (comp_labels != to_part)]) {
+    print(paste(variable, ":", signif(fixed_values[1, variable], 2), units))
+  }
+
   return(new_data)
 }
