@@ -4,7 +4,7 @@
 #'
 #' @param model
 #' @param scale_type Can take value "lp" (linear predictors) or "exp" (exponentiated- relevant for interpretation of logistic and Cox models).
-#' @param level The level argument of the confidence intervals. Passed directly to `confint`.
+#' @param level The level argument of the confidence intervals. Passed directly to `stats::confint`.
 #' @inheritParams comp_model
 #'
 #' @return Table of covariates and their associated coefficients (parameter value with lower and upper confidence interval of the 95% ).
@@ -26,9 +26,9 @@ tab_covariate_coefs <-
         part_1 = part_1
       )
 
-    toc <- data.frame(coef(model, complete = FALSE))
+    toc <- data.frame(stats::coef(model, complete = FALSE))
     colnames(toc) <- "fit"
-    tocint <- confint(model, level = level, complete = FALSE)
+    tocint <- stats::confint(model, level = level, complete = FALSE)
     all <- cbind(toc, tocint)
     all_red <- all[!(rownames(all) %in% transf_labels), ]
     if (scale_type == "lp") {
@@ -107,10 +107,10 @@ tab_coefs <-
         )
       tl_needed <- transf_labels[1]
 
-      toc <- data.frame(coef(current_model, complete = FALSE))
+      toc <- data.frame(stats::coef(current_model, complete = FALSE))
       colnames(toc) <- "fit"
       tocint <-
-        confint(current_model, level = level, complete = FALSE)
+        stats::confint(current_model, level = level, complete = FALSE)
       all <- cbind(toc, tocint)
       all_red <- all[tl_needed, ]
       rownames(all_red) <-  paste("First pivot coordinate:", part, "vs All other parts")

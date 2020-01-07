@@ -47,7 +47,7 @@ plot_density_simplex <- function(data, groups = NULL, parts_to_plot = NULL, n_bi
           plot <- ggtern::ggtern(data = data[,c(parts_to_plot, groups)], ggplot2::aes_(x= data[, name1], y = data[, name2], z = data[, name3], color = data[, groups]))
           for (group in levels(data[, groups])){
               local_data <- data[data[, groups] == group, ]
-              plot <- plot + stat_density_tern(data = local_data, geom = 'polygon', ggplot2::aes_(x= local_data[, name1], y = local_data[, name2], z = local_data[, name3], color = local_data[, groups]),
+              plot <- plot + ggtern::stat_density_tern(data = local_data, geom = 'polygon', ggplot2::aes_(x= local_data[, name1], y = local_data[, name2], z = local_data[, name3], color = local_data[, groups]),
                                                bins = n_bins, weight = 3, alpha = transparency)
           }
           plot <- plot + theme+
@@ -77,7 +77,7 @@ plot_density_simplex <- function(data, groups = NULL, parts_to_plot = NULL, n_bi
       plot <- ggtern::ggtern(data = data[,c(parts_to_plot, groups)], ggplot2::aes_(x= data[, name1], y = data[, name2], z = data[, name3], color = data[, groups]))
       for (group in levels(data[, groups])){
         local_data <- data[data[, groups] == group, ]
-        plot <- plot + stat_density_tern(data = local_data, geom = 'polygon', ggplot2::aes_(x= local_data[, name1], y = local_data[, name2], z = local_data[, name3], color = local_data[, groups]),
+        plot <- plot + ggtern::stat_density_tern(data = local_data, geom = 'polygon', ggplot2::aes_(x= local_data[, name1], y = local_data[, name2], z = local_data[, name3], color = local_data[, groups]),
                                          bins = n_bins, weight = 3, alpha = transparency)
       }
         plot <- plot + theme+ ggtern::geom_crosshair_tern(data = mark_points, mapping = ggplot2::aes_(x= mark_points[, name1], y = mark_points[, name2], z = mark_points[, name3], color = mark_points[, groups]))+

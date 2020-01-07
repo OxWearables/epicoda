@@ -13,7 +13,7 @@ generate_fixed_values <- function(data, comp_labels, rounded_zeroes, det_limit, 
       fixed_values[colname] <- (Mode(data[,colname]))[1]
     }
     if ((is.numeric(data[, colname]))) {
-      fixed_values[colname] <- median(data[, colname], na.rm = TRUE)
+      fixed_values[colname] <- stats::median(data[, colname], na.rm = TRUE)
     }
   }
   cm <- suppressMessages(data.frame(comp_mean(data, comp_labels, rounded_zeroes, det_limit, units, specified_units)))
@@ -37,8 +37,8 @@ vary_part_of_interest <- function(part_of_interest,
                                   upper_quantile = 0.95,
                                   granularity = 10000) {
   part_values <- seq(
-    from = quantile(part_of_interest, 0.05, na.rm = TRUE),
-    to = quantile(part_of_interest, 0.95, na.rm = TRUE),
+    from = stats::quantile(part_of_interest, 0.05, na.rm = TRUE),
+    to = stats::quantile(part_of_interest, 0.95, na.rm = TRUE),
     length.out = granularity
   )
   return(part_values)

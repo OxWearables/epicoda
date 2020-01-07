@@ -114,7 +114,7 @@ predict_fit_and_ci <- function(model,
     message(
       "Note that the confidence intervals on these predictions include uncertainty driven by other, non-compositional variables. To look at compositional variables only, use terms = TRUE"
     )
-    predictions <- predict(model,
+    predictions <- stats::predict(model,
                            newdata = new_data,
                            type = "link",
                            se.fit = TRUE)
@@ -137,7 +137,7 @@ predict_fit_and_ci <- function(model,
 
   if (type == "logistic" && (terms)) {
     predictions <-
-      predict(
+      stats::predict(
         model,
         newdata = new_data,
         type = "terms",
@@ -145,7 +145,7 @@ predict_fit_and_ci <- function(model,
         se.fit = TRUE
       )
 
-    acm <- predict(model,
+    acm <- stats::predict(model,
                    newdata = transf_fixed_vals,
                    type = "terms",
                    terms = transf_labels)
@@ -162,7 +162,7 @@ predict_fit_and_ci <- function(model,
     dNew$fit <- exp(dNew$log_odds_change)
 
 
-    middle_matrix <- vcov(model)[transf_labels, transf_labels]
+    middle_matrix <- stats::vcov(model)[transf_labels, transf_labels]
     x <- data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
     in_sqrt_1 <- (x %*% middle_matrix)
     t_x <- as.matrix(t(x))
@@ -175,7 +175,7 @@ predict_fit_and_ci <- function(model,
     value <- sqrt(data.matrix(in_sqrt_true))
 
     t_value <-
-      qt(0.975, df = (nrow(model.matrix(model)) -1 - length(transf_labels)))[[1]]
+      stats::qt(0.975, df = (nrow(stats::model.matrix(model)) -1 - length(transf_labels)))[[1]]
 
 
     alpha_lower <- dNew$log_odds_change - t_value * value
@@ -194,7 +194,7 @@ predict_fit_and_ci <- function(model,
 
 
   if (type == "cox" && (terms)) {
-    predictions <- predict(
+    predictions <- stats::predict(
       model,
       newdata = new_data,
       type = "terms",
@@ -202,7 +202,7 @@ predict_fit_and_ci <- function(model,
       terms = transf_labels
     )
 
-    acm <- predict(model,
+    acm <- stats::predict(model,
                    newdata = transf_fixed_vals,
                    type = "terms",
                    terms = transf_labels)
@@ -218,7 +218,7 @@ predict_fit_and_ci <- function(model,
     dNew$log_hazard_change <- eval(parse(text = sum_for_args)) - sum(acm)
     dNew$fit <- exp(dNew$log_hazard_change)
 
-    middle_matrix <- vcov(model)[transf_labels, transf_labels]
+    middle_matrix <- stats::vcov(model)[transf_labels, transf_labels]
     x <- data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
     in_sqrt_1 <- (x %*% middle_matrix)
     t_x <- as.matrix(t(x))
@@ -231,7 +231,7 @@ predict_fit_and_ci <- function(model,
     value <- sqrt(data.matrix(in_sqrt_true))
 
     t_value <-
-      qt(0.975, df = (nrow(model.matrix(model)) -1 - length(transf_labels)))[[1]]
+      stats::qt(0.975, df = (nrow(stats::model.matrix(model)) -1 - length(transf_labels)))[[1]]
 
 
 
@@ -247,14 +247,14 @@ predict_fit_and_ci <- function(model,
 
 
   if (type == "cox" && !(terms)) {
-    predictions <- predict(model,
+    predictions <- stats::predict(model,
                            newdata = new_data,
                            type = "risk",
                            se.fit = TRUE)
 
     dNew <- data.frame(new_data, predictions)
 
-    acm <- predict(model,
+    acm <- stats::predict(model,
                    newdata = transf_fixed_vals, type = "risk")
 
     dNew$predictions <- dNew$fit / acm
@@ -278,7 +278,7 @@ predict_fit_and_ci <- function(model,
       "Note that the confidence intervals on this plot include uncertainty driven by other, non-compositional variables."
     )
     predictions <-
-      predict(model,
+      stats::predict(model,
               newdata = new_data,
               type = "response",
               se.fit = TRUE)
@@ -303,7 +303,7 @@ predict_fit_and_ci <- function(model,
 
   if (type == "linear" && (terms)) {
     predictions <-
-      predict(
+      stats::predict(
         model,
         newdata = new_data,
         type = "terms",
@@ -313,7 +313,7 @@ predict_fit_and_ci <- function(model,
 
 
 
-    acm <- predict(model,
+    acm <- stats::predict(model,
                    newdata = transf_fixed_vals,
                    type = "terms",
                    terms = transf_labels)
@@ -337,7 +337,7 @@ predict_fit_and_ci <- function(model,
 
 
 
-    middle_matrix <- vcov(model)[transf_labels, transf_labels]
+    middle_matrix <- stats::vcov(model)[transf_labels, transf_labels]
     x <- data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
     in_sqrt_1 <- (x %*% middle_matrix)
     t_x <- as.matrix(t(x))
@@ -350,7 +350,7 @@ predict_fit_and_ci <- function(model,
     value <- sqrt(data.matrix(in_sqrt_true))
 
     t_value <-
-      qt(0.975, df = (nrow(model.matrix(model)) -1 - length(transf_labels)))[[1]]
+      stats::qt(0.975, df = (nrow(stats::model.matrix(model)) -1 - length(transf_labels)))[[1]]
 
     dNew$lower_CI <- dNew$fit - t_value * value
     dNew$upper_CI <- dNew$fit + t_value * value
@@ -358,7 +358,7 @@ predict_fit_and_ci <- function(model,
 
 
   if (terms == FALSE) {
-    short_form <- gsub(".*~", "", as.character(formula(model)))
+    short_form <- gsub(".*~", "", as.character(stats::formula(model)))
     print(paste("Covariate values were fixed at: "))
     variables <- strsplit(short_form[3], " + ", fixed = TRUE)[[1]]
     for (variable in variables[!(variables %in% transf_labels)]) {

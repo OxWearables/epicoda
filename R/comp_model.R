@@ -48,19 +48,19 @@ comp_model <-
 
     if (type == "linear") {
       model <-
-        lm(as.formula(paste(outcome, "~", cov_sum, "+", transf_sum)),
+        stats::lm(stats::as.formula(paste(outcome, "~", cov_sum, "+", transf_sum)),
            data = data_ready)
     }
 
     if (type == "logistic") {
       model <-
-        glm(as.formula(paste(outcome, "~", cov_sum, "+", transf_sum)),
+        stats::glm(stats::as.formula(paste(outcome, "~", cov_sum, "+", transf_sum)),
             data = data_ready, family = "binomial")
     }
     if (type == "cox") {
       survival_object <- survival::Surv(data[, follow_up_time], data[, event])
       model <-
-        survival::coxph(as.formula(paste(
+        survival::coxph(stats::as.formula(paste(
           "survival_object ~", cov_sum, "+", transf_sum
         )), data = data_ready)
     }

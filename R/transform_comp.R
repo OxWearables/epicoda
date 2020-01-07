@@ -43,7 +43,7 @@ transform_comp <- function(data, comp_labels, transformation_type = "ilr", round
     transf_labels <- transf_labels(comp_labels, "alr", comparison_part)
     dTransformationReady <- dTransformationReady[, colnames(dTransformationReady)[!(colnames(dTransformationReady) %in% transf_labels )]]
     dTransformed <- alr_trans(dTransformationReady[, comp_labels], comp_labels, comparison_part)
-    colnames(dTransformed) <- transf_label
+    colnames(dTransformed) <- transf_labels
     dTransformed$row_labels_master <- dTransformationReady$row_labels_master
   }
 
