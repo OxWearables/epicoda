@@ -8,7 +8,7 @@
 #' @inheritParams process_units
 #' @return Vector which is the compositional mean.
 #' @examples
-#' comp_mean(data - simdata,
+#' comp_mean(data = simdata,
 #'           comp_labels = c("partA", "partB", "partC", "partD", "partE"),
 #'           units = "hr/day")
 #' @export

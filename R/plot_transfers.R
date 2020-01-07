@@ -206,12 +206,12 @@ plot_transfers <- function(from_part,
     if (plot_log == TRUE) {
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
-                        mapping = ggplot2::aes(x = axis_vals, y = fit)) +
+                        mapping = ggplot2::aes_(x = dNew$axis_vals, y = dNew$fit)) +
         ggplot2::ylim(yllimit, yulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes(
-          x = axis_vals,
-          ymin = lower_CI,
-          ymax = upper_CI
+        ggplot2::geom_errorbar(ggplot2::aes_(
+          x = dNew$axis_vals,
+          ymin = dNew$lower_CI,
+          ymax = dNew$upper_CI
         ),
         color = "grey") +
         ggplot2::geom_point(size= 2) +
@@ -232,12 +232,12 @@ plot_transfers <- function(from_part,
     else {
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
-                        mapping = ggplot2::aes(x = axis_vals, y = fit)) +
+                        mapping = ggplot2::aes_(x = dNew$axis_vals, y = dNew$fit)) +
         ggplot2::ylim(yllimit, yulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes(
-          x = axis_vals,
-          ymin = lower_CI,
-          ymax = upper_CI
+        ggplot2::geom_errorbar(ggplot2::aes_(
+          x = dNew$axis_vals,
+          ymin = dNew$lower_CI,
+          ymax = dNew$upper_CI
         ),
         color = "grey") +
         ggplot2::geom_point(size= 2) +
@@ -262,12 +262,12 @@ plot_transfers <- function(from_part,
     if (plot_log == TRUE) {
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
-                        mapping = ggplot2::aes(x = axis_vals, y = fit)) +
+                        mapping = ggplot2::aes_(x = dNew$axis_vals, y = dNew$fit)) +
         ggplot2::ylim(yllimit, yulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes(
-          x = axis_vals,
-          ymin = lower_CI,
-          ymax = upper_CI
+        ggplot2::geom_errorbar(ggplot2::aes_(
+          x = dNew$axis_vals,
+          ymin = dNew$lower_CI,
+          ymax = dNew$upper_CI
         ),
         color = "grey") +
         ggplot2::geom_point(size= 2) +
@@ -288,12 +288,12 @@ plot_transfers <- function(from_part,
     else {
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
-                        mapping = ggplot2::aes(x = axis_vals, y = fit)) +
+                        mapping = ggplot2::aes_(x = dNew$axis_vals, y = dNew$fit)) +
         ggplot2::ylim(yllimit, yulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes(
-          x = axis_vals,
-          ymin = lower_CI,
-          ymax = upper_CI
+        ggplot2::geom_errorbar(ggplot2::aes_(
+          x = dNew$axis_vals,
+          ymin = dNew$lower_CI,
+          ymax = dNew$upper_CI
         ),
         color = "grey") +
         ggplot2::geom_point(size= 2) +
@@ -319,12 +319,12 @@ plot_transfers <- function(from_part,
       }
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
-                        mapping = ggplot2::aes(x = axis_vals, y = fit)) +
+                        mapping = ggplot2::aes_(x = dNew$axis_vals, y = dNew$fit)) +
         ggplot2::ylim(yllimit, yulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes(
-          x = axis_vals,
-          ymin = lower_CI,
-          ymax = upper_CI
+        ggplot2::geom_errorbar(ggplot2::aes_(
+          x = dNew$axis_vals,
+          ymin = dNew$lower_CI,
+          ymax = dNew$upper_CI
         ),
         color = "grey") +
         ggplot2::geom_point(size= 2) +
@@ -344,12 +344,12 @@ plot_transfers <- function(from_part,
     else {
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
-                        mapping = ggplot2::aes(x = axis_vals, y = fit)) +
+                        mapping = ggplot2::aes_(x = dNew$axis_vals, y = dNew$fit)) +
         ggplot2::ylim(yllimit, yulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes(
-          x = axis_vals,
-          ymin = lower_CI,
-          ymax = upper_CI
+        ggplot2::geom_errorbar(ggplot2::aes_(
+          x = dNew$axis_vals,
+          ymin = dNew$lower_CI,
+          ymax = dNew$upper_CI
         ),
         color = "grey") +
         ggplot2::geom_point(size= 2) +

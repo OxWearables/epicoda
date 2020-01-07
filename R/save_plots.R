@@ -11,6 +11,6 @@
 #' @return Saves file with the desired size.
 #' @examples
 save_plot <- function(plot, dpi = 300, filename, filetype = "tiff"){
-  ggsave(filename = filename, plot, dpi = dpi, device = filetype )
+  ggplot2::ggsave(filename = filename, plot, dpi = dpi, device = filetype )
 
 }

@@ -4,6 +4,7 @@
 #' @param x_label Label for x axis in plot.
 #' @param xllimit Minimum value for x axis.
 #' @param xulimit Maximum value for x axis.
+#' @param text_settings An optional argument which should be an \code{fpTxtGp} object as specified in the \code{forestplot} package.
 #' @inheritParams predict_fit_and_ci
 #' @inheritDotParams forestplot::forestplot
 #' @return Forest plot illustrating prediction of the model at given compositions.
@@ -25,10 +26,27 @@ forest_plot_comp <-
            x_label = NULL,
            xllimit = NULL,
            xulimit = NULL,
-           plot_log = FALSE, ...) {
+           plot_log = FALSE,
+           text_settings = NULL,
+           ...) {
 
     if (!is.list(composition_list)) {
       stop('`composition_list` should be a list.')
+    }
+    if (is.null(text_settings)){
+      text_settings <- forestplot::fpTxtGp(
+        label = grid::gpar(
+          fontfamily = "sans",
+          cex = 1,
+          fontface = 2
+        ),
+        xlab = grid::gpar(
+          fontfamily = "sans",
+          cex = 1,
+          fontface = 2
+        ),
+        ticks = grid::gpar(cex = 0.75, fontface = 2)
+      )
     }
 
     type <- process_model_type(model)
@@ -71,15 +89,17 @@ forest_plot_comp <-
     CI <- paste(signif(data_frame_for_forest_plot$low, digits = 2), "-", signif(data_frame_for_forest_plot$high, digits = 2))
      tabletext <- cbind(c(NA, col_of_names), c("Model prediction", signif(data_frame_for_forest_plot$coef[2:nrow(data_frame_for_forest_plot)], digits = 3)), c("95% CI", CI[2:nrow(data_frame_for_forest_plot)]))
 
-    fp <- forestplot(
+    fp <- forestplot::forestplot(
       tabletext,
       graph.pos = 2,
       data_frame_for_forest_plot,
       xlog = plot_log,
       clr.line = "black",
       clip = c(xllimit, xulimit),
+      xticks = seq(signif(xllimit, digits = 2), signif(xulimit, digits = 2), by = signif(((xulimit- xllimit)/5), digits = 2)),
       xlab = x_label,
       zero = NA,
+      txt_gp = text_settings,
       ...
     )
     return(fp)
