@@ -1,13 +1,24 @@
 ---
 title: 'Statistical appendix: Derivation of Confidence Intervals'
-author: "R-Walmsley"
-date: "03/01/2020"
-output:
-  html_document: default
-  word_document: default
-  pdf_document: default
-bibliography: library.bib
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{derivation_of_CIs_used}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  bibliography: library.bib
 ---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(epicoda)
+```
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
