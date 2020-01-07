@@ -5,13 +5,13 @@
 #' @param data Data frame containing data to be plotted.
 #' @param groups Name of variable in the data frame which identifies the groups to be plotted.
 #' @param parts_to_plot Names of the three variables in the data frame which are to be plotted on the ternary plot. Note they should be on the same scale (they don't need to be normalised to 1).
-#' @param n_contours
+#' @param n_bins Number of bins to use on density plot.
 #' @param mark_points Points should be the rows of a data frame with the elements of \code{parts_to_plot} as columns names. If a \code{groups} argument is given, it should also have a column for this (if the groups aren't relevant to the point in a certain row, this can be set as NA).
 #' @param transparency Control the transparency of plots. Should be between 0 and 1.
 #' @inheritParams plot_transfers
 #' @return Plot showing density of data on simplex.
 #' @examples
-plot_density_simplex <- function(data, groups = NULL, parts_to_plot = NULL, n_contours = 5, mark_points = NULL, theme = NULL, transparency = 0.2){
+plot_density_simplex <- function(data, groups = NULL, parts_to_plot = NULL, n_bins = 5, mark_points = NULL, theme = NULL, transparency = 0.2){
   if (length(parts_to_plot)!= 3){
     stop("parts_to_plot should have names of exactly three parts to plot")
   }
@@ -35,7 +35,7 @@ plot_density_simplex <- function(data, groups = NULL, parts_to_plot = NULL, n_co
     if (is.null(groups)){
           plot <- ggtern::ggtern(data = data[,parts_to_plot], ggplot2::aes_( x= data[, name1], y = data[, name2], z = data[, name3])) +
             ggtern::stat_density_tern(geom = 'polygon',
-                            bins = n_contours, weight = 3, alpha = transparency, colour = "black") +
+                            bins = n_bins, weight = 3, alpha = transparency, colour = "black") +
           theme +
             ggplot2::labs(
           xarrowlab = paste(name1, "(%)"),
@@ -48,7 +48,7 @@ plot_density_simplex <- function(data, groups = NULL, parts_to_plot = NULL, n_co
           for (group in levels(data[, groups])){
               local_data <- data[data[, groups] == group, ]
               plot <- plot + stat_density_tern(data = local_data, geom = 'polygon', ggplot2::aes_(x= local_data[, name1], y = local_data[, name2], z = local_data[, name3], color = local_data[, groups]),
-                                               bins = n_contours, weight = 3, alpha = transparency)
+                                               bins = n_bins, weight = 3, alpha = transparency)
           }
           plot <- plot + theme+
             ggplot2::labs(
@@ -63,7 +63,7 @@ plot_density_simplex <- function(data, groups = NULL, parts_to_plot = NULL, n_co
     if (is.null(groups)){
       plot <- ggtern::ggtern(data = data[,parts_to_plot], ggplot2::aes_( x= data[, name1], y = data[, name2], z = data[, name3])) +
         ggtern::stat_density_tern(data = data, geom = 'polygon',
-                          bins = n_contours, weight = 3, alpha = transparency, colour = "black") +
+                          bins = n_bins, weight = 3, alpha = transparency, colour = "black") +
         theme +
         ggplot2::labs(
           xarrowlab = paste(name1, "(%)"),
@@ -78,7 +78,7 @@ plot_density_simplex <- function(data, groups = NULL, parts_to_plot = NULL, n_co
       for (group in levels(data[, groups])){
         local_data <- data[data[, groups] == group, ]
         plot <- plot + stat_density_tern(data = local_data, geom = 'polygon', ggplot2::aes_(x= local_data[, name1], y = local_data[, name2], z = local_data[, name3], color = local_data[, groups]),
-                                         bins = n_contours, weight = 3, alpha = transparency)
+                                         bins = n_bins, weight = 3, alpha = transparency)
       }
         plot <- plot + theme+ ggtern::geom_crosshair_tern(data = mark_points, mapping = ggplot2::aes_(x= mark_points[, name1], y = mark_points[, name2], z = mark_points[, name3], color = mark_points[, groups]))+
           ggplot2::labs(
