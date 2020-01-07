@@ -16,13 +16,8 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(epicoda)
 ```
 
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 # Derivation of Confidence Intervals
 Note that throughout when referring to confidence intervals, the two-sided 95% confidence interval is used. The theory easily generalises, but only the 95% confidence interval is currently implemented. 
