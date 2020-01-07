@@ -6,6 +6,13 @@
 \usage{
 process_axis_label(label, terms, type)
 }
+\arguments{
+\item{label}{This is the axis label that already exsits.}
+
+\item{terms}{Are predictions for terms,or are they absolute?}
+
+\item{type}{Output from \code{process_model_type}}
+}
 \description{
 Process axis labels
 }

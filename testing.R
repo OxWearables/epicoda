@@ -3,6 +3,8 @@ simdataplain <- epicoda::simdataplain
 simdata <- epicoda::simdata
 comp_labels <- c("partA", "partB", "partC", "partD", "partE")
 
+plot_density_simplex(data = simdataplain, parts_to_plot = c("partB", "partC", "partD"))
+
 simdata$sex <- as.factor(simdataplain$sex)
 simdata$agegroup <- as.factor(simdataplain$agegroup)
 data_ilr_impute_zeroes <- epicoda::transform_comp(data = simdataplain,
@@ -74,7 +76,7 @@ cox_outcome <- comp_model(
   part_1 = NULL
 )
 summary(cox_outcome)
-plot_transfers(from_part = "partD",
+p <- plot_transfers(from_part = "partD",
               to_part = "partB",
               model = cox_outcome ,
               dataset = simdataplain,
@@ -85,6 +87,8 @@ plot_transfers(from_part = "partD",
               rounded_zeroes = TRUE,
               det_limit = 0.0083,
               terms = TRUE,  plot_log = FALSE)
+
+save_plot(p, filename = "testing1.tiff")
 
 head(simdata)
 composition_list <- list("trial" = data.frame("partA" = c(0.001), "partB" = 1.499, "partC" = 4.5, "partD" = 9, "partE" = 9))

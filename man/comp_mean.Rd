@@ -34,7 +34,7 @@ Vector which is the compositional mean.
 Calculates the compositional mean of a dataset.
 }
 \examples{
-comp_mean(data - simdata,
+comp_mean(data = simdata,
           comp_labels = c("partA", "partB", "partC", "partD", "partE"),
           units = "hr/day")
 }

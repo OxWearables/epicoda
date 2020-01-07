@@ -6,6 +6,9 @@
 \usage{
 process_model_type(model)
 }
+\arguments{
+\item{model}{This is the model which needs type extracting.}
+}
 \description{
 Process model argument
 }

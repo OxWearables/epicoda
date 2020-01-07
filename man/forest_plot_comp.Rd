@@ -22,13 +22,18 @@ forest_plot_comp(
   xllimit = NULL,
   xulimit = NULL,
   plot_log = FALSE,
+  text_settings = NULL,
   ...
 )
 }
 \arguments{
 \item{composition_list}{Named list of compositions. Note each composition should be stored as a data frame. For example, use the output of \code{change_composition}.}
 
+\item{model}{Model to use in generating predictions.}
+
 \item{dataset}{Should be dataset used to develop \code{model}.}
+
+\item{fixed_values}{If \code{terms = FALSE}, this is used as giving the fixed values of the non-compositional covariates at which to calculate the prediction. If it is not set, it can be automatically generated.}
 
 \item{transformation_type}{The type of transformation desired. Should be \code{"ilr", "alr"} or \code{"clr"}.}
 
@@ -48,6 +53,16 @@ forest_plot_comp(
 minimum measurable value in the compositional columns of data.}
 
 \item{terms}{Are predictions for terms,or are they absolute?}
+
+\item{x_label}{Label for x axis in plot.}
+
+\item{xllimit}{Minimum value for x axis.}
+
+\item{xulimit}{Maximum value for x axis.}
+
+\item{plot_log}{If this is \code{TRUE}, the x-axis will be log-transformed.}
+
+\item{text_settings}{An optional argument which should be an \code{fpTxtGp} object as specified in the \code{forestplot} package.}
 
 \item{...}{
   Arguments passed on to \code{\link[forestplot:forestplot]{forestplot::forestplot}}

@@ -34,7 +34,11 @@ plot_transfers(
 
 \item{to_part}{Should be an element of \code{comp_labels}. Should have compositional mean less than \code{from_part}.}
 
+\item{model}{Model to use in generating predictions.}
+
 \item{dataset}{Should be dataset used to develop \code{model}.}
+
+\item{fixed_values}{If \code{terms = FALSE}, this is used as giving the fixed values of the non-compositional covariates at which to calculate the prediction. If it is not set, it can be automatically generated.}
 
 \item{transformation_type}{The type of transformation desired. Should be \code{"ilr", "alr"} or \code{"clr"}.}
 

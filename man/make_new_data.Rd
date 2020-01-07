@@ -22,6 +22,8 @@ make_new_data(
 
 \item{to_part}{Should be an element of \code{comp_labels}. Should have compositional mean less than \code{from_part}.}
 
+\item{fixed_values}{If \code{terms = FALSE}, this is used as giving the fixed values of the non-compositional covariates at which to calculate the prediction. If it is not set, it can be automatically generated.}
+
 \item{dataset}{Should be dataset used to develop \code{model}.}
 
 \item{units}{What are the units of the compositional variables? Currently available are "unitless" (where working in terms of proportions), "hr/day", "hr/wk", "min/day", "min/wk" and "specified", in which case the \code{specified_units} argument should be set.}
