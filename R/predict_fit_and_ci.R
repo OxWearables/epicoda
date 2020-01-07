@@ -5,6 +5,7 @@
 #' @param model Model to use in generating predictions.
 #' @param dataset  Should be dataset used to develop \code{model}.
 #' @param new_data Data for predictions.
+#' @param fixed_values If \code{terms = FALSE}, this is used as giving the fixed values of the non-compositional covariates at which to calculate the prediction. If it is not set, it can be automatically generated.
 #' @inheritParams transform_comp
 #' @inheritParams process_units
 #' @param terms Are predictions for terms,or are they absolute?

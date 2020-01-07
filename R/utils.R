@@ -156,7 +156,7 @@ process_model_type <- function(model){
     type <- "linear"
   }
   if ((class(model)[1] == "glm") &&
-      (family(model)[[1]] == "binomial")) {
+      (stats::family(model)[[1]] == "binomial")) {
     type <- "logistic"
   }
   if ((class(model)[1]  == "coxph")) {
