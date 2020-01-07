@@ -148,7 +148,7 @@ process_zeroes <- function(data, comp_labels, rounded_zeroes, det_limit = NULL){
 
 #' Process model argument
 #'
-#' @param model
+#' @param model This is the model which needs type extracting.
 process_model_type <- function(model){
   # We assign some internal parameters
   type <- "unassigned"
@@ -174,9 +174,9 @@ process_model_type <- function(model){
 
 #' Process axis labels
 #'
-#' @param label
-#' @param terms
-#' @param type
+#' @param label This is the axis label that already exsits.
+#' @inheritParams predict_fit_and_ci
+#' @param type Output from \code{process_model_type}
 process_axis_label <- function(label, terms, type){
   if ((is.null(label)) & (terms) & (type == "linear")) {
     label <- "Model-predicted difference in outcome"

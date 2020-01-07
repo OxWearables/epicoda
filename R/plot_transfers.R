@@ -14,6 +14,7 @@
 #' @param granularity Doesn't usually need setting. Parameter indicating how many predictions to make. If too low, plotted curve has gaps. If too high, calculation is slow.
 #' @param theme Optional \code{theme} argument which can be set as a \code{ggplot2::theme} object and will control how the plot appears.
 #' @return Plot with balance of two parts plotted as exposure/ independent variable.
+#' @export
 #' @examples
 plot_transfers <- function(from_part,
                            to_part,
