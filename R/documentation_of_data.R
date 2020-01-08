@@ -2,16 +2,16 @@
 #'
 #' This is a simulated time use dataset.
 #'
-#' @name simdataplain
+#' @name simdata
 #' @docType data
 #' @keywords data
-"simdataplain"
+"simdata"
 
 #' Example compositional data with transformed variables
 #'
 #' This is a simulated time use dataset, with ilr pivot coordinates included.
 #'
-#' @name simdata
+#' @name simdata_ilr
 #' @docType data
 #' @keywords data
-"simdata"
+"simdata_ilr"
