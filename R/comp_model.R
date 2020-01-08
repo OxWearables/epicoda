@@ -3,10 +3,10 @@
 #' This is a wrapper for \code{lm}, \code{glm} and \code{survival::coxph} which performs the compositional transformation before generating the model.
 #'
 #' @param type Type of statistical model to use. It should be one of "linear", "logistic", "cox".
-#' @param outcome Column name of outcome variable in data. If \code{type} is \code{"linear"}, this should be a continuous variable.  If \code{type} is \code{"logistic"}, this should be a binary outcome.  If \code{type} is \code{"cox"}, this should be left as \code{NULL} and instead \code{follow_up_time} and \code{event} should be set.
+#' @param outcome Column name of outcome variable in data. If \code{type} is \code{"linear"}, this should be a continuous variable.  If \code{type} is \code{"logistic"}, this should be a binary outcome.  If \code{type} is \code{"cox"}, if this is set it should be a \code{Surv} object from package \code{survival} (if it is set, the function defaults to attempt to use it, even if \code{follow_up_time} and \code{event} are set). If this is left as \code{NULL}, \code{follow_up_time} and \code{event} can be set instead.
 #' @param covariates Character vector of column names of covariates to adjust models for. As this is used as a character vector, special arguments to the standard models (like strata(variable) for a Cox model) can be used here.
-#' @param follow_up_time Only needed if \code{type} is \code{"cox"}. Follow-up time.
-#' @param event Only needed if \code{type} is \code{"cox"}. Binary variable indicating whether or not an event was observed.
+#' @param follow_up_time Only used if \code{type} is \code{"cox"} and \code{outcome} is \code{NULL}.  Follow-up time.
+#' @param event Only used if \code{type} is \code{"cox"} and \code{outcome} is \code{NULL}.Binary variable indicating whether or not an event was observed.
 #' @inheritParams transform_comp
 #'
 #' @return model
@@ -47,17 +47,26 @@ comp_model <-
     cov_sum <- vector_to_sum(covariates)
 
     if (type == "linear") {
+      if (is.null(outcome)){
+        stop("outcome must be set.")
+      }
       model <-
         stats::lm(stats::as.formula(paste(outcome, "~", cov_sum, "+", transf_sum)),
            data = data_ready)
     }
 
     if (type == "logistic") {
+      if (is.null(outcome)){
+        stop("outcome must be set.")
+      }
       model <-
         stats::glm(stats::as.formula(paste(outcome, "~", cov_sum, "+", transf_sum)),
             data = data_ready, family = "binomial")
     }
-    if (type == "cox") {
+    if ((type == "cox") && is.null(outcome)) {
+      if (is.null(follow_up_time) & is.null(event)){
+        stop("follow_up_time and event, or outcome, must be set.")
+      }
       survival_object <- survival::Surv(data[, follow_up_time], data[, event])
       model <-
         survival::coxph(stats::as.formula(paste(
