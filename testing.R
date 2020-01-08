@@ -3,7 +3,7 @@ simdata <- epicoda::simdata
 simdata <- epicoda::simdata
 comp_labels <- c("partA", "partB", "partC", "partD", "partE")
 
-plot_density_simplex(data = simdata, parts_to_plot = c("partB", "partC", "partD"))
+plot_density_ternary(data = simdata, parts_to_plot = c("partB", "partC", "partD"), groups = "agegroup")
 
 simdata$sex <- as.factor(simdata$sex)
 simdata$agegroup <- as.factor(simdata$agegroup)
@@ -25,7 +25,7 @@ summary(log_outcome)
 data_ilr_impute_zeroes
 summary(lm_outcome)
 tab_covariate_coefs(lm_outcome, comp_labels = comp_labels)
-tab_coefs( scale_type = "lp", level = 0.95, type = "linear",
+tab_coefs(scale_type = "lp", level = 0.95, type = "linear",
                 outcome = "linear_outcome",
                 covariates = c("agegroup", "sex"),
                 follow_up_time = "follow_up_time",
