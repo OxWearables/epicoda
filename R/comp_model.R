@@ -11,6 +11,15 @@
 #'
 #' @return model
 #' @examples
+#'  comp_model(type = "linear",
+#' outcome = "linear_outcome",
+#' covariates = c("agegroup", "sex"),
+#' follow_up_time = NULL,
+#' event = NULL,
+#' data = simdata,
+#' comp_labels = c("partA", "partB", "partC", "partD", "partE"),
+#' rounded_zeroes = TRUE,
+#' det_limit = 0.0083)
 #' @export
 comp_model <-
   function(type = NULL,
