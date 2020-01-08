@@ -10,7 +10,12 @@
 #' @param comparison_part Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of part that all other parts will be compared to.
 #' @param part_1 Only used if First part in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.
 #' @return \code{data} with transformed activity columns.
-#' @examples # TBA
+#' @examples transform_comp(data = simdata,
+#' comp_labels = comp_labels,
+#' transformation_type = "ilr",
+#' rounded_zeroes = TRUE,
+#' det_limit = 0.0083)
+#'
 #' @export
 transform_comp <- function(data, comp_labels, transformation_type = "ilr", rounded_zeroes = TRUE, det_limit = NULL, comparison_part = NULL, part_1 = NULL){
   if (transformation_type == "alr"){

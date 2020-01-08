@@ -1,6 +1,6 @@
-#' Plot data density on the simplex
+#' plot_density_ternary: Plot data density on a ternary plot
 #'
-#' Principally intended as input to forest_plot_examples and plot_transfers.
+#' Plot data density on a ternary plot
 #'
 #' @param data Data frame containing data to be plotted.
 #' @param groups Name of variable in the data frame which identifies the groups to be plotted.
@@ -9,9 +9,13 @@
 #' @param mark_points Points should be the rows of a data frame with the elements of \code{parts_to_plot} as columns names. If a \code{groups} argument is given, it should also have a column for this (if the groups aren't relevant to the point in a certain row, this can be set as NA).
 #' @param transparency Control the transparency of plots. Should be between 0 and 1.
 #' @inheritParams plot_transfers
-#' @return Plot showing density of data on simplex.
-#' @examples
-plot_density_simplex <- function(data, groups = NULL, parts_to_plot = NULL, n_bins = 5, mark_points = NULL, theme = NULL, transparency = 0.2){
+#' @return Plot showing density of data on ternary plot.
+#' @examples plot_density_ternary(data = simdata,
+#' parts_to_plot = c("combined_parts", "partD", "partE"),
+#' n_bins = 10 # This argument specifies we want to use 10 bins (i.e. 10% of data lies between each pair of contours on the plot.)
+#' )
+#' @export
+plot_density_ternary <- function(data, groups = NULL, parts_to_plot = NULL, n_bins = 5, mark_points = NULL, theme = NULL, transparency = 0.2){
   if (length(parts_to_plot)!= 3){
     stop("parts_to_plot should have names of exactly three parts to plot")
   }
@@ -21,12 +25,10 @@ plot_density_simplex <- function(data, groups = NULL, parts_to_plot = NULL, n_bi
       panel.background = ggplot2::element_rect(fill = "grey75"),
       axis.line.x = ggplot2::element_line(color = "grey25"),
       text = ggplot2::element_text(size = 15, face = 2),
-      axis.text = ggplot2::element_text(size = 25, face = 2),
-      line = ggplot2::element_line(size = 1, colour = "black"))+ ggtern::theme_notitles()
+      axis.text = ggplot2::element_text(size = 10, face = 2),
+      line = ggplot2::element_line(size = 1, colour = "black"))
   }
-  else{
-    theme <- theme + ggtern::theme_hidetitles()
-  }
+
   name1 <- parts_to_plot[1]
   name2 <- parts_to_plot[2]
   name3 <- parts_to_plot[3]
@@ -70,7 +72,7 @@ plot_density_simplex <- function(data, groups = NULL, parts_to_plot = NULL, n_bi
           yarrowlab = paste(name2, "(%)"),
           zarrowlab = paste(name3, "(%)")
         )+
-        ggtern::geom_crosshair_tern(data = mark_points, mapping = ggplot2::aes_(x= mark_points[, name1], y = mark_points[, name2], z = mark_points[, name3], color = NA))
+        ggtern::geom_crosshair_tern(data = mark_points, mapping = ggplot2::aes_(x= mark_points[, name1], y = mark_points[, name2], z = mark_points[, name3]))
 
     }
     else{

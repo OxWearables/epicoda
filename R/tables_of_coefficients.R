@@ -51,7 +51,17 @@ tab_covariate_coefs <-
 #' @inheritParams comp_model
 #'
 #' @return Table of all model coefficients (parameter value with lower and upper confidence interval of the 95% ), using the first pivot coordinates for all compositional coefficients.
-#' @examples
+#' @examples tab_coefs(scale_type = "lp", # This argument can be "lp" or "exp" and determines whether coefficients are presented on the scale of the linear predictors ("lp") or are exponentiated ("exp"). # Exponentiation gives the Odds Ratio for logistic regression models and the Hazard Ratio for Cox regression models.
+#' level = 0.95,
+#' type = "linear",
+#' outcome = "linear_outcome",
+#' covariates = c("agegroup", "sex"),
+#' follow_up_time = "follow_up_time",
+#' event = "event",
+#' data = simdata,
+#' comp_labels = comp_labels,
+#' rounded_zeroes = TRUE,
+#' det_limit = 0.0083)
 #' @export
 tab_coefs <-
   function(scale_type = "lp",
@@ -65,6 +75,9 @@ tab_coefs <-
            comp_labels,
            rounded_zeroes = TRUE,
            det_limit = NULL) {
+    if ((scale_type == "exp") && (type == "linear")){
+      warning("It usually does not make sense to exponentiate the coefficients of a linear model.")
+    }
     start_model <- comp_model(
       type = type,
       outcome = outcome,
