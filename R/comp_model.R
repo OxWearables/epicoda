@@ -50,29 +50,61 @@ comp_model <-
       if (is.null(outcome)){
         stop("outcome must be set.")
       }
-      model <-
+      if (is.null(covariates)){
+        model <-
+          stats::lm(stats::as.formula(paste(outcome, "~", transf_sum)),
+                    data = data_ready)
+      }
+      else{
+         model <-
         stats::lm(stats::as.formula(paste(outcome, "~", cov_sum, "+", transf_sum)),
            data = data_ready)
+      }
+
     }
 
     if (type == "logistic") {
       if (is.null(outcome)){
         stop("outcome must be set.")
       }
-      model <-
+      if (is.null(covariates)){
+              model <-
         stats::glm(stats::as.formula(paste(outcome, "~", cov_sum, "+", transf_sum)),
             data = data_ready, family = "binomial")
-    }
-    if ((type == "cox") && is.null(outcome)) {
-      if (is.null(follow_up_time) & is.null(event)){
-        stop("follow_up_time and event, or outcome, must be set.")
       }
-      survival_object <- survival::Surv(data[, follow_up_time], data[, event])
-      model <-
+      else {
+        model <-
+          stats::glm(stats::as.formula(paste(outcome, "~", cov_sum, "+", transf_sum)),
+                     data = data_ready, family = "binomial")
+      }
+
+    }
+    if ((type == "cox")) {
+       if (is.null(outcome)){
+        if (is.null(follow_up_time) | is.null(event)){
+          stop("follow_up_time and event, or outcome, must be set.")
+        }
+         survival_object <- survival::Surv(data[, follow_up_time], data[, event])
+        }
+       if (!(is.null(outcome))){
+         survival_object <- outcome
+       }
+
+      if (is.null(covariates)){
+        model <-
+          survival::coxph(stats::as.formula(paste(
+            "survival_object ~",  transf_sum
+          )), data = data_ready)
+      }
+      if (!is.null(covariates)){
+           model <-
         survival::coxph(stats::as.formula(paste(
           "survival_object ~", cov_sum, "+", transf_sum
         )), data = data_ready)
+      }
+
     }
+
 
     return(model)
 
