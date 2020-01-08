@@ -1,13 +1,13 @@
 devtools::load_all()
-simdataplain <- epicoda::simdataplain
+simdata <- epicoda::simdata
 simdata <- epicoda::simdata
 comp_labels <- c("partA", "partB", "partC", "partD", "partE")
 
-plot_density_simplex(data = simdataplain, parts_to_plot = c("partB", "partC", "partD"))
+plot_density_simplex(data = simdata, parts_to_plot = c("partB", "partC", "partD"))
 
-simdata$sex <- as.factor(simdataplain$sex)
-simdata$agegroup <- as.factor(simdataplain$agegroup)
-data_ilr_impute_zeroes <- epicoda::transform_comp(data = simdataplain,
+simdata$sex <- as.factor(simdata$sex)
+simdata$agegroup <- as.factor(simdata$agegroup)
+data_ilr_impute_zeroes <- epicoda::transform_comp(data = simdata,
                                          comp_labels = comp_labels,
                                          transformation_type = "ilr",
                                          rounded_zeroes = TRUE,
@@ -30,7 +30,7 @@ tab_coefs( scale_type = "lp", level = 0.95, type = "linear",
                 covariates = c("agegroup", "sex"),
                 follow_up_time = "follow_up_time",
                 event = "event",
-                data = simdataplain,
+                data = simdata,
                 comp_labels = comp_labels,
                 rounded_zeroes = TRUE,
                 det_limit = 0.0083)
@@ -40,7 +40,7 @@ tab_coefs( scale_type = "exp", level = 0.95, type = "cox",
            covariates = c("agegroup", "sex"),
            follow_up_time = "follow_up_time",
            event = "event",
-           data = simdataplain,
+           data = simdata,
            comp_labels = comp_labels,
            rounded_zeroes = TRUE,
            det_limit = 0.0083)
@@ -67,7 +67,7 @@ cox_outcome <- comp_model(
   covariates = c("agegroup", "sex"),
   follow_up_time = "follow_up_time",
   event = "event",
-  data = simdataplain,
+  data = simdata,
   comp_labels = comp_labels,
   transformation_type = "ilr",
   rounded_zeroes = TRUE,
@@ -79,7 +79,7 @@ summary(cox_outcome)
 p <- plot_transfers(from_part = "partD",
               to_part = "partB",
               model = cox_outcome ,
-              dataset = simdataplain,
+              dataset = simdata,
               transformation_type = "ilr",
               comp_labels = comp_labels,
               y_label = NULL,
@@ -118,7 +118,7 @@ has_this_worked <- comp_model(type = "linear",
          covariates = c("agegroup", "sex"),
          follow_up_time = NULL,
          event = NULL,
-         data = simdataplain,
+         data = simdata,
          comp_labels = comp_labels,
          transformation_type = "ilr",
          rounded_zeroes = TRUE,
