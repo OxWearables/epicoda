@@ -3,12 +3,12 @@
 \docType{data}
 \name{simdata}
 \alias{simdata}
-\title{Example compositional data with transformed variables}
-\format{An object of class \code{data.frame} with 10000 rows and 15 columns.}
+\title{Example compositional data}
+\format{An object of class \code{data.frame} with 10000 rows and 16 columns.}
 \usage{
 simdata
 }
 \description{
-This is a simulated time use dataset, with ilr pivot coordinates included.
+This is a simulated time use dataset.
 }
 \keyword{data}

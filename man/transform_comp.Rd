@@ -38,5 +38,10 @@ Takes a dataset with a set of labelled compositional columns and returns a datas
 transformed variables added.
 }
 \examples{
-# TBA
+transform_comp(data = simdata,
+comp_labels = comp_labels,
+transformation_type = "ilr",
+rounded_zeroes = TRUE,
+det_limit = 0.0083)
+
 }

@@ -22,13 +22,13 @@ comp_model(
 \arguments{
 \item{type}{Type of statistical model to use. It should be one of "linear", "logistic", "cox".}
 
-\item{outcome}{Column name of outcome variable in data. If \code{type} is \code{"linear"}, this should be a continuous variable.  If \code{type} is \code{"logistic"}, this should be a binary outcome.  If \code{type} is \code{"cox"}, this should be left as \code{NULL} and instead \code{follow_up_time} and \code{event} should be set.}
+\item{outcome}{Column name of outcome variable in data. If \code{type} is \code{"linear"}, this should be a continuous variable.  If \code{type} is \code{"logistic"}, this should be a binary outcome.  If \code{type} is \code{"cox"}, if this is set it should be a \code{Surv} object from package \code{survival} (if it is set, the function defaults to attempt to use it, even if \code{follow_up_time} and \code{event} are set). If this is left as \code{NULL}, \code{follow_up_time} and \code{event} can be set instead.}
 
 \item{covariates}{Character vector of column names of covariates to adjust models for. As this is used as a character vector, special arguments to the standard models (like strata(variable) for a Cox model) can be used here.}
 
-\item{follow_up_time}{Only needed if \code{type} is \code{"cox"}. Follow-up time.}
+\item{follow_up_time}{Only used if \code{type} is \code{"cox"} and \code{outcome} is \code{NULL}.  Follow-up time.}
 
-\item{event}{Only needed if \code{type} is \code{"cox"}. Binary variable indicating whether or not an event was observed.}
+\item{event}{Only used if \code{type} is \code{"cox"} and \code{outcome} is \code{NULL}.Binary variable indicating whether or not an event was observed.}
 
 \item{data}{Dataset to have the transformation applied to.}
 
@@ -50,4 +50,15 @@ model
 }
 \description{
 This is a wrapper for \code{lm}, \code{glm} and \code{survival::coxph} which performs the compositional transformation before generating the model.
+}
+\examples{
+ comp_model(type = "linear",
+outcome = "linear_outcome",
+covariates = c("agegroup", "sex"),
+follow_up_time = NULL,
+event = NULL,
+data = simdata,
+comp_labels = c("partA", "partB", "partC", "partD", "partE"),
+rounded_zeroes = TRUE,
+det_limit = 0.0083)
 }
