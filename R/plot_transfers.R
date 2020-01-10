@@ -37,6 +37,8 @@ plot_transfers <- function(from_part,
                            det_limit = NULL,
                            terms = TRUE,
                            granularity = 10000,
+                           point_specification = ggplot2::geom_point(size = 2),
+                           error_bar_colour = "grey",
                            theme = NULL) {
   if (is.null(transformation_type)) {
     stop(
@@ -213,8 +215,8 @@ plot_transfers <- function(from_part,
           ymin = dNew$lower_CI,
           ymax = dNew$upper_CI
         ),
-        color = "grey") +
-        ggplot2::geom_point(size= 2) +
+        color = error_bar_colour) +
+        point_specification +
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label
@@ -239,8 +241,8 @@ plot_transfers <- function(from_part,
           ymin = dNew$lower_CI,
           ymax = dNew$upper_CI
         ),
-        color = "grey") +
-        ggplot2::geom_point(size= 2) +
+        color = error_bar_colour) +
+        point_specification +
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label
@@ -269,8 +271,8 @@ plot_transfers <- function(from_part,
           ymin = dNew$lower_CI,
           ymax = dNew$upper_CI
         ),
-        color = "grey") +
-        ggplot2::geom_point(size= 2) +
+        color = error_bar_colour) +
+        point_specification +
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label
@@ -295,8 +297,8 @@ plot_transfers <- function(from_part,
           ymin = dNew$lower_CI,
           ymax = dNew$upper_CI
         ),
-        color = "grey") +
-        ggplot2::geom_point(size= 2) +
+        color = error_bar_colour) +
+        point_specification +
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label
@@ -326,8 +328,8 @@ plot_transfers <- function(from_part,
           ymin = dNew$lower_CI,
           ymax = dNew$upper_CI
         ),
-        color = "grey") +
-        ggplot2::geom_point(size= 2) +
+        color = error_bar_colour) +
+        point_specification +
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label
@@ -351,8 +353,8 @@ plot_transfers <- function(from_part,
           ymin = dNew$lower_CI,
           ymax = dNew$upper_CI
         ),
-        color = "grey") +
-        ggplot2::geom_point(size= 2) +
+        color = error_bar_colour) +
+        point_specification +
         ggplot2::labs(x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
                       y = y_label) +
         ggplot2::geom_vline(xintercept = 0) +
