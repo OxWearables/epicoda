@@ -91,11 +91,19 @@ p <- plot_transfers(from_part = "partD",
 save_plot(p, filename = "testing1.tiff")
 
 head(simdata)
-composition_list <- list("trial2" = data.frame("partA" = c(0.001), "partB" = 1.39, "partC" = 2.5, "partD" = 6, "partE" = 9))
-
+composition_list <- list("cm" = as.data.frame(
+  comp_mean(
+    data = simdata,
+    comp_labels = comp_labels,
+    rounded_zeroes = TRUE,
+    det_limit = 0.0083,
+    units = "hr/day" # Note whatever the units are here is the units you should specify the changes in in the next two lines.
+  )),
+  "trial2" = data.frame("partA" = c(0.001), "partB" = 1.39, "partC" = 2.5, "partD" = 6, "partE" = 9))
+devtools::load_all()
 forest_plot_comp(composition_list = composition_list,
          model = lm_outcome,
-         dataset = data_ilr_impute_zeroes,
+         dataset = simdata,
          fixed_values = NULL,
          transformation_type = "ilr",
          comparison_part = NULL,
