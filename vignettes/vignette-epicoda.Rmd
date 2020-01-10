@@ -223,7 +223,7 @@ new_comp <-
     main_part = "partB",
     main_change = +0.5,
     comp_labels = comp_labels
-  )
+  ) 
 
 new_comp2 <-
     change_composition(
@@ -302,7 +302,7 @@ library(forestplot)
 
 ### Regression modelling: further examples
 
- 
+### Predicting the fit at different compositions: getting the numbers out 
 
 # Health association analysis 
 Now we've done the transformations, we're ready to do health association analysis. For this, we run our usual statistical models for health association analysis, but with the transformed variables, rather than the original compositional variables, as exposure variables. To get the names of the variables we'll be using, we can use a helper function in the package (although you might also have renamed these columns, in which case you can specify them straight out in the model) and another helper function to pack them up as a sum. 
