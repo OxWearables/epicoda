@@ -15,6 +15,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+knitr::opts_chunk$set(fig.width=12, fig.height=8) 
 ```
 
 ```{r setup}
@@ -39,9 +40,7 @@ head(apply(simdata[, c("partA", "partB", "partC", "partD", "partE")], 1, sum))
 ```
 In this case, the sum is 24:  these data are a simulated version of a time use dataset i.e. the five columns are different behaviours, which together make up the whole day.  
 
-Note that this property isn't necesssary for the data to be treated as compositional data: the only requirement is that it is the *relative*, not the absolute, information which is relevant to the problem being considered.
-
-In other words, we do not lose relevant information when we just consider the *closure*, written: $\mathcal{C}(part_{1}, part_{2}, ..., part_{D})$ and defined as: 
+Note that this property isn't necesssary for the data to be treated as compositional data: the only requirement is that it is the *relative*, not the absolute, information which is relevant to the problem being considered. In other words, we do not lose relevant information when we just consider the *closure*, written: $\mathcal{C}(part_{1}, part_{2}, ..., part_{D})$ and defined as: 
 \begin{equation}
   \mathcal{C}(part_{1}, part_{2}, ..., part_{D}) = \Big(\frac{part_{1}}{\sum_{i =1}^{D}{part_i}}, \frac{part_{2}}{\sum_{i =1}^{D}{part_i}}, ..., \frac{part_{D}}{\sum_{i =1}^{D}{part_i}}\Big)
 \end{equation}
@@ -143,7 +142,7 @@ lm_outcome <- comp_model(type = "linear",
          rounded_zeroes = TRUE, # As described in comp_mean above, rounded_zeroes and det_limit set up how to treat zeroes when performing the transformation. 
          det_limit = 0.0083)
 ```
-Logistic models can be produced in exactly the same way by setting `type = "logistic"` and using an appropriate binary outcome variable. Cox models can be produced similarly by setting `type = "cox"` and either setting `outcome` as an `Surv` object from the package `survival` or setting the `follow_up_time` and `event` arguments. 
+Logistic models can be produced in exactly the same way by setting `type = "logistic"` and using an appropriate binary outcome variable. Cox models can be produced similarly by setting `type = "cox"` and either setting `outcome` as an `Surv` object from the package `survival` or setting the `follow_up_time` and `event` arguments. For examples, see ['Regression Modelling: Further examples'](#regression-modelling:-further-examples).
 
 The model object is a standard `lm` object, and we can inspect it in the usual way:
 ```{r}
@@ -172,16 +171,88 @@ tab_coefs(scale_type = "lp", # This argument can be "lp" or "exp" and determines
 The function `tab_covariate_coefs` is called within this function, and can be used to extract the coefficients of the covariates only from a model. 
 
 ### Presenting the results: pairwise balances of compositional parts
+One way to get round the challenges of interpreting the model coefficients for  There are various options- we can look at predictions as we hold most of the composition fixed and vary the balance between the final two parts. The `plot_transfers` function can do this (for linear, logistic and Cox regression models): 
+```{r}
+ epicoda::plot_transfers(from_part = "partD",
+               to_part = "partA",
+               model = lm_outcome ,
+               dataset = simdata,
+               transformation_type = "ilr",
+               comp_labels = comp_labels,
+               y_label = "Model-predicted outcome",
+               units = "hr/day",
+               rounded_zeroes = TRUE,
+               det_limit = 0.0083,
+               terms = FALSE)
+```
+
+There's one problem with this: the predictions and confidence intervals on this plot capture the uncertainty in the predictions due to all variables in the model- including the covariates. To avoid this, we can look at the predicted difference in the outcome due to just the compositional parts. This is done by setting `terms = TRUE` (in fact, the default) in the `plot_transfers` function. 
+
+```{r}
+ epicoda::plot_transfers(from_part = "partD",
+               to_part = "partA",
+               model = lm_outcome ,
+               dataset = simdata,
+               transformation_type = "ilr",
+               comp_labels = comp_labels,
+               y_label = "Model-predicted difference in outcome",
+               units = "hr/day",
+               rounded_zeroes = TRUE,
+               det_limit = 0.0083)
+```
+Exactly as expected, this shows exactly the same shape, but the confidence intervals are narrower (as this only captures uncertainty due to compositional parts), and the y-axis gives the difference in outcome. 
 
 ### Presenting the results: predictions at particular compositions
+Another set of predictions that might be of interest is predictions at particular compositions. These can be examined by plotting these in a 'forest-plot' style plot. This allows assessment of the model-predicted associations with much more complex substitutions of time. 
 
-#### Looking at different perturbations of a composition
+#### Generating perturbations of a composition
+While there are hugely varied compositions which might be possible, one kind of composition is often of interest. This is compositions where one particular part is perturbed at the expense of all other parts proportionally. As this is a common use case, there is a function implemented to do this: 
+```{r} 
+df <- as.data.frame(
+  comp_mean(
+    data = simdata,
+    comp_labels = comp_labels,
+    rounded_zeroes = TRUE,
+    det_limit = 0.0083, 
+    units = "hr/day" # Note whatever the units are here is the units you should specify the changes in in the next two lines. 
+  )
+)
+new_comp <-
+  change_composition(
+    composition = df,
+    main_part = "partB",
+    main_change = +0.5,
+    comp_labels = comp_labels
+  )
+
+new_comp2 <-
+    change_composition(
+    composition = df,
+    main_part = "partD",
+    main_change = -3.5,
+    comp_labels = comp_labels
+  )
+list_for_plot <- list("Compositional mean"= df, "Extra 0.5 hr/day partB" = new_comp, "3.5 hr/day less partD" = new_comp2)
+print(list_for_plot)
+```
+
+#### Plotting predictions at particular compositions
+We now need to plot these, which can be done as follows. 
+```{r}
+forest_plot_comp(composition_list = list_for_plot, 
+                 model = lm_outcome, 
+                 dataset = simdata, 
+                 comp_labels = comp_labels,
+                 transformation_type = "ilr",  
+                 rounded_zeroes = TRUE, 
+                 det_limit = 0.0083, units = "hr/day")
+```
 
 ## Additional information 
 
 ### Mechanics of Compositional Data Analysis: Log-ratio transformations
 The functions above wrap all the 'log-ratio mechanics' of using a Compositional Data Analysis approach.
-There are several different kinds of transformations which can be used in order to work with compositional data (alr, ilr, clr). These transform the variables into coordinates which are capable of representing all the variation in the data. Different transformations have different pros/cons, and alr and clr can only be used for certain applications.  All the functions default to ilr (isometric log ratio) transformation using so-called 'pivot coordinates', which is fairly standard in the physical activity literature (and is appropriate for the applications which the other transformations are used for). If you want to learn more, see [@Filzmoser2018, @Glahn2011].
+There are several different kinds of transformations which can be used in order to work with compositional data (alr, ilr, clr). These transform the variables into coordinates which are capable of representing all the variation in the data. Different transformations have different pros/cons, and alr and clr can only be used for certain applications.  All the functions default to ilr (isometric log ratio) transformation using so-called 'pivot coordinates', which is fairly standard in the physical activity literature (and is appropriate for the applications which the other transformations are used for). If you want to learn more, see [@Filzmoser2018, @Pawlowsky-Glahn2011].
 
 The purpose of this package is not to provide this functionality, which is implemented in other R packages, such as `compositions` and `robCompositions`. (The main aim of this package is shown above, in the functions to perform standard epidemiological analyses). This functionality is reimplemented here simply to ensure that future changes to the defaults in those packages do not affect this package.
 ```{r}
@@ -194,7 +265,42 @@ print(head(data_ilr_impute_zeroes))
 ```
 There are also a few other things we can do with this function, like specifying a given 'first part' (which can be useful when it comes to reporting). To learn more, run `?transform_comp`. 
 
+### Making attractive plots 
+All the plotting functions can have settings changed to make more visually attractive plots (e.g. changing text size, line size, text colour). `plot_transfers` and `simplex_plotting` are based on `ggplot2` and its extension `ggtern`.
+* To specify non-data aspects of the plot (e.g. line, axis and text size and colours), set the optional `theme` argument. Note that you should have the `ggplot2` package loaded in order to do this.
+* For `plot_transfers` argument, to specify characteristics of the plotted prediction line, set the `point_specification` argument as a `geom_point` object.
+* To specify colours of the error bars, set the `error_bar_colour` argument as the name of a colour.
+* If the line looks 'gappy' (likely at the ends), increase `granularity` (and if it takes too long to plot, decrease `granularity`). 
+
+For an extreme example of implementing some of this: 
+```{r}
+library(ggplot2)
+plot_transfers(from_part = "partD",
+               to_part = "partA",
+               model = lm_outcome ,
+               dataset = simdata,
+               transformation_type = "ilr",
+               comp_labels = comp_labels,
+               y_label = "Model-predicted difference in outcome",
+               units = "hr/day",
+               rounded_zeroes = TRUE,
+               det_limit = 0.0083, 
+               point_specification = geom_point(size = 0.5, colour = "purple"),
+               error_bar_colour = "yellow", 
+               theme = theme_bw()+ theme(line = element_line(colour = "red", size = 2), 
+                             text = element_text(family = "mono", face = "bold.italic", colour = "green"), 
+               axis.line = element_line(colour = "blue", size = 3)))
+```
+
+Slightly differently, `forest_plot_comp` is based on the `forestplot` package, so takes arguments specifying the plot in the same way as that function. Again, to specify these the `forestplot` package should itself be loaded. 
+```{r}
+library(forestplot)
+#forest_plot_comp()
+```
 ### The `save_plot` function
+
+
+### Regression modelling: further examples
 
  
 
@@ -251,7 +357,7 @@ One way to get round this is to look at model predictions. There are various opt
  epicoda::plot_transfers(from_part = "partD",
                to_part = "partA",
                model = lm_outcome ,
-               dataset = data_ilr_impute_zeroes,
+               dataset = simdata,
                transformation_type = "ilr",
                comp_labels = comp_labels,
                y_label = "Model-predicted outcome",
@@ -267,7 +373,7 @@ There's one problem with this: the predictions and confidence intervals on this 
  epicoda::plot_transfers(from_part = "partD",
                to_part = "partA",
                model = lm_outcome ,
-               dataset = data_ilr_impute_zeroes,
+               dataset = simdata,
                transformation_type = "ilr",
                comp_labels = comp_labels,
                y_label = "Model-predicted difference in outcome",
@@ -275,7 +381,7 @@ There's one problem with this: the predictions and confidence intervals on this 
                rounded_zeroes = TRUE,
                det_limit = 0.0083)
 ```
-Exactly as expected, this shows exactly the same shape, but the confidence intervals are narrower (as this only captures uncertainty due to compositional parts), and the y-axis gives the difference in outcome. 
+Exactly as expected, this shows exactly the same shape, but the confidence intervals are narrower (as this only captures uncertainty due to compositional parts), and the y-axis gives the difference in outcome. There is much more information on the calculation of confidence intervals in the [supplementary vignette](derivation_of_CIs_used.Rmd). 
      
 # Talk about using by hand?     
 # Health association analysis 
