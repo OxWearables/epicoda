@@ -5,7 +5,6 @@
 #' @name simdata
 #' @docType data
 #' @keywords data
-#' @export
 "simdata"
 
 #' Example compositional data with transformed variables
