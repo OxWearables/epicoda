@@ -1,5 +1,9 @@
 #' Produce a forest plot indicating model prediction at given compositions
 #'
+#' This function takes a named list of compositions, and plots a model p
+#'
+#'
+#'
 #' @param composition_list Named list of compositions. Note each composition should be stored as a data frame. For example, use the output of \code{change_composition}.
 #' @param x_label Label for x axis in plot.
 #' @param xllimit Minimum value for x axis.

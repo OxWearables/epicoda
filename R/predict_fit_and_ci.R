@@ -59,7 +59,7 @@ predict_fit_and_ci <- function(model,
   cm <- comp_mean(
       dataset,
       comp_labels,
-      rounded_zeroes = FALSE,
+      rounded_zeroes = rounded_zeroes,
       det_limit = det_limit,
       units = units,
       specified_units = specified_units
@@ -86,7 +86,7 @@ predict_fit_and_ci <- function(model,
   if (is.null(fixed_values)) {
     fixed_values <-
       generate_fixed_values(
-        dataset,
+        dataset_ready,
         comp_labels,
         rounded_zeroes = FALSE,
         det_limit = det_limit,
@@ -112,6 +112,8 @@ predict_fit_and_ci <- function(model,
   }
 
   new_data <- transform_comp(data = new_data, comp_labels = comp_labels, transformation_type = transformation_type, rounded_zeroes = rounded_zeroes, det_limit = det_limit, comparison_part = comparison_part, part_1 = part_1)
+  print(head(new_data))
+  print(head(fixed_values))
   # We begin the plotting
   if (type == "logistic" && (terms == FALSE)) {
     message(
@@ -167,6 +169,7 @@ predict_fit_and_ci <- function(model,
 
     middle_matrix <- stats::vcov(model)[transf_labels, transf_labels]
     x <- data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
+
     in_sqrt_1 <- (x %*% middle_matrix)
     t_x <- as.matrix(t(x))
     in_sqrt_true <- c()
@@ -331,8 +334,6 @@ predict_fit_and_ci <- function(model,
 
     dNew$main <- eval(parse(text = sum_for_args))
     dNew$mean_vals <- rep(sum(acm), by = nrow(dNew))
-    #  print(head(dNew$main))
-    #    print(head(dNew$mean_vals))
 
     dNew$fit <- dNew$main - dNew$mean_vals
 
@@ -342,6 +343,17 @@ predict_fit_and_ci <- function(model,
 
     middle_matrix <- stats::vcov(model)[transf_labels, transf_labels]
     x <- data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
+    # print(head(as.data.frame(rep(cm_transf_df[, transf_labels], by = nrow(new_data)), new_data[ , c("agegroup", "sex")])))
+    #
+    #
+    # dNew$fit <-
+    #   stats::predict(
+    #     model,
+    #     newdata = cbind(new_data[, transf_labels] - as.data.frame(rep(cm_transf_df[, transf_labels], by = nrow(new_data))), new_data[ , c("agegroup", "sex")]),
+    #     type = "terms",
+    #     terms = transf_labels,
+    #     se.fit = TRUE
+    #   )
     in_sqrt_1 <- (x %*% middle_matrix)
     t_x <- as.matrix(t(x))
     in_sqrt_true <- c()
