@@ -88,7 +88,7 @@ predict_fit_and_ci <- function(model,
       generate_fixed_values(
         dataset_ready,
         comp_labels,
-        rounded_zeroes = FALSE,
+        rounded_zeroes = rounded_zeroes,
         det_limit = det_limit,
         units = units,
         specified_units = specified_units
@@ -101,7 +101,10 @@ predict_fit_and_ci <- function(model,
     transformation_type = transformation_type,
     part_1 = part_1,
     comparison_part = comparison_part,
-    rounded_zeroes = FALSE
+    rounded_zeroes = rounded_zeroes,
+    det_limit = det_limit,
+    units = units,
+    specified_units = specified_units
   )
 
 
