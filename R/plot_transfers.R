@@ -33,7 +33,7 @@ plot_transfers <- function(from_part,
                            upper_quantile = 0.95,
                            units = "unitless",
                            specified_units = NULL,
-                           rounded_zeroes = FALSE,
+                           rounded_zeroes,
                            det_limit = NULL,
                            terms = TRUE,
                            granularity = 10000,
@@ -153,7 +153,7 @@ plot_transfers <- function(from_part,
       upper_quantile = 0.95,
       granularity = granularity
     )
-  
+
   new_data <-
     transform_comp(
       new_data,
@@ -161,7 +161,8 @@ plot_transfers <- function(from_part,
       transformation_type = transformation_type,
       part_1 = part_1,
       comparison_part = comparison_part,
-      rounded_zeroes = FALSE
+      rounded_zeroes = rounded_zeroes,
+      det_limit = det_limit
     )
 
 
