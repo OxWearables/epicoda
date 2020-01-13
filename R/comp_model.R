@@ -93,7 +93,7 @@ comp_model <-
         if (is.null(follow_up_time) | is.null(event)){
           stop("follow_up_time and event, or outcome, must be set.")
         }
-         survival_object <- survival::Surv(data[, follow_up_time], data[, event])
+         survival_object <- survival::Surv(data_ready[, follow_up_time], data_ready[, event])
         }
        if (!(is.null(outcome))){
          survival_object <- outcome
