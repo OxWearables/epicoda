@@ -60,7 +60,7 @@ alter_order_comp_labels <- function(comp_labels, part_1){
 
 #' Process units argument
 #'
-#' @param units What are the units of the compositional variables? Currently available are "unitless" (where working in terms of proportions), "hr/day", "hr/wk", "min/day", "min/wk" and "specified", in which case the \code{specified_units} argument should be set.
+#' @param units What should the units of the compositional variables be in any output? Currently available are "unitless" (where working in terms of proportions), "hr/day", "hr/wk", "min/day", "min/wk" and "specified", in which case the \code{specified_units} argument should be set. Note that this doesn't specify the input units, as this is not relevant for any function.
 #' @param specified_units If units are being specified via the composition sum, this is where it is done. It should be a vector where the first argument is a string describing the units, and the second argument is the expected sum of a composition e.g. \code{c("hr/day", 24)}
 process_units <- function(units, specified_units){
   if (units == "hr/wk"){
@@ -174,7 +174,7 @@ process_model_type <- function(model){
 
 #' Process axis labels
 #'
-#' @param label This is the axis label that already exists. To suppress the label entirely, set \code{label == "suppressed"}. 
+#' @param label This is the axis label that already exists. To suppress the label entirely, set \code{label == "suppressed"}.
 #' @inheritParams predict_fit_and_ci
 #' @param type Output from \code{process_model_type}
 process_axis_label <- function(label, terms, type){
@@ -194,13 +194,22 @@ process_axis_label <- function(label, terms, type){
     label <- "Model-predicted outcome"
   }
   if (label == "suppressed" | label == "Suppressed"){
-    label <- NULL 
+    label <- NULL
   }
   return(label)
 }
 
 
-
+#' Normalise input data
+#'
+#' @param data
+#' @param comp_labels
+#' @return
+normalise_comp <- function(data, comp_labels){
+  output <- data
+  output[, comp_labels] <- output[, comp_labels]/apply(output[, comp_labels], 1, sum)
+  return(output)
+}
 
 
 
