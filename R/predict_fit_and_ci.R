@@ -35,6 +35,10 @@ predict_fit_and_ci <- function(model,
   comp_sum <- as.numeric(process_units(units, specified_units)[2])
   units <- process_units(units, specified_units)[1]
 
+  # We normalise
+  dataset <- normalise_comp(dataset, comp_labels = comp_labels)
+  new_data <- normalise_comp(new_data, comp_labels = comp_labels)
+
 
   # We label what the transformed cols will be
   if (transformation_type == "ilr") {
@@ -61,8 +65,7 @@ predict_fit_and_ci <- function(model,
       comp_labels,
       rounded_zeroes = rounded_zeroes,
       det_limit = det_limit,
-      units = units,
-      specified_units = specified_units
+      units = "unitless"
     )
   cmdf <- data.frame(cm)
   cm_transf_df <- transform_comp(cmdf, comp_labels,
@@ -89,9 +92,7 @@ predict_fit_and_ci <- function(model,
         dataset_ready,
         comp_labels,
         rounded_zeroes = rounded_zeroes,
-        det_limit = det_limit,
-        units = units,
-        specified_units = specified_units
+        det_limit = det_limit
       )
   }
 
@@ -102,9 +103,7 @@ predict_fit_and_ci <- function(model,
     part_1 = part_1,
     comparison_part = comparison_part,
     rounded_zeroes = rounded_zeroes,
-    det_limit = det_limit,
-    units = units,
-    specified_units = specified_units
+    det_limit = det_limit
   )
 
 
@@ -373,7 +372,7 @@ predict_fit_and_ci <- function(model,
     dNew$upper_CI <- dNew$fit + t_value * value
  }
 
-
+  dNew <- rescale_comp(dNew, comp_labels = comp_labels, comp_sum = comp_sum)
   if (terms == FALSE) {
     short_form <- gsub(".*~", "", as.character(stats::formula(model)))
     print(paste("Covariate values were fixed at: "))
@@ -382,7 +381,6 @@ predict_fit_and_ci <- function(model,
       print(paste(variable, ":", fixed_values[1, variable]))
     }
   }
-
 
 
   return(dNew)

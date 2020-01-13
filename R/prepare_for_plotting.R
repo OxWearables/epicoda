@@ -5,7 +5,7 @@
 #' @param data Data used for model development.
 #' @inheritParams plot_transfers
 #' @return dataframe with a single row of fixed_values.
-generate_fixed_values <- function(data, comp_labels, rounded_zeroes, det_limit, units, specified_units){
+generate_fixed_values <- function(data, comp_labels, rounded_zeroes, det_limit){
   fixed_values <- data.frame(matrix(ncol = 0, nrow = 1))
   others <- colnames(data)[!(colnames(data) %in% comp_labels)]
   for (colname in others){
@@ -61,6 +61,7 @@ make_new_data <- function(from_part,
                           lower_quantile = 0.05,
                           upper_quantile = 0.95,
                           granularity = 10000) {
+  dataset <- normalise_comp(dataset, comp_labels)
   new_data <- data.frame()[1:10000,]
 
   comp_sum <- as.numeric(process_units(units, specified_units)[2])
@@ -97,8 +98,8 @@ make_new_data <- function(from_part,
   new_data[, from_part] <- tf
   new_data <- new_data[new_data[, from_part] < max_fp, ]
   new_data <- new_data[new_data[, from_part] > min_fp, ]
-  
-  new_data[, comp_labels] <- comp_sum*new_data[, comp_labels]
+
+  new_data <- rescale_comp(new_data, comp_sum = comp_sum, comp_labels = comp_labels)
   print("Compositional variables not varied in the visualisation were fixed at:")
   for (variable in comp_labels[(comp_labels != from_part) & (comp_labels != to_part)]) {
     print(paste(variable, ":", signif(comp_sum*fixed_values[1, variable], 2), units))

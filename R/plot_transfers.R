@@ -46,6 +46,9 @@ plot_transfers <- function(from_part,
     )
   }
 
+  # We normalise
+  dataset <- normalise_comp(data = dataset, comp_labels = comp_labels)
+
 
   # Set theme for plotting
   if (is.null(theme)){
@@ -105,20 +108,20 @@ plot_transfers <- function(from_part,
   cm <- comp_mean(
       dataset,
       comp_labels,
-      rounded_zeroes = FALSE,
-      det_limit = det_limit,
-      units = units,
-      specified_units = specified_units
+      rounded_zeroes = rounded_zeroes, det_limit = det_limit,
+      units = "unitless"
     )
   cmdf <- data.frame(cm)
   cm_transf_df <- transform_comp(cmdf, comp_labels,
                                  transformation_type = transformation_type,
                                  part_1 = part_1,
                                  comparison_part = comparison_part,
-                                 rounded_zeroes = FALSE)
+                                 rounded_zeroes = rounded_zeroes, det_limit = det_limit)
+
+  cm_on_scale <- rescale_comp(cmdf, comp_labels = comp_labels, comp_sum = comp_sum)
+
 
   # We assign some fixed_values to use in setting up new_data
-
   if (!(is.null(fixed_values))) {
     if (!is.null(colnames(fixed_values)[colnames(fixed_values) %in% comp_labels])) {
       warning(
@@ -132,10 +135,8 @@ plot_transfers <- function(from_part,
       generate_fixed_values(
         dataset,
         comp_labels,
-        rounded_zeroes = FALSE,
-        det_limit = det_limit,
-        units = units,
-        specified_units = specified_units
+        rounded_zeroes = rounded_zeroes,
+        det_limit = det_limit
       )
   }
 
@@ -146,13 +147,15 @@ plot_transfers <- function(from_part,
       to_part,
       fixed_values = fixed_values,
       dataset  = dataset_ready,
-      units = units,
-      specified_units = specified_units,
+      units = "hr/day",
       comp_labels = comp_labels,
       lower_quantile = 0.05,
       upper_quantile = 0.95,
       granularity = granularity
     )
+
+  # We normalise this to work with it
+  new_data <- normalise_comp(data = new_data, comp_labels = comp_labels)
 
   new_data <-
     transform_comp(
@@ -179,14 +182,14 @@ plot_transfers <- function(from_part,
                              rounded_zeroes = rounded_zeroes,
                              det_limit = det_limit,
                              terms = terms)
+  # We normalise again
+  dNew <- normalise_comp(data = dNew, comp_labels = comp_labels)
+
+  # We pull out the required values on the needed scale
+  dToScale <- rescale_comp(data = dNew, comp_labels = comp_labels, comp_sum = comp_sum)
   dNew$axis_vals <-
-    dNew[, to_part] - suppressMessages(comp_mean(
-      dataset,
-      comp_labels,
-      rounded_zeroes = FALSE,
-      det_limit = det_limit,
-      units = units
-    ))[[to_part]]
+    dToScale[, to_part] - rep(cm_on_scale[1, to_part], by = nrow(dNew))
+
 
   if (is.null(yllimit)) {
     yllimit <- min(dNew$lower_CI)

@@ -3,6 +3,8 @@ simdata <- epicoda::simdata
 simdata <- epicoda::simdata
 comp_labels <- c("partA", "partB", "partC", "partD", "partE")
 
+head(normalise_comp(simdata, comp_labels))
+
 plot_density_ternary(data = simdata, parts_to_plot = c("partB", "partC", "partD"), groups = "agegroup")
 
 simdata$sex <- as.factor(simdata$sex)
