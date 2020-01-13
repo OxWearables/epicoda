@@ -12,8 +12,7 @@ simdata$agegroup <- as.factor(simdata$agegroup)
 data_ilr_impute_zeroes <- epicoda::transform_comp(data = simdata,
                                          comp_labels = comp_labels,
                                          transformation_type = "ilr",
-                                         rounded_zeroes = TRUE,
-                                         det_limit = 0.0083)
+                                         rounded_zeroes = TRUE)
 data_ilr_impute_zeroes
 transf_vec <- transf_labels(comp_labels = comp_labels, transformation_type = "ilr")
 transf_sum <- vector_to_sum(transf_vec)
@@ -34,8 +33,7 @@ tab_coefs(scale_type = "lp", level = 0.95, type = "linear",
                 event = "event",
                 data = simdata,
                 comp_labels = comp_labels,
-                rounded_zeroes = TRUE,
-                det_limit = 0.0083)
+                rounded_zeroes = TRUE)
 
 tab_coefs( scale_type = "exp", level = 0.95, type = "cox",
            outcome = NULL,
@@ -44,8 +42,7 @@ tab_coefs( scale_type = "exp", level = 0.95, type = "cox",
            event = "event",
            data = simdata,
            comp_labels = comp_labels,
-           rounded_zeroes = TRUE,
-           det_limit = 0.0083)
+           rounded_zeroes = TRUE)
 
 summary(log_outcome)
 epicoda::plot_transfers(from_part = "partB",
@@ -57,7 +54,6 @@ epicoda::plot_transfers(from_part = "partB",
                y_label = NULL,
                units = "hr/day",
                rounded_zeroes = TRUE,
-               det_limit = 0.0083,
                terms = TRUE,  plot_log = FALSE)
 
 head(data_ilr_impute_zeroes)
@@ -73,7 +69,6 @@ cox_outcome <- comp_model(
   comp_labels = comp_labels,
   transformation_type = "ilr",
   rounded_zeroes = TRUE,
-  det_limit = 0.0083,
   comparison_part = NULL,
   part_1 = NULL
 )
@@ -87,9 +82,8 @@ p <- plot_transfers(from_part = "partD",
               y_label = NULL,
               units = "hr/day",
               rounded_zeroes = TRUE,
-              det_limit = 0.0083,
               terms = TRUE,  plot_log = FALSE)
-
+p
 save_plot(p, filename = "testing1.tiff")
 
 head(simdata)
@@ -98,10 +92,9 @@ composition_list <- list("cm" = as.data.frame(
     data = simdata,
     comp_labels = comp_labels,
     rounded_zeroes = TRUE,
-    det_limit = 0.0083,
     units = "hr/day" # Note whatever the units are here is the units you should specify the changes in in the next two lines.
   )),
-  "trial2" = data.frame("partA" = c(0.001), "partB" = 1.39, "partC" = 2.5, "partD" = 6, "partE" = 9))
+  "trial2" = data.frame("partA" = c(0.001), "partB" = 1.49, "partC" = 3.5, "partD" = 9, "partE" = 10))
 devtools::load_all()
 forest_plot_comp(composition_list = composition_list,
          model = lm_outcome,
@@ -113,8 +106,7 @@ forest_plot_comp(composition_list = composition_list,
          comp_labels = comp_labels,
          units = "hr/day",
          specified_units = NULL,
-         rounded_zeroes = FALSE,
-         det_limit = NULL,
+         rounded_zeroes = TRUE,
          terms = TRUE,
          x_label = NULL,
          xllimit = NULL,
@@ -132,6 +124,5 @@ has_this_worked <- comp_model(type = "linear",
          comp_labels = comp_labels,
          transformation_type = "ilr",
          rounded_zeroes = TRUE,
-         det_limit = 0.0083,
          comparison_part = NULL,
          part_1 = NULL)

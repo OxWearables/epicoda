@@ -164,7 +164,7 @@ predict_fit_and_ci <- function(model,
     sum_for_args <- paste0(vector_for_args, collapse = "+")
 
 
-    dNew$log_odds_change <- eval(parse(text = sum_for_args)) - sum(acm)
+    dNew$log_odds_change <- eval(parse(text = sum_for_args)) #- sum(acm)
     dNew$fit <- exp(dNew$log_odds_change)
 
 
@@ -206,7 +206,7 @@ predict_fit_and_ci <- function(model,
       newdata = new_data,
       type = "terms",
       se.fit = TRUE,
-      terms = transf_labels
+      terms = transf_labels, reference = "sample"
     )
 
     acm <- stats::predict(model,
@@ -221,8 +221,7 @@ predict_fit_and_ci <- function(model,
     sum_for_args <- paste0(vector_for_args, collapse = "+")
 
 
-
-    dNew$log_hazard_change <- eval(parse(text = sum_for_args)) - sum(acm)
+    dNew$log_hazard_change <- eval(parse(text = sum_for_args)) #- sum(acm)
     dNew$fit <- exp(dNew$log_hazard_change)
 
     middle_matrix <- stats::vcov(model)[transf_labels, transf_labels]
@@ -326,19 +325,18 @@ predict_fit_and_ci <- function(model,
                    terms = transf_labels)
 
 
-
     dNew <- data.frame(new_data, predictions)
     vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
     sum_for_args <- paste0(vector_for_args, collapse = "+")
 
 
 
+
     dNew$main <- eval(parse(text = sum_for_args))
-    dNew$mean_vals <- rep(sum(acm), by = nrow(dNew))
 
-    dNew$fit <- dNew$main - dNew$mean_vals
+    dNew$fit <- dNew$main
 
-
+    print(acm)
 
 
 
