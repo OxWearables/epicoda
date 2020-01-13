@@ -97,7 +97,7 @@ plot_transfers <- function(from_part,
   type <- process_model_type(model)
 
 
-  # We make sure there will be a y_label
+  # We make sure there will be a y_label, unless this is specified as "suppressed"
   y_label <- process_axis_label(label = y_label, type = type, terms = terms)
 
 
@@ -145,7 +145,7 @@ plot_transfers <- function(from_part,
       from_part,
       to_part,
       fixed_values = fixed_values,
-      dataset_ready,
+      dataset  = dataset_ready,
       units = units,
       specified_units = specified_units,
       comp_labels = comp_labels,
@@ -153,7 +153,7 @@ plot_transfers <- function(from_part,
       upper_quantile = 0.95,
       granularity = granularity
     )
-
+  
   new_data <-
     transform_comp(
       new_data,

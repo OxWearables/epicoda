@@ -174,7 +174,7 @@ process_model_type <- function(model){
 
 #' Process axis labels
 #'
-#' @param label This is the axis label that already exsits.
+#' @param label This is the axis label that already exists. To suppress the label entirely, set \code{label == "suppressed"}. 
 #' @inheritParams predict_fit_and_ci
 #' @param type Output from \code{process_model_type}
 process_axis_label <- function(label, terms, type){
@@ -192,6 +192,9 @@ process_axis_label <- function(label, terms, type){
   }
   if ((is.null(label)) & (terms == FALSE)) {
     label <- "Model-predicted outcome"
+  }
+  if (label == "suppressed" | label == "Suppressed"){
+    label <- NULL 
   }
   return(label)
 }

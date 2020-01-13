@@ -16,8 +16,7 @@ generate_fixed_values <- function(data, comp_labels, rounded_zeroes, det_limit, 
       fixed_values[colname] <- stats::median(data[, colname], na.rm = TRUE)
     }
   }
-  cm <- suppressMessages(data.frame(comp_mean(data, comp_labels, rounded_zeroes, det_limit, units, specified_units)))
-  print(cm)
+  cm <- suppressMessages(data.frame(comp_mean(data, comp_labels, rounded_zeroes, det_limit, units = "unitless")))
   fixed_values <- cbind(cm, fixed_values)
   return(fixed_values)
 }
@@ -90,17 +89,19 @@ make_new_data <- function(from_part,
     this_col <- data.frame(rep(fixed_values[1, label], by = 10000))
     new_data[label] <- this_col
   }
-  tf <- rep(comp_sum, by = 10000)
+  tf <- rep(1, by = 10000)
   for (label in comp_labels[comp_labels != from_part]){
     tf <- tf - new_data[, label]
   }
+
   new_data[, from_part] <- tf
   new_data <- new_data[new_data[, from_part] < max_fp, ]
   new_data <- new_data[new_data[, from_part] > min_fp, ]
-
+  
+  new_data[, comp_labels] <- comp_sum*new_data[, comp_labels]
   print("Compositional variables not varied in the visualisation were fixed at:")
   for (variable in comp_labels[(comp_labels != from_part) & (comp_labels != to_part)]) {
-    print(paste(variable, ":", signif(fixed_values[1, variable], 2), units))
+    print(paste(variable, ":", signif(comp_sum*fixed_values[1, variable], 2), units))
   }
 
   return(new_data)
