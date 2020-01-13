@@ -21,7 +21,7 @@ predict_fit_and_ci <- function(model,
                            comp_labels,
                            units = "unitless",
                            specified_units = NULL,
-                           rounded_zeroes = FALSE,
+                           rounded_zeroes = NULL,
                            det_limit = NULL,
                            terms = TRUE) {
   if (is.null(transformation_type)) {
