@@ -112,8 +112,6 @@ forest_plot_comp <-
     CI <- paste(round(data_frame_for_forest_plot$low, digits = 2), "-", round(data_frame_for_forest_plot$high, digits = 2))
      tabletext <- cbind(c(NA, col_of_names), c("Model prediction", round(data_frame_for_forest_plot$coef[2:nrow(data_frame_for_forest_plot)], digits = 3)), c("95% CI", CI[2:nrow(data_frame_for_forest_plot)]))
 
-     print(tabletext)
-     print(data_frame_for_forest_plot)
 
      fp <- forestplot::forestplot(
       tabletext,
