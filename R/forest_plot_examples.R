@@ -23,7 +23,7 @@ forest_plot_comp <-
            comp_labels,
            units = "unitless",
            specified_units = NULL,
-           rounded_zeroes = FALSE,
+           rounded_zeroes = TRUE,
            det_limit = NULL,
            terms = TRUE,
            x_label = NULL,

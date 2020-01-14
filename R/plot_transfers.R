@@ -33,7 +33,7 @@ plot_transfers <- function(from_part,
                            upper_quantile = 0.95,
                            units = "unitless",
                            specified_units = NULL,
-                           rounded_zeroes,
+                           rounded_zeroes = TRUE,
                            det_limit = NULL,
                            terms = TRUE,
                            granularity = 10000,
@@ -153,6 +153,7 @@ plot_transfers <- function(from_part,
       granularity = granularity
     )
 
+
   # We normalise this to work with it
   new_data <- normalise_comp(data = new_data, comp_labels = comp_labels)
 
@@ -182,6 +183,7 @@ plot_transfers <- function(from_part,
                              terms = terms)
   # We normalise again
   dNew <- normalise_comp(data = dNew, comp_labels = comp_labels)
+
 
   # We pull out the required values on the needed scale
   dToScale <- rescale_comp(data = dNew, comp_labels = comp_labels, comp_sum = comp_sum)
@@ -364,7 +366,6 @@ plot_transfers <- function(from_part,
         theme_for_plots
     }
   }
-
 
 
     print("Please note that plotting may take some time.")

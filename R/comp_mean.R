@@ -24,7 +24,7 @@
 #' # specified = c("my_units_name", sum of a composition in these units)
 #' )
 #' @export
-comp_mean <- function(data, comp_labels, rounded_zeroes = FALSE, det_limit = NULL, units = "unitless", specified_units = NULL){
+comp_mean <- function(data, comp_labels, rounded_zeroes = TRUE, det_limit = NULL, units = "unitless", specified_units = NULL){
   data <- normalise_comp(data, comp_labels)
   compos_mean <- data.frame(matrix(nrow = 1, ncol = 0))
 
