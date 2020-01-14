@@ -3,7 +3,7 @@
 #' Plot data density on a ternary plot
 #'
 #' @param data Data frame containing data to be plotted.
-#' @param groups Name of variable in the data frame which identifies the groups to be plotted.
+#' @param groups Name of variable in the data frame which identifies the groups to be plotted. This variable should be a factor variable.
 #' @param parts_to_plot Names of the three variables in the data frame which are to be plotted on the ternary plot. Note they should be on the same scale (they don't need to be normalised to 1).
 #' @param n_bins Number of bins to use on density plot.
 #' @param mark_points Points should be the rows of a data frame with the elements of \code{parts_to_plot} as columns names. If a \code{groups} argument is given, it should also have a column for this (if the groups aren't relevant to the point in a certain row, this can be set as NA).
