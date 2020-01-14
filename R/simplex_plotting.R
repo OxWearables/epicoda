@@ -53,7 +53,7 @@ plot_density_ternary <-
     if (is.null(mark_points)) {
       if (is.null(groups)) {
         plot <-
-          ggtern::ggtern(data = data[, parts_to_plot], ggplot2::aes_(x = data[, name1], y = data[, name2], z = data[, name3])) +
+          ggtern::ggtern(data = data[, parts_to_plot], ggplot2::aes_(x = data[, name1], y = data[,name2], z = data[, name3])) +
           ggtern::stat_density_tern(
             geom = 'polygon',
             bins = n_bins,
@@ -66,7 +66,7 @@ plot_density_ternary <-
           ggtern::Tlab(label = "",
                        labelarrow = paste(name1, "(%)", "\n")) +
           ggtern::Rlab(label = "",
-                       labelarrow = paste(name2, "(%)")) +
+                       labelarrow = paste("\n", name2, "(%)")) +
           ggtern::Llab(label = "",
                        labelarrow = paste(name3, "(%)", "\n"))
       }
@@ -75,7 +75,7 @@ plot_density_ternary <-
           ggtern::ggtern(data = data[, c(parts_to_plot, groups)],
                          ggplot2::aes_(
                            x = data[, name1],
-                           y = data[, name2],
+                           y = data[,  name2],
                            z = data[, name3],
                            color = data[, groups]
                          ))
@@ -102,7 +102,7 @@ plot_density_ternary <-
           ggtern::Tlab(label = "",
                        labelarrow = paste(name1, "(%)", "\n")) +
           ggtern::Rlab(label = "",
-                       labelarrow = paste(name2, "(%)")) +
+                       labelarrow = paste("\n", name2, "(%)")) +
           ggtern::Llab(label = "",
                        labelarrow = paste(name3, "(%)", "\n"))
       }
@@ -125,12 +125,12 @@ plot_density_ternary <-
           ggtern::Tlab(label = "",
                        labelarrow = paste(name1, "(%)", "\n")) +
           ggtern::Rlab(label = "",
-                       labelarrow = paste(name2, "(%)")) +
+                       labelarrow = paste("\n", name2, "(%)")) +
           ggtern::Llab(label = "",
                        labelarrow = paste(name3, "(%)", "\n")) +
           ggtern::geom_crosshair_tern(
             data = mark_points,
-            mapping = ggplot2::aes_(x = mark_points[, name1], y = mark_points[, name2], z = mark_points[, name3])
+            mapping = ggplot2::aes_(x = mark_points[, name1], y = mark_points[,  name2], z = mark_points[, name3])
           )
 
       }
@@ -151,7 +151,7 @@ plot_density_ternary <-
               geom = 'polygon',
               ggplot2::aes_(
                 x = local_data[, name1],
-                y = local_data[, name2],
+                y = local_data[, "\n", name2],
                 z = local_data[, name3],
                 color = local_data[, groups]
               ),
@@ -165,7 +165,7 @@ plot_density_ternary <-
             data = mark_points,
             mapping = ggplot2::aes_(
               x = mark_points[, name1],
-              y = mark_points[, name2],
+              y = mark_points[,  name2],
               z = mark_points[, name3],
               color = mark_points[, groups]
             )
@@ -173,7 +173,7 @@ plot_density_ternary <-
           ggtern::Tlab(label = "",
                        labelarrow = paste(name1, "(%)", "\n")) +
           ggtern::Rlab(label = "",
-                       labelarrow = paste(name2, "(%)")) +
+                       labelarrow = paste("\n", name2, "(%)")) +
           ggtern::Llab(label = "",
                        labelarrow = paste(name3, "(%)", "\n"))
 
