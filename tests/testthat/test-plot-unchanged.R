@@ -8,7 +8,7 @@ test_that("Plot unchanged from cached plot.", {
                                                                           covariates = c("agegroup", "sex"),
                                                                           follow_up_time = NULL,
                                                                           event = NULL,
-                                                                          data = simdataplain,
+                                                                          data = simdata,
                                                                           comp_labels = comp_labels,
                                                                           transformation_type = "ilr",
                                                                           rounded_zeroes = TRUE,
