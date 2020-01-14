@@ -49,7 +49,6 @@ plot_density_ternary <-
     }
 
 
-    # labels <- ggtern::Tlab(label = NA, labelarrow = paste(name1, "(%)")) + ggtern::Rlab(label = NA, labelarrow = paste(name2, "(%)")) + ggtern::Llab(label = NA, labelarrow = paste(name3, "(%)"))
 
     if (is.null(mark_points)) {
       if (is.null(groups)) {
@@ -67,7 +66,7 @@ plot_density_ternary <-
           ggtern::Tlab(label = "",
                        labelarrow = paste(name1, "(%)", "\n")) +
           ggtern::Rlab(label = "",
-                       labelarrow = paste("\n", name2, "(%)")) +
+                       labelarrow = paste(name2, "(%)")) +
           ggtern::Llab(label = "",
                        labelarrow = paste(name3, "(%)", "\n"))
       }
@@ -103,7 +102,7 @@ plot_density_ternary <-
           ggtern::Tlab(label = "",
                        labelarrow = paste(name1, "(%)", "\n")) +
           ggtern::Rlab(label = "",
-                       labelarrow = paste("\n", name2, "(%)")) +
+                       labelarrow = paste(name2, "(%)")) +
           ggtern::Llab(label = "",
                        labelarrow = paste(name3, "(%)", "\n"))
       }
@@ -126,7 +125,7 @@ plot_density_ternary <-
           ggtern::Tlab(label = "",
                        labelarrow = paste(name1, "(%)", "\n")) +
           ggtern::Rlab(label = "",
-                       labelarrow = paste("\n", name2, "(%)")) +
+                       labelarrow = paste(name2, "(%)")) +
           ggtern::Llab(label = "",
                        labelarrow = paste(name3, "(%)", "\n")) +
           ggtern::geom_crosshair_tern(
@@ -174,7 +173,7 @@ plot_density_ternary <-
           ggtern::Tlab(label = "",
                        labelarrow = paste(name1, "(%)", "\n")) +
           ggtern::Rlab(label = "",
-                       labelarrow = paste("\n", name2, "(%)")) +
+                       labelarrow = paste(name2, "(%)")) +
           ggtern::Llab(label = "",
                        labelarrow = paste(name3, "(%)", "\n"))
 
