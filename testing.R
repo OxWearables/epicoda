@@ -1,14 +1,15 @@
 devtools::load_all()
 simdata <- epicoda::simdata
-simdata <- epicoda::simdata
 comp_labels <- c("partA", "partB", "partC", "partD", "partE")
 
 head(normalise_comp(simdata, comp_labels))
 
-plot_density_ternary(data = simdata, parts_to_plot = c("partB", "partC", "partD"), groups = "agegroup")
+
 
 simdata$sex <- as.factor(simdata$sex)
 simdata$agegroup <- as.factor(simdata$agegroup)
+
+plot_density_ternary(data = simdata, parts_to_plot = c("partB", "partC", "partD"), groups = "agegroup")
 data_ilr_impute_zeroes <- epicoda::transform_comp(data = simdata,
                                          comp_labels = comp_labels,
                                          transformation_type = "ilr",
@@ -23,7 +24,6 @@ log_outcome <- glm(as.formula(paste("binary_outcome ~ agegroup + sex + ", transf
                    data_ilr_impute_zeroes, family = "binomial")
 
 summary(log_outcome)
-data_ilr_impute_zeroes
 summary(lm_outcome)
 tab_covariate_coefs(lm_outcome, comp_labels = comp_labels)
 tab_coefs(scale_type = "lp", level = 0.95, type = "linear",
@@ -45,7 +45,7 @@ tab_coefs( scale_type = "exp", level = 0.95, type = "cox",
            rounded_zeroes = TRUE)
 
 summary(log_outcome)
-epicoda::plot_transfers(from_part = "partB",
+epicoda::plot_transfers(from_part = "partA",
                to_part = "partD",
                model = lm_outcome ,
                dataset = data_ilr_impute_zeroes,
@@ -54,7 +54,7 @@ epicoda::plot_transfers(from_part = "partB",
                y_label = NULL,
                units = "hr/day",
                rounded_zeroes = TRUE,
-               terms = TRUE,  plot_log = FALSE)
+               terms = TRUE,  plot_log = FALSE, granularity = 100)
 
 head(data_ilr_impute_zeroes)
 epicoda::plot_transfers
@@ -74,7 +74,7 @@ cox_outcome <- comp_model(
 )
 summary(cox_outcome)
 p <- plot_transfers(from_part = "partD",
-              to_part = "partB",
+              to_part = "partA",
               model = cox_outcome ,
               dataset = simdata,
               transformation_type = "ilr",

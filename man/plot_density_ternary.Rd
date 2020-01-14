@@ -17,7 +17,7 @@ plot_density_ternary(
 \arguments{
 \item{data}{Data frame containing data to be plotted.}
 
-\item{groups}{Name of variable in the data frame which identifies the groups to be plotted.}
+\item{groups}{Name of variable in the data frame which identifies the groups to be plotted. This variable should be a factor variable.}
 
 \item{parts_to_plot}{Names of the three variables in the data frame which are to be plotted on the ternary plot. Note they should be on the same scale (they don't need to be normalised to 1).}
 

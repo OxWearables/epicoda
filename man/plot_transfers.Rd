@@ -22,10 +22,12 @@ plot_transfers(
   upper_quantile = 0.95,
   units = "unitless",
   specified_units = NULL,
-  rounded_zeroes = FALSE,
+  rounded_zeroes,
   det_limit = NULL,
   terms = TRUE,
   granularity = 10000,
+  point_specification = ggplot2::geom_point(size = 2),
+  error_bar_colour = "grey",
   theme = NULL
 )
 }
@@ -60,7 +62,7 @@ plot_transfers(
 
 \item{upper_quantile}{See \code{vary_time_of_interest} and \code{make_new_data}}
 
-\item{units}{What are the units of the compositional variables? Currently available are "unitless" (where working in terms of proportions), "hr/day", "hr/wk", "min/day", "min/wk" and "specified", in which case the \code{specified_units} argument should be set.}
+\item{units}{What should the units of the compositional variables be in any output? Currently available are "unitless" (where working in terms of proportions), "hr/day", "hr/wk", "min/day", "min/wk" and "specified", in which case the \code{specified_units} argument should be set. Note that this doesn't specify the input units, as this is not relevant for any function.}
 
 \item{specified_units}{If units are being specified via the composition sum, this is where it is done. It should be a vector where the first argument is a string describing the units, and the second argument is the expected sum of a composition e.g. \code{c("hr/day", 24)}}
 

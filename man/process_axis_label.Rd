@@ -7,7 +7,7 @@
 process_axis_label(label, terms, type)
 }
 \arguments{
-\item{label}{This is the axis label that already exsits.}
+\item{label}{This is the axis label that already exists. To suppress the label entirely, set \code{label == "suppressed"}.}
 
 \item{terms}{Are predictions for terms,or are they absolute?}
 
