@@ -59,6 +59,18 @@ forest_plot_comp <-
     type <- process_model_type(model)
     x_label <- process_axis_label(label = x_label, type = type, terms = terms)
 
+    if ( terms ){
+      if (type == "cox" | type == "logistic") {
+        vline_loc <- 1
+      }
+     if (type == "linear"){
+        vline_loc <- 0
+     }
+    }
+    if (!terms){
+      vline_loc <- NA
+    }
+
 
     col_of_names <- names(composition_list)
     df <- data.table::rbindlist(composition_list, use.names = TRUE)
@@ -112,7 +124,7 @@ forest_plot_comp <-
       clip = c(xllimit, xulimit),
       xticks = seq(xllimit, xulimit, by = round(((xulimit- xllimit)/5), digits = 2)),
       xlab = x_label,
-      zero = NA,
+      zero = vline_loc,
       txt_gp = text_settings,
       ...
     )
