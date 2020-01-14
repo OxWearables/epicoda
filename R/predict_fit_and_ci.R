@@ -67,8 +67,7 @@ predict_fit_and_ci <- function(model,
       det_limit = det_limit,
       units = "unitless"
     )
-  cmdf <- data.frame(cm)
-  cm_transf_df <- transform_comp(cmdf, comp_labels,
+  cm_transf_df <- transform_comp(cm, comp_labels,
                                  transformation_type = transformation_type,
                                  part_1 = part_1,
                                  comparison_part = comparison_part,
@@ -79,10 +78,11 @@ predict_fit_and_ci <- function(model,
   # We assign some fixed_values to use in predicting
 
   if (!(is.null(fixed_values))) {
-    if (!is.null(colnames(fixed_values)[colnames(fixed_values) %in% comp_labels])) {
+    if (length(colnames(fixed_values)[colnames(fixed_values) %in% comp_labels]) > 0) {
       warning(
         "fixed_values will be updated to have compositional parts fixed at the compositional mean. For technical and pragmatic reasons, use of a different reference for the compositional parts is not currently possible."
       )
+      fixed_values <- fixed_values[, colnames(fixed_values)[!(colnames(fixed_values) %in% comp_labels)]]
     }
     fixed_values <- cbind(fixed_values, cm)
   }
@@ -336,7 +336,6 @@ predict_fit_and_ci <- function(model,
 
     dNew$fit <- dNew$main
 
-    print(acm)
 
 
 
