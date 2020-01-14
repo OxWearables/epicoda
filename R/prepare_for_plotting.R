@@ -62,42 +62,66 @@ make_new_data <- function(from_part,
                           upper_quantile = 0.95,
                           granularity = 10000) {
   dataset <- normalise_comp(dataset, comp_labels)
-  new_data <- data.frame()[1:10000,]
+  new_data <- data.frame()[1:granularity,]
 
   comp_sum <- as.numeric(process_units(units, specified_units)[2])
   units <- process_units(units, specified_units)[1]
 
   vpi_tp <- vary_part_of_interest(dataset[, to_part],
                                   lower_quantile,
-                                  upper_quantile)
+                                  upper_quantile, granularity = granularity)
+
   vpi_fp <- vary_part_of_interest(dataset[, from_part],
                                   lower_quantile,
-                                  upper_quantile)
+                                  upper_quantile, granularity = granularity)
   min_fp <- min(vpi_fp)
   max_fp <- max(vpi_fp)
 
-  for (label in comp_labels) {
-    if (label == to_part) {
-      this_col <- data.frame(vpi_tp)
-      new_data[label] <- this_col
+  min_tp <- min(vpi_tp)
+  max_tp <- max(vpi_tp)
+
+  if ((max_tp - min_tp) >= (max_fp - min_fp)){
+    for (label in comp_labels) {
+      if (label == from_part) {
+        this_col <- data.frame(vpi_fp)
+        new_data[label] <- this_col
+        }
+      if (label != from_part){
+        this_col <- data.frame(rep(fixed_values[1, label], by = granularity))
+        new_data[label] <- this_col
       }
-    if (label != to_part){
-      this_col <- data.frame(rep(fixed_values[1, label], by = 10000))
+    }
+    for (label in colnames(dataset)[!(colnames(dataset) %in% comp_labels)]){
+      this_col <- data.frame(rep(fixed_values[1, label], by = granularity))
       new_data[label] <- this_col
     }
+    tt <- rep(1, by = granularity)
+    for (label in comp_labels[comp_labels != to_part]){
+      tt <- tt - new_data[, label]
+    }
+    new_data[, to_part] <- tt
   }
-  for (label in colnames(dataset)[!(colnames(dataset) %in% comp_labels)]){
-    this_col <- data.frame(rep(fixed_values[1, label], by = 10000))
-    new_data[label] <- this_col
+  else {
+    for (label in comp_labels) {
+      if (label == to_part) {
+        this_col <- data.frame(vpi_tp)
+        new_data[label] <- this_col
+      }
+      if (label != to_part){
+        this_col <- data.frame(rep(fixed_values[1, label], by = granularity))
+        new_data[label] <- this_col
+      }
+    }
+    for (label in colnames(dataset)[!(colnames(dataset) %in% comp_labels)]){
+      this_col <- data.frame(rep(fixed_values[1, label], by = granularity))
+      new_data[label] <- this_col
+    }
+    tf <- rep(1, by = granularity)
+    for (label in comp_labels[comp_labels != from_part]){
+      tf <- tf - new_data[, label]
+    }
+    new_data[, from_part] <- tf
   }
-  tf <- rep(1, by = 10000)
-  for (label in comp_labels[comp_labels != from_part]){
-    tf <- tf - new_data[, label]
-  }
-
-  new_data[, from_part] <- tf
-  new_data <- new_data[new_data[, from_part] < max_fp, ]
-  new_data <- new_data[new_data[, from_part] > min_fp, ]
 
   new_data <- rescale_comp(new_data, comp_sum = comp_sum, comp_labels = comp_labels)
   print("Compositional variables not varied in the visualisation were fixed at:")
