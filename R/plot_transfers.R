@@ -164,8 +164,7 @@ plot_transfers <- function(from_part,
       transformation_type = transformation_type,
       part_1 = part_1,
       comparison_part = comparison_part,
-      rounded_zeroes = rounded_zeroes,
-      det_limit = det_limit
+      rounded_zeroes = FALSE
     )
 
 

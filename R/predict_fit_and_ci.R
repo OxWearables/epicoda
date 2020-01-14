@@ -72,7 +72,7 @@ predict_fit_and_ci <- function(model,
                                  transformation_type = transformation_type,
                                  part_1 = part_1,
                                  comparison_part = comparison_part,
-                                 rounded_zeroes = rounded_zeroes, det_limit = det_limit)
+                                 rounded_zeroes = FALSE)
 
 
 
@@ -113,7 +113,7 @@ predict_fit_and_ci <- function(model,
     }
   }
 
-  new_data <- transform_comp(data = new_data, comp_labels = comp_labels, transformation_type = transformation_type, rounded_zeroes = rounded_zeroes, det_limit = det_limit, comparison_part = comparison_part, part_1 = part_1)
+  new_data <- transform_comp(data = new_data, comp_labels = comp_labels, transformation_type = transformation_type, rounded_zeroes = FALSE, comparison_part = comparison_part, part_1 = part_1)
 
   # We begin the plotting
   if (type == "logistic" && (terms == FALSE)) {

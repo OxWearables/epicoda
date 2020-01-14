@@ -1,8 +1,6 @@
 #' Produce a forest plot indicating model prediction at given compositions
 #'
-#' This function takes a named list of compositions, and plots a model p
-#'
-#'
+#' This function takes a named list of compositions, and plots a model prediction at each composition.
 #'
 #' @param composition_list Named list of compositions. Note each composition should be stored as a data frame. For example, use the output of \code{change_composition}.
 #' @param x_label Label for x axis in plot.
@@ -38,6 +36,10 @@ forest_plot_comp <-
     if (!is.list(composition_list)) {
       stop('`composition_list` should be a list.')
     }
+    # We normalise comp
+
+
+
     if (is.null(text_settings)){
       text_settings <- forestplot::fpTxtGp(
         label = grid::gpar(
@@ -60,8 +62,7 @@ forest_plot_comp <-
 
     col_of_names <- names(composition_list)
     df <- data.table::rbindlist(composition_list, use.names = TRUE)
-    print(df)
-    print(comp_mean(dataset, comp_labels = comp_labels, rounded_zeroes = rounded_zeroes, det_limit = det_limit, units = "hr/day"))
+
     dNew <- predict_fit_and_ci(
       model = model,
       dataset = dataset,
@@ -85,26 +86,31 @@ forest_plot_comp <-
 
     if (is.null(xulimit)){
       xulimit <- max(dNew$upper_CI)
+      xllimit <- round(xllimit - ((xulimit- xllimit)/5), digits = 2)
+      xulimit <- round(xulimit+ ((xulimit- xllimit)/5), digits = 2)
     }
-    print(dNew)
+
 
     data_frame_for_forest_plot <- dNew[, c("fit", "lower_CI", "upper_CI")]
-    print(data_frame_for_forest_plot)
     colnames(data_frame_for_forest_plot) <- c("coef", "low", "high")
     data_frame_for_forest_plot <- rbind(data.frame("coef" = NA, "low" = NA, "high" = NA), data_frame_for_forest_plot)
 
 
 
-    CI <- paste(signif(data_frame_for_forest_plot$low, digits = 2), "-", signif(data_frame_for_forest_plot$high, digits = 2))
-     tabletext <- cbind(c(NA, col_of_names), c("Model prediction", signif(data_frame_for_forest_plot$coef[2:nrow(data_frame_for_forest_plot)], digits = 3)), c("95% CI", CI[2:nrow(data_frame_for_forest_plot)]))
-    fp <- forestplot::forestplot(
+    CI <- paste(round(data_frame_for_forest_plot$low, digits = 2), "-", round(data_frame_for_forest_plot$high, digits = 2))
+     tabletext <- cbind(c(NA, col_of_names), c("Model prediction", round(data_frame_for_forest_plot$coef[2:nrow(data_frame_for_forest_plot)], digits = 3)), c("95% CI", CI[2:nrow(data_frame_for_forest_plot)]))
+
+     print(tabletext)
+     print(data_frame_for_forest_plot)
+
+     fp <- forestplot::forestplot(
       tabletext,
       graph.pos = 2,
       data_frame_for_forest_plot,
       xlog = plot_log,
       clr.line = "black",
       clip = c(xllimit, xulimit),
-      xticks = seq(signif(xllimit - ((xulimit- xllimit)/5), digits = 2), signif(xulimit+ ((xulimit- xllimit)/5), digits = 2), by = signif(((xulimit- xllimit)/5), digits = 2)),
+      xticks = seq(xllimit, xulimit, by = round(((xulimit- xllimit)/5), digits = 2)),
       xlab = x_label,
       zero = NA,
       txt_gp = text_settings,

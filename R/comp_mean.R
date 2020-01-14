@@ -25,7 +25,7 @@
 #' )
 #' @export
 comp_mean <- function(data, comp_labels, rounded_zeroes = FALSE, det_limit = NULL, units = "unitless", specified_units = NULL){
-
+  data <- normalise_comp(data, comp_labels)
   compos_mean <- data.frame(matrix(nrow = 1, ncol = 0))
 
   comp_sum <- as.numeric(process_units(units, specified_units)[2])
