@@ -41,6 +41,7 @@ comp_mean <- function(data, comp_labels, rounded_zeroes = FALSE, det_limit = NUL
 
   comp_mean_normalised <- compos_mean/tot_time
   names(comp_mean_normalised) <- comp_labels
-  cm <- comp_mean_normalised*comp_sum
+  comp_mean_normalised <- as.data.frame(comp_mean_normalised)
+  cm <- rescale_comp(comp_mean_normalised, comp_labels = comp_labels, comp_sum = comp_sum)
   return(cm)
 }
