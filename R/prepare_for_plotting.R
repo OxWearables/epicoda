@@ -16,8 +16,6 @@ generate_fixed_values <- function(data, comp_labels, rounded_zeroes = TRUE, det_
       fixed_values[colname] <- stats::median(data[, colname], na.rm = TRUE)
     }
   }
-  cm <- suppressMessages(data.frame(comp_mean(data, comp_labels, rounded_zeroes, det_limit, units = "unitless")))
-  fixed_values <- cbind(cm, fixed_values)
   return(fixed_values)
 }
 
