@@ -106,7 +106,7 @@ plot_transfers <- function(from_part,
 
 
 # We calculate the compositional mean so we can use it in future calculations
-  if(is.null(cm)){
+  if (is.null(cm)){
       cm <- comp_mean(
       dataset,
       comp_labels,
@@ -119,7 +119,7 @@ plot_transfers <- function(from_part,
                                  transformation_type = transformation_type,
                                  part_1 = part_1,
                                  comparison_part = comparison_part,
-                                 rounded_zeroes = rounded_zeroes, det_limit = det_limit)
+                                 rounded_zeroes = FALSE)
 
   cm_on_scale <- rescale_comp(cm, comp_labels = comp_labels, comp_sum = comp_sum)
 
