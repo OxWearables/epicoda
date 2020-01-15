@@ -126,7 +126,6 @@ forest_plot_comp <-
       xlab = x_label,
       zero = vline_loc,
       clr.line = "black",
-      boxsize = 0.05,
       txt_gp = text_settings,
       ...
     )
