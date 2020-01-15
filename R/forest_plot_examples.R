@@ -105,12 +105,12 @@ forest_plot_comp <-
 
     data_frame_for_forest_plot <- dNew[, c("fit", "lower_CI", "upper_CI")]
     colnames(data_frame_for_forest_plot) <- c("coef", "low", "high")
-    data_frame_for_forest_plot <- rbind(data.frame("coef" = NA, "low" = NA, "high" = NA), data_frame_for_forest_plot)
+    data_frame_for_forest_plot <- rbind(data.frame("coef" = c(NA, vlineloc), "low" = c(NA, vlineloc), "high" = c(NA, vlineloc)), data_frame_for_forest_plot)
 
 
 
     CI <- paste(round(data_frame_for_forest_plot$low, digits = 2), "-", round(data_frame_for_forest_plot$high, digits = 2))
-     tabletext <- cbind(c(NA, col_of_names), c("Model prediction", round(data_frame_for_forest_plot$coef[2:nrow(data_frame_for_forest_plot)], digits = 2)), c("95% CI", CI[2:nrow(data_frame_for_forest_plot)]))
+     tabletext <- cbind(c(NA, "REFERENCE: AT compositional mean", col_of_names), c("Model prediction", vlineloc, round(data_frame_for_forest_plot$coef[3:nrow(data_frame_for_forest_plot)], digits = 2)), c("95% CI", "NA", CI[3:nrow(data_frame_for_forest_plot)]))
 
 
      fp <- forestplot::forestplot(
@@ -123,6 +123,7 @@ forest_plot_comp <-
       xticks = seq(xllimit, xulimit, by = round(((xulimit- xllimit)/5), digits = 2)),
       xlab = x_label,
       zero = vline_loc,
+      boxsize = 1,
       txt_gp = text_settings,
       ...
     )
