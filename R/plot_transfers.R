@@ -185,7 +185,7 @@ plot_transfers <- function(from_part,
                              specified_units = specified_units,
                              rounded_zeroes = rounded_zeroes,
                              det_limit = det_limit,
-                             terms = terms)
+                             terms = terms, cm = cm)
   # We normalise again
   dNew <- normalise_comp(data = dNew, comp_labels = comp_labels)
 
