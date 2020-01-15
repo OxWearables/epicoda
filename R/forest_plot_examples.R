@@ -112,7 +112,7 @@ forest_plot_comp <-
 
 
     CI <- paste(round(data_frame_for_forest_plot$low, digits = 2), "-", round(data_frame_for_forest_plot$high, digits = 2))
-     tabletext <- cbind(c(NA, "REFERENCE: AT compositional mean", col_of_names), c("Model prediction", vline_loc, round(data_frame_for_forest_plot$coef[3:nrow(data_frame_for_forest_plot)], digits = 2)), c("95% CI", "NA", CI[3:nrow(data_frame_for_forest_plot)]))
+     tabletext <- cbind(c(NA, "REFERENCE: At compositional mean", col_of_names), c("Model prediction", vline_loc, round(data_frame_for_forest_plot$coef[3:nrow(data_frame_for_forest_plot)], digits = 2)), c("95% CI", "NA", CI[3:nrow(data_frame_for_forest_plot)]))
 
 
      fp <- forestplot::forestplot(
