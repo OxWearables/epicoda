@@ -99,6 +99,7 @@ predict_fit_and_ci <- function(model,
         rounded_zeroes = rounded_zeroes,
         det_limit = det_limit
       )
+    fixed_values <- cbind(fixed_values, cm)
   }
 
   transf_fixed_vals <- transform_comp(

@@ -13,7 +13,6 @@
 #' @param upper_quantile See \code{vary_time_of_interest} and \code{make_new_data}
 #' @param granularity Doesn't usually need setting. Parameter indicating how many predictions to make. If too low, plotted curve has gaps. If too high, calculation is slow.
 #' @param theme Optional \code{theme} argument which can be set as a \code{ggplot2::theme} object and will control how the plot appears.
-#' @param cm Can be set with compositional mean to speed up calculation. As it is easy to make mistakes using this, this should not be set manually and should only be passed from other functions.
 #' @return Plot with balance of two parts plotted as exposure/ independent variable.
 #' @export
 #' @examples
@@ -142,6 +141,7 @@ plot_transfers <- function(from_part,
         rounded_zeroes = rounded_zeroes,
         det_limit = det_limit
       )
+    fixed_values <- cbind(fixed_values, cm)
   }
 
   # We make some new data for predictions
