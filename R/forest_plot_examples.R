@@ -105,7 +105,11 @@ forest_plot_comp <-
 
     data_frame_for_forest_plot <- dNew[, c("fit", "lower_CI", "upper_CI")]
     colnames(data_frame_for_forest_plot) <- c("coef", "low", "high")
+<<<<<<< HEAD
     data_frame_for_forest_plot <- rbind(data.frame("coef" = c(NA, vline_loc), "low" = c(NA, vline_loc), "high" = c(NA, vline_loc)), data_frame_for_forest_plot)
+=======
+    data_frame_for_forest_plot <- rbind(data.frame("coef" = c(NA, vlineloc), "low" = c(NA, vline_loc), "high" = c(NA, vlineloc)), data_frame_for_forest_plot)
+>>>>>>> 367ceb243954e5f2e71c770384f211af233a5877
 
 
 
