@@ -8,6 +8,7 @@
 #' @param fixed_values If \code{terms = FALSE}, this is used as giving the fixed values of the non-compositional covariates at which to calculate the prediction. If it is not set, it can be automatically generated.
 #' @inheritParams transform_comp
 #' @inheritParams process_units
+#' #' @param cm Can be set with compositional mean to speed up calculation. As it is easy to make mistakes using this, this should not be set manually and should only be passed from other functions.
 #' @param terms Are predictions for terms,or are they absolute?
 #' @return Plot with balance of two parts plotted as exposure/ independent variable.
 #' @examples
@@ -23,7 +24,8 @@ predict_fit_and_ci <- function(model,
                            specified_units = NULL,
                            rounded_zeroes = TRUE,
                            det_limit = NULL,
-                           terms = TRUE) {
+                           terms = TRUE,
+                           cm = NULL) {
   if (is.null(transformation_type)) {
     stop(
       "transformation_type must be specified and must match the transformation used in transform_comp earlier (which defaults to \"ilr\")"
@@ -60,13 +62,16 @@ predict_fit_and_ci <- function(model,
   type <- process_model_type(model)
 
   # We calculate the compositional mean so we can use it in future calculations
-  cm <- comp_mean(
+  if (is.null(cm)){
+      cm <- comp_mean(
       dataset,
       comp_labels,
       rounded_zeroes = rounded_zeroes,
       det_limit = det_limit,
       units = "unitless"
     )
+  }
+
   cm_transf_df <- transform_comp(cm, comp_labels,
                                  transformation_type = transformation_type,
                                  part_1 = part_1,

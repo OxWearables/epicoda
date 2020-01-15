@@ -13,6 +13,7 @@
 #' @param upper_quantile See \code{vary_time_of_interest} and \code{make_new_data}
 #' @param granularity Doesn't usually need setting. Parameter indicating how many predictions to make. If too low, plotted curve has gaps. If too high, calculation is slow.
 #' @param theme Optional \code{theme} argument which can be set as a \code{ggplot2::theme} object and will control how the plot appears.
+#' @param cm Can be set with compositional mean to speed up calculation. As it is easy to make mistakes using this, this should not be set manually and should only be passed from other functions.
 #' @return Plot with balance of two parts plotted as exposure/ independent variable.
 #' @export
 #' @examples
@@ -39,7 +40,8 @@ plot_transfers <- function(from_part,
                            granularity = 10000,
                            point_specification = ggplot2::geom_point(size = 2),
                            error_bar_colour = "grey",
-                           theme = NULL) {
+                           theme = NULL,
+                           cm = NULL) {
   if (is.null(transformation_type)) {
     stop(
       "transformation_type must be specified and must match the transformation used in transform_comp earlier (which defaults to \"ilr\")"
@@ -105,12 +107,15 @@ plot_transfers <- function(from_part,
 
 
 # We calculate the compositional mean so we can use it in future calculations
-  cm <- comp_mean(
+  if(is.null(cm)){
+      cm <- comp_mean(
       dataset,
       comp_labels,
       rounded_zeroes = rounded_zeroes, det_limit = det_limit,
       units = "unitless"
     )
+  }
+
   cm_transf_df <- transform_comp(cm, comp_labels,
                                  transformation_type = transformation_type,
                                  part_1 = part_1,
