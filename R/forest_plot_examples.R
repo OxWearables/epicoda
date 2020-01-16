@@ -115,7 +115,7 @@ forest_plot_comp <-
 
 
     text_col <- paste(round(data_frame_for_forest_plot$coef , digits = 2), " (", round(data_frame_for_forest_plot$low, digits = 2), ", ", round(data_frame_for_forest_plot$high, digits = 2), ")", sep = "")
-    tabletext <- cbind(c(NA, "REFERENCE: At compositional mean", col_of_names), c(pred_name, vline_loc, text[3:nrow(data_frame_for_forest_plot)]))
+    tabletext <- cbind(c(NA, "REFERENCE: At compositional mean", col_of_names), c(pred_name, vline_loc, text_col[3:nrow(data_frame_for_forest_plot)]))
 
 
      fp <- forestplot::forestplot(
