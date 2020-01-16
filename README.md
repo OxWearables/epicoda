@@ -7,6 +7,8 @@ install.packages("devtools")
 library(devtools)
 devtools::load_all("epicoda")
 ```
+The package contains simulated data (`simdata`), so all the functions can be tried without any additional data.  
+
 To view long-form documentation: 
 * An example Compositional Data Analysis: Go to 'epicoda/vignettes/vignette-epicoda.Rmd' and knit this file. 
 * Documentation of the confidence intervals used: Go to 'epicoda/vignettes/derivation_of_CIs_used.Rmd' and knit this file. 
