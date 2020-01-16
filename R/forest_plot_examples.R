@@ -31,6 +31,7 @@ forest_plot_comp <-
            xulimit = NULL,
            plot_log = FALSE,
            text_settings = NULL,
+           pred_name = NULL,
            ...) {
 
     if (!is.list(composition_list)) {
@@ -38,7 +39,9 @@ forest_plot_comp <-
     }
     # We normalise comp
 
-
+    if (is.null(pred_name)){
+      pred_name <- "Model prediction (95% CI)"
+    }
 
     if (is.null(text_settings)){
       text_settings <- forestplot::fpTxtGp(
@@ -111,8 +114,8 @@ forest_plot_comp <-
 
 
 
-    CI <- paste(round(data_frame_for_forest_plot$low, digits = 2), "-", round(data_frame_for_forest_plot$high, digits = 2))
-     tabletext <- cbind(c(NA, "REFERENCE: At compositional mean", col_of_names), c("Model prediction", vline_loc, round(data_frame_for_forest_plot$coef[3:nrow(data_frame_for_forest_plot)], digits = 2)), c("95% CI", "NA", CI[3:nrow(data_frame_for_forest_plot)]))
+    text_col <- paste(round(data_frame_for_forest_plot$coef , digits = 2), " (", round(data_frame_for_forest_plot$low, digits = 2), ", ", round(data_frame_for_forest_plot$high, digits = 2), ")", sep = "")
+    tabletext <- cbind(c(NA, "REFERENCE: At compositional mean", col_of_names), c(pred_name, vline_loc, text[3:nrow(data_frame_for_forest_plot)]))
 
 
      fp <- forestplot::forestplot(
