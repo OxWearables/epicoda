@@ -38,13 +38,16 @@ predict_fit_and_ci <- function(model,
   units <- process_units(units, specified_units)[1]
 
   # We normalise
-  dataset <- normalise_comp(dataset, comp_labels = comp_labels)
-  new_data <- normalise_comp(new_data, comp_labels = comp_labels)
   det_limit <- rescale_det_limit(data = dataset, comp_labels = comp_labels, det_limit)
   det_limit2 <- rescale_det_limit(data = new_data, comp_labels = comp_labels, det_limit )
-  if (abs(det_limit - det_limit2) > 0.01*det_limit){
-    stop("Are dataset and new_data on the same scale? They do not appear to be and this means det_limit cannot be reliably calculated.")
+  dataset <- normalise_comp(dataset, comp_labels = comp_labels)
+  new_data <- normalise_comp(new_data, comp_labels = comp_labels)
+  if (!is.null(det_limit)){
+    if ((abs(det_limit - det_limit2) > 0.01*det_limit)){
+      stop("Are dataset and new_data on the same scale? They do not appear to be and this means det_limit cannot be reliably calculated.")
+    }
   }
+
 
   # We label what the transformed cols will be
   if (transformation_type == "ilr") {

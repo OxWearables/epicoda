@@ -48,8 +48,9 @@ plot_transfers <- function(from_part,
   }
 
   # We normalise
-  dataset <- normalise_comp(data = dataset, comp_labels = comp_labels)
   det_limit <- rescale_det_limit(data = dataset, comp_labels = comp_labels, det_limit = det_limit)
+  dataset <- normalise_comp(data = dataset, comp_labels = comp_labels)
+
 
 
   # Set theme for plotting

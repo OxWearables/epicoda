@@ -28,11 +28,15 @@ transform_comp <- function(data, comp_labels, transformation_type = "ilr", round
     message("Clr transformed variables are singular, so shouldn't be used for regression modelling.")
   }
 
-  data <- normalise_comp(data, comp_labels = comp_labels)
   det_limit <- rescale_det_limit(data = data, comp_labels = comp_labels, det_limit  = det_limit)
+  data <- normalise_comp(data, comp_labels = comp_labels)
+
+
   dTransformationReady <- data
   dTransformationReady$row_labels_master <- 1:nrow(dTransformationReady)
+
   dTransformationReady <- process_zeroes(dTransformationReady, comp_labels, rounded_zeroes, det_limit)
+
   if (transformation_type == "ilr"){
     if (!is.null(part_1)){
       comp_labels <- alter_order_comp_labels(comp_labels, part_1)
