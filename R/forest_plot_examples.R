@@ -19,7 +19,7 @@ forest_plot_comp <-
            models_list = NULL,
            dataset,
            fixed_values = NULL,
-           transformation_type = NULL,
+           transformation_type = "ilr",
            comparison_part = NULL,
            part_1 = NULL,
            comp_labels,
