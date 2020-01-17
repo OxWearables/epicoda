@@ -13,7 +13,7 @@
 #' @examples plot_density_ternary(data = simdata,
 #' parts_to_plot = c("combined_parts", "partD", "partE"),
 #' n_bins = 10 # This argument specifies we want to use 10 bins
-#' (i.e. 10% of data lies between each pair of contours on the plot.)
+#' # (i.e. 10% of data lies between each pair of contours on the plot.)
 #' )
 #' @export
 plot_density_ternary <-
