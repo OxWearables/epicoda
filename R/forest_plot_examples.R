@@ -3,7 +3,7 @@
 #' This function takes a named list of compositions, and plots a model prediction at each composition.
 #'
 #' @param composition_list Named list of compositions. Note each composition should be stored as a data frame. For example, use the output of \code{change_composition}.
-#' @param model Either a single model, or a list of models for which to plot model predictions in the forest plot. Note all models should have the same type or the results will be meaningless.
+#' @param model Either a single model, or a named list of models for which to plot model predictions in the forest plot. Note all models should have the same type or the results will be meaningless.
 #' @param x_label Label for x axis in plot.
 #' @param xllimit Minimum value for x axis.
 #' @param xulimit Maximum value for x axis.
@@ -76,12 +76,19 @@ forest_plot_comp <-
     }
 
 
-    mini_col_of_names <- names(composition_list)
-    col_of_names <- c()
+    col_of_names <- names(composition_list)
     df <- data.table::rbindlist(composition_list, use.names = TRUE)
-    dNew <- data.frame("fit" = c(), "lower_CI" = c(), "upper_CI" = c())
 
+    if (length(model) == 1){
+
+    }
+
+    if (length(model) >1){
+       data_frame_for_forest_plot <- data.frame("coef" = c(), "low" = c(), "high" = c())
     for (i in 1:nrow(df)){
+      coef <- c()
+      low <- c()
+      high <- c()
       for (j in 1:length(model)){
         dPred <- predict_fit_and_ci(
         model = model[[j]],
@@ -98,52 +105,55 @@ forest_plot_comp <-
         det_limit = det_limit,
         terms = terms
       )
-        dNew <- rbind(dNew, dPred[, c("fit", "lower_CI", "upper_CI")])
-        col_of_names <- c(col_of_names, mini_col_of_names[i])
+      coef <- cbind(coef, dPred$fit)
+      low <- cbind(low, dPred$lower_CI)
+      high <- cbind(high, dPred$upper_CI)
+
       }
+      data_frame_for_forest_plot <- rbind(data_frame_for_forest_plot, data.frame("coef" = coef, "low" = low, "high" = high))
+
       }
 
 
 
     if (is.null(xllimit)){
-      xllimit <- min(dNew$lower_CI)
+      xllimit <- min(data_frame_for_forest_plot)
     }
 
     if (is.null(xulimit)){
-      xulimit <- max(dNew$upper_CI)
-      xllimit <- round(xllimit - ((xulimit- xllimit)/5), digits = 2)
-      xulimit <- round(xulimit+ ((xulimit- xllimit)/5), digits = 2)
+      xulimit <- max(data_frame_for_forest_plot)
     }
+    req_seq <- seq(round((xllimit- 0.05)/0.05, digits = 1)*0.05, round((xulimit + 0.05)/0.05, digits = 1)*0.05, by = 0.05)
+    req_seq_labs <- formatC(req_seq, format = "f", digits= 2)
+    attr(req_seq, "labels") <- req_seq_labs
 
-
-    data_frame_for_forest_plot <- dNew
-    colnames(data_frame_for_forest_plot) <- c("coef", "low", "high")
-
-    data_frame_for_forest_plot <- rbind(data.frame("coef" = c(NA, vline_loc), "low" = c(NA, vline_loc), "high" = c(NA, vline_loc)), data_frame_for_forest_plot)
-
+    data_frame_for_forest_plot <- rbind(rep(NA, by = ncol(data_frame_for_forest_plot)), rep(vline_loc, by = ncol(data_frame_for_forest_plot)), data_frame_for_forest_plot)
 
 
 
-    text_col <- paste(format(round(data_frame_for_forest_plot$coef , digits = 2), nnsmall = 2), " (", format(round(data_frame_for_forest_plot$low, digits = 2), nsmall = 2), ", ", format(round(data_frame_for_forest_plot$high, digits = 2), nsmall = 2), ")", sep = "")
-    tabletext <- cbind(c(NA, "REFERENCE: At compositional mean", col_of_names), c(pred_name, vline_loc, text_col[3:nrow(data_frame_for_forest_plot)]))
-    col_vec <- hcl.colors(n = length(model))
+ #   text_col <- paste(format(round(data_frame_for_forest_plot$coef , digits = 2), nnsmall = 2), " (", format(round(data_frame_for_forest_plot$low, digits = 2), nsmall = 2), ", ", format(round(data_frame_for_forest_plot$high, digits = 2), nsmall = 2), ")", sep = "")
+  #  tabletext <- cbind(c(NA, "REFERENCE: At compositional mean", col_of_names), c(pred_name, vline_loc, text_col[3:nrow(data_frame_for_forest_plot)]))
+    col_vec <- hcl.colors(n = length(model), palette = "dark2")
     full_col_vec <- c("black", rep(col_vec, n = length(col_of_names)))
     print(full_col_vec)
      fp <- forestplot::forestplot(
-      tabletext,
+    #  tabletext,
       graph.pos = 2,
-      data_frame_for_forest_plot,
+      mean = data_frame_for_forest_plot[, colnames(data_frame_for_forest_plot)[grepl("coef", colnames(data_frame_for_forest_plot))]],
+      lower = data_frame_for_forest_plot[, colnames(data_frame_for_forest_plot)[grepl("low", colnames(data_frame_for_forest_plot))]],
+      upper = data_frame_for_forest_plot[, colnames(data_frame_for_forest_plot)[grepl("high", colnames(data_frame_for_forest_plot))]],
       xlog = plot_log,
-      clr.line = "black",
-      clip = c(xllimit, xulimit),
-      xticks = seq(xllimit, xulimit, by = round(((xulimit- xllimit)/5), digits = 2)),
+      clip = c(xllimit -0.05, xulimit + 0.05),
+      xticks = req_seq,
       xlab = x_label,
       zero = vline_loc,
-      clr.line = "black",
       txt_gp = text_settings,
-      col = forestplot::fpColors(box = full_col_vec),
+      legend = names(model),
+      col = forestplot::fpColors(box = col_vec),
       ...
     )
+    }
+
     return(fp)
   }
 
