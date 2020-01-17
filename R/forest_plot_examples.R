@@ -39,7 +39,6 @@ forest_plot_comp <-
     if (!is.list(composition_list)) {
       stop('`composition_list` should be a list.')
     }
-    # We normalise comp
 
     if (is.null(pred_name)){
       pred_name <- "Model prediction (95% CI)"

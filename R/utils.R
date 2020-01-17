@@ -104,7 +104,7 @@ process_units <- function(units, specified_units){
 #' @param comp_labels The labels of the compositional columns.
 #' @param rounded_zeroes Are zeroes rounded zeroes?
 #' @param det_limit Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
-#' minimum measurable value in the compositional columns of data.
+#' minimum measurable value in the compositional columns of data. It should be on the same scale as the (input) compositional columns.
 process_zeroes <- function(data, comp_labels, rounded_zeroes, det_limit = NULL){
 
   data$row_labels <- 1:nrow(data)
@@ -204,7 +204,6 @@ process_axis_label <- function(label, terms, type){
 #'
 #' @param data Input data.
 #' @inheritParams process_zeroes
-#' @return
 normalise_comp <- function(data, comp_labels){
   output <- data
   output[, comp_labels] <- output[, comp_labels]/apply(output[, comp_labels], 1, sum)
@@ -216,7 +215,6 @@ normalise_comp <- function(data, comp_labels){
 #' @param data Data including a normalised set of compositional columns.
 #' @param comp_sum The sum the compositional columns should have.
 #' @inheritParams process_zeroes
-#' @return
 rescale_comp <- function(data, comp_labels, comp_sum){
   output <- data
   if (isFALSE(all.equal(apply(output[, comp_labels], 1, sum), rep(1, by = nrow(output))))){
@@ -224,6 +222,35 @@ rescale_comp <- function(data, comp_labels, comp_sum){
   }
   output[, comp_labels] <- output[, comp_labels]*comp_sum
   return(output)
+}
+
+
+#' Determine if range of vector is FP 0.
+zero_range <- function(x, tol = .Machine$double.eps ^ 0.5) {
+  if (length(x) == 1) return(TRUE)
+  x <- range(x, na.rm = TRUE) / mean(x, na.rm = TRUE)
+  isTRUE(all.equal(x[1], x[2], tolerance = tol))
+}
+
+
+#' Rescale det_limit
+#'
+#' Rescale a det_limit given on the same scale as the compositional columns.
+#' @param data Input data.
+#' @inheritParams process_zeores
+rescale_det_limit <- function(data, comp_labels, det_limit){
+  if (!(is.null(det_limit))){
+    vec_of_sums <- apply(data[, comp_labels], 1, sum)
+    if (!zero_range(vec_of_sums)){
+      message(paste("The range of sums of columns is ", range(vec_of_sums), ". The median sum will be used to rescale the det_limit. Does this match the scale on which you specified the det_limit?"))
+    }
+    rescale_fac <- median(vec_of_sums, na.rm = TRUE)
+    det_limit_new <- det_limit/rescale_fac
+  }
+  else {
+    det_limit_new <- NULL
+  }
+  return(det_limit_new)
 }
 
 

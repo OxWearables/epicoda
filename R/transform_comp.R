@@ -29,6 +29,7 @@ transform_comp <- function(data, comp_labels, transformation_type = "ilr", round
   }
 
   data <- normalise_comp(data, comp_labels = comp_labels)
+  det_limit <- rescale_det_limit(data = data, comp_labels = comp_labels, det_limit  = det_limit)
   dTransformationReady <- data
   dTransformationReady$row_labels_master <- 1:nrow(dTransformationReady)
   dTransformationReady <- process_zeroes(dTransformationReady, comp_labels, rounded_zeroes, det_limit)

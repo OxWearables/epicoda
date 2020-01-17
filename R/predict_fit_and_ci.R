@@ -4,7 +4,7 @@
 #'
 #' @param model Model to use in generating predictions.
 #' @param dataset  Should be dataset used to develop \code{model}.
-#' @param new_data Data for predictions.
+#' @param new_data Data for predictions.Should be on same scale as dataset.
 #' @param fixed_values If \code{terms = FALSE}, this is used as giving the fixed values of the non-compositional covariates at which to calculate the prediction. If it is not set, it can be automatically generated.
 #' @inheritParams transform_comp
 #' @inheritParams process_units
@@ -40,7 +40,11 @@ predict_fit_and_ci <- function(model,
   # We normalise
   dataset <- normalise_comp(dataset, comp_labels = comp_labels)
   new_data <- normalise_comp(new_data, comp_labels = comp_labels)
-
+  det_limit <- rescale_det_limit(data = dataset, comp_labels = comp_labels, det_limit)
+  det_limit2 <- rescale_det_limit(data = new_data, comp_labels = comp_labels, det_limit )
+  if (abs(det_limit - det_limit2) > 0.01*det_limit){
+    stop("Are dataset and new_data on the same scale? They do not appear to be and this means det_limit cannot be reliably calculated.")
+  }
 
   # We label what the transformed cols will be
   if (transformation_type == "ilr") {
