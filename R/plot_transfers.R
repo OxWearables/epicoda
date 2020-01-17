@@ -16,6 +16,19 @@
 #' @return Plot with balance of two parts plotted as exposure/ independent variable.
 #' @export
 #' @examples
+#' comp_labels <- c("partA", "partB", "partC", "partD", "partE")
+#'  epicoda::plot_transfers(from_part = "partD",
+#' to_part = "partA",
+#' model = lm_outcome ,
+#' dataset = simdata,
+#' transformation_type = "ilr",
+#' comp_labels = comp_labels,
+#' y_label = "Model-predicted outcome",
+#' units = "hr/day",
+#' rounded_zeroes = TRUE,
+#' det_limit = 0.0012,
+#' terms = TRUE)
+#'
 plot_transfers <- function(from_part,
                            to_part,
                            model,
