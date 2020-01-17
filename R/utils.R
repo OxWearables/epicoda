@@ -225,7 +225,9 @@ rescale_comp <- function(data, comp_labels, comp_sum){
 }
 
 
-#' Determine if range of vector is FP 0.
+#' Determine if range of vector is effectively zero.
+#'
+#' @param x Data for which to check
 zero_range <- function(x, tol = .Machine$double.eps ^ 0.5) {
   if (length(x) == 1) return(TRUE)
   x <- (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))/ mean(x, na.rm = TRUE)
@@ -237,14 +239,14 @@ zero_range <- function(x, tol = .Machine$double.eps ^ 0.5) {
 #'
 #' Rescale a det_limit given on the same scale as the compositional columns.
 #' @param data Input data.
-#' @inheritParams process_zeores
+#' @inheritParams process_zeroes
 rescale_det_limit <- function(data, comp_labels, det_limit){
   if (!(is.null(det_limit))){
     vec_of_sums <- apply(data[, comp_labels], 1, sum)
     if (!zero_range(vec_of_sums)){
       message(paste("The range of sums of columns is ", max(vec_of_sums, na.rm = TRUE) - min(vec_of_sums, na.rm = TRUE), ". The median sum will be used to rescale the det_limit. Does this match the scale on which you specified the det_limit?"))
     }
-    rescale_fac <- median(vec_of_sums, na.rm = TRUE)
+    rescale_fac <- stats::median(vec_of_sums, na.rm = TRUE)
     print(rescale_fac)
     det_limit_new <- det_limit/rescale_fac
   }
