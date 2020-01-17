@@ -8,6 +8,11 @@ rescale_det_limit(data, comp_labels, det_limit)
 }
 \arguments{
 \item{data}{Input data.}
+
+\item{comp_labels}{The labels of the compositional columns.}
+
+\item{det_limit}{Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
+minimum measurable value in the compositional columns of data. It should be on the same scale as the (input) compositional columns.}
 }
 \description{
 Rescale a det_limit given on the same scale as the compositional columns.

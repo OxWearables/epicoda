@@ -2,10 +2,13 @@
 % Please edit documentation in R/utils.R
 \name{zero_range}
 \alias{zero_range}
-\title{Determine if range of vector is FP 0.}
+\title{Determine if range of vector is effectively zero.}
 \usage{
 zero_range(x, tol = .Machine$double.eps^0.5)
 }
+\arguments{
+\item{x}{Data for which to check}
+}
 \description{
-Determine if range of vector is FP 0.
+Determine if range of vector is effectively zero.
 }
