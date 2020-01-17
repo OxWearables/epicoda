@@ -8,7 +8,13 @@
 #' @param comp_labels Compositional column labels.
 #'
 #' @return Composition after rebalancing in the described way.
-#' @examples
+#' @examples new_comp <-
+#' change_composition(
+#'  composition = simdata,
+#'  main_part = "partB",
+#'  main_change = +0.5,
+#'  comp_labels = comp_labels
+#')
 #' @export
 change_composition <-
   function(composition,
