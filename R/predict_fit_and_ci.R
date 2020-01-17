@@ -4,7 +4,9 @@
 #'
 #' @param model Model to use in generating predictions.
 #' @param dataset  Should be dataset used to develop \code{model}.
-#' @param new_data Data for predictions.Should be on same scale as dataset.
+#' @param det_limit Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
+#' minimum measurable value in the compositional columns of data. It should be on the same scale as the (input) compositional columns in \code{dataset} (NB it doesn't need to match \code{new_data}).
+#' @param new_data Data for predictions.
 #' @param fixed_values If \code{terms = FALSE}, this is used as giving the fixed values of the non-compositional covariates at which to calculate the prediction. If it is not set, it can be automatically generated.
 #' @inheritParams transform_comp
 #' @inheritParams process_units
@@ -39,14 +41,14 @@ predict_fit_and_ci <- function(model,
 
   # We normalise
   det_limit <- rescale_det_limit(data = dataset, comp_labels = comp_labels, det_limit)
-  det_limit2 <- rescale_det_limit(data = new_data, comp_labels = comp_labels, det_limit )
+#  det_limit2 <- rescale_det_limit(data = new_data, comp_labels = comp_labels, det_limit )
   dataset <- normalise_comp(dataset, comp_labels = comp_labels)
   new_data <- normalise_comp(new_data, comp_labels = comp_labels)
-  if (!is.null(det_limit)){
-    if ((abs(det_limit - det_limit2) > 0.01*det_limit)){
-      stop("Are dataset and new_data on the same scale? They do not appear to be and this means det_limit cannot be reliably calculated.")
-    }
-  }
+#  if (!is.null(det_limit)){
+ #   if ((abs(det_limit - det_limit2) > 0.01*det_limit)){
+ #     stop("Are dataset and new_data on the same scale? They do not appear to be and this means det_limit cannot be reliably calculated.")
+ #   }
+ # }
 
 
   # We label what the transformed cols will be
