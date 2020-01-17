@@ -191,16 +191,16 @@ forest_plot_comp <-
     req_seq_labs <- formatC(req_seq, format = "f", digits= 2)
     attr(req_seq, "labels") <- req_seq_labs
 
-    data_frame_for_forest_plot <- rbind(rep(NA, by = ncol(data_frame_for_forest_plot)), rep(vline_loc, by = ncol(data_frame_for_forest_plot)), data_frame_for_forest_plot)
+    data_frame_for_forest_plot <- rbind( rep(vline_loc, by = ncol(data_frame_for_forest_plot)), data_frame_for_forest_plot)
 
 
 
  #   text_col <- paste(format(round(data_frame_for_forest_plot$coef , digits = 2), nnsmall = 2), " (", format(round(data_frame_for_forest_plot$low, digits = 2), nsmall = 2), ", ", format(round(data_frame_for_forest_plot$high, digits = 2), nsmall = 2), ")", sep = "")
-  #  tabletext <- cbind(c(NA, "REFERENCE: At compositional mean", col_of_names), c(pred_name, vline_loc, text_col[3:nrow(data_frame_for_forest_plot)]))
+  tabletext <- cbind(c( "REFERENCE: At compositional mean", col_of_names))#, c(pred_name, vline_loc, text_col[3:nrow(data_frame_for_forest_plot)]))
     col_vec <- hcl.colors(n = length(models_list), palette = "dark2")
      fp <- forestplot::forestplot(
-    #  tabletext,
-      graph.pos = 2,
+    tabletext,
+     graph.pos = 2,
       mean = data_frame_for_forest_plot[, colnames(data_frame_for_forest_plot)[grepl("coef", colnames(data_frame_for_forest_plot))]],
       lower = data_frame_for_forest_plot[, colnames(data_frame_for_forest_plot)[grepl("low", colnames(data_frame_for_forest_plot))]],
       upper = data_frame_for_forest_plot[, colnames(data_frame_for_forest_plot)[grepl("high", colnames(data_frame_for_forest_plot))]],
