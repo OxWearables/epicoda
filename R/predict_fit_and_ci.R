@@ -10,7 +10,7 @@
 #' @param fixed_values If \code{terms = FALSE}, this is used as giving the fixed values of the non-compositional covariates at which to calculate the prediction. If it is not set, it can be automatically generated.
 #' @inheritParams transform_comp
 #' @inheritParams process_units
-#' #' @param cm Can be set with compositional mean to speed up calculation. As it is easy to make mistakes using this, this should not be set manually and should only be passed from other functions.
+#' @param cm Can be set with compositional mean to speed up calculation. As it is easy to make mistakes using this, this should not be set manually and should only be passed from other functions.
 #' @param terms Are predictions for terms,or are they absolute?
 #' @return Plot with balance of two parts plotted as exposure/ independent variable.
 #' @examples
