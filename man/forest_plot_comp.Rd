@@ -6,7 +6,8 @@
 \usage{
 forest_plot_comp(
   composition_list,
-  model,
+  model = NULL,
+  models_list = NULL,
   dataset,
   fixed_values = NULL,
   transformation_type = NULL,
@@ -15,7 +16,7 @@ forest_plot_comp(
   comp_labels,
   units = "unitless",
   specified_units = NULL,
-  rounded_zeroes = FALSE,
+  rounded_zeroes = TRUE,
   det_limit = NULL,
   terms = TRUE,
   x_label = NULL,
@@ -23,6 +24,7 @@ forest_plot_comp(
   xulimit = NULL,
   plot_log = FALSE,
   text_settings = NULL,
+  pred_name = NULL,
   ...
 )
 }
@@ -30,6 +32,8 @@ forest_plot_comp(
 \item{composition_list}{Named list of compositions. Note each composition should be stored as a data frame. For example, use the output of \code{change_composition}.}
 
 \item{model}{Model to use in generating predictions.}
+
+\item{models_list}{If \code{model} is \code{NULL} (or not set), a named list of models for which to plot model predictions in the forest plot. Note all models should have the same type or the results will be meaningless.}
 
 \item{dataset}{Should be dataset used to develop \code{model}.}
 
@@ -43,14 +47,10 @@ forest_plot_comp(
 
 \item{comp_labels}{The labels of the compositional columns.}
 
-\item{units}{What should the units of the compositional variables be in any output? Currently available are "unitless" (where working in terms of proportions), "hr/day", "hr/wk", "min/day", "min/wk" and "specified", in which case the \code{specified_units} argument should be set. Note that this doesn't specify the input units, as this is not relevant for any function.}
-
-\item{specified_units}{If units are being specified via the composition sum, this is where it is done. It should be a vector where the first argument is a string describing the units, and the second argument is the expected sum of a composition e.g. \code{c("hr/day", 24)}}
-
 \item{rounded_zeroes}{Are zeroes rounded zeroes?}
 
 \item{det_limit}{Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
-minimum measurable value in the compositional columns of data.}
+minimum measurable value in the compositional columns of data. It should be on the same scale as the (input) compositional columns.}
 
 \item{terms}{Are predictions for terms,or are they absolute?}
 

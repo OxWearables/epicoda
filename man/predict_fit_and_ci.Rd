@@ -15,9 +15,10 @@ predict_fit_and_ci(
   comp_labels,
   units = "unitless",
   specified_units = NULL,
-  rounded_zeroes = NULL,
+  rounded_zeroes = TRUE,
   det_limit = NULL,
-  terms = TRUE
+  terms = TRUE,
+  cm = NULL
 )
 }
 \arguments{
@@ -25,7 +26,7 @@ predict_fit_and_ci(
 
 \item{dataset}{Should be dataset used to develop \code{model}.}
 
-\item{new_data}{Data for predictions.}
+\item{new_data}{Data for predictions.Should be on same scale as dataset.}
 
 \item{fixed_values}{If \code{terms = FALSE}, this is used as giving the fixed values of the non-compositional covariates at which to calculate the prediction. If it is not set, it can be automatically generated.}
 
@@ -37,14 +38,10 @@ predict_fit_and_ci(
 
 \item{comp_labels}{The labels of the compositional columns.}
 
-\item{units}{What should the units of the compositional variables be in any output? Currently available are "unitless" (where working in terms of proportions), "hr/day", "hr/wk", "min/day", "min/wk" and "specified", in which case the \code{specified_units} argument should be set. Note that this doesn't specify the input units, as this is not relevant for any function.}
-
-\item{specified_units}{If units are being specified via the composition sum, this is where it is done. It should be a vector where the first argument is a string describing the units, and the second argument is the expected sum of a composition e.g. \code{c("hr/day", 24)}}
-
 \item{rounded_zeroes}{Are zeroes rounded zeroes?}
 
 \item{det_limit}{Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
-minimum measurable value in the compositional columns of data.}
+minimum measurable value in the compositional columns of data. It should be on the same scale as the (input) compositional columns.}
 
 \item{terms}{Are predictions for terms,or are they absolute?}
 }

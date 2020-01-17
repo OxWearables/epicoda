@@ -40,7 +40,7 @@ tab_coefs(
 \item{rounded_zeroes}{Are zeroes rounded zeroes?}
 
 \item{det_limit}{Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
-minimum measurable value in the compositional columns of data.}
+minimum measurable value in the compositional columns of data. It should be on the same scale as the (input) compositional columns.}
 }
 \value{
 Table of all model coefficients (parameter value with lower and upper confidence interval of the 95% ), using the first pivot coordinates for all compositional coefficients.

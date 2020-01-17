@@ -13,7 +13,7 @@ plot_density_ternary(data = simdata, parts_to_plot = c("partB", "partC", "partD"
 data_ilr_impute_zeroes <- epicoda::transform_comp(data = simdata,
                                          comp_labels = comp_labels,
                                          transformation_type = "ilr",
-                                         rounded_zeroes = TRUE)
+                                         rounded_zeroes = TRUE, det_limit = 0.0011)
 data_ilr_impute_zeroes
 transf_vec <- transf_labels(comp_labels = comp_labels, transformation_type = "ilr")
 transf_sum <- vector_to_sum(transf_vec)
@@ -110,7 +110,7 @@ composition_list <- list("cm" = as.data.frame(
   "trial2" = data.frame("partA" = c(0.001), "partB" = 1.49, "partC" = 3.5, "partD" = 9, "partE" = 10))
 devtools::load_all()
 forest_plot_comp(composition_list = composition_list,
-         model = list(cox_outcome, cox_outcome_no_sex),
+         model = cox_outcome,
          dataset = simdata,
          fixed_values = NULL,
          transformation_type = "ilr",
@@ -140,3 +140,4 @@ has_this_worked <- comp_model(type = "linear",
          rounded_zeroes = TRUE,
          comparison_part = NULL,
          part_1 = NULL)
+

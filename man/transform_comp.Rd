@@ -24,7 +24,7 @@ transform_comp(
 \item{rounded_zeroes}{Are zeroes rounded zeroes?}
 
 \item{det_limit}{Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
-minimum measurable value in the compositional columns of data.}
+minimum measurable value in the compositional columns of data. It should be on the same scale as the (input) compositional columns.}
 
 \item{comparison_part}{Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of part that all other parts will be compared to.}
 

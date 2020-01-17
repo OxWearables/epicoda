@@ -4,7 +4,12 @@
 \alias{generate_fixed_values}
 \title{Generates list of fixed_values based on median/modal values in dataset}
 \usage{
-generate_fixed_values(data, comp_labels, rounded_zeroes, det_limit)
+generate_fixed_values(
+  data,
+  comp_labels,
+  rounded_zeroes = TRUE,
+  det_limit = NULL
+)
 }
 \arguments{
 \item{data}{Data used for model development.}
@@ -14,7 +19,7 @@ generate_fixed_values(data, comp_labels, rounded_zeroes, det_limit)
 \item{rounded_zeroes}{Are zeroes rounded zeroes?}
 
 \item{det_limit}{Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
-minimum measurable value in the compositional columns of data.}
+minimum measurable value in the compositional columns of data. It should be on the same scale as the (input) compositional columns.}
 }
 \value{
 dataframe with a single row of fixed_values.

@@ -68,7 +68,7 @@ forest_plot_comp <-
 
     x_label <- process_axis_label(label = x_label, type = type, terms = terms)
 
-    if ( terms ){
+    if (terms){
       if (type == "cox" | type == "logistic") {
         vline_loc <- 1
       }

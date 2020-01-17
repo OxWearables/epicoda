@@ -13,9 +13,6 @@ rescale_comp(data, comp_labels, comp_sum)
 
 \item{comp_sum}{The sum the compositional columns should have.}
 }
-\value{
-
-}
 \description{
 Return output data on correct scale
 }

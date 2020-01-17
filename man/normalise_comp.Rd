@@ -11,9 +11,6 @@ normalise_comp(data, comp_labels)
 
 \item{comp_labels}{The labels of the compositional columns.}
 }
-\value{
-
-}
 \description{
 Normalise input data
 }
