@@ -72,6 +72,19 @@ cox_outcome <- comp_model(
   comparison_part = NULL,
   part_1 = NULL
 )
+cox_outcome_no_sex <- comp_model(
+  type = "cox",
+  outcome = NULL,
+  covariates = c("agegroup"),
+  follow_up_time = "follow_up_time",
+  event = "event",
+  data = simdata,
+  comp_labels = comp_labels,
+  transformation_type = "ilr",
+  rounded_zeroes = TRUE,
+  comparison_part = NULL,
+  part_1 = NULL
+)
 summary(cox_outcome)
 p <- plot_transfers(from_part = "partD",
               to_part = "partA",
@@ -97,7 +110,7 @@ composition_list <- list("cm" = as.data.frame(
   "trial2" = data.frame("partA" = c(0.001), "partB" = 1.49, "partC" = 3.5, "partD" = 9, "partE" = 10))
 devtools::load_all()
 forest_plot_comp(composition_list = composition_list,
-         model = lm_outcome,
+         model = list(cox_outcome, cox_outcome_no_sex),
          dataset = simdata,
          fixed_values = NULL,
          transformation_type = "ilr",
@@ -111,7 +124,8 @@ forest_plot_comp(composition_list = composition_list,
          x_label = NULL,
          xllimit = NULL,
          xulimit = NULL,
-         plot_log = FALSE)
+         plot_log = FALSE
+         )
 
 
 
