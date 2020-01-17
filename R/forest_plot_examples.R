@@ -9,6 +9,7 @@
 #' @param xulimit Maximum value for x axis.
 #' @param text_settings An optional argument which should be an \code{fpTxtGp} object as specified in the \code{forestplot} package.
 #' @param plot_log If this is \code{TRUE}, the x-axis will be log-transformed.
+#' @param boxsize Sets the size of the boxes plotted on the forest plot to show predictions.
 #' @inheritParams predict_fit_and_ci
 #' @inheritDotParams forestplot::forestplot
 #' @return Forest plot illustrating prediction of the model at given compositions.
@@ -34,6 +35,7 @@ forest_plot_comp <-
            plot_log = FALSE,
            text_settings = NULL,
            pred_name = NULL,
+           boxsize = 0.05,
            ...) {
 
     if (!is.list(composition_list)) {
@@ -139,6 +141,7 @@ forest_plot_comp <-
         zero = vline_loc,
         clr.line = "black",
         txt_gp = text_settings,
+        boxsize = boxsize,
         ...
       )
     }
@@ -211,6 +214,7 @@ forest_plot_comp <-
       txt_gp = text_settings,
       legend = names(models_list),
       col = forestplot::fpColors(box = col_vec, line = col_vec),
+    boxsize = boxsize,
       ...
     )
     }
