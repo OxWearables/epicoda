@@ -228,10 +228,10 @@ rescale_comp <- function(data, comp_labels, comp_sum){
 #' Determine if range of vector is effectively zero.
 #'
 #' @param x Data for which to check
-zero_range <- function(x, tol = 0.001) {
+zero_range <- function(x, tol = 0.01) {
   if (length(x) == 1) return(TRUE)
-  x <- (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))/ mean(x, na.rm = TRUE)
-  isTRUE(all.equal(x[1], x[2], tolerance = tol))
+  y <- (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))/ median(x, na.rm = TRUE)
+  isTRUE(y<tol)
 }
 
 
@@ -244,7 +244,7 @@ rescale_det_limit <- function(data, comp_labels, det_limit){
   if (!(is.null(det_limit))){
     vec_of_sums <- apply(data[, comp_labels], 1, sum)
     if (!zero_range(vec_of_sums)){
-      message(paste("The range of sums of columns is ", max(vec_of_sums, na.rm = TRUE) - min(vec_of_sums, na.rm = TRUE), ". The median sum will be used to rescale the det_limit. Does this match the scale on which you specified the det_limit?"))
+      message(paste("The range of sums of columns is ", max(vec_of_sums, na.rm = TRUE) - min(vec_of_sums, na.rm = TRUE), ".\n The median sum will be used to rescale the det_limit. Does this match the scale on which you specified the det_limit?"))
     }
     rescale_fac <- stats::median(vec_of_sums, na.rm = TRUE)
     print(rescale_fac)
