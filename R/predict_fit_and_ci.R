@@ -81,11 +81,11 @@ predict_fit_and_ci <- function(model,
     )
   }
 
-  cm_transf_df <- transform_comp(cm, comp_labels,
+  cm_transf_df <- suppressMessages(transform_comp(cm, comp_labels,
                                  transformation_type = transformation_type,
                                  part_1 = part_1,
                                  comparison_part = comparison_part,
-                                 rounded_zeroes = FALSE)
+                                 rounded_zeroes = FALSE))
 
 
 
@@ -111,14 +111,14 @@ predict_fit_and_ci <- function(model,
     fixed_values <- cbind(fixed_values, cm)
   }
 
-  transf_fixed_vals <- transform_comp(
+  transf_fixed_vals <- suppressMessages(transform_comp(
     fixed_values[, colnames(fixed_values)[!(colnames(fixed_values) %in% transf_labels)]],
     comp_labels,
     transformation_type = transformation_type,
     part_1 = part_1,
     comparison_part = comparison_part,
     rounded_zeroes = FALSE
-  )
+  ))
 
 
   for (colname in colnames(fixed_values)){

@@ -130,11 +130,11 @@ plot_transfers <- function(from_part,
     )
   }
 
-  cm_transf_df <- transform_comp(cm, comp_labels,
+  cm_transf_df <- suppressMessages(transform_comp(cm, comp_labels,
                                  transformation_type = transformation_type,
                                  part_1 = part_1,
                                  comparison_part = comparison_part,
-                                 rounded_zeroes = FALSE)
+                                 rounded_zeroes = FALSE))
 
   cm_on_scale <- rescale_comp(cm, comp_labels = comp_labels, comp_sum = comp_sum)
 
@@ -178,14 +178,14 @@ plot_transfers <- function(from_part,
   new_data <- normalise_comp(data = new_data, comp_labels = comp_labels)
 
   new_data <-
-    transform_comp(
+    suppressMessages(transform_comp(
       new_data,
       comp_labels,
       transformation_type = transformation_type,
       part_1 = part_1,
       comparison_part = comparison_part,
       rounded_zeroes = FALSE
-    )
+    ))
 
 
   dNew <- predict_fit_and_ci(model = model,
