@@ -247,7 +247,6 @@ rescale_det_limit <- function(data, comp_labels, det_limit){
       message(paste("The range of sums of columns is ", max(vec_of_sums, na.rm = TRUE) - min(vec_of_sums, na.rm = TRUE), ".\n The median sum will be used to rescale the det_limit. Does this match the scale on which you specified the det_limit?"))
     }
     rescale_fac <- stats::median(vec_of_sums, na.rm = TRUE)
-    print(rescale_fac)
     det_limit_new <- det_limit/rescale_fac
   }
   if(is.null(det_limit)) {
