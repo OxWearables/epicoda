@@ -111,8 +111,8 @@ process_zeroes <- function(data, comp_labels, rounded_zeroes, det_limit = NULL){
   comp_data <- data[, c(comp_labels, "row_labels")]
   if (rounded_zeroes & is.null(det_limit)){
 
-    message("Did you mean to set rounded_zeroes to TRUE without setting a det_limit value? det_limit was imputed as the minimum value observed in the compositional
-         columns of data; if this is an unrealistic det_limit, the results may be unreliable.")
+    message("Did you mean to set rounded_zeroes to TRUE without setting a det_limit value? \n det_limit was imputed as the minimum value observed in the compositional
+         columns of data; \n if this is an unrealistic det_limit, the results may be unreliable.")
     det_limit <- min(comp_data[comp_data[, comp_labels] >0 , comp_labels], na.rm = TRUE)
   }
 
