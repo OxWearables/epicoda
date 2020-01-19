@@ -24,7 +24,7 @@ devtools::load_all()
 # A basic analysis
 ## Getting started with compositional data 
 ### Loading simulated data
-We will start by loading a (simulated) compositional dataset, which is an object in the package. 
+We start by loading a (simulated) compositional dataset, which is an object in the package. 
 ```{r}
 head(simdata)
 ```
@@ -40,7 +40,7 @@ head(apply(simdata[, c("partA", "partB", "partC", "partD", "partE")], 1, sum))
 ```
 In this case, the sum is 24:  these data are a simulated version of a time use dataset i.e. the five columns are different behaviours, which together make up the whole day.  
 
-Note that this property isn't necesssary for the data to be treated as compositional data: the only requirement is that it is the relative, not the absolute, information which is relevant to the problem being considered.
+Note that this property isn't necesssary for the data to be treated as compositional data: the only requirement is that it is the relative, not the absolute, information which is relevant to the problem being considered. For example, vote counts in an election for different parties in different constituencies can be treated as compositional data: although the overall number of votes cast might differ between constituencies, it is the share of the vote going to each party, and not the total number of votes going to that party in a given constitutency, that is relevant. 
 
 In other words, we do not lose relevant information when we just consider the *closure*, written: $\mathcal{C}(part_{1}, part_{2}, ..., part_{D})$ and defined as: 
 \begin{equation}
@@ -48,7 +48,7 @@ In other words, we do not lose relevant information when we just consider the *c
 \end{equation}
 
 ### Preparing for analysis
-From the above, it is clear we will want to use the compositional columns frequently together. So we can record their labels here, so we don't need to repeatedly type them: 
+From the above, it is clear we will want to use the compositional columns together frequently. So we can record their labels here, so we don't need to repeatedly type them: 
 ```{r}
 comp_labels <- c("partA", "partB", "partC", "partD", "partE")
 ```
@@ -63,9 +63,9 @@ simdata$agegroup <- as.factor(simdata$agegroup)
 ## Exploratory data analysis
 
 ### The compositional mean
-The compositional mean is a frequently used summary statistic for compositional data [@Filzmoser2018]. Like the standard (multivariate) mean it is a measure of location, or central tendency. Unlike the standard mean, it interacts in an appropriate way with compositional data. 
+The compositional mean is a frequently-used summary statistic for compositional data [@Filzmoser2018]. Like the standard (multivariate) mean it is a measure of location, or central tendency. Unlike the standard mean, it interacts in an appropriate way with compositional data. 
 
-To calculate the compositional mean using `epicoda`, we run: 
+To calculate the compositional mean of columns `"partA", "partB", "partC", "partD", "partE"` using `epicoda`, we run: 
 ```{r}
 comp_mean(data = simdata, # this is the dataset
           comp_labels = comp_labels # this is the labels of the compositional columns, 
@@ -78,9 +78,13 @@ We've also got a message about zeroes. Compositional data analysis can't automat
 
 * They can be dropped (this is the right option if they're so called 'true zeroes', and not related to a limit in the precision with which we can measure). To drop them, set `rounded_zeroes = FALSE`. 
 
-* They can be imputed. This is the right option if they're so-called 'rounded zeroes' i.e. they're related to a limit to the precision with which we can measure (for example, with activity data, it might be that if we recorded data for long enough, we would eventually see some vigorous activity, but our measurement period wasn't long enough. Or it might be that our measurement device can't record values lower than a certain level). To impute them, we need to specify the minimum value detectable in the data. This can be specified using the `det_limit` argument, and it should be specified with the same scale as the compositional columns in the input data (if ) The default in the function, if neither `rounded_zeroes` or `det_limit` is specified, is to impute them with the detection limit (`det_limit`) set as the minimum non-zero value observed in the data. For most data, this default should not cause problems. 
+* They can be imputed. This is the right option if they're so-called 'rounded zeroes' i.e. they're related to a limit to the precision with which we can measure. For example, with activity data, it might be that if we recorded data for long enough, we would eventually see some vigorous activity, but our measurement period wasn't long enough. It might also be that our measurement device can't record values lower than a certain level.
 
-So we can now find the mean again, this time imputing the zeroes with a specified detection limit and specifying the units.  In the simulated data, the shortest period of a behaviour we could detect was $0.0012\ hr/day$ (this is due to the length of an epoch for the accelerometer used here). 
+To impute the zeroes, as per the second option, we need to specify the minimum value detectable in the data. This can be specified using the `det_limit` argument, and it should be specified with the same scale as the compositional columns in the input data. Note that if the input data scale and the output scale, `units` argument, are different, it should match *the input data scale* and not the `units` argument.
+
+The default in the function, if neither `rounded_zeroes` or `det_limit` is specified, is to impute them with the detection limit (`det_limit`) set as the minimum non-zero value observed in the data. For most data, this default should not cause problems. 
+
+So we can now find the mean again, this time imputing the zeroes with a specified detection limit and specifying the units.  In the simulated data, the shortest period of a behaviour we could detect was $0.0012\ hr/day$ (this was due to the length of an epoch for the accelerometer used to measure the data on which the simulated data is based). 
 
 ```{r}
 comp_mean(data = simdata, # this is the dataset
@@ -95,9 +99,9 @@ comp_mean(data = simdata, # this is the dataset
           # specified = c("my_units_name", sum of a composition in these units)
           )
 ```
-The 'No iterations to converge' message relates to imputing zeroes, and we don't need to worry about it.
+The 'No iterations to converge' message relates to the mechanics of imputing zeroes, and we don't need to worry about it.
 
-Note that many of the other functions will output messages about imputation of zeroes, and can have `rounded_zeroes` and `det_limit` arguments set. For all of them, it works the same as for `comp_mean`. Also similarly, the default is usually fine, so in the remainder of this vignette they are left at the default. 
+Note that many of the other functions will output messages about imputation of zeroes, and can have `rounded_zeroes` and `det_limit` arguments set. For all of them, it works the same as for `comp_mean`. As in this case, the default is usually fine, so in the remainder of this vignette they are left at the default. 
 
 Note that while the compositional mean is a fairly clear compositional equivalent to the mean for non-compositional data, other standard descriptive statistics (such as the variance), do not have straightforward compositional equivalents for all purposes for which they are used (there may be several alternatives, depending on the purpose of the analysis) [@Filzmoser2018]. 
 
@@ -109,7 +113,8 @@ Frequently, data has more than three compositional parts (as here). There are tw
 simdata$combined_parts <- simdata$partA + simdata$partB + simdata$partC
 plot_density_ternary(data = simdata, 
                      parts_to_plot = c("combined_parts", "partD", "partE"),
-                     n_bins = 10 # This argument specifies we want to use 10 bins (i.e. 10% of data lies between each pair of contours on the plot.) Default is 5. 
+                     n_bins = 10 # This argument specifies we want to use 10 bins 
+                     # (i.e. 10% of data lies between each pair of contours on the plot.) Default is 5. 
                       )
 
 ```
@@ -118,7 +123,6 @@ Another frequent use case is considering this plot with the density separated by
 ```{r}
 plot_density_ternary(data = simdata, 
                      parts_to_plot = c("combined_parts", "partD", "partE"),
-                     n_bins = 10, # This argument specifies we want to use 10 bins (i.e. 10% of data lies between each pair of contours on the plot.) Default is 5. 
                      groups = "sex")
 
 ```
@@ -128,7 +132,6 @@ The `mark_points` argument can be used to annotate particular points using cross
 points_to_mark <- as.data.frame(comp_mean(data = simdata, comp_labels = c("combined_parts", "partD", "partE")))
 plot_density_ternary(data = simdata, 
                      parts_to_plot = c("combined_parts", "partD", "partE"),
-                     n_bins = 10, 
                      mark_points = points_to_mark
                       )                              
 ```
@@ -145,7 +148,7 @@ lm_outcome <- comp_model(type = "linear",
          data = simdata,
          comp_labels = comp_labels)
 ```
-Logistic models can be produced in exactly the same way by setting `type = "logistic"` and using an appropriate binary outcome variable. Cox models can be produced similarly by setting `type = "cox"` and either setting `outcome` as an `Surv` object from the package `survival` or setting the `follow_up_time` and `event` arguments. For examples, see ['Regression Modelling: Further examples'](#regression-modelling:-further-examples).
+Logistic models can be produced in exactly the same way by setting `type = "logistic"` and using an appropriate binary outcome variable. Cox models can be produced similarly by setting `type = "cox"` and either setting `outcome` as a `Surv` object from the package `survival` or setting the `follow_up_time` and `event` arguments. For examples, see ['Regression Modelling: Further examples'](#regression-modelling:-further-examples).
 
 The model object is a standard `lm` object, and we can inspect it in the usual way:
 ```{r}
@@ -153,10 +156,13 @@ plot(lm_outcome)
 summary(lm_outcome)
 
 ```
-So, the model diagnostics all looks fine (and can be interpreted as usual). However, the summary is hard to interpret because the coordinates do not relate in a straightforward way to the original composition. 
+
+The model diagnostics can be interpreted as usual, and in this case all looks fine. However, the summary is hard to interpret because the coordinates do not relate in a straightforward way to the original composition. 
 
 ### Presenting the results: tabulate pivot-coordinate coefficients
-A common way to present the results is to present coefficients as usual for covariates, and then produce as many models as there are compositional variables. From each of these models, the coefficient for the first ilr pivot coordinate is taken. These ilr pivot coordinate coefficients can be intepreted in terms of the transfer between the particular compositional part and all other parts proportionally. Note, however, that as the coefficients come from different models they do not parametrise a single model. Note also that arguments which would be needed for `comp_model` must be given to this function too, as it regenerates the regression models. 
+A common way to present the results is to present coefficients as usual for covariates, and then produce as many models as there are compositional variables. From each of these models, the coefficient for the first ilr pivot coordinate is taken. These ilr pivot coordinate coefficients can be intepreted in terms of the transfer between the particular compositional part and all other parts proportionally. `tab_coefs` is a function which wraps generating one model per compositional variable and outputting a table of model coefficients. 
+
+Note that as these coefficients come from different models they do not parametrise a single model. Note also that arguments which would be needed for `comp_model` must be given to this function too, as it regenerates the regression models. 
 ```{r}
 tab_coefs(scale_type = "lp", # This argument can be "lp" or "exp" and determines whether coefficients are presented on the scale of the linear predictors ("lp") or are exponentiated ("exp"). # Exponentiation gives the Odds Ratio for logistic regression models and the Hazard Ratio for Cox regression models. 
           level = 0.95, 
@@ -172,7 +178,7 @@ tab_coefs(scale_type = "lp", # This argument can be "lp" or "exp" and determines
 The function `tab_covariate_coefs` is called within this function, and can be used to extract the coefficients of the covariates only from a model. 
 
 ### Presenting the results: pairwise balances of compositional parts
-One way to get round the challenges of interpreting the model coefficients for  There are various options- we can look at predictions as we hold most of the composition fixed and vary the balance between the final two parts. The `plot_transfers` function can do this (for linear, logistic and Cox regression models): 
+One way to get round the challenges of interpreting the model coefficients for these models is to look at model-predicted outcomes for different input variable values (equivalent to plotting the regression line in a simple linear regression). There are a couple of options- we can look at predictions as we hold most of the composition fixed and vary the balance between the final two parts. The `plot_transfers` function can do this (for linear, logistic and Cox regression models): 
 ```{r}
 plot_transfers(from_part = "partD",
                to_part = "partA",
@@ -185,7 +191,9 @@ plot_transfers(from_part = "partD",
                terms = FALSE)
 ```
 
-There's one problem with this: the predictions and confidence intervals on this plot capture the uncertainty in the predictions due to all variables in the model- including the covariates. To avoid this, we can look at the predicted difference in the outcome due to just the compositional parts. This is done by setting `terms = TRUE` (in fact, the default) in the `plot_transfers` function. 
+There's one problem with this: the predictions and confidence intervals on this plot capture the predictions and uncertainty on them due to all variables in the model, including the covariates (set at some particular fixed values, which can be specified as an optional argument to the function).
+
+To avoid this, we can look at the predicted difference in the outcome due to just the compositional parts. This is done by setting `terms = TRUE` (in fact, the default) in the `plot_transfers` function. 
 
 ```{r}
 plot_transfers(from_part = "partD",
@@ -194,11 +202,9 @@ plot_transfers(from_part = "partD",
                dataset = simdata,
                comp_labels = comp_labels,
                y_label = "Model-predicted difference in outcome",
-               units = "hr/day",
-               rounded_zeroes = TRUE,
-               det_limit = 0.0012)
+               units = "hr/day")
 ```
-Exactly as expected, this shows exactly the same shape, but the confidence intervals are narrower (as this only captures uncertainty due to compositional parts), and the y-axis gives the difference in outcome. There is much more information on the calculation of confidence intervals in the [supplementary vignette](derivation_of_CIs_used.Rmd). 
+Exactly as expected, this shows exactly the same shape, but the confidence intervals are narrower (as this only captures uncertainty due to compositional parts), and the y-axis gives the difference in outcome, rather than predictions of particular values of the outcome variable at particular values of all exposure variables. There is much more information on how confidence intervals for this plot are calculated in the [supplementary vignette](vignettes/derivation_of_CIs_used.Rmd). 
 
 ### Presenting the results: predictions at particular compositions
 Another set of predictions that might be of interest is predictions at particular compositions. These can be examined by plotting these in a 'forest plot' style plot. This allows assessment of the model-predicted associations with much more complex substitutions of time. 
@@ -210,7 +216,8 @@ df <- as.data.frame(
   comp_mean(
     data = simdata,
     comp_labels = comp_labels, 
-    units = "hr/day" # Note whatever the units are here is the units you should specify the changes in in the next two lines. 
+    units = "hr/day" # Note whatever the units are here is the units 
+    # you should specify the changes in in the next two lines. 
   )
 )
 new_comp <-
@@ -240,6 +247,7 @@ forest_plot_comp(composition_list = list_for_plot,
                  dataset = simdata, 
                  comp_labels = comp_labels)
 ```
+
 The `forest_plot_comp` function can also be used to compare models. To do this, leave `model` at its default `NULL` value, and set `models_list` as a named list of models. For example, to compare `lm_outcome` with a model adjusted for `age_group` only and an unadjusted model: 
 ```{r}
 lm_outcome_unadjusted <- comp_model(type = "linear",
@@ -252,7 +260,9 @@ lm_outcome_age_group_only <- lm_outcome <- comp_model(type = "linear",
          data = simdata,
          comp_labels = comp_labels)
 forest_plot_comp(composition_list = list_for_plot, 
-                 models_list = list("Unadjusted" = lm_outcome_unadjusted, "Age-adjusted" = lm_outcome_age_group_only, "Age- and sex- adjusted" = lm_outcome), 
+                 models_list = list("Unadjusted" = lm_outcome_unadjusted, 
+                                    "Age-adjusted" = lm_outcome_age_group_only,
+                                    "Age- and sex- adjusted" = lm_outcome), 
                  dataset = simdata, 
                  comp_labels = comp_labels)
 ```
@@ -262,7 +272,7 @@ forest_plot_comp(composition_list = list_for_plot,
 ### Mechanics of Compositional Data Analysis: Log-ratio transformations
 The functions above wrap all the 'log-ratio mechanics' of using a Compositional Data Analysis approach.
 
-There are several different kinds of transformations which can be used in order to work with compositional data (alr, ilr, clr). These transform the variables into coordinates which are capable of representing all the variation in the data. Different transformations have different pros/cons, and alr and clr can only be used for certain applications.  All the functions default to ilr (isometric log ratio) transformation using so-called 'pivot coordinates', which is fairly standard in the physical activity literature (and is appropriate for the applications which the other transformations are used for). If you want to learn more, see [@Filzmoser2018][@Pawlowsky-Glahn2011].
+There are several different kinds of transformations which can be used in order to work with compositional data (alr, ilr, clr). These transform the variables into coordinates which are capable of representing all the variation in the data. Different transformations have different pros/cons, and alr and clr can only be used for certain applications. All the functions default to ilr (isometric log ratio) transformation using so-called 'pivot coordinates', which is fairly standard in the physical activity literature (and is appropriate for the applications which the other transformations are used for). If you want to learn more, see [@Filzmoser2018][@Pawlowsky-Glahn2011].
 
 The purpose of this package is not to provide this functionality, which is implemented in other R packages, such as `compositions` and `robCompositions`. (The main aim of this package is shown above, in the functions to perform standard epidemiological analyses). This functionality is reimplemented here simply to ensure that future changes to the defaults in those packages do not affect this package.
 ```{r}
@@ -276,15 +286,15 @@ print(head(data_ilr_impute_zeroes))
 There are also a few other things we can do with this function, like specifying a given 'first part' (which is useful when it comes to reporting, and is used therefore in `tab_coefs`). To learn more, run `?transform_comp`. 
 
 ### Making attractive plots 
-All the plotting functions can have settings changed to make more visually attractive plots (e.g. changing text size, line size, text colour). `plot_transfers` and `simplex_plotting` are based on `ggplot2` and its extension `ggtern`.
+All the plotting functions can have settings changed to make more visually attractive plots (e.g. changing text size, line size, text colour). `plot_transfers` and `simplex_plotting` are based on `ggplot2` and its extension `ggtern`. 
 * To specify non-data aspects of the plot (e.g. line, axis and text size and colours), set the optional `theme` argument. Note that you should have the `ggplot2` package loaded in order to do this.
-* For `plot_transfers` argument, to specify characteristics of the plotted prediction line, set the `point_specification` argument as a `geom_point` object.
-* To specify colours of the error bars, set the `error_bar_colour` argument as the name of a colour.
-* If the line looks 'gappy' (likely at the ends), increase `granularity` (and if it takes too long to plot, decrease `granularity`). 
+* For `plot_transfers`, to specify characteristics of the plotted prediction line, set the `point_specification` argument as a `geom_point` object.
+* For `plot_transfers`, to specify colours of the error bars, set the `error_bar_colour` argument as the name of a colour.
+* For `plot_transfers`, if the line looks 'gappy' (likely at the ends), increase `granularity` (and if it takes too long to plot, decrease `granularity`). 
 
 For an extreme example of implementing some of this: 
 ```{r}
-library(ggplot2)
+library(ggplot2) # it's easier to specify e.g. themes if ggplot2 is loaded. 
 plot_transfers(from_part = "partD",
                to_part = "partA",
                model = lm_outcome ,
@@ -302,9 +312,9 @@ plot_transfers(from_part = "partD",
                axis.line = element_line(colour = "blue", size = 3)))
 ```
 
-Slightly differently, `forest_plot_comp` is based on the `forestplot` package, so takes arguments specifying the plot in the same way as that function. Again, to specify these the `forestplot` package should itself be loaded. There are several arguments which set particular aspects of the forest plot. In addition, any argument that the basic `forestplot` function can take, which isn't already set, can be set as an argument to `forest_plot_comp`.
+Slightly differently, `forest_plot_comp` is based on the `forestplot` package, so takes arguments specifying the plot in the same way as that function. There are several arguments which set particular aspects of the forest plot. In addition, any argument that the basic `forestplot` function can take, which isn't already set, can be set as an argument to `forest_plot_comp`.
 ```{r}
-library(forestplot)
+library(forestplot) # it's easier to specify options such as fpColors if the forestplot package is loaded. 
 forest_plot_comp(composition_list = list_for_plot, 
                  model = lm_outcome, 
                  dataset = simdata, 
@@ -316,8 +326,11 @@ forest_plot_comp(composition_list = list_for_plot,
 
 ```
 
+For additional information on how 
 ### Regression modelling: further examples
+To be filled out with example Cox and logistic models. 
 
 ### Predicting the fit at different compositions: getting the numbers out 
+To be filled with a use of `predict_fit_and_ci`. 
 
 # References
