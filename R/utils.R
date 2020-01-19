@@ -228,7 +228,7 @@ rescale_comp <- function(data, comp_labels, comp_sum){
 #' Determine if range of vector is effectively zero.
 #'
 #' @param x Data for which to check
-zero_range <- function(x, tol = .Machine$double.eps ^ 0.5) {
+zero_range <- function(x, tol = 0.001) {
   if (length(x) == 1) return(TRUE)
   x <- (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))/ mean(x, na.rm = TRUE)
   isTRUE(all.equal(x[1], x[2], tolerance = tol))
