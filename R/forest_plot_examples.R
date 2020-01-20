@@ -36,6 +36,7 @@ forest_plot_comp <-
            text_settings = NULL,
            pred_name = NULL,
            boxsize = 0.05,
+           cm = NULL,
            ...) {
 
     if (!is.list(composition_list)) {
@@ -100,7 +101,7 @@ forest_plot_comp <-
         specified_units = specified_units,
         rounded_zeroes = rounded_zeroes,
         det_limit = det_limit,
-        terms = terms
+        terms = terms, cm = cm
       )
 
 
@@ -169,7 +170,7 @@ forest_plot_comp <-
         specified_units = specified_units,
         rounded_zeroes = rounded_zeroes,
         det_limit = det_limit,
-        terms = terms
+        terms = terms, cm = cm
       )
       coef <- cbind(coef, dPred$fit)
       low <- cbind(low, dPred$lower_CI)
