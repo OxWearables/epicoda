@@ -326,7 +326,8 @@ forest_plot_comp(composition_list = list_for_plot,
 
 ```
 
-For additional information on how 
+For additional information on how to customise the functions, see the manual by running e.g. `?plot_transfers`. 
+
 ### Regression modelling: further examples
 To be filled out with example Cox and logistic models. 
 
