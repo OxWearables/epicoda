@@ -214,7 +214,7 @@ forest_plot_comp <-
       zero = vline_loc,
       txt_gp = text_settings,
       legend = names(models_list),
-      col = forestplot::fpColors(box = col_vec, line = col_vec),
+      col = forestplot::fpColors(box = col_vec, line = col_vec, zero = "black"),
     boxsize = boxsize,
       ...
     )
