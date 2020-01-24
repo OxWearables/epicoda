@@ -5,8 +5,10 @@
 #' @param from_part Should be an element of \code{comp_labels}.
 #' @param to_part Should be an element of \code{comp_labels}. Should have compositional mean less than \code{from_part}.
 #' @inheritParams predict_fit_and_ci
-#' @param yllimit Upper limit to show on y-axis on plot.
-#' @param yulimit Lower limit to show on y-axis on plot.
+#' @param yllimit Lower limit to show on y-axis on plot.
+#' @param yulimit Upper limit to show on y-axis on plot.
+#' @param xllimit Lower limit to show on x-axis on plot. Should be in same scale as \code{units}.
+#' @param xulimit Upper limit to show on x-axis on plot. Should be in same scale as \code{units}.
 #' @param y_label Label for y-axis on plot.
 #' @param plot_log If this is \code{TRUE}, the y-axis will be log-transformed.
 #' @param lower_quantile See \code{vary_time_of_interest} and \code{make_new_data}
@@ -233,7 +235,7 @@ plot_transfers <- function(from_part,
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
                         mapping = ggplot2::aes_(x = dNew$axis_vals, y = dNew$fit)) +
-        ggplot2::ylim(yllimit, yulimit) +
+        ggplot2::ylim(yllimit, yulimit) +ggplot2::xlim(xllimit, xulimit) +
         ggplot2::geom_errorbar(ggplot2::aes_(
           x = dNew$axis_vals,
           ymin = dNew$lower_CI,
@@ -259,7 +261,7 @@ plot_transfers <- function(from_part,
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
                         mapping = ggplot2::aes_(x = dNew$axis_vals, y = dNew$fit)) +
-        ggplot2::ylim(yllimit, yulimit) +
+        ggplot2::ylim(yllimit, yulimit) +ggplot2::xlim(xllimit, xulimit) +
         ggplot2::geom_errorbar(ggplot2::aes_(
           x = dNew$axis_vals,
           ymin = dNew$lower_CI,
@@ -289,7 +291,7 @@ plot_transfers <- function(from_part,
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
                         mapping = ggplot2::aes_(x = dNew$axis_vals, y = dNew$fit)) +
-        ggplot2::ylim(yllimit, yulimit) +
+        ggplot2::ylim(yllimit, yulimit) +ggplot2::xlim(xllimit, xulimit) +
         ggplot2::geom_errorbar(ggplot2::aes_(
           x = dNew$axis_vals,
           ymin = dNew$lower_CI,
@@ -315,7 +317,7 @@ plot_transfers <- function(from_part,
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
                         mapping = ggplot2::aes_(x = dNew$axis_vals, y = dNew$fit)) +
-        ggplot2::ylim(yllimit, yulimit) +
+        ggplot2::ylim(yllimit, yulimit) +ggplot2::xlim(xllimit, xulimit) +
         ggplot2::geom_errorbar(ggplot2::aes_(
           x = dNew$axis_vals,
           ymin = dNew$lower_CI,
@@ -346,7 +348,7 @@ plot_transfers <- function(from_part,
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
                         mapping = ggplot2::aes_(x = dNew$axis_vals, y = dNew$fit)) +
-        ggplot2::ylim(yllimit, yulimit) +
+        ggplot2::ylim(yllimit, yulimit) +ggplot2::xlim(xllimit, xulimit) +
         ggplot2::geom_errorbar(ggplot2::aes_(
           x = dNew$axis_vals,
           ymin = dNew$lower_CI,
@@ -371,7 +373,7 @@ plot_transfers <- function(from_part,
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
                         mapping = ggplot2::aes_(x = dNew$axis_vals, y = dNew$fit)) +
-        ggplot2::ylim(yllimit, yulimit) +
+        ggplot2::ylim(yllimit, yulimit) +ggplot2::xlim(xllimit, xulimit) +
         ggplot2::geom_errorbar(ggplot2::aes_(
           x = dNew$axis_vals,
           ymin = dNew$lower_CI,
