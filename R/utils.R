@@ -113,9 +113,8 @@ process_zeroes <- function(data, comp_labels, rounded_zeroes, det_limit = NULL){
 
     message("Did you mean to set rounded_zeroes to TRUE without setting a det_limit value? \n det_limit was imputed as the minimum value observed in the compositional
          columns of data; \n if this is an unrealistic det_limit, the results may be unreliable.")
-    det_limit <- min(comp_data[comp_data[, comp_labels] >0 , comp_labels], na.rm = TRUE)
+    det_limit <- min(comp_data[apply(comp_data[, comp_labels], 1, function(r) any(r == 0)) , comp_labels], na.rm = TRUE)
   }
-
   if (any(comp_data ==0) & rounded_zeroes){
     message(paste("Note that zeroes were imputed with detection limit \n", det_limit, " (on the unitless scale) using zCompositions::lrEM"))
     comp_data[, comp_labels] <- zCompositions::lrEM(comp_data[, comp_labels], label = 0, dl = matrix(data = rep(det_limit,length(comp_data[,1])*ncol(comp_data[, comp_labels])),

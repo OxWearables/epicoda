@@ -31,7 +31,6 @@ transform_comp <- function(data, comp_labels, transformation_type = "ilr", round
   det_limit <- rescale_det_limit(data = data, comp_labels = comp_labels, det_limit  = det_limit)
   data <- normalise_comp(data, comp_labels = comp_labels)
 
-  print(head(data[, comp_labels]))
   dTransformationReady <- data
   dTransformationReady$row_labels_master <- 1:nrow(dTransformationReady)
 
