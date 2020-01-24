@@ -221,6 +221,12 @@ plot_transfers <- function(from_part,
   if (is.null(yulimit)) {
     yulimit <- max(dNew$upper_CI)
   }
+  if (is.null(xllimit)) {
+    yllimit <- min(dNew$axis_vals)
+  }
+  if (is.null(xulimit)) {
+    yulimit <- max(dNew$axis_vals)
+  }
 
   dNew$lower_CI <-
     pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
