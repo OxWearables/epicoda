@@ -81,7 +81,7 @@ plot_density_ternary <-
                            color = data[, groups]
                          ))
         for (group in levels(data[, groups])) {
-          local_data <- data[data[, groups] == group, ]
+          local_data <- data[data[, groups] == group, c(parts_to_plot, groups)]
           plot <-
             plot + ggtern::stat_density_tern(
               data = local_data,
@@ -114,7 +114,7 @@ plot_density_ternary <-
         plot <-
           ggtern::ggtern(data = data[, parts_to_plot], ggplot2::aes_(x = data[, name1], y = data[, name2], z = data[, name3])) +
           ggtern::stat_density_tern(
-            data = data,
+            data = data[, parts_to_plot],
             geom = 'polygon',
             bins = n_bins,
             weight = 3,
@@ -145,7 +145,7 @@ plot_density_ternary <-
                            color = data[, groups]
                          ))
         for (group in levels(data[, groups])) {
-          local_data <- data[data[, groups] == group, ]
+          local_data <- data[data[, groups] == group, c(parts_to_plot, groups)]
           plot <-
             plot + ggtern::stat_density_tern(
               data = local_data,
