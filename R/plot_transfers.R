@@ -222,10 +222,10 @@ plot_transfers <- function(from_part,
     yulimit <- max(dNew$upper_CI)
   }
   if (is.null(xllimit)) {
-    yllimit <- min(dNew$axis_vals)
+    xllimit <- min(dNew$axis_vals)
   }
   if (is.null(xulimit)) {
-    yulimit <- max(dNew$axis_vals)
+    xulimit <- max(dNew$axis_vals)
   }
 
   dNew$lower_CI <-
