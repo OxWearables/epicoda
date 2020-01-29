@@ -65,11 +65,11 @@ plot_density_ternary <-
           theme +
           ggtern::theme_showarrows() +
           ggtern::Tlab(label = "",
-                       labelarrow = paste(name1, "(%)", "\n")) +
+                       labelarrow = paste(name2, "(%)", "\n")) +
           ggtern::Rlab(label = "",
                        labelarrow = paste("\n", name3, "(%)")) +
           ggtern::Llab(label = "",
-                       labelarrow = paste(name2, "(%)", "\n"))
+                       labelarrow = paste(name1, "(%)", "\n"))
       }
       else{
         plot <-
@@ -101,11 +101,11 @@ plot_density_ternary <-
           plot + theme +
           ggtern::theme_showarrows() +
           ggtern::Tlab(label = "",
-                       labelarrow = paste(name1, "(%)", "\n")) +
+                       labelarrow = paste(name2, "(%)", "\n")) +
           ggtern::Rlab(label = "",
                        labelarrow = paste("\n", name3, "(%)")) +
           ggtern::Llab(label = "",
-                       labelarrow = paste(name2, "(%)", "\n"))
+                       labelarrow = paste(name1, "(%)", "\n"))
       }
 
     }
@@ -124,11 +124,11 @@ plot_density_ternary <-
           theme +
           ggtern::theme_showarrows() +
           ggtern::Tlab(label = "",
-                       labelarrow = paste(name1, "(%)", "\n")) +
+                       labelarrow = paste(name2, "(%)", "\n")) +
           ggtern::Rlab(label = "",
                        labelarrow = paste("\n", name3, "(%)")) +
           ggtern::Llab(label = "",
-                       labelarrow = paste(name2, "(%)", "\n")) +
+                       labelarrow = paste(name1, "(%)", "\n")) +
           ggtern::geom_crosshair_tern(
             data = mark_points,
             mapping = ggplot2::aes_(x = mark_points[, name1], y = mark_points[,  name2], z = mark_points[, name3])
@@ -172,11 +172,11 @@ plot_density_ternary <-
             )
           ) + ggtern::theme_showarrows() +
           ggtern::Tlab(label = "",
-                       labelarrow = paste(name1, "(%)", "\n")) +
+                       labelarrow = paste(name2, "(%)", "\n")) +
           ggtern::Rlab(label = "",
                        labelarrow = paste("\n", name3, "(%)")) +
           ggtern::Llab(label = "",
-                       labelarrow = paste(name2, "(%)", "\n"))
+                       labelarrow = paste(name1, "(%)", "\n"))
 
       }
 
