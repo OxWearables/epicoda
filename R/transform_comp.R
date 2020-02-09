@@ -36,6 +36,15 @@ transform_comp <- function(data, comp_labels, transformation_type = "ilr", round
 
   dTransformationReady <- process_zeroes(dTransformationReady, comp_labels, rounded_zeroes, det_limit)
 
+
+  # Rescale output
+  vec_of_sums <- apply(data[, comp_labels], 1, sum)
+  if (!zero_range(vec_of_sums)){
+    message(paste("The range of sums of columns is ", max(vec_of_sums, na.rm = TRUE) - min(vec_of_sums, na.rm = TRUE), ".\n The median sum will be used to rescale the det_limit. Does this match the scale on which you specified the det_limit?"))
+  }
+  rescale_fac <- stats::median(vec_of_sums, na.rm = TRUE)
+  dOutput <- rescale_comp(dTransformationReady, comp_labels, rescale_fac)
+
   if (transformation_type == "ilr"){
     if (!is.null(part_1)){
       comp_labels <- alter_order_comp_labels(comp_labels, part_1)
@@ -62,7 +71,7 @@ transform_comp <- function(data, comp_labels, transformation_type = "ilr", round
     colnames(dTransformed) <- transf_labels
     dTransformed$row_labels_master <- dTransformationReady
   }
-  dOut <- merge(dTransformationReady, dTransformed, by = "row_labels_master")
+  dOut <- merge(dOutput, dTransformed[, colnames(dTransformed)[!(colnames(dTransformed) %in% comp_labels)]], by = "row_labels_master")
   dOut <- dOut[, colnames(dOut)[!(colnames(dOut) %in% c("row_labels_master", "row_labels"))]]
 
   return(dOut)
