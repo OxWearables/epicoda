@@ -119,8 +119,7 @@ process_zeroes <- function(data, comp_labels, rounded_zeroes, det_limit = NULL){
     message(paste("Note that zeroes were imputed with detection limit \n", det_limit, " (on the unitless scale) using zCompositions::lrEM"))
     comp_data_nonans <- comp_data[complete.cases(comp_data[, comp_labels]), ]
     comp_data_nans <- comp_data[!complete.cases(comp_data[, comp_labels]), ]
-    print(head(comp_data_nans))
-    print(head(comp_data_nonans))
+
     comp_data_nonans[, comp_labels] <- zCompositions::lrEM(comp_data_nonans[, comp_labels], label = 0, dl = matrix(data = rep(det_limit,length(comp_data_nonans[,1])*ncol(comp_data_nonans[, comp_labels])),
                                                                                       nrow = length(comp_data_nonans[,1]),
                                                                                       byrow = T), max.iter = 50)
