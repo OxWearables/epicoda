@@ -5,7 +5,7 @@ comp_labels <- c("partA", "partB", "partC", "partD", "partE")
 head(normalise_comp(simdata, comp_labels))
 
 
-
+small change
 simdata$sex <- as.factor(simdata$sex)
 simdata$agegroup <- as.factor(simdata$agegroup)
 
@@ -45,8 +45,8 @@ tab_coefs( scale_type = "exp", level = 0.95, type = "cox",
            rounded_zeroes = TRUE)
 
 summary(log_outcome)
-epicoda::plot_transfers(from_part = "partA",
-               to_part = "partD",
+epicoda::plot_transfers(from_part = "partD",
+               to_part = "partB",
                model = lm_outcome ,
                dataset = data_ilr_impute_zeroes,
                transformation_type = "ilr",
@@ -54,7 +54,7 @@ epicoda::plot_transfers(from_part = "partA",
                y_label = NULL,
                units = "hr/day",
                rounded_zeroes = TRUE,
-               terms = TRUE,  plot_log = FALSE, granularity = 100)
+               terms = TRUE,  plot_log = FALSE, granularity = 10000)
 
 head(data_ilr_impute_zeroes)
 epicoda::plot_transfers
