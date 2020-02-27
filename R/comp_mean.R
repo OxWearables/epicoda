@@ -27,7 +27,6 @@
 comp_mean <- function(data, comp_labels, rounded_zeroes = TRUE, det_limit = NULL, units = "unitless", specified_units = NULL){
   det_limit <- rescale_det_limit(data= data, comp_labels = comp_labels, det_limit = det_limit)
   data <- normalise_comp(data, comp_labels)
-  print(det_limit)
   compos_mean <- data.frame(matrix(nrow = 1, ncol = 0))
 
   comp_sum <- as.numeric(process_units(units, specified_units)[2])
