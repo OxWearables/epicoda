@@ -8,7 +8,7 @@ Maintainer: <rosemary.walmsley@gtc.ox.ac.uk>
 Description: Provides functions to support epidemiological analyses using compositional 
     exposure variables, including preparation of ilr-pivot coordinates and plotting 
     graphs of model predictions for linear, logistic and Cox regression models.  
-License: What license is it under?
+License: BSD_2_clause
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.6.1)
