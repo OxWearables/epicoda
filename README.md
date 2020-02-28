@@ -1,7 +1,10 @@
 # epicoda
-Supports epidemiological analyses using compositional exposure variables
 
-To install and run functions from epicoda, download it as a subfolder of the R project/ folder where you will use it, and run: 
+*This is the in-development version. Please share comments, suggestions and errors/bugs found, either directly on the github page or by emailing rosemary.walmsley@gtc.ox.ac.uk*. 
+
+This package is designed to support epidemiological analyses using compositional exposure variables. It provides wrappers for common epidemiological use cases. Simulated data, alongside a vignette, illustrates the steps to carrying out an epidemiological analysis with a Compositional Data Analysis approach to the exposure. 
+
+To install and run functions from epicoda, download it as a subfolder of the R project/folder where you will use it, and run in your R script: 
 ```{r}
 install.packages("devtools")
 library(devtools)
