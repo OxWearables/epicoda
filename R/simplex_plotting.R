@@ -10,7 +10,10 @@
 #' @param transparency Control the transparency of plots. Should be between 0 and 1.
 #' @inheritParams plot_transfers
 #' @return Plot showing density of data on ternary plot.
-#' @examples plot_density_ternary(data = simdata,
+#' @examples
+#' simdata$combined_parts <- simdata$partA + simdata$partB + simdata$partC
+#'
+#' plot_density_ternary(data = simdata,
 #' parts_to_plot = c("combined_parts", "partD", "partE"),
 #' n_bins = 10 # This argument specifies we want to use 10 bins
 #' # (i.e. 10% of data lies between each pair of contours on the plot.)
