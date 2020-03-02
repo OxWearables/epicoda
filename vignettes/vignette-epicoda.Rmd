@@ -48,7 +48,7 @@ In other words, we do not lose relevant information when we just consider the *c
 \end{equation}
 
 ### Preparing for analysis
-From the above, it is clear we will want to use the compositional columns together frequently. So we can record their labels here, so we don't need to repeatedly type them: 
+We will want to use the compositional columns together frequently, so we can record their labels: 
 ```{r}
 comp_labels <- c("partA", "partB", "partC", "partD", "partE")
 ```
