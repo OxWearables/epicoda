@@ -11,7 +11,7 @@
 #' @param part_1 Only used if First part in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.
 #' @return \code{data} with transformed activity columns.
 #' @examples transform_comp(data = simdata,
-#' comp_labels = comp_labels,
+#' comp_labels = c("partA", "partB", "partC", "partD", "partE"),
 #' transformation_type = "ilr",
 #' rounded_zeroes = TRUE,
 #' det_limit = 0.0083)
