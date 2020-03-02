@@ -8,7 +8,6 @@
 #' @inheritParams comp_model
 #'
 #' @return Table of covariates and their associated coefficients (parameter value with lower and upper confidence interval of the 95% ).
-#' @examples
 #' @export
 tab_covariate_coefs <-
   function(model = NULL,
@@ -52,9 +51,9 @@ tab_covariate_coefs <-
 #'
 #' @return Table of all model coefficients (parameter value with lower and upper confidence interval of the 95% ), using the first pivot coordinates for all compositional coefficients.
 #' @examples tab_coefs(scale_type = "lp", # This argument can be "lp" or "exp" and determines whether
-#' coefficients are presented on the scale of the linear predictors ("lp")
-#' or are exponentiated ("exp"). Exponentiation gives the Odds Ratio for
-#' logistic regression models and the Hazard Ratio for Cox regression models.
+#' # coefficients are presented on the scale of the linear predictors ("lp")
+#' # or are exponentiated ("exp"). Exponentiation gives the Odds Ratio for
+#' # logistic regression models and the Hazard Ratio for Cox regression models.
 #' level = 0.95,
 #' type = "linear",
 #' outcome = "linear_outcome",
@@ -62,7 +61,7 @@ tab_covariate_coefs <-
 #' follow_up_time = "follow_up_time",
 #' event = "event",
 #' data = simdata,
-#' comp_labels = comp_labels,
+#' comp_labels = c("partA", "partB", "partC", "partD", "partE"),
 #' rounded_zeroes = TRUE,
 #' det_limit = 0.0083)
 #' @export
