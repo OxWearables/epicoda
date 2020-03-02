@@ -13,7 +13,28 @@
 #' @param cm Can be set with compositional mean to speed up calculation. As it is easy to make mistakes using this, this should not be set manually and should only be passed from other functions.
 #' @param terms Are predictions for terms,or are they absolute?
 #' @return Plot with balance of two parts plotted as exposure/ independent variable.
+#' @export
 #' @examples
+#' lm_outcome <- comp_model(type = "linear",
+#' outcome = "linear_outcome",
+#' covariates = c("agegroup", "sex"),
+#' data = simdata,
+#' comp_labels = c("partA", "partB", "partC", "partD", "partE"))
+#'
+#' old_comp <- comp_mean(simdata,
+#' comp_labels = c("partA", "partB", "partC", "partD", "partE"))
+#' new_comp <-
+#' change_composition(
+#'  composition = old_comp,
+#'  main_part = "partB",
+#'  main_change = +0.5,
+#'  comp_labels = c("partA", "partB", "partC", "partD", "partE")
+#')
+#'
+#' predict_fit_and_ci(model = lm_outcome,
+#' dataset = simdata,
+#' new_data = new_comp,
+#' comp_labels = c("partA", "partB", "partC", "partD", "partE"))
 predict_fit_and_ci <- function(model,
                            dataset,
                            new_data,
