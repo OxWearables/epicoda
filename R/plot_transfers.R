@@ -14,6 +14,8 @@
 #' @param lower_quantile See \code{vary_time_of_interest} and \code{make_new_data}
 #' @param upper_quantile See \code{vary_time_of_interest} and \code{make_new_data}
 #' @param granularity Doesn't usually need setting. Parameter indicating how many predictions to make. If too low, plotted curve has gaps. If too high, calculation is slow.
+#' @param point_specification Should be a \code{ggplot2::geom_point} object specifying how the points on the graph will be plotted.
+#' @param error_bar_colour Should be an R-recognised colour, specified by name in quotation marks.
 #' @param theme Optional \code{theme} argument which can be set as a \code{ggplot2::theme} object and will control how the plot appears.
 #' @return Plot with balance of two parts plotted as exposure/ independent variable.
 #' @export

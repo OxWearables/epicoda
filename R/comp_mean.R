@@ -13,8 +13,8 @@
 #'           units = "hr/day")
 #'
 #'comp_mean(data = simdata, # this is the dataset
-#' comp_labels = c("partA", "partB", "partC", "partD", "partE"), # this is the labels of the compositional columns,
-#' # which we specified above
+#' comp_labels = c("partA", "partB", "partC", "partD", "partE"), # this is the labels
+#' of the compositional columns, which we specified above
 #' rounded_zeroes = TRUE, # this option specifies that we'll treat the zeroes
 #' # as rounded zeroes i.e. we'll impute them
 #' det_limit = 0.0083, # this is the smallest value observable in the data

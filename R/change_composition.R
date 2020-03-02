@@ -10,7 +10,8 @@
 #' @return Composition after rebalancing in the described way.
 #' @examples new_comp <-
 #' change_composition(
-#'  composition = simdata,
+#'  composition = comp_mean(simdata,
+#'  comp_labels = c("partA", "partB", "partC", "partD", "partE")),
 #'  main_part = "partB",
 #'  main_change = +0.5,
 #'  comp_labels = comp_labels

@@ -117,10 +117,10 @@ process_zeroes <- function(data, comp_labels, rounded_zeroes, det_limit = NULL){
   }
   if (any(comp_data ==0, na.rm = TRUE) & rounded_zeroes){
     message(paste("Note that zeroes were imputed with detection limit \n", det_limit, " (on the unitless scale) using zCompositions::lrEM"))
-    comp_data_nonans <- comp_data[complete.cases(comp_data[, comp_labels]), ]
-    comp_data_nans <- comp_data[!complete.cases(comp_data[, comp_labels]), ]
+    comp_data_nonans <- comp_data[stats::complete.cases(comp_data[, comp_labels]), ]
+    comp_data_nans <- comp_data[!stats::complete.cases(comp_data[, comp_labels]), ]
 
-    capture.output(comp_data_nonans[, comp_labels] <- zCompositions::lrEM(comp_data_nonans[, comp_labels], label = 0, dl = matrix(data = rep(det_limit,length(comp_data_nonans[,1])*ncol(comp_data_nonans[, comp_labels])),
+    utils::capture.output(comp_data_nonans[, comp_labels] <- zCompositions::lrEM(comp_data_nonans[, comp_labels], label = 0, dl = matrix(data = rep(det_limit,length(comp_data_nonans[,1])*ncol(comp_data_nonans[, comp_labels])),
                                                                                       nrow = length(comp_data_nonans[,1]),
                                                                                       byrow = T), max.iter = 50))
     comp_data <- rbind(comp_data_nonans, comp_data_nans)
@@ -231,6 +231,7 @@ rescale_comp <- function(data, comp_labels, comp_sum){
 #' Determine if range of vector is effectively zero.
 #'
 #' @param x Data for which to check
+#' @param tol Tolerance within which considered equal (on median-scaled scale).
 zero_range <- function(x, tol = 0.01) {
   if (length(x) == 1) return(TRUE)
   y <- (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))/ median(x, na.rm = TRUE)

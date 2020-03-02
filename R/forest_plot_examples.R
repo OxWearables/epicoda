@@ -10,6 +10,7 @@
 #' @param text_settings An optional argument which should be an \code{fpTxtGp} object as specified in the \code{forestplot} package.
 #' @param plot_log If this is \code{TRUE}, the x-axis will be log-transformed.
 #' @param boxsize Sets the size of the boxes plotted on the forest plot to show predictions.
+#' @param pred_name Name to give column of predictions in plot.
 #' @inheritParams predict_fit_and_ci
 #' @inheritDotParams forestplot::forestplot
 #' @return Forest plot illustrating prediction of the model at given compositions.
