@@ -234,7 +234,7 @@ rescale_comp <- function(data, comp_labels, comp_sum){
 #' @param tol Tolerance within which considered equal (on median-scaled scale).
 zero_range <- function(x, tol = 0.01) {
   if (length(x) == 1) return(TRUE)
-  y <- (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))/ median(x, na.rm = TRUE)
+  y <- (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))/ stats::median(x, na.rm = TRUE)
   isTRUE(y<tol)
 }
 
