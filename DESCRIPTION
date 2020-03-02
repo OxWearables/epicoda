@@ -6,9 +6,9 @@ Author: person("Rosemary", "Walmsley", email = "rosemary.walmsley@gtc.ox.ac.uk",
                   role = c("aut", "cre"))
 Maintainer: <rosemary.walmsley@gtc.ox.ac.uk>
 Description: Provides functions to support epidemiological analyses using compositional 
-    exposure variables, including preparation of ilr-pivot coordinates and plotting 
+    exposure variables, including regression modelling and plotting 
     graphs of model predictions for linear, logistic and Cox regression models.  
-License: BSD_2_clause
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.6.1)
@@ -20,7 +20,8 @@ Imports:
     stats (>= 3.6.1), 
     data.table (>= 1.12.2), 
     scales (>= 1.0.0), 
-    forestplot (>= 1.9)
+    forestplot (>= 1.9), 
+    utils (>= 3.6.1)
 RoxygenNote: 7.0.2
 Suggests: 
     testthat (>= 2.1.0),
