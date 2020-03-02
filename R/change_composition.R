@@ -8,13 +8,14 @@
 #' @param comp_labels Compositional column labels.
 #'
 #' @return Composition after rebalancing in the described way.
-#' @examples new_comp <-
+#' @examples
+#' old_comp <- comp_mean(simdata, comp_labels = c("partA", "partB", "partC", "partD", "partE"))
+#' new_comp <-
 #' change_composition(
-#'  composition = comp_mean(simdata,
-#'  comp_labels = c("partA", "partB", "partC", "partD", "partE")),
+#'  composition = old_comp,
 #'  main_part = "partB",
 #'  main_change = +0.5,
-#'  comp_labels = comp_labels
+#'  comp_labels = c("partA", "partB", "partC", "partD", "partE")
 #')
 #' @export
 change_composition <-
