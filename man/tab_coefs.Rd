@@ -60,7 +60,7 @@ covariates = c("agegroup", "sex"),
 follow_up_time = "follow_up_time",
 event = "event",
 data = simdata,
-comp_labels = comp_labels,
+comp_labels = c("partA", "partB", "partC", "partD", "partE"),
 rounded_zeroes = TRUE,
 det_limit = 0.0083)
 }
