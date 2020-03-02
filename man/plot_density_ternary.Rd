@@ -36,8 +36,11 @@ Plot showing density of data on ternary plot.
 Plot data density on a ternary plot
 }
 \examples{
+simdata$combined_parts <- simdata$partA + simdata$partB + simdata$partC
+
 plot_density_ternary(data = simdata,
 parts_to_plot = c("combined_parts", "partD", "partE"),
-n_bins = 10 # This argument specifies we want to use 10 bins (i.e. 10\% of data lies between each pair of contours on the plot.)
+n_bins = 10 # This argument specifies we want to use 10 bins
+# (i.e. 10\% of data lies between each pair of contours on the plot.)
 )
 }

@@ -10,12 +10,14 @@ plot_transfers(
   model,
   dataset,
   fixed_values = NULL,
-  transformation_type = NULL,
+  transformation_type = "ilr",
   comparison_part = NULL,
   part_1 = NULL,
   comp_labels,
   yllimit = NULL,
   yulimit = NULL,
+  xllimit = NULL,
+  xulimit = NULL,
   y_label = NULL,
   plot_log = FALSE,
   lower_quantile = 0.05,
@@ -51,9 +53,13 @@ plot_transfers(
 
 \item{comp_labels}{The labels of the compositional columns.}
 
-\item{yllimit}{Upper limit to show on y-axis on plot.}
+\item{yllimit}{Lower limit to show on y-axis on plot.}
 
-\item{yulimit}{Lower limit to show on y-axis on plot.}
+\item{yulimit}{Upper limit to show on y-axis on plot.}
+
+\item{xllimit}{Lower limit to show on x-axis on plot. Should be in same scale as \code{units}.}
+
+\item{xulimit}{Upper limit to show on x-axis on plot. Should be in same scale as \code{units}.}
 
 \item{y_label}{Label for y-axis on plot.}
 
@@ -76,6 +82,10 @@ minimum measurable value in the compositional columns of data. It should be on t
 
 \item{granularity}{Doesn't usually need setting. Parameter indicating how many predictions to make. If too low, plotted curve has gaps. If too high, calculation is slow.}
 
+\item{point_specification}{Should be a \code{ggplot2::geom_point} object specifying how the points on the graph will be plotted.}
+
+\item{error_bar_colour}{Should be an R-recognised colour, specified by name in quotation marks.}
+
 \item{theme}{Optional \code{theme} argument which can be set as a \code{ggplot2::theme} object and will control how the plot appears.}
 
 \item{cm}{Can be set with compositional mean to speed up calculation. As it is easy to make mistakes using this, this should not be set manually and should only be passed from other functions.}
@@ -85,4 +95,24 @@ Plot with balance of two parts plotted as exposure/ independent variable.
 }
 \description{
 Plots model predictions for transfers between the given parts.
+}
+\examples{
+
+lm_outcome <- comp_model(type = "linear",
+outcome = "linear_outcome",
+covariates = c("agegroup", "sex"),
+data = simdata,
+comp_labels = c("partA", "partB", "partC", "partD", "partE"))
+
+
+ epicoda::plot_transfers(from_part = "partD",
+to_part = "partA",
+model = lm_outcome ,
+dataset = simdata,
+transformation_type = "ilr",
+comp_labels = c("partA", "partB", "partC", "partD", "partE"),
+y_label = "Model-predicted outcome",
+units = "hr/day",
+terms = TRUE)
+
 }

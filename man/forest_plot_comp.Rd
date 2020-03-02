@@ -10,7 +10,7 @@ forest_plot_comp(
   models_list = NULL,
   dataset,
   fixed_values = NULL,
-  transformation_type = NULL,
+  transformation_type = "ilr",
   comparison_part = NULL,
   part_1 = NULL,
   comp_labels,
@@ -25,6 +25,8 @@ forest_plot_comp(
   plot_log = FALSE,
   text_settings = NULL,
   pred_name = NULL,
+  boxsize = 0.05,
+  cm = NULL,
   ...
 )
 }
@@ -67,6 +69,12 @@ minimum measurable value in the compositional columns of data. It should be on t
 \item{plot_log}{If this is \code{TRUE}, the x-axis will be log-transformed.}
 
 \item{text_settings}{An optional argument which should be an \code{fpTxtGp} object as specified in the \code{forestplot} package.}
+
+\item{pred_name}{Name to give column of predictions in plot.}
+
+\item{boxsize}{Sets the size of the boxes plotted on the forest plot to show predictions.}
+
+\item{cm}{Can be set with compositional mean to speed up calculation. As it is easy to make mistakes using this, this should not be set manually and should only be passed from other functions.}
 
 \item{...}{
   Arguments passed on to \code{\link[forestplot:forestplot]{forestplot::forestplot}}

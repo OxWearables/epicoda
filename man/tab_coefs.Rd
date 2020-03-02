@@ -49,7 +49,10 @@ Table of all model coefficients (parameter value with lower and upper confidence
 This pulls out a table of the coefficients of the models.
 }
 \examples{
-tab_coefs(scale_type = "lp", # This argument can be "lp" or "exp" and determines whether coefficients are presented on the scale of the linear predictors ("lp") or are exponentiated ("exp"). # Exponentiation gives the Odds Ratio for logistic regression models and the Hazard Ratio for Cox regression models.
+tab_coefs(scale_type = "lp", # This argument can be "lp" or "exp" and determines whether
+# coefficients are presented on the scale of the linear predictors ("lp")
+# or are exponentiated ("exp"). Exponentiation gives the Odds Ratio for
+# logistic regression models and the Hazard Ratio for Cox regression models.
 level = 0.95,
 type = "linear",
 outcome = "linear_outcome",

@@ -9,7 +9,7 @@ predict_fit_and_ci(
   dataset,
   new_data,
   fixed_values = NULL,
-  transformation_type = NULL,
+  transformation_type = "ilr",
   comparison_part = NULL,
   part_1 = NULL,
   comp_labels,
@@ -56,4 +56,26 @@ Plot with balance of two parts plotted as exposure/ independent variable.
 }
 \description{
 Principally intended as input to forest_plot_examples and plot_transfers.
+}
+\examples{
+lm_outcome <- comp_model(type = "linear",
+outcome = "linear_outcome",
+covariates = c("agegroup", "sex"),
+data = simdata,
+comp_labels = c("partA", "partB", "partC", "partD", "partE"))
+
+old_comp <- comp_mean(simdata,
+comp_labels = c("partA", "partB", "partC", "partD", "partE"))
+new_comp <-
+change_composition(
+ composition = old_comp,
+ main_part = "partB",
+ main_change = +0.5,
+ comp_labels = c("partA", "partB", "partC", "partD", "partE")
+)
+
+predict_fit_and_ci(model = lm_outcome,
+dataset = simdata,
+new_data = new_comp,
+comp_labels = c("partA", "partB", "partC", "partD", "partE"))
 }

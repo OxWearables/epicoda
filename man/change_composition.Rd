@@ -21,3 +21,13 @@ Composition after rebalancing in the described way.
 \description{
 This makes a change to a composition in the specified way and automatically rebalances.
 }
+\examples{
+old_comp <- comp_mean(simdata, comp_labels = c("partA", "partB", "partC", "partD", "partE"))
+new_comp <-
+change_composition(
+ composition = old_comp,
+ main_part = "partB",
+ main_change = +0.5,
+ comp_labels = c("partA", "partB", "partC", "partD", "partE")
+)
+}

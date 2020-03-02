@@ -4,10 +4,12 @@
 \alias{zero_range}
 \title{Determine if range of vector is effectively zero.}
 \usage{
-zero_range(x, tol = .Machine$double.eps^0.5)
+zero_range(x, tol = 0.01)
 }
 \arguments{
 \item{x}{Data for which to check}
+
+\item{tol}{Tolerance within which considered equal (on median-scaled scale).}
 }
 \description{
 Determine if range of vector is effectively zero.
