@@ -29,43 +29,35 @@ We start by loading a (simulated) compositional dataset, which is an object in t
 head(simdata)
 ```
 
-This dataset has 5 columns which make up a hypothetical composition ("partA", "partB", ..., "partE"), along with hypothetical sex, age group and outcome columns, which will be used to illustrate possible analyses.
+This dataset has 5 columns which make up a hypothetical time use composition: "vigorous" (activity), "moderate" (activity), "light" (activity), "sedentary" (behaviour), "sleep". It also contains sex, age group and outcome columnss.
 
 ### What is compositional data? 
-Data can be treated as compositional where it is the *relative*, rather than the absolute, values of the parts which is relevant [@Filzmoser2018].
-
-Here, we have one common case: the compositional columns all sum to the same total. 
-```{r}
-head(apply(simdata[, c("partA", "partB", "partC", "partD", "partE")], 1, sum))
-```
-In this case, the sum is 24:  these data are a simulated version of a time use dataset i.e. the five columns are different behaviours, which together make up the whole day.  
-
-Note that this property isn't necesssary for the data to be treated as compositional data: the only requirement is that it is the relative, not the absolute, information which is relevant to the problem being considered. For example, vote counts in an election for different parties in different constituencies can be treated as compositional data: although the overall number of votes cast might differ between constituencies, it is the share of the vote going to each party, and not the total number of votes going to that party in a given constitutency, that is relevant. 
-
-In other words, we do not lose relevant information when we just consider the *closure*, written: $\mathcal{C}(part_{1}, part_{2}, ..., part_{D})$ and defined as: 
+Data can be treated as compositional where it is the *relative*, rather than the absolute, values of the variables which is relevant to the problem being studied [@Filzmoser2018]. The variables in compositional data are often known as *parts*. Another way to describe this is that compositional data is data which we can express as proportions of a whole without losing information. In Compositional Data Analysis, this is often known as taking the *closure*, written and defined as: 
 \begin{equation}
   \mathcal{C}(part_{1}, part_{2}, ..., part_{D}) = \Big(\frac{part_{1}}{\sum_{i =1}^{D}{part_i}}, \frac{part_{2}}{\sum_{i =1}^{D}{part_i}}, ..., \frac{part_{D}}{\sum_{i =1}^{D}{part_i}}\Big)
 \end{equation}
 
+Here, we have one common case: the compositional parts sum to the same total. 
+```{r}
+head(apply(simdata[, c("vigorous", "moderate", "light", "sedentary", "sleep")], 1, sum))
+```
+In this case, the sum is 24 (the number of hours in the day) as this is a time use dataset. As this means it is not possible to simply increase time in one behaviour - it is only possible to spend time in one behaviour rather than in another behaviour - it is the relative values that are relevant. 
+
+Not all compositional data has a fixed sum. For example, vote counts in an election for different parties in different constituencies can be treated as compositional data: although the overall number of votes cast might differ between constituencies, it is the proportion of the vote going to each party, and not the total number of votes going to that party in a given constituency, that is relevant. 
+
 ### Preparing for analysis
 We will want to use the compositional columns together frequently, so we can record their labels: 
 ```{r}
-comp_labels <- c("partA", "partB", "partC", "partD", "partE")
+comp_labels <- c("vigorous", "moderate", "light", "sedentary", "sleep")
 ```
 There should be at least 2 compositional columns, and there can be an unlimited number.   
-
-Note that in R, for subsequent statistical modelling to work, we need to set any categorical covariates as factor variables:
-```{r}
-simdata$sex <- as.factor(simdata$sex)
-simdata$agegroup <- as.factor(simdata$agegroup)
-```
 
 ## Exploratory data analysis
 
 ### The compositional mean
 The compositional mean is a frequently-used summary statistic for compositional data [@Filzmoser2018]. Like the standard (multivariate) mean it is a measure of location, or central tendency. Unlike the standard mean, it interacts in an appropriate way with compositional data. 
 
-To calculate the compositional mean of columns `"partA", "partB", "partC", "partD", "partE"` using `epicoda`, we run: 
+To calculate the compositional mean of columns `"vigorous", "moderate", "light", "sedentary", "sleep"` using `epicoda`, we run: 
 ```{r}
 comp_mean(data = simdata, # this is the dataset
           comp_labels = comp_labels # this is the labels of the compositional columns, 
@@ -74,7 +66,7 @@ comp_mean(data = simdata, # this is the dataset
 ```
 There are a few things to notice about this. Even though we started out with sums which added to 24, the mean seems to add to 1. This is because we didn't specify the units - and so the package didn't know what units to return it to us in. But it could still return it as a sum to 1, without loss of information, as per the definition of compositional data. 
 
-We've also got a message about zeroes. Compositional data analysis can't automatically include zero values. For more information about this issue, see [@Palarea-Albaladejo2015]. There's a couple of options: 
+We've also got a message about zeroes. Compositional data analysis can't automatically include zero values. For more information about this issue, see [@Palarea-Albaladejo2015]. There are a couple of options: 
 
 * They can be dropped (this is the right option if they're so called 'true zeroes', and not related to a limit in the precision with which we can measure). To drop them, set `rounded_zeroes = FALSE`. 
 
@@ -108,30 +100,30 @@ Note that while the compositional mean is a fairly clear compositional equivalen
 ### Plotting ternary diagrams
 Ternary plots provide a way to plot compositional data with three parts. The R package `ggtern` is an extension of `ggplot2` to carry out this plotting. In this package, there is a wrapper for `ggtern` functions to implement a common use case when describing compositional data in epidemiological analyses: plotting the data density, and plotting the data density within subgroups. 
 
-Frequently, data has more than three compositional parts (as here). There are two alternatives in that case: using three parts of the existing parts (looking at the subcomposition formed by these parts), or summing parts to consider a different composition (where that is informative). In the simulated data, `"partA", "partB"` and `"partC"` are represent three different intensities of activity, so it is meaningful to combine them: 
+Frequently, data has more than three compositional parts (as here). There are two alternatives in that case: using three parts of the existing parts (looking at the subcomposition formed by these parts), or summing parts to consider a different composition (where that is informative). In the simulated data, `"vigorous", "moderate"` and `"light"` represent three different intensities of activity, so it is meaningful to combine them: 
 ```{r}
-simdata$combined_parts <- simdata$partA + simdata$partB + simdata$partC
+simdata$all_activity <- simdata$vigorous + simdata$moderate + simdata$light
 plot_density_ternary(data = simdata, 
-                     parts_to_plot = c("combined_parts", "partD", "partE"),
+                     parts_to_plot = c("all_activity", "sedentary", "sleep"),
                      n_bins = 10 # This argument specifies we want to use 10 bins 
                      # (i.e. 10% of data lies between each pair of contours on the plot.) Default is 5. 
                       )
 
 ```
 
-Another frequent use case is considering this plot with the density separated by groups. For example, to look at different sexes (which in fact don't differ that much):  
+Another frequent use case is considering this plot with the density separated by groups. For example, to look at different sexes (which in fact don't differ much in the simulated data):  
 ```{r}
 plot_density_ternary(data = simdata, 
-                     parts_to_plot = c("combined_parts", "partD", "partE"),
+                     parts_to_plot = c("all_activity", "sedentary", "sleep"),
                      groups = "sex")
 
 ```
 
 The `mark_points` argument can be used to annotate particular points using crosshairs. For example, to mark the compositional mean: 
 ```{r}
-points_to_mark <- as.data.frame(comp_mean(data = simdata, comp_labels = c("combined_parts", "partD", "partE")))
+points_to_mark <- as.data.frame(comp_mean(data = simdata, comp_labels = c("all_activity", "sedentary", "sleep")))
 plot_density_ternary(data = simdata, 
-                     parts_to_plot = c("combined_parts", "partD", "partE"),
+                     parts_to_plot = c("all_activity", "sedentary", "sleep"),
                      mark_points = points_to_mark
                       )                              
 ```
@@ -140,10 +132,10 @@ plot_density_ternary(data = simdata,
 ## Regression modelling 
 
 ### Setting up regression models 
-The package has a wrapper for linear regression, logistic regression and Cox regression modelling using compositional variables, with adjustment for covariates as desired. This function has several possible arguments related to how the transformation is carried out. However, for basic usage most of these arguments can be left at their defaults. For example, to set up a linear regression model for the outcome `linear_outcome`: 
+The package has a wrapper for linear regression, logistic regression and Cox regression modelling using compositional variables, with adjustment for covariates as desired. This function has several possible arguments related to how the transformation is carried out. However, for basic usage most of these arguments can be left at their defaults. For example, to set up a linear regression model for the outcome `BMI`: 
 ```{r}
-lm_outcome <- comp_model(type = "linear",
-         outcome = "linear_outcome",
+lm_BMI <- comp_model(type = "linear",
+         outcome = "BMI",
          covariates = c("agegroup", "sex"),
          data = simdata,
          comp_labels = comp_labels)
@@ -152,8 +144,8 @@ Logistic models can be produced in exactly the same way by setting `type = "logi
 
 The model object is a standard `lm` object, and we can inspect it in the usual way:
 ```{r}
-plot(lm_outcome)
-summary(lm_outcome)
+plot(lm_BMI)
+summary(lm_BMI)
 
 ```
 
@@ -167,7 +159,7 @@ Note that as these coefficients come from different models they do not parametri
 tab_coefs(scale_type = "lp", # This argument can be "lp" or "exp" and determines whether coefficients are presented on the scale of the linear predictors ("lp") or are exponentiated ("exp"). # Exponentiation gives the Odds Ratio for logistic regression models and the Hazard Ratio for Cox regression models. 
           level = 0.95, 
           type = "linear",
-          outcome = "linear_outcome",
+          outcome = "BMI",
           covariates = c("agegroup", "sex"),
           follow_up_time = "follow_up_time",
           event = "event",
@@ -180,9 +172,9 @@ The function `tab_covariate_coefs` is called within this function, and can be us
 ### Presenting the results: pairwise balances of compositional parts
 One way to get round the challenges of interpreting the model coefficients for these models is to look at model-predicted outcomes for different input variable values (equivalent to plotting the regression line in a simple linear regression). There are a couple of options- we can look at predictions as we hold most of the composition fixed and vary the balance between the final two parts. The `plot_transfers` function can do this (for linear, logistic and Cox regression models): 
 ```{r}
-plot_transfers(from_part = "partD",
-               to_part = "partA",
-               model = lm_outcome ,
+plot_transfers(from_part = "sedentary",
+               to_part = "vigorous",
+               model = lm_BMI ,
                dataset = simdata,
                transformation_type = "ilr",
                comp_labels = comp_labels,
@@ -196,9 +188,9 @@ There's one problem with this: the predictions and confidence intervals on this 
 To avoid this, we can look at the predicted difference in the outcome due to just the compositional parts. This is done by setting `terms = TRUE` (in fact, the default) in the `plot_transfers` function. 
 
 ```{r}
-plot_transfers(from_part = "partD",
-               to_part = "partA",
-               model = lm_outcome ,
+plot_transfers(from_part = "sedentary",
+               to_part = "vigorous",
+               model = lm_BMI ,
                dataset = simdata,
                comp_labels = comp_labels,
                y_label = "Model-predicted difference in outcome",
@@ -223,7 +215,7 @@ df <- as.data.frame(
 new_comp <-
   change_composition(
     composition = df,
-    main_part = "partB",
+    main_part = "moderate",
     main_change = +0.5,
     comp_labels = comp_labels
   ) 
@@ -231,11 +223,11 @@ new_comp <-
 new_comp2 <-
     change_composition(
     composition = df,
-    main_part = "partD",
+    main_part = "sedentary",
     main_change = -3.5,
     comp_labels = comp_labels
   )
-list_for_plot <- list("Extra 0.5 hr/day partB" = new_comp, "3.5 hr/day less partD" = new_comp2)
+list_for_plot <- list("Extra 0.5 hr/day moderate" = new_comp, "3.5 hr/day less sedentary" = new_comp2)
 print(list_for_plot)
 ```
 
@@ -243,26 +235,26 @@ print(list_for_plot)
 We now need to plot these, which can be done as follows. 
 ```{r}
 forest_plot_comp(composition_list = list_for_plot, 
-                 model = lm_outcome, 
+                 model = lm_BMI, 
                  dataset = simdata, 
                  comp_labels = comp_labels)
 ```
 
-The `forest_plot_comp` function can also be used to compare models. To do this, leave `model` at its default `NULL` value, and set `models_list` as a named list of models. For example, to compare `lm_outcome` with a model adjusted for `age_group` only and an unadjusted model: 
+The `forest_plot_comp` function can also be used to compare models. To do this, leave `model` at its default `NULL` value, and set `models_list` as a named list of models. For example, to compare `lm_BMI` with a model adjusted for `age_group` only and an unadjusted model: 
 ```{r}
-lm_outcome_unadjusted <- comp_model(type = "linear",
-         outcome = "linear_outcome",
+lm_BMI_unadjusted <- comp_model(type = "linear",
+         outcome = "BMI",
          data = simdata,
          comp_labels = comp_labels)
-lm_outcome_age_group_only <- lm_outcome <- comp_model(type = "linear",
-         outcome = "linear_outcome",
+lm_BMI_age_group_only <- lm_BMI <- comp_model(type = "linear",
+         outcome = "BMI",
          covariates = c("agegroup"),
          data = simdata,
          comp_labels = comp_labels)
 forest_plot_comp(composition_list = list_for_plot, 
-                 models_list = list("Unadjusted" = lm_outcome_unadjusted, 
-                                    "Age-adjusted" = lm_outcome_age_group_only,
-                                    "Age- and sex- adjusted" = lm_outcome), 
+                 models_list = list("Unadjusted" = lm_BMI_unadjusted, 
+                                    "Age-adjusted" = lm_BMI_age_group_only,
+                                    "Age- and sex- adjusted" = lm_BMI), 
                  dataset = simdata, 
                  comp_labels = comp_labels)
 ```
@@ -295,9 +287,9 @@ All the plotting functions can have settings changed to make more visually attra
 For an extreme example of implementing some of this: 
 ```{r}
 library(ggplot2) # it's easier to specify e.g. themes if ggplot2 is loaded. 
-plot_transfers(from_part = "partD",
-               to_part = "partA",
-               model = lm_outcome ,
+plot_transfers(from_part = "sedentary",
+               to_part = "vigorous",
+               model = lm_BMI ,
                dataset = simdata,
                transformation_type = "ilr",
                comp_labels = comp_labels,
@@ -316,7 +308,7 @@ Slightly differently, `forest_plot_comp` is based on the `forestplot` package, s
 ```{r}
 library(forestplot) # it's easier to specify options such as fpColors if the forestplot package is loaded. 
 forest_plot_comp(composition_list = list_for_plot, 
-                 model = lm_outcome, 
+                 model = lm_BMI, 
                  dataset = simdata, 
                  comp_labels = comp_labels, 
                  pred_name = "The predicted difference at this composition", # This sets the name with which to label the column. , 
@@ -333,7 +325,7 @@ For additional information on how to customise the functions, see the manual by 
 Similarly to linear models, logistic and Cox models can be produced:
 ```{r}
 log_outcome <- comp_model(type = "logistic",
-         outcome = "binary_outcome",
+         outcome = "disease",
          covariates = c("agegroup", "sex"),
          data = simdata,
          comp_labels = comp_labels)
@@ -351,7 +343,7 @@ summary(cox_outcome)
 To get the numbers out for predictions at particular compositions, we can use the `predict_fit_and_ci` function (which is wrapped in the plotting functions).This takes a data frame argument for `new_data`. 
 
 ```{r}
-predict_fit_and_ci(model = lm_outcome, dataset = simdata, new_data = new_comp, comp_labels = comp_labels)
+predict_fit_and_ci(model = lm_BMI, dataset = simdata, new_data = new_comp, comp_labels = comp_labels)
 ```
 
 
