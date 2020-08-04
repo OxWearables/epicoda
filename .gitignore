@@ -3,5 +3,4 @@
 .RData
 .Ruserdata
 *.csv
-*.bib
 inst/doc
