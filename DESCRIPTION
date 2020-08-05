@@ -27,5 +27,6 @@ Suggests:
     testthat (>= 2.1.0),
     knitr,
     rmarkdown, 
-    devtools
+    devtools, 
+    splines (>= 3.6.2)
 VignetteBuilder: knitr

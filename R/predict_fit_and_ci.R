@@ -39,17 +39,16 @@
 predict_fit_and_ci <- function(model,
                            dataset,
                            new_data,
+                           comp_labels,
                            terms = TRUE,
                            fixed_values = NULL,
                            transformation_type = "ilr",
                            comparison_part = NULL,
                            part_1 = NULL,
-                           comp_labels,
                            units = "unitless",
                            specified_units = NULL,
                            rounded_zeroes = TRUE,
                            det_limit = NULL,
-
                            cm = NULL) {
   if (is.null(transformation_type)) {
     stop(
