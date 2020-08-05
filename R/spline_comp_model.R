@@ -56,7 +56,7 @@ spline_comp_model <-
                     part_1 = part_1)
     spline_vec <- c()
     for (name in transf_vec){
-      spline_vec <- c(spline_vec,  paste0("splines::bs(" , name, ", quantile(data_ready[,'", name, "'], probs = seq(0, 1, by = 1/(", knots, "+1)), na.rm = TRUE))"))
+      spline_vec <- c(spline_vec,  paste0("splines::bs(" , name, ", knots = quantile(data_ready[,'", name, "'], probs = seq(0, 1, by = 1/(", knots, "+1)), na.rm = TRUE))"))
     }
 
     transf_sum <- vector_to_sum(spline_vec)
