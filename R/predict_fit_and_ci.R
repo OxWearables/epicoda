@@ -63,15 +63,8 @@ predict_fit_and_ci <- function(model,
 
   # We normalise
   det_limit <- rescale_det_limit(data = dataset, comp_labels = comp_labels, det_limit)
-#  det_limit2 <- rescale_det_limit(data = new_data, comp_labels = comp_labels, det_limit )
   dataset <- normalise_comp(dataset, comp_labels = comp_labels)
   new_data <- normalise_comp(new_data, comp_labels = comp_labels)
-#  if (!is.null(det_limit)){
- #   if ((abs(det_limit - det_limit2) > 0.01*det_limit)){
- #     stop("Are dataset and new_data on the same scale? They do not appear to be and this means det_limit cannot be reliably calculated.")
- #   }
- # }
-
 
   # We label what the transformed cols will be
   if (transformation_type == "ilr") {
@@ -102,7 +95,6 @@ predict_fit_and_ci <- function(model,
       units = "unitless"
     )
   }
-
   cm_transf_df <- suppressMessages(transform_comp(cm, comp_labels,
                                  transformation_type = transformation_type,
                                  part_1 = part_1,
@@ -112,7 +104,6 @@ predict_fit_and_ci <- function(model,
 
 
   # We assign some fixed_values to use in predicting
-
   if (!(is.null(fixed_values))) {
     if (length(colnames(fixed_values)[colnames(fixed_values) %in% comp_labels]) > 0) {
       warning(
@@ -141,7 +132,6 @@ predict_fit_and_ci <- function(model,
     comparison_part = comparison_part,
     rounded_zeroes = FALSE
   ))
-
 
   for (colname in colnames(fixed_values)){
     if (!(colname %in% colnames(new_data)) & !(colname %in% transf_labels)){
@@ -172,11 +162,6 @@ predict_fit_and_ci <- function(model,
 
   }
 
-
-
-
-
-
   if (type == "logistic" && (terms)) {
     predictions <-
       stats::predict(
@@ -187,12 +172,6 @@ predict_fit_and_ci <- function(model,
         se.fit = TRUE
       )
 
-    acm <- stats::predict(model,
-                   newdata = transf_fixed_vals,
-                   type = "terms",
-                   terms = transf_labels)
-
-
     dNew <- data.frame(new_data, predictions)
 
     vector_for_args <-
@@ -200,9 +179,8 @@ predict_fit_and_ci <- function(model,
     sum_for_args <- paste0(vector_for_args, collapse = "+")
 
 
-    dNew$log_odds_change <- eval(parse(text = sum_for_args)) #- sum(acm)
+    dNew$log_odds_change <- eval(parse(text = sum_for_args))
     dNew$fit <- exp(dNew$log_odds_change)
-
 
     middle_matrix <- stats::vcov(model)[transf_labels, transf_labels]
     x <- data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
@@ -220,7 +198,6 @@ predict_fit_and_ci <- function(model,
     t_value <-
       stats::qt(0.975, df = (nrow(stats::model.matrix(model)) -1 - length(transf_labels)))[[1]]
 
-
     alpha_lower <- dNew$log_odds_change - t_value * value
     alpha_upper <- dNew$log_odds_change + t_value * value
 
@@ -229,13 +206,8 @@ predict_fit_and_ci <- function(model,
 
   }
 
-
-
-
-
-
-
-
+  
+  
   if (type == "cox" && (terms)) {
     predictions <- stats::predict(
       model,
@@ -245,19 +217,13 @@ predict_fit_and_ci <- function(model,
       terms = transf_labels, reference = "sample"
     )
 
-    acm <- stats::predict(model,
-                   newdata = transf_fixed_vals,
-                   type = "terms",
-                   terms = transf_labels)
-
-
     dNew <- data.frame(new_data, predictions)
 
     vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
     sum_for_args <- paste0(vector_for_args, collapse = "+")
 
 
-    dNew$log_hazard_change <- eval(parse(text = sum_for_args)) #- sum(acm)
+    dNew$log_hazard_change <- eval(parse(text = sum_for_args))
     dNew$fit <- exp(dNew$log_hazard_change)
 
     middle_matrix <- stats::vcov(model)[transf_labels, transf_labels]
@@ -296,8 +262,6 @@ predict_fit_and_ci <- function(model,
 
     dNew <- data.frame(new_data, predictions)
 
-
-
     dNew$fit <- exp(dNew$fit)
 
     dNew$lower_CI <-
@@ -309,12 +273,7 @@ predict_fit_and_ci <- function(model,
 
 
 
-
-
-
-
-
-  if (type == "linear" && (terms == FALSE)) {
+  if (type == "linear" && !(terms)) {
     message(
       "Note that the confidence intervals on this plot include uncertainty driven by other, non-compositional variables."
     )
@@ -338,10 +297,6 @@ predict_fit_and_ci <- function(model,
 
 
 
-
-
-
-
   if (type == "linear" && (terms)) {
     predictions <-
       stats::predict(
@@ -351,14 +306,6 @@ predict_fit_and_ci <- function(model,
         terms = transf_labels,
         se.fit = TRUE
       )
-
-
-
-    acm <- stats::predict(model,
-                   newdata = transf_fixed_vals,
-                   type = "terms",
-                   terms = transf_labels)
-
 
     dNew <- data.frame(new_data, predictions)
     vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
@@ -376,17 +323,7 @@ predict_fit_and_ci <- function(model,
 
     middle_matrix <- stats::vcov(model)[transf_labels, transf_labels]
     x <- data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
-    # print(head(as.data.frame(rep(cm_transf_df[, transf_labels], by = nrow(new_data)), new_data[ , c("agegroup", "sex")])))
-    #
-    #
-    # dNew$fit <-
-    #   stats::predict(
-    #     model,
-    #     newdata = cbind(new_data[, transf_labels] - as.data.frame(rep(cm_transf_df[, transf_labels], by = nrow(new_data))), new_data[ , c("agegroup", "sex")]),
-    #     type = "terms",
-    #     terms = transf_labels,
-    #     se.fit = TRUE
-    #   )
+    
     in_sqrt_1 <- (x %*% middle_matrix)
     t_x <- as.matrix(t(x))
     in_sqrt_true <- c()
