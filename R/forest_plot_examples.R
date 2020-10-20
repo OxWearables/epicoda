@@ -198,8 +198,6 @@ forest_plot_comp <-
     data_frame_for_forest_plot <- rbind( rep(vline_loc, by = ncol(data_frame_for_forest_plot)), data_frame_for_forest_plot)
 
 
-
- #   text_col <- paste(format(round(data_frame_for_forest_plot$coef , digits = 2), nnsmall = 2), " (", format(round(data_frame_for_forest_plot$low, digits = 2), nsmall = 2), ", ", format(round(data_frame_for_forest_plot$high, digits = 2), nsmall = 2), ")", sep = "")
   tabletext <- cbind(c( "REFERENCE: At compositional mean", col_of_names))#, c(pred_name, vline_loc, text_col[3:nrow(data_frame_for_forest_plot)]))
     col_vec <- grDevices::hcl.colors(n = length(models_list), palette = "dark2")
      fp <- forestplot::forestplot(
