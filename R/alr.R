@@ -1,6 +1,6 @@
 #' Alr transformation
 #' 
-#' This peforms additive log-ratio trasnformation. 
+#' This peforms additive log-ratio transformation. 
 #' 
 #' @param data Compositional columns of dataframe
 #' @param comp_labels The labels of the compositional columns.
