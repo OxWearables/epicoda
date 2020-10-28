@@ -34,7 +34,7 @@ plot_density_ternary <-
     name2 <- parts_to_plot[2]
     name3 <- parts_to_plot[3]
     if (is.null(theme)) {
-      theme <- ggtern::theme(
+      theme <- ggplot2::theme(
         plot.background = ggplot2::element_rect(fill = "white"),
         panel.background = ggplot2::element_rect(fill = "grey75"),
         text = ggplot2::element_text(

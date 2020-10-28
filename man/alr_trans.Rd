@@ -21,7 +21,7 @@ This peforms additive log-ratio transformation.
 }
 \examples{
 transform_comp(data = simdata,
-comp_labels = c("partA", "partB", "partC", "partD", "partE"),
-comparison_part = "partA")
+comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
+comparison_part = "sleep")
 
 }

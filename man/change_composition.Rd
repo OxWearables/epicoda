@@ -4,12 +4,19 @@
 \alias{change_composition}
 \title{Change composition}
 \usage{
-change_composition(composition, main_part, main_change, comp_labels)
+change_composition(
+  composition,
+  main_part,
+  at_expense_of = NULL,
+  main_change,
+  comp_labels
+)
 }
 \arguments{
 \item{composition}{This should be the starting composition as a data frame.}
 
-\item{main_part}{part the main change is happening to.}
+\item{main_part}{part the main change is happening to.
+@param at_expense_of Parts the main change is at the expense of/ reallocated to.}
 
 \item{main_change}{Magnitude and direction of change e.g. +1, -0.5.}
 
@@ -22,12 +29,11 @@ Composition after rebalancing in the described way.
 This makes a change to a composition in the specified way and automatically rebalances.
 }
 \examples{
-old_comp <- comp_mean(simdata, comp_labels = c("partA", "partB", "partC", "partD", "partE"))
 new_comp <-
 change_composition(
- composition = old_comp,
+ composition = simdata,
  main_part = "partB",
  main_change = +0.5,
- comp_labels = c("partA", "partB", "partC", "partD", "partE")
+ comp_labels = comp_labels
 )
 }

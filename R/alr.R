@@ -6,7 +6,7 @@
 #' @param comp_labels The labels of the compositional columns.
 #' @param comparison_part Name of part that all other parts will be compared to.
 #' @return \code{data} with alr-transformed compositional columns.
-#' @examples transform_comp(data = simdata,
+#' @examples alr_trans(data = simdata[,c("vigorous", "moderate", "light", "sedentary", "sleep")],
 #' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
 #' comparison_part = "sleep")
 #'
