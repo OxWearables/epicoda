@@ -4,15 +4,24 @@
 \alias{alr_trans}
 \title{Alr transformation}
 \usage{
-alr_trans(data, comparison_part = NULL, comp_labels)
+alr_trans(data, comp_labels, comparison_part = NULL)
 }
 \arguments{
 \item{data}{Compositional columns of dataframe}
 
-\item{comparison_part}{Name of part that all other parts will be compared to.}
-
 \item{comp_labels}{The labels of the compositional columns.}
+
+\item{comparison_part}{Name of part that all other parts will be compared to.}
+}
+\value{
+\code{data} with alr-transformed compositional columns.
 }
 \description{
-Alr transformation
+This peforms additive log-ratio transformation.
+}
+\examples{
+transform_comp(data = simdata,
+comp_labels = c("partA", "partB", "partC", "partD", "partE"),
+comparison_part = "partA")
+
 }

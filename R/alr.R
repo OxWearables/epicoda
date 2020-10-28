@@ -1,15 +1,15 @@
 #' Alr transformation
-#' 
-#' This peforms additive log-ratio transformation. 
-#' 
+#'
+#' This peforms additive log-ratio transformation.
+#'
 #' @param data Compositional columns of dataframe
 #' @param comp_labels The labels of the compositional columns.
 #' @param comparison_part Name of part that all other parts will be compared to.
-#' @return \code{data} with alr-transformed compositional columns. 
+#' @return \code{data} with alr-transformed compositional columns.
 #' @examples transform_comp(data = simdata,
-#' comp_labels = c("partA", "partB", "partC", "partD", "partE"),
-#' comparison_part = "partA")
-#' 
+#' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
+#' comparison_part = "sleep")
+#'
 #' @export
 alr_trans <- function(data, comp_labels, comparison_part = NULL) {
   if (is.null(comparison_part)){
