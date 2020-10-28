@@ -4,7 +4,9 @@
 \name{simdata_ilr}
 \alias{simdata_ilr}
 \title{Example compositional data with transformed variables}
-\format{An object of class \code{data.frame} with 10000 rows and 16 columns.}
+\format{
+An object of class \code{data.frame} with 10000 rows and 16 columns.
+}
 \usage{
 simdata_ilr
 }

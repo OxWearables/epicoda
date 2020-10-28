@@ -4,7 +4,9 @@
 \name{simdata}
 \alias{simdata}
 \title{Example compositional data}
-\format{An object of class \code{data.frame} with 10000 rows and 12 columns.}
+\format{
+An object of class \code{data.frame} with 10000 rows and 12 columns.
+}
 \usage{
 simdata
 }

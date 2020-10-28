@@ -22,7 +22,7 @@ Imports:
     scales (>= 1.0.0), 
     forestplot (>= 1.9), 
     utils (>= 3.6.1)
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.1
 Suggests: 
     testthat (>= 2.1.0),
     knitr,
