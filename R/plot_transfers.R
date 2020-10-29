@@ -153,7 +153,7 @@ plot_transfers <- function(from_part,
   # We assign some fixed_values to use in setting up new_data
   if (!(is.null(fixed_values))) {
     if (length(colnames(fixed_values)[colnames(fixed_values) %in% comp_labels]) > 0) {
-      warning(
+      message(
         "fixed_values will be updated to have compositional parts fixed at the compositional mean. For technical and pragmatic reasons, use of a different reference for the compositional parts is not currently possible."
       )
     }
@@ -405,6 +405,6 @@ plot_transfers <- function(from_part,
   }
 
 
-    print("Please note that plotting may take some time.")
+    message("Please note that plotting may take some time.")
     return(plot_of_this)
   }

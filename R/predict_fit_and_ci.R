@@ -106,7 +106,7 @@ predict_fit_and_ci <- function(model,
   # We assign some fixed_values to use in predicting
   if (!(is.null(fixed_values))) {
     if (length(colnames(fixed_values)[colnames(fixed_values) %in% comp_labels]) > 0) {
-      warning(
+      message(
         "fixed_values will be updated to have compositional parts fixed at the compositional mean. For technical and pragmatic reasons, use of a different reference for the compositional parts is not currently possible."
       )
       fixed_values <- fixed_values[, colnames(fixed_values)[!(colnames(fixed_values) %in% comp_labels)]]
@@ -206,8 +206,8 @@ predict_fit_and_ci <- function(model,
 
   }
 
-  
-  
+
+
   if (type == "cox" && (terms)) {
     predictions <- stats::predict(
       model,
@@ -323,7 +323,7 @@ predict_fit_and_ci <- function(model,
 
     middle_matrix <- stats::vcov(model)[transf_labels, transf_labels]
     x <- data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
-    
+
     in_sqrt_1 <- (x %*% middle_matrix)
     t_x <- as.matrix(t(x))
     in_sqrt_true <- c()
