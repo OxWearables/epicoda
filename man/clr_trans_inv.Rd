@@ -9,6 +9,9 @@ clr_trans_inv(data)
 \arguments{
 \item{data}{Clr-transformed columns.}
 }
+\value{
+\code{data} with clr transformation inverted.
+}
 \description{
-This inverts a clr transformation.
+This inverts a clr transformation. Currently it only does so onto the unitless scale. If needed, it can be extended to take a units output argument.
 }

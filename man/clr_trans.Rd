@@ -9,6 +9,15 @@ clr_trans(data)
 \arguments{
 \item{data}{Compositional columns of dataframe.}
 }
+\value{
+\code{data} with clr-transformed compositional columns.
+}
 \description{
-Clr transformation
+This performs centred log-ratio transformation on the compositional columns of a data frame.
+}
+\examples{
+clr_trans(data = simdata[, c("vigorous", "moderate", "light", "sedentary", "sleep")],
+comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
+comparison_part = "sleep")
+
 }

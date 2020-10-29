@@ -20,7 +20,7 @@ alr_trans(data, comp_labels, comparison_part = NULL)
 This peforms additive log-ratio transformation.
 }
 \examples{
-transform_comp(data = simdata,
+alr_trans(data = simdata[,c("vigorous", "moderate", "light", "sedentary", "sleep")],
 comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
 comparison_part = "sleep")
 
