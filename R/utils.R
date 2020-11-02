@@ -63,6 +63,9 @@ alter_order_comp_labels <- function(comp_labels, part_1){
 #' @param units What should the units of the compositional variables be in any output? Currently available are "unitless" (where working in terms of proportions), "hr/day", "hr/wk", "min/day", "min/wk" and "specified", in which case the \code{specified_units} argument should be set. Note that this doesn't specify the input units, as this is not relevant for any function.
 #' @param specified_units If units are being specified via the composition sum, this is where it is done. It should be a vector where the first argument is a string describing the units, and the second argument is the expected sum of a composition e.g. \code{c("hr/day", 24)}
 process_units <- function(units, specified_units){
+  if (!(units %in% c("hr/wk", "hr/day", "min/wk", "min/day", "unitless", "specified"))){
+    stop("Unrecognised value for units. units should be \"hr/wk\", \"hr/day\", \"min/wk\", \"min/day\", \"unitless\" or \"specified\" with the specified_units argument also given.")
+  }
   if (units == "hr/wk"){
     comp_sum <- 24*7
   }
@@ -85,15 +88,14 @@ process_units <- function(units, specified_units){
     if (!is.character(specified_units[1])){
       stop("The first argument of specified_units must be a string describing the units.")
     }
-    if (!is.numeric(specified_units[2])){
-      stop("The first argument of specified_units must be a number specifying the sum of a composition.")
-    }
     units <- specified_units[1]
-    comp_sum <- specified_units[2]
+    comp_sum <- as.numeric(specified_units[2])
+
+    if (!is.numeric(comp_sum)){
+      stop("The second argument of specified_units must be a number specifying the sum of a composition.")
+    }
   }
-  if (!(units %in% c("hr/wk", "hr/day", "min/wk", "min/day", "unitless", "specified"))){
-    stop("Unrecognised value for units. units should be \"hr/wk\", \"hr/day\", \"min/wk\", \"min/day\", \"unitless\" or \"specified\" with the specified_units argument also given.")
-  }
+
   return(c(units, comp_sum))
 }
 
