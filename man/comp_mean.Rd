@@ -34,16 +34,12 @@ Vector which is the compositional mean.
 Calculates the compositional mean of a dataset.
 }
 \examples{
-comp_mean(data = simdata,
-          comp_labels = c("partA", "partB", "partC", "partD", "partE"),
-          units = "hr/day")
-
-comp_mean(data = simdata, # this is the dataset
-comp_labels = c("partA", "partB", "partC", "partD", "partE"), # this is the labels
+#' comp_mean(data = simdata, # this is the dataset
+comp_labels =c("vigorous", "moderate", "light", "sedentary", "sleep"), # this is the labels
 # of the compositional columns, which we specified above
 rounded_zeroes = TRUE, # this option specifies that we'll treat the zeroes
-# as rounded zeroes i.e. we'll impute them
-det_limit = 0.0083, # this is the smallest value observable in the data
+# as rounded zeroes i.e. we'll impute them. As we've not specified det_limit, the function
+# will calculate it automatically based on the smallest observed value in the data
 units = "hr/day" # this is the units. There are pre-specified options "hr/day",
 # "hr/wk", "min/day", "min/wk" and "unitless".
 # If you set units = "specified", you can also specify your own units using

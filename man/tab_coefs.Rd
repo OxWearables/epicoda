@@ -27,7 +27,7 @@ tab_coefs(
 
 \item{outcome}{Column name of outcome variable in data. If \code{type} is \code{"linear"}, this should be a continuous variable.  If \code{type} is \code{"logistic"}, this should be a binary outcome.  If \code{type} is \code{"cox"}, if this is set it should be a \code{Surv} object from package \code{survival} (if it is set, the function defaults to attempt to use it, even if \code{follow_up_time} and \code{event} are set). If this is left as \code{NULL}, \code{follow_up_time} and \code{event} can be set instead.}
 
-\item{covariates}{Character vector of column names of covariates to adjust models for. As this is used as a character vector, special arguments to the standard models (like strata(variable) for a Cox model) can be used here.}
+\item{covariates}{Character vector of column names of covariates to adjust models for. As this is used as a character vector, special arguments to the standard models (like \code{"strata(variable)"} for a Cox model) can be used here.}
 
 \item{follow_up_time}{Only used if \code{type} is \code{"cox"} and \code{outcome} is \code{NULL}.  Follow-up time.}
 

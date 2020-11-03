@@ -15,25 +15,26 @@ change_composition(
 \arguments{
 \item{composition}{This should be the starting composition as a data frame.}
 
-\item{main_part}{part the main change is happening to.
-@param at_expense_of Parts the main change is at the expense of/ reallocated to.}
+\item{main_part}{part the main change is happening to.}
+
+\item{at_expense_of}{Parts the main change is at the expense of/ reallocated to.}
 
 \item{main_change}{Magnitude and direction of change e.g. +1, -0.5.}
 
 \item{comp_labels}{Compositional column labels.}
 }
 \value{
-Composition after rebalancing in the described way.
+Composition after reallocating as described.
 }
 \description{
-This makes a change to a composition in the specified way and automatically rebalances.
+This makes a change to a composition in the specified way and automatically reallocates to/from other parts of the composition proportionally. It primarily exists as a utility function to make reporting easier.
 }
 \examples{
 new_comp <-
 change_composition(
  composition = simdata,
- main_part = "partB",
+ main_part = "moderate",
  main_change = +0.5,
- comp_labels = comp_labels
-)
+ comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
+ )
 }
