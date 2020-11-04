@@ -1,19 +1,36 @@
-#' Produce a forest plot indicating model prediction at given compositions
+#' Produce a forest plot of model predictions
 #'
-#' This function takes a named list of compositions, and plots a model prediction at each composition.
+#' This function takes a named list of compositions, and plots model predictions for each composition.
 #'
 #' @param composition_list Named list of compositions. Note each composition should be stored as a data frame. For example, use the output of \code{change_composition}.
-#' @param models_list If \code{model} is \code{NULL} (or not set), a named list of models for which to plot model predictions in the forest plot. Note all models should have the same type or the results will be meaningless.
-#' @param x_label Label for x axis in plot.
-#' @param xllimit Minimum value for x axis.
-#' @param xulimit Maximum value for x axis.
-#' @param text_settings An optional argument which should be an \code{fpTxtGp} object as specified in the \code{forestplot} package.
+#' @param models_list If \code{model} is \code{NULL} (or not set), a named list of models for which to plot model predictions in the forest plot. All models should have the same type.
+#' @param x_label x-axis label.
+#' @param xllimit Minimum value for x-axis.
+#' @param xulimit Maximum value for x-axis.
+#' @param text_settings An optional argument to specify text formatting. It should be an \code{fpTxtGp} object (\code{forestplot} package).
 #' @param plot_log If this is \code{TRUE}, the x-axis will be log-transformed.
-#' @param boxsize Sets the size of the boxes plotted on the forest plot to show predictions.
-#' @param pred_name Name to give column of predictions in plot.
+#' @param boxsize Sets the size of boxes for estimates on the forest plot.
+#' @param pred_name Name for column of predictions in plot.
 #' @inheritParams predict_fit_and_ci
 #' @inheritDotParams forestplot::forestplot
-#' @return Forest plot illustrating prediction of the model at given compositions.
+#' @return Forest plot showing model predictions.
+#' @examples
+#' # Example using a list of models
+#'   # First we set up composition list
+#' df <- as.data.frame(comp_mean(data = simdata, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"), units = "hr/day"))
+#' new_comp <- change_composition(composition = df, main_part = "moderate", main_change = +0.5, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
+#' new_comp2 <- change_composition(composition = df, main_part = "sedentary", main_change = -3.5, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
+#' list_for_plot <- list("Extra 0.5 hr/day moderate" = new_comp, "3.5 hr/day less sedentary" = new_comp2)
+#'
+#'  # Then calculate models
+#' lm_BMI_unadjusted <- comp_model(type = "linear", outcome = "BMI", data = simdata, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
+#' lm_BMI_age_group_only <- comp_model(type = "linear", outcome = "BMI", covariates = c("agegroup"), data = simdata, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
+#'
+#'   # Finally, plot
+#' forest_plot_comp(composition_list = list_for_plot,
+#'                  models_list = list("Unadjusted" = lm_BMI_unadjusted, "Age-adjusted" = lm_BMI_age_group_only),
+#'                  dataset = simdata,
+#'                  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
 #' @export
 forest_plot_comp <-
   function(composition_list,
@@ -21,15 +38,6 @@ forest_plot_comp <-
            models_list = NULL,
            dataset,
            comp_labels,
-           terms = TRUE,
-           fixed_values = NULL,
-           transformation_type = "ilr",
-           comparison_part = NULL,
-           part_1 = NULL,
-           units = "unitless",
-           specified_units = NULL,
-           rounded_zeroes = TRUE,
-           det_limit = NULL,
            x_label = NULL,
            xllimit = NULL,
            xulimit = NULL,
@@ -37,6 +45,15 @@ forest_plot_comp <-
            text_settings = NULL,
            pred_name = NULL,
            boxsize = 0.05,
+           terms = TRUE,
+           fixed_values = NULL,
+           units = "unitless",
+           specified_units = NULL,
+           rounded_zeroes = TRUE,
+           det_limit = NULL,
+           transformation_type = "ilr",
+           comparison_part = NULL,
+           part_1 = NULL,
            cm = NULL,
            ...) {
 
@@ -68,9 +85,15 @@ forest_plot_comp <-
     }
     if (is.null(model)){
       type <- process_model_type(models_list[[1]])
+      for (i in 2:length(models_list)){
+        if (process_model_type(models_list[[i]]) != type){
+          stop("Not all models are of the same type.")
+        }
+      }
     }
 
     x_label <- process_axis_label(label = x_label, type = type, terms = terms)
+
 
     if (terms){
       if (type == "cox" | type == "logistic") {
@@ -106,16 +129,28 @@ forest_plot_comp <-
       )
 
 
+
       if (is.null(xllimit)){
         xllimit <- min(dNew$lower_CI)
       }
-
       if (is.null(xulimit)){
         xulimit <- max(dNew$upper_CI)
       }
 
-      req_seq <- seq(round((xllimit- 0.05)/0.05, digits = 1)*0.05, round((xulimit + 0.05)/0.05, digits = 1)*0.05, by = 0.05)
-      req_seq_labs <- formatC(req_seq, format = "f", digits= 2)
+      if (((xulimit - xllimit)/0.05) <= 10) {
+        req_seq <- seq(round((xllimit- 0.025)/0.05, digits = 1)*0.05, round((xulimit + 0.025)/0.05, digits = 1)*0.05, by = 0.05)
+        req_seq_labs <- formatC(req_seq, format = "f", digits= 2)
+        }
+      if ((((xulimit - xllimit)/0.05) > 10) & (((xulimit - xllimit)/0.05) <= 20)){
+        req_seq <- seq(round((xllimit- 0.05)/0.1, digits = 1)*0.1, round((xulimit + 0.05)/0.1, digits = 1)*0.1, by = 0.1)
+        req_seq_labs <- formatC(req_seq, format = "f", digits= 1)
+      }
+      if ((((xulimit - xllimit)/0.05) > 20)){
+        req_seq <- seq(round((xllimit- 0.25)/0.5, digits = 0)*0.5, round((xulimit + 0.25)/0.5, digits = 0)*0.5, by = 0.5)
+        req_seq_labs <- formatC(req_seq, format = "f", digits= 0)
+      }
+
+
       attr(req_seq, "labels") <- req_seq_labs
 
 
@@ -128,7 +163,12 @@ forest_plot_comp <-
 
 
       text_col <- paste(format(round(data_frame_for_forest_plot$coef , digits = 2), nnsmall = 2), " (", format(round(data_frame_for_forest_plot$low, digits = 2), nsmall = 2), ", ", format(round(data_frame_for_forest_plot$high, digits = 2), nsmall = 2), ")", sep = "")
-      tabletext <- cbind(c(NA, "REFERENCE: At compositional mean", col_of_names), c(pred_name, vline_loc, text_col[3:nrow(data_frame_for_forest_plot)]))
+      if (terms){
+        tabletext <- cbind(c(NA, "REFERENCE: At compositional mean", col_of_names), c(pred_name, vline_loc, text_col[3:nrow(data_frame_for_forest_plot)]))
+      }
+      if (!(terms)){
+        tabletext <- cbind(c(NA, NA, col_of_names), c(pred_name, vline_loc, text_col[3:nrow(data_frame_for_forest_plot)]))
+      }
 
 
       fp <- forestplot::forestplot(
@@ -180,27 +220,42 @@ forest_plot_comp <-
       }
       data_frame_for_forest_plot <- rbind(data_frame_for_forest_plot, data.frame("coef" = coef, "low" = low, "high" = high))
 
-      }
-
-
+    }
 
     if (is.null(xllimit)){
       xllimit <- min(data_frame_for_forest_plot)
     }
-
     if (is.null(xulimit)){
       xulimit <- max(data_frame_for_forest_plot)
     }
-    req_seq <- seq(round((xllimit- 0.05)/0.05, digits = 1)*0.05, round((xulimit + 0.05)/0.05, digits = 1)*0.05, by = 0.05)
-    req_seq_labs <- formatC(req_seq, format = "f", digits= 2)
+
+    if (((xulimit - xllimit)/0.05) <= 10) {
+         req_seq <- seq(round((xllimit- 0.025)/0.05, digits = 1)*0.05, round((xulimit + 0.025)/0.05, digits = 1)*0.05, by = 0.05)
+         req_seq_labs <- formatC(req_seq, format = "f", digits= 2)
+    }
+    if ((((xulimit - xllimit)/0.05) > 10) & (((xulimit - xllimit)/0.05) <= 20)){
+         req_seq <- seq(round((xllimit- 0.05)/0.1, digits = 1)*0.1, round((xulimit + 0.05)/0.1, digits = 1)*0.1, by = 0.1)
+         req_seq_labs <- formatC(req_seq, format = "f", digits= 1)
+    }
+    if ((((xulimit - xllimit)/0.05) > 20)){
+         req_seq <- seq(round((xllimit- 0.25)/0.5, digits = 0)*0.5, round((xulimit + 0.25)/0.5, digits = 0)*0.5, by = 0.5)
+         req_seq_labs <- formatC(req_seq, format = "f", digits= 1)
+    }
+
     attr(req_seq, "labels") <- req_seq_labs
 
     data_frame_for_forest_plot <- rbind( rep(vline_loc, by = ncol(data_frame_for_forest_plot)), data_frame_for_forest_plot)
 
+    if (terms){
+       tabletext <- cbind(c( "REFERENCE: At compositional mean", col_of_names))
+    }
+    if (!(terms)){
+      tabletext <- cbind(c(NA, col_of_names))
+    }
 
-  tabletext <- cbind(c( "REFERENCE: At compositional mean", col_of_names))#, c(pred_name, vline_loc, text_col[3:nrow(data_frame_for_forest_plot)]))
+
     col_vec <- grDevices::hcl.colors(n = length(models_list), palette = "dark2")
-     fp <- forestplot::forestplot(
+    fp <- forestplot::forestplot(
     tabletext,
      graph.pos = 2,
       mean = data_frame_for_forest_plot[, colnames(data_frame_for_forest_plot)[grepl("coef", colnames(data_frame_for_forest_plot))]],

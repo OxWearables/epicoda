@@ -39,15 +39,15 @@ plot_transfers(
 
 \item{to_part}{Should be an element of \code{comp_labels}. Should have compositional mean less than \code{from_part}.}
 
-\item{model}{Model to use in generating predictions.}
+\item{model}{Model to use for predictions.}
 
-\item{dataset}{Should be dataset used to develop \code{model}.}
+\item{dataset}{Dataset used to develop \code{model}.}
 
 \item{comp_labels}{The labels of the compositional columns.}
 
 \item{terms}{Are estimates for differences in outcome associated with differences in compositional variables? If \code{terms = TRUE} all estimates and plots will be for difference in outcome associated with differences in the compositional variables. If \code{terms = FALSE}, \code{fixed_values} is used to set the values of the non-compositional covariates, and outputs are predictions for the outcome based on these values of the non-compositional covariates and the given value of the compositional variables (and confidence intervals include uncertainty due to all variables in the model, not just the compositional variables). If the model uses splines (from \code{comp_spline_model}), \code{terms} must be set to \code{FALSE}.}
 
-\item{fixed_values}{If \code{terms = FALSE}, this is used as giving the fixed values of the non-compositional covariates at which to calculate the prediction. If it is not set, it can be automatically generated.}
+\item{fixed_values}{If \code{terms = FALSE}, this gives the fixed values of the non-compositional covariates at which to calculate the prediction. It is generated automatically if not set.}
 
 \item{transformation_type}{The type of transformation desired. Should be \code{"ilr", "alr"} or \code{"clr"}.}
 
@@ -88,7 +88,7 @@ minimum measurable value in the compositional columns of data. It should be on t
 
 \item{theme}{Optional \code{theme} argument which can be set as a \code{ggplot2::theme} object and will control how the plot appears.}
 
-\item{cm}{Can be set with compositional mean to speed up calculation. As it is easy to make mistakes using this, this should not be set manually and should only be passed from other functions.}
+\item{cm}{Can be set with compositional mean to speed up calculation. This should NOT be set manually and should only be passed from other functions.}
 }
 \value{
 Plot with balance of two parts plotted as exposure/ independent variable.
