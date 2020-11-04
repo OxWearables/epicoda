@@ -2,16 +2,16 @@
 #'
 #' Principally intended as input to forest_plot_examples and plot_transfers.
 #'
-#' @param model Model to use in generating predictions.
-#' @param dataset  Should be dataset used to develop \code{model}.
+#' @param model Model to use for predictions.
+#' @param dataset  Dataset used to develop \code{model}.
 #' @param det_limit Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
 #' minimum measurable value in the compositional columns of data. It should be on the same scale as the (input) compositional columns in \code{dataset} (NB it doesn't need to match \code{new_data}).
 #' @param new_data Data for predictions.
 #' @param terms Are estimates for differences in outcome associated with differences in compositional variables? If \code{terms = TRUE} all estimates and plots will be for difference in outcome associated with differences in the compositional variables. If \code{terms = FALSE}, \code{fixed_values} is used to set the values of the non-compositional covariates, and outputs are predictions for the outcome based on these values of the non-compositional covariates and the given value of the compositional variables (and confidence intervals include uncertainty due to all variables in the model, not just the compositional variables). If the model uses splines (from \code{comp_spline_model}), \code{terms} must be set to \code{FALSE}.
-#' @param fixed_values If \code{terms = FALSE}, this is used as giving the fixed values of the non-compositional covariates at which to calculate the prediction. If it is not set, it can be automatically generated.
+#' @param fixed_values If \code{terms = FALSE}, this gives the fixed values of the non-compositional covariates at which to calculate the prediction. It is generated automatically if not set.
 #' @inheritParams transform_comp
 #' @inheritParams process_units
-#' @param cm Can be set with compositional mean to speed up calculation. As it is easy to make mistakes using this, this should not be set manually and should only be passed from other functions.
+#' @param cm Can be set with compositional mean to speed up calculation. This should NOT be set manually and should only be passed from other functions.
 
 #' @return Plot with balance of two parts plotted as exposure/ independent variable.
 #' @export
@@ -20,22 +20,22 @@
 #' outcome = "linear_outcome",
 #' covariates = c("agegroup", "sex"),
 #' data = simdata,
-#' comp_labels = c("partA", "partB", "partC", "partD", "partE"))
+#' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
 #'
 #' old_comp <- comp_mean(simdata,
-#' comp_labels = c("partA", "partB", "partC", "partD", "partE"))
+#' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
 #' new_comp <-
 #' change_composition(
 #'  composition = old_comp,
 #'  main_part = "partB",
 #'  main_change = +0.5,
-#'  comp_labels = c("partA", "partB", "partC", "partD", "partE")
+#'  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
 #')
 #'
 #' predict_fit_and_ci(model = lm_outcome,
 #' dataset = simdata,
 #' new_data = new_comp,
-#' comp_labels = c("partA", "partB", "partC", "partD", "partE"))
+#' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
 predict_fit_and_ci <- function(model,
                            dataset,
                            new_data,
@@ -55,7 +55,6 @@ predict_fit_and_ci <- function(model,
       "transformation_type must be specified and must match the transformation used in transform_comp earlier (which defaults to \"ilr\")"
     )
   }
-
 
   # We set units
   comp_sum <- as.numeric(process_units(units, specified_units)[2])
