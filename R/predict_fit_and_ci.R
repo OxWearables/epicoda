@@ -151,13 +151,12 @@ predict_fit_and_ci <- function(model,
                            se.fit = TRUE)
 
     dNew <- data.frame(new_data, predictions)
-    dNew$normalised_predictions <- model$family$linkinv(dNew$fit)
 
     dNew$lower_CI <-
       model$family$linkinv(dNew$fit - 1.96 * dNew$se.fit)
     dNew$upper_CI <-
       model$family$linkinv(dNew$fit + 1.96 * dNew$se.fit)
-
+    dNew$fit <- model$family$linkinv(dNew$fit)
 
   }
 
