@@ -41,21 +41,21 @@ forest_plot_comp(
 
 \item{comp_labels}{The labels of the compositional columns.}
 
-\item{x_label}{Label for x axis in plot.}
+\item{x_label}{x-axis label.}
 
-\item{xllimit}{Minimum value for x axis.}
+\item{xllimit}{Minimum value for x-axis.}
 
-\item{xulimit}{Maximum value for x axis.}
+\item{xulimit}{Maximum value for x-axis.}
 
 \item{plot_log}{If this is \code{TRUE}, the x-axis will be log-transformed.}
 
-\item{text_settings}{An optional argument which should be an \code{fpTxtGp} object as specified in the \code{forestplot} package.}
+\item{text_settings}{An optional argument to specify text formatting. It should be an \code{fpTxtGp} object (\code{forestplot} package).}
 
-\item{pred_name}{Name to give column of predictions in plot.}
+\item{pred_name}{Name for column of predictions in plot.}
 
-\item{boxsize}{Sets the size of the boxes plotted on the forest plot to show predictions.}
+\item{boxsize}{Sets the size of boxes for estimates on the forest plot.}
 
-\item{terms}{Are estimates for differences in outcome associated with differences in compositional variables? If \code{terms = TRUE} all estimates and plots will be for difference in outcome associated with differences in the compositional variables. If \code{terms = FALSE}, \code{fixed_values} is used to set the values of the non-compositional covariates, and outputs are predictions for the outcome based on these values of the non-compositional covariates and the given value of the compositional variables (and confidence intervals include uncertainty due to all variables in the model, not just the compositional variables). If the model uses splines (from \code{comp_spline_model}), \code{terms} must be set to \code{FALSE}.}
+\item{terms}{Are estimates for differences in outcome associated with differences in compositional variables? If \code{terms = TRUE} all estimates and plots will be for difference in outcome associated with differences in the compositional variables. If \code{terms = FALSE}, \code{fixed_values} is used to set the values of the non-compositional covariates, and outputs are predictions for the outcome based on these values of the non-compositional covariates and the given value of the compositional variables (and confidence intervals include uncertainty due to all variables in the model, not just the compositional variables).}
 
 \item{fixed_values}{If \code{terms = FALSE}, this gives the fixed values of the non-compositional covariates at which to calculate the prediction. It is generated automatically if not set.}
 
@@ -72,7 +72,7 @@ minimum measurable value in the compositional columns of data. It should be on t
 
 \item{comparison_part}{Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of part that all other parts will be compared to.}
 
-\item{part_1}{Only used if First part in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
+\item{part_1}{Only used if first part in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
 
 \item{cm}{Can be set with compositional mean to speed up calculation. This should NOT be set manually and should only be passed from other functions.}
 
@@ -83,7 +83,7 @@ minimum measurable value in the compositional columns of data. It should be on t
   }}
 }
 \value{
-Forest plot illustrating prediction of the model at given compositions.
+Forest plot showing model predictions.
 }
 \description{
 This function takes a named list of compositions, and plots model predictions for each composition.

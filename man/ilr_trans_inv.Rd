@@ -2,12 +2,12 @@
 % Please edit documentation in R/ilr.R
 \name{ilr_trans_inv}
 \alias{ilr_trans_inv}
-\title{ilr_trans_inv: Inverts ilr transformations (pivot coordinates)}
+\title{ilr_trans_inv: Inverts ilr transformation (pivot coordinates)}
 \usage{
 ilr_trans_inv(data)
 }
 \arguments{
-\item{data}{Dataset to have the transformation reversed}
+\item{data}{Dataset to have the transformation reversed.}
 }
 \value{
 Compositional columns

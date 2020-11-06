@@ -8,7 +8,7 @@
 #' @param transformation_type The type of transformation desired. Should be \code{"ilr", "alr"} or \code{"clr"}.
 #' @inheritParams process_zeroes
 #' @param comparison_part Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of part that all other parts will be compared to.
-#' @param part_1 Only used if First part in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.
+#' @param part_1 Only used if first part in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.
 #' @return \code{data} with transformed activity columns.
 #' @examples transform_comp(data = simdata,
 #' comp_labels = c("partA", "partB", "partC", "partD", "partE"),

@@ -20,7 +20,7 @@ make_new_data(
 \arguments{
 \item{from_part}{Should be an element of \code{comp_labels}.}
 
-\item{to_part}{Should be an element of \code{comp_labels}. Should have compositional mean less than \code{from_part}.}
+\item{to_part}{Should be an element of \code{comp_labels}.}
 
 \item{fixed_values}{If \code{terms = FALSE}, this gives the fixed values of the non-compositional covariates at which to calculate the prediction. It is generated automatically if not set.}
 
@@ -32,11 +32,11 @@ make_new_data(
 
 \item{comp_labels}{The labels of the compositional columns.}
 
-\item{lower_quantile}{See \code{vary_time_of_interest} and \code{make_new_data}}
+\item{lower_quantile}{If set, this gives the lower limit of plotting (as a quantile for both variables of interest).}
 
-\item{upper_quantile}{See \code{vary_time_of_interest} and \code{make_new_data}}
+\item{upper_quantile}{If set, this gives the upper limit of plotting (as a quantile for both variables of interest).}
 
-\item{granularity}{Doesn't usually need setting. Parameter indicating how many predictions to make. If too low, plotted curve has gaps. If too high, calculation is slow.}
+\item{granularity}{Does not usually require setting. If set, gives the number of points plotted on the graph. If it is too low, the plot will contain gaps. If it is too high, plotting will be slow.}
 }
 \description{
 Generates a new dataset to feed into the plotting functions.

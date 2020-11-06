@@ -1,40 +1,40 @@
 #' plot_transfers: Plots model predictions.
 #'
-#' Plots model predictions for transfers between the given parts.
+#' Plots model predictions for transfers/substitutions between the named parts.
 #'
 #' @param from_part Should be an element of \code{comp_labels}.
-#' @param to_part Should be an element of \code{comp_labels}. Should have compositional mean less than \code{from_part}.
+#' @param to_part Should be an element of \code{comp_labels}.
 #' @inheritParams predict_fit_and_ci
-#' @param yllimit Lower limit to show on y-axis on plot.
-#' @param yulimit Upper limit to show on y-axis on plot.
-#' @param xllimit Lower limit to show on x-axis on plot. Should be in same scale as \code{units}.
-#' @param xulimit Upper limit to show on x-axis on plot. Should be in same scale as \code{units}.
-#' @param y_label Label for y-axis on plot.
+#' @param yllimit Lower limit of y-axis shown on plot.
+#' @param yulimit Upper limit of y-axis shown on plot.
+#' @param xllimit Lower limit of x-axis shown on plot. Should be in same scale as \code{units}.
+#' @param xulimit Upper limit of x-axis shown on plot. Should be in same scale as \code{units}.
+#' @param y_label Label for y-axis. \code{"suppressed"} is a special value which will result in no label.
 #' @param plot_log If this is \code{TRUE}, the y-axis will be log-transformed.
-#' @param lower_quantile See \code{vary_time_of_interest} and \code{make_new_data}
-#' @param upper_quantile See \code{vary_time_of_interest} and \code{make_new_data}
-#' @param granularity Doesn't usually need setting. Parameter indicating how many predictions to make. If too low, plotted curve has gaps. If too high, calculation is slow.
+#' @param lower_quantile If set, this gives the lower limit of plotting (as a quantile for both variables of interest).
+#' @param upper_quantile  If set, this gives the upper limit of plotting (as a quantile for both variables of interest).
+#' @param granularity Does not usually require setting. If set, gives the number of points plotted on the graph. If it is too low, the plot will contain gaps. If it is too high, plotting will be slow.
 #' @param point_specification Should be a \code{ggplot2::geom_point} object specifying how the points on the graph will be plotted.
-#' @param error_bar_colour Should be an R-recognised colour, specified by name in quotation marks.
+#' @param error_bar_colour Should be an R-recognised colour for error bars, specified by name in quotation marks.
 #' @param theme Optional \code{theme} argument which can be set as a \code{ggplot2::theme} object and will control how the plot appears.
 #' @return Plot with balance of two parts plotted as exposure/ independent variable.
 #' @export
 #' @examples
 #'
 #' lm_outcome <- comp_model(type = "linear",
-#' outcome = "linear_outcome",
+#' outcome = "BMI",
 #' covariates = c("agegroup", "sex"),
 #' data = simdata,
-#' comp_labels = c("partA", "partB", "partC", "partD", "partE"))
+#' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
 #'
 #'
-#'  epicoda::plot_transfers(from_part = "partD",
-#' to_part = "partA",
+#' epicoda::plot_transfers(from_part = "sedentary",
+#' to_part = "moderate",
 #' model = lm_outcome ,
 #' dataset = simdata,
 #' transformation_type = "ilr",
-#' comp_labels = c("partA", "partB", "partC", "partD", "partE"),
-#' y_label = "Model-predicted outcome",
+#' comp_labels =c("vigorous", "moderate", "light", "sedentary", "sleep"),
+#' y_label = "Model-predicted difference in BMI",
 #' units = "hr/day",
 #' terms = TRUE)
 #'
@@ -72,17 +72,19 @@ plot_transfers <- function(from_part,
   }
 
   # We normalise
-  det_limit <- rescale_det_limit(data = dataset, comp_labels = comp_labels, det_limit = det_limit)
-  dataset <- normalise_comp(data = dataset, comp_labels = comp_labels)
-
-
+  det_limit <-
+    rescale_det_limit(data = dataset,
+                      comp_labels = comp_labels,
+                      det_limit = det_limit)
+  dataset <-
+    normalise_comp(data = dataset, comp_labels = comp_labels)
 
   # Set theme for plotting
-  if (is.null(theme)){
+  if (is.null(theme)) {
     theme_for_plots <-
       ggplot2::theme(
         line = ggplot2::element_line(size = 1),
-        axis.ticks = ggplot2::element_line(size= 2),
+        axis.ticks = ggplot2::element_line(size = 2),
         text = ggplot2::element_text(size = 15, face = "bold"),
         axis.text.y = ggplot2::element_text(
           size = 15,
@@ -107,7 +109,7 @@ plot_transfers <- function(from_part,
   units <- process_units(units, specified_units)[1]
 
 
-  # We label what the transformed cols will be
+  # We label what the transformed columns will be
   if (transformation_type == "ilr") {
     if (!is.null(part_1)) {
       comp_labels <- alter_order_comp_labels(comp_labels, part_1)
@@ -120,7 +122,7 @@ plot_transfers <- function(from_part,
                   part_1 = part_1)
 
   dataset_ready <-
-    dataset[,!(colnames(dataset) %in% transf_labels)]
+    dataset[, !(colnames(dataset) %in% transf_labels)]
 
 
   # We assign some internal parameters
@@ -128,26 +130,36 @@ plot_transfers <- function(from_part,
 
 
   # We make sure there will be a y_label, unless this is specified as "suppressed"
-  y_label <- process_axis_label(label = y_label, type = type, terms = terms)
+  y_label <-
+    process_axis_label(label = y_label,
+                       type = type,
+                       terms = terms)
 
 
-# We calculate the compositional mean so we can use it in future calculations
-  if (is.null(cm)){
-      cm <- comp_mean(
+  # We calculate the compositional mean so we can use it in future calculations
+  if (is.null(cm)) {
+    cm <- comp_mean(
       dataset,
       comp_labels,
-      rounded_zeroes = rounded_zeroes, det_limit = det_limit,
+      rounded_zeroes = rounded_zeroes,
+      det_limit = det_limit,
       units = "unitless"
     )
   }
 
-  cm_transf_df <- suppressMessages(transform_comp(cm, comp_labels,
-                                 transformation_type = transformation_type,
-                                 part_1 = part_1,
-                                 comparison_part = comparison_part,
-                                 rounded_zeroes = FALSE))
+  cm_transf_df <- suppressMessages(
+    transform_comp(
+      cm,
+      comp_labels,
+      transformation_type = transformation_type,
+      part_1 = part_1,
+      comparison_part = comparison_part,
+      rounded_zeroes = FALSE
+    )
+  )
 
-  cm_on_scale <- rescale_comp(cm, comp_labels = comp_labels, comp_sum = comp_sum)
+  cm_on_scale <-
+    rescale_comp(cm, comp_labels = comp_labels, comp_sum = comp_sum)
 
 
   # We assign some fixed_values to use in setting up new_data
@@ -161,12 +173,10 @@ plot_transfers <- function(from_part,
   }
   if (is.null(fixed_values)) {
     fixed_values <-
-      generate_fixed_values(
-        dataset,
-        comp_labels,
-        rounded_zeroes = rounded_zeroes,
-        det_limit = det_limit
-      )
+      generate_fixed_values(dataset,
+                            comp_labels,
+                            rounded_zeroes = rounded_zeroes,
+                            det_limit = det_limit)
     fixed_values <- cbind(fixed_values, cm)
   }
 
@@ -186,38 +196,47 @@ plot_transfers <- function(from_part,
 
 
   # We normalise this to work with it
-  new_data <- normalise_comp(data = new_data, comp_labels = comp_labels)
+  new_data <-
+    normalise_comp(data = new_data, comp_labels = comp_labels)
 
   new_data <-
-    suppressMessages(transform_comp(
-      new_data,
-      comp_labels,
-      transformation_type = transformation_type,
-      part_1 = part_1,
-      comparison_part = comparison_part,
-      rounded_zeroes = FALSE
-    ))
+    suppressMessages(
+      transform_comp(
+        new_data,
+        comp_labels,
+        transformation_type = transformation_type,
+        part_1 = part_1,
+        comparison_part = comparison_part,
+        rounded_zeroes = FALSE
+      )
+    )
 
 
-  dNew <- predict_fit_and_ci(model = model,
-                             dataset = dataset,
-                             new_data = new_data,
-                             fixed_values = fixed_values,
-                             transformation_type = transformation_type,
-                             comparison_part = comparison_part,
-                             part_1 = part_1,
-                             comp_labels = comp_labels,
-                             units = units,
-                             specified_units = specified_units,
-                             rounded_zeroes = rounded_zeroes,
-                             det_limit = det_limit,
-                             terms = terms, cm = cm)
+  dNew <- predict_fit_and_ci(
+    model = model,
+    dataset = dataset,
+    new_data = new_data,
+    fixed_values = fixed_values,
+    transformation_type = transformation_type,
+    comparison_part = comparison_part,
+    part_1 = part_1,
+    comp_labels = comp_labels,
+    units = units,
+    specified_units = specified_units,
+    rounded_zeroes = rounded_zeroes,
+    det_limit = det_limit,
+    terms = terms,
+    cm = cm
+  )
   # We normalise again
   dNew <- normalise_comp(data = dNew, comp_labels = comp_labels)
 
 
   # We pull out the required values on the needed scale
-  dToScale <- rescale_comp(data = dNew, comp_labels = comp_labels, comp_sum = comp_sum)
+  dToScale <-
+    rescale_comp(data = dNew,
+                 comp_labels = comp_labels,
+                 comp_sum = comp_sum)
   dNew$axis_vals <-
     dToScale[, to_part] - rep(cm_on_scale[1, to_part], by = nrow(dNew))
 
@@ -250,13 +269,15 @@ plot_transfers <- function(from_part,
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
                         mapping = ggplot2::aes_(x = dNew$axis_vals, y = dNew$fit)) +
-        ggplot2::ylim(yllimit, yulimit) +ggplot2::xlim(xllimit, xulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes_(
-          x = dNew$axis_vals,
-          ymin = dNew$lower_CI,
-          ymax = dNew$upper_CI
-        ),
-        color = error_bar_colour) +
+        ggplot2::ylim(yllimit, yulimit) + ggplot2::xlim(xllimit, xulimit) +
+        ggplot2::geom_errorbar(
+          ggplot2::aes_(
+            x = dNew$axis_vals,
+            ymin = dNew$lower_CI,
+            ymax = dNew$upper_CI
+          ),
+          color = error_bar_colour
+        ) +
         point_specification +
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
@@ -264,8 +285,8 @@ plot_transfers <- function(from_part,
         ) +
         ggplot2::scale_y_continuous(
           trans = scales::log_trans(),
-         breaks = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.2),
-        labels = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.2)
+          breaks = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.2),
+          labels = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.2)
         ) +
         ggplot2::geom_vline(xintercept = 0) +
         ggplot2::geom_hline(yintercept = 1) +
@@ -276,13 +297,15 @@ plot_transfers <- function(from_part,
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
                         mapping = ggplot2::aes_(x = dNew$axis_vals, y = dNew$fit)) +
-        ggplot2::ylim(yllimit, yulimit) +ggplot2::xlim(xllimit, xulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes_(
-          x = dNew$axis_vals,
-          ymin = dNew$lower_CI,
-          ymax = dNew$upper_CI
-        ),
-        color = error_bar_colour) +
+        ggplot2::ylim(yllimit, yulimit) + ggplot2::xlim(xllimit, xulimit) +
+        ggplot2::geom_errorbar(
+          ggplot2::aes_(
+            x = dNew$axis_vals,
+            ymin = dNew$lower_CI,
+            ymax = dNew$upper_CI
+          ),
+          color = error_bar_colour
+        ) +
         point_specification +
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
@@ -306,13 +329,15 @@ plot_transfers <- function(from_part,
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
                         mapping = ggplot2::aes_(x = dNew$axis_vals, y = dNew$fit)) +
-        ggplot2::ylim(yllimit, yulimit) +ggplot2::xlim(xllimit, xulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes_(
-          x = dNew$axis_vals,
-          ymin = dNew$lower_CI,
-          ymax = dNew$upper_CI
-        ),
-        color = error_bar_colour) +
+        ggplot2::ylim(yllimit, yulimit) + ggplot2::xlim(xllimit, xulimit) +
+        ggplot2::geom_errorbar(
+          ggplot2::aes_(
+            x = dNew$axis_vals,
+            ymin = dNew$lower_CI,
+            ymax = dNew$upper_CI
+          ),
+          color = error_bar_colour
+        ) +
         point_specification +
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
@@ -325,20 +350,22 @@ plot_transfers <- function(from_part,
           breaks = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.1),
           labels = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.1),
           limits = c(yllimit, yulimit)
-        )+
+        ) +
         theme_for_plots
     }
     else {
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
                         mapping = ggplot2::aes_(x = dNew$axis_vals, y = dNew$fit)) +
-        ggplot2::ylim(yllimit, yulimit) +ggplot2::xlim(xllimit, xulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes_(
-          x = dNew$axis_vals,
-          ymin = dNew$lower_CI,
-          ymax = dNew$upper_CI
-        ),
-        color = error_bar_colour) +
+        ggplot2::ylim(yllimit, yulimit) + ggplot2::xlim(xllimit, xulimit) +
+        ggplot2::geom_errorbar(
+          ggplot2::aes_(
+            x = dNew$axis_vals,
+            ymin = dNew$lower_CI,
+            ymax = dNew$upper_CI
+          ),
+          color = error_bar_colour
+        ) +
         point_specification +
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
@@ -356,20 +383,24 @@ plot_transfers <- function(from_part,
 
 
   if (type == "linear") {
-  if (plot_log == TRUE) {
-      if (terms){
-        warning('Taking the log transformation doesn\'t make sense for values near 0 and the graph is likely to look very strange')
+    if (plot_log == TRUE) {
+      if (terms) {
+        warning(
+          'Taking the log transformation doesn\'t make sense for values near 0 and the graph is likely to look very strange'
+        )
       }
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
                         mapping = ggplot2::aes_(x = dNew$axis_vals, y = dNew$fit)) +
-        ggplot2::ylim(yllimit, yulimit) +ggplot2::xlim(xllimit, xulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes_(
-          x = dNew$axis_vals,
-          ymin = dNew$lower_CI,
-          ymax = dNew$upper_CI
-        ),
-        color = error_bar_colour) +
+        ggplot2::ylim(yllimit, yulimit) + ggplot2::xlim(xllimit, xulimit) +
+        ggplot2::geom_errorbar(
+          ggplot2::aes_(
+            x = dNew$axis_vals,
+            ymin = dNew$lower_CI,
+            ymax = dNew$upper_CI
+          ),
+          color = error_bar_colour
+        ) +
         point_specification +
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
@@ -377,8 +408,8 @@ plot_transfers <- function(from_part,
         ) +
         ggplot2::scale_y_continuous(
           trans = scales::log_trans(),
-         breaks = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.2),
-        labels = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.2)
+          breaks = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.2),
+          labels = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.2)
         ) +
         ggplot2::geom_vline(xintercept = 0) +
         ggplot2::geom_hline(yintercept = 0) +
@@ -388,16 +419,20 @@ plot_transfers <- function(from_part,
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
                         mapping = ggplot2::aes_(x = dNew$axis_vals, y = dNew$fit)) +
-        ggplot2::ylim(yllimit, yulimit) +ggplot2::xlim(xllimit, xulimit) +
-        ggplot2::geom_errorbar(ggplot2::aes_(
-          x = dNew$axis_vals,
-          ymin = dNew$lower_CI,
-          ymax = dNew$upper_CI
-        ),
-        color = error_bar_colour) +
+        ggplot2::ylim(yllimit, yulimit) + ggplot2::xlim(xllimit, xulimit) +
+        ggplot2::geom_errorbar(
+          ggplot2::aes_(
+            x = dNew$axis_vals,
+            ymin = dNew$lower_CI,
+            ymax = dNew$upper_CI
+          ),
+          color = error_bar_colour
+        ) +
         point_specification +
-        ggplot2::labs(x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
-                      y = y_label) +
+        ggplot2::labs(
+          x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
+          y = y_label
+        ) +
         ggplot2::geom_vline(xintercept = 0) +
         ggplot2::geom_hline(yintercept = 0) +
         theme_for_plots
@@ -405,6 +440,6 @@ plot_transfers <- function(from_part,
   }
 
 
-    message("Please note that plotting may take some time.")
-    return(plot_of_this)
-  }
+  message("Please note that plotting may take some time.")
+  return(plot_of_this)
+}

@@ -2,21 +2,21 @@
 % Please edit documentation in R/ilr.R
 \name{ilr_trans}
 \alias{ilr_trans}
-\title{ilr_trans: Performs ilr transformations (pivot coordinates)}
+\title{ilr_trans: Performs ilr transformations using pivot coordinates.}
 \usage{
 ilr_trans(data)
 }
 \arguments{
-\item{data}{Dataset to have the transformation applied to.}
+\item{data}{Compositional columns to transform.}
 }
 \value{
 ilr-transformed columns.
 }
 \description{
-Takes compositional columns and returns them after ilr transformation.
+Takes compositional columns and returns them after ilr transformation using pivot coordinates.
 }
 \details{
 This doesn't use compositions::ilr to insulate it from changes in the choice of
-basis used. As pivot coordinates are currently standard in physical activity epidemiology this
+basis used. As pivot coordinates are currently standard in physical behaviour epidemiology this
 is specified.
 }
