@@ -1,5 +1,5 @@
 comp_labels <- c("vigorous", "moderate", "light", "sedentary", "sleep")
-d <- readRDS("tests/test_data/alr_output.RDS")
+d <- readRDS("../test_data/alr_output.RDS")
 
 test_that("Output of alr transformation agrees with reference", {
   expect_equal(alr_trans(simdata[1 ,comp_labels], comp_labels, "sleep"),d )

@@ -5,7 +5,7 @@ test_that("Model unchanged from cached model.", {
            covariates = c("agegroup", "sex"),
            data = simdata,
            comp_labels = comp_labels,
-           transformation_type = "ilr"), file = "example_model.rds")
+           transformation_type = "ilr"), file = "../test_data/example_model.rds")
 })
 
 
