@@ -9,9 +9,10 @@
 #' @param comp_labels Compositional column labels.
 #'
 #' @return Composition after reallocating as described.
-#' @examples new_comp <-
+#' @examples
+#' new_comp <-
 #' change_composition(
-#'  composition = simdata,
+#'  composition = simdata[1,],
 #'  main_part = "moderate",
 #'  main_change = +0.5,
 #'  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")

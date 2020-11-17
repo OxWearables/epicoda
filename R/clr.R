@@ -4,9 +4,7 @@
 #'
 #' @param data Compositional columns of dataframe.
 #' @return \code{data} with clr-transformed compositional columns.
-#' @examples clr_trans(data = simdata[, c("vigorous", "moderate", "light", "sedentary", "sleep")],
-#' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
-#' comparison_part = "sleep")
+#' @examples clr_trans(data = simdata[, c("vigorous", "moderate", "light", "sedentary", "sleep")])
 #'
 #' @export
 clr_trans <- function(data) {
