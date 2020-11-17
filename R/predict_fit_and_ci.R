@@ -2,6 +2,10 @@
 #'
 #' Principally intended as input to forest_plot_examples and plot_transfers.
 #'
+#' Note that confidence intervals use the t-distribution with the appropriate degrees of freedom for linear and logistic regression,
+#' and the z-distribution for Cox regression, to match the apparent behaviour of \code{summary()} for these model objects. As long as there are a reasonable
+#' number of samples (at least 30, say) the difference between the two is negligible.
+#'
 #' @param model Model to use for predictions.
 #' @param dataset  Dataset used to develop \code{model}.
 #' @param det_limit Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
@@ -16,7 +20,7 @@
 #' @export
 #' @examples
 #' lm_outcome <- comp_model(type = "linear",
-#' outcome = "linear_outcome",
+#' outcome = "BMI",
 #' covariates = c("agegroup", "sex"),
 #' data = simdata,
 #' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
@@ -79,7 +83,6 @@ predict_fit_and_ci <- function(model,
   dataset_ready <-
     dataset[,!(colnames(dataset) %in% transf_labels)]
 
-
   # We assign some internal parameters
   type <- process_model_type(model)
 
@@ -98,8 +101,6 @@ predict_fit_and_ci <- function(model,
                                  part_1 = part_1,
                                  comparison_part = comparison_part,
                                  rounded_zeroes = FALSE))
-
-
 
   # We assign some fixed_values to use in predicting
   if (!(is.null(fixed_values))) {
@@ -139,11 +140,15 @@ predict_fit_and_ci <- function(model,
 
   new_data <- transform_comp(data = new_data, comp_labels = comp_labels, transformation_type = transformation_type, rounded_zeroes = FALSE, comparison_part = comparison_part, part_1 = part_1)
 
-  # We begin the plotting
-  if (type == "logistic" && (terms == FALSE)) {
+  # Messgae about meaning of the 'terms' argument
+  if (terms == FALSE){
     message(
       "Note that the confidence intervals on these predictions include uncertainty driven by other, non-compositional variables. To look at compositional variables only, use terms = TRUE"
     )
+  }
+
+  # We begin the plotting
+  if (type == "logistic" && (terms == FALSE)) {
     predictions <- stats::predict(model,
                            newdata = new_data,
                            type = "link",
@@ -151,10 +156,13 @@ predict_fit_and_ci <- function(model,
 
     dNew <- data.frame(new_data, predictions)
 
+    t_value <-
+      stats::qt(0.975, df = df.residual(model))[[1]]
+    print(t_value)
     dNew$lower_CI <-
-      model$family$linkinv(dNew$fit - 1.96 * dNew$se.fit)
+      model$family$linkinv(dNew$fit - t_value * dNew$se.fit)
     dNew$upper_CI <-
-      model$family$linkinv(dNew$fit + 1.96 * dNew$se.fit)
+      model$family$linkinv(dNew$fit + t_value * dNew$se.fit)
     dNew$fit <- model$family$linkinv(dNew$fit)
 
   }
@@ -193,14 +201,13 @@ predict_fit_and_ci <- function(model,
     value <- sqrt(data.matrix(in_sqrt_true))
 
     t_value <-
-      stats::qt(0.975, df = (nrow(stats::model.matrix(model)) -1 - length(transf_labels)))[[1]]
+      stats::qt(0.975, df = df.residual(model))[[1]]
 
     alpha_lower <- dNew$log_odds_change - t_value * value
     alpha_upper <- dNew$log_odds_change + t_value * value
 
     dNew$lower_CI <- exp(alpha_lower)
     dNew$upper_CI <- exp(alpha_upper)
-
   }
 
 
@@ -211,7 +218,8 @@ predict_fit_and_ci <- function(model,
       newdata = new_data,
       type = "terms",
       se.fit = TRUE,
-      terms = transf_labels, reference = "sample"
+      terms = transf_labels,
+      reference = "sample"
     )
 
     dNew <- data.frame(new_data, predictions)
@@ -235,19 +243,14 @@ predict_fit_and_ci <- function(model,
 
     value <- sqrt(data.matrix(in_sqrt_true))
 
-    t_value <-
-      stats::qt(0.975, df = (nrow(stats::model.matrix(model)) -1 - length(transf_labels)))[[1]]
+    z_value <- stats::qnorm(0.975)
 
-
-
-    alpha_lower <- dNew$log_hazard_change - t_value*value
-    alpha_upper <- dNew$log_hazard_change + t_value*value
+    alpha_lower <- dNew$log_hazard_change - z_value*value
+    alpha_upper <- dNew$log_hazard_change + z_value*value
 
     dNew$lower_CI <- exp(alpha_lower)
     dNew$upper_CI <- exp(alpha_upper)
   }
-
-
 
 
 
@@ -261,10 +264,12 @@ predict_fit_and_ci <- function(model,
 
     dNew$fit <- exp(dNew$fit)
 
+    z_value <- stats::qnorm(0.975)
+
     dNew$lower_CI <-
-      dNew$fit *exp(-(1.96 * dNew$se.fit))
+      dNew$fit *exp(-(z_value * dNew$se.fit))
     dNew$upper_CI <-
-      dNew$fit* exp( +(1.96 * dNew$se.fit))
+      dNew$fit* exp( +(z_value * dNew$se.fit))
   }
 
 
@@ -282,9 +287,12 @@ predict_fit_and_ci <- function(model,
 
     dNew <- data.frame(new_data, predictions)
 
+    t_value <-
+      stats::qt(0.975, df = df.residual(model))[[1]]
 
-    dNew$lower_CI <- dNew$fit - 1.96 * dNew$se.fit
-    dNew$upper_CI <- dNew$fit + 1.96 * dNew$se.fit
+    print(t_value)
+    dNew$lower_CI <- dNew$fit - t_value * dNew$se.fit
+    dNew$upper_CI <- dNew$fit + t_value * dNew$se.fit
 
 
   }
@@ -308,19 +316,12 @@ predict_fit_and_ci <- function(model,
     vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
     sum_for_args <- paste0(vector_for_args, collapse = "+")
 
-
-
-
     dNew$main <- eval(parse(text = sum_for_args))
 
     dNew$fit <- dNew$main
 
-
-
-
     middle_matrix <- stats::vcov(model)[transf_labels, transf_labels]
     x <- data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
-
     in_sqrt_1 <- (x %*% middle_matrix)
     t_x <- as.matrix(t(x))
     in_sqrt_true <- c()
@@ -332,7 +333,7 @@ predict_fit_and_ci <- function(model,
     value <- sqrt(data.matrix(in_sqrt_true))
 
     t_value <-
-      stats::qt(0.975, df = (nrow(stats::model.matrix(model)) -1 - length(transf_labels)))[[1]]
+      stats::qt(0.975, df = df.residual(model))[[1]]
 
     dNew$lower_CI <- dNew$fit - t_value * value
     dNew$upper_CI <- dNew$fit + t_value * value
@@ -347,7 +348,6 @@ predict_fit_and_ci <- function(model,
       print(paste(variable, ":", fixed_values[1, variable]))
     }
   }
-
 
   return(dNew)
 }

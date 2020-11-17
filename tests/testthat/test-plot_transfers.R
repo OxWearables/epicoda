@@ -64,3 +64,4 @@ test_that("result unchanged ", {
                                        units = "hr/day",
                                        terms = TRUE), "../test_data/plot_example.RDS")
 })
+
