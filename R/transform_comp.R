@@ -1,7 +1,8 @@
 #' Transform compositional variables to ilr (pivot), alr or clr coordinates
 #'
 #' Takes a dataset with a set of labelled compositional columns and returns a dataset with
-#' transformed variables added. The current behaviour also returns compositional columns rescaled to be on the specified scale.
+#' transformed variables added. The current behaviour also returns compositional columns rescaled to be on the specified scale, and with zeroes imputed
+#' if \code{rounded_zeroes} is \code{TRUE}.
 #'
 #' @param data Dataset to have the transformation applied to.
 #' @param comp_labels The labels of the compositional columns.
