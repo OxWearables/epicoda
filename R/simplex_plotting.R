@@ -50,8 +50,7 @@ plot_density_ternary <-
           face = 2,
           colour = "black"
         ),
-        line = ggplot2::element_line(size = 1, colour = "black"),
-        tern.axis.arrow = ggplot2::element_line(size = 2, colour = "black")
+        line = ggplot2::element_line(size = 1, colour = "black")
       )
     }
 
