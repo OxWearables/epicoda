@@ -1,5 +1,5 @@
 ---
-title: 'Statistical appendix: Derivation of Confidence Intervals'
+title: 'Statistical Appendix: Confidence Intervals'
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{derivation_of_CIs_used}
@@ -18,10 +18,10 @@ knitr::opts_chunk$set(
 ```{r setup}
 ```
 
-Note: throughout, the two-sided 95% confidence interval is used. Though the theory generalises, only the 95% confidence interval is currently implemented. 
+Only 2-sided 95% confidence intervals are currently implemented. 
 
-## Results of Compositional Data Analyses
-The results of Compositional Data Analyses are presented graphically, using plots of model predictions at given pairwise balances of parts (`plot_transfers`) as well as model predictions at particular compositions (`forest_plot_comp`). Internally, these both use `predict_fit_and_ci`, which can also be used in a standalone fashion to explore model predictions and confidence intervals on them. 
+## Presenting Compositional Data Analyses
+The results of Compositional Data Analyses can be presented graphically, using plots of model predictions for pairwise balances of parts (`plot_transfers`) or model predictions at particular compositions (`forest_plot_comp`). In this package, these both use `predict_fit_and_ci` internally. This function can also be used in a standalone fashion to explore model predictions and confidence intervals. 
 
 Wherever results are presented, there are two options. The default is to set `terms = TRUE`, and present the predicted difference in the outcome at the different levels of the compositional variables. Implicitly, in this case, all other covariates are fixed.
 
@@ -44,9 +44,9 @@ This is the simplest case. Using the above, we directly estimate $\overline{\Del
 Here, the terms given by the `predict` function are on the scale of the linear predictors i.e. we estimate $\overline{\Delta y}$  on the scale of the linear predictors and the confidence interval on this, $(\overline{\Delta y_{min}},  \overline{\Delta y_{max}})$. Then, the odds ratio and uncertainty on it is given by exponentiating the estimate ($\exp(\overline{\Delta y})$) and confidence interval ($(\exp(\overline{\Delta y_{min}}),  \exp(\overline{\Delta y_{max}}))$. 
 
 ### Cox models 
-Here, the terms given by the `predict` function are on the scale of the linear predictors i.e. we estimate $\overline{\Delta y} $ on the scale of the linear predictors and the confidence interval on this, $(\overline{\Delta y_{min}},  \overline{\Delta y_{max}})$. Then, the hazard ratio and uncertainty on it is given by exponentiating the estimate ($\exp(\overline{\Delta y})$) and confidence interval ($(\exp(\overline{\Delta y_{min}}),  \exp(\overline{\Delta y_{max}}))$. 
+Here, the terms given by the `predict` function are on the scale of the linear predictors i.e. we estimate $\overline{\Delta y}$ on the scale of the linear predictors and the confidence interval on this, $(\overline{\Delta y_{min}},  \overline{\Delta y_{max}})$. Then, the hazard ratio and uncertainty on it is given by exponentiating the estimate ($\exp(\overline{\Delta y})$) and confidence interval ($(\exp(\overline{\Delta y_{min}}),  \exp(\overline{\Delta y_{max}}))$. 
 
 
 ## Confidence intervals when `terms = FALSE`
-In this case, for linear, logistic and Cox models, the confidence intervals are the standard confidence intervals on the mean prediction,as calculated by the `predict` method. Note the intervals are *not* the prediction intervals (the intervals within which 95% of new observations $\overline{\Delta y}$ might be expected to fall given their $x$ values). 
+In this case, for linear, logistic and Cox models, the confidence intervals are the standard confidence intervals on the mean prediction, as calculated by the `predict` method. Note the intervals are *not* the prediction intervals (the intervals within which 95% of new observations $\overline{\Delta y}$ might be expected to fall given their $x$ values). 
 
