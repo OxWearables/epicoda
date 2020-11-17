@@ -105,20 +105,20 @@ process_units <- function(units, specified_units){
 #' @param data Dataset to have zeroes imputed for.
 #' @param comp_labels The labels of the compositional columns.
 #' @param rounded_zeroes Are zeroes rounded zeroes?
-#' @param det_limit Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
-#' minimum measurable value in the compositional columns of data. It should be on the same scale as the (input) compositional columns.
+#' @param det_limit Detection limit if zeroes are to be imputed. This is needed when \code{rounded_zeroes} is \code{TRUE}. It should be the
+#' minimum measurable value in the compositional columns of data, and should be on the same scale as the (input) compositional columns. If it is
+#' not set, the minimum measured value greater than zero is used, which is appropriate for many practical purposes.
 process_zeroes <- function(data, comp_labels, rounded_zeroes, det_limit = NULL){
   data$row_labels <- 1:nrow(data)
   comp_data <- data[, c(comp_labels, "row_labels")]
 
-  if (rounded_zeroes & is.null(det_limit)){
-
-    message("Did you mean to set rounded_zeroes to TRUE without setting a det_limit value? \n det_limit was imputed as the minimum value observed in the compositional
+  if (any(comp_data ==0, na.rm = TRUE) & rounded_zeroes){
+    if (is.null(det_limit)){
+    message("det_limit was imputed as the minimum value observed in the compositional
          columns of data; \n if this is an unrealistic det_limit, the results may be unreliable.")
     det_limit <- min(comp_data[!apply(comp_data[, comp_labels], 1, function(r) any(r == 0)) , comp_labels], na.rm = TRUE)
   }
-  if (any(comp_data ==0, na.rm = TRUE) & rounded_zeroes){
-    message(paste("Note that zeroes were imputed with detection limit \n", det_limit, " (on the unitless scale) using zCompositions::lrEM"))
+    message(paste("Note that zeroes were imputed with detection limit \n", signif(det_limit, 3), " (on the unitless scale) using zCompositions::lrEM"))
     comp_data_nonans <- comp_data[stats::complete.cases(comp_data[, comp_labels]), ]
     comp_data_nans <- comp_data[!stats::complete.cases(comp_data[, comp_labels]), ]
 
