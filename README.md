@@ -2,17 +2,24 @@
 
 *This is the in-development version. Please share comments, suggestions and errors/bugs found, either directly on the github page or by emailing rosemary.walmsley@gtc.ox.ac.uk*. 
 
-This package is designed to support epidemiological analyses using compositional exposure variables. It provides wrappers for common epidemiological use cases. Simulated data (`simdata`) can be used to try out the functions, and a vignette (`vignette-epicoda.Rmd`) illustrates the steps to carrying out an epidemiological analysis with a Compositional Data Analysis approach to the exposure. 
+## What is `epicoda`? 
+`epicoda` is an R package designed to support epidemiological analyses using compositional exposure variables. It provides wrappers for common epidemiological use cases. Simulated data (`simdata`) can be used to try out the functions, and a vignette (`vignette-epicoda.Rmd`) illustrates the steps to carrying out an epidemiological analysis with a Compositional Data Analysis approach to the exposure. 
 
+## Getting started
 To install and run functions from `epicoda`, download it as a subfolder of the R project/folder where you will use it, and run in your R script: 
 ```{r}
 install.packages("devtools")
 library(devtools)
 devtools::load_all("epicoda")
 ```
+## How can `epicoda` be used? 
+A vignette (long form documentation featuring code and text) is included in the package, featuring an example analysis and description of what the package can do. If you're using RStudio, to view it open 'epicoda/vignettes/vignette-epicoda.Rmd' and click `Knit`. 
 
-To view long-form documentation: 
-* An example analysis: Go to 'epicoda/vignettes/vignette-epicoda.Rmd' and knit this file. This provides more guidance on getting started. 
-* Documentation of the confidence intervals used: Go to 'epicoda/vignettes/derivation_of_CIs_used.Rmd' and knit this file. 
-
-If you use this package, please cite: Walmsley, R, 2020, 'epicoda', github.com/activityMonitoring/epicoda. 
+## Citing this package
+If you use this package, please cite:
+```
+[Walmsley2020] Walmsley R, Chan S, et al. (2020)
+Reallocating time from machine-learned sleep, sedentary behaviour or light 
+physical activity to moderate-to-vigorous physical activity is associated with 
+lower cardiovascular disease risk (preprint https://doi.org/10.1101/2020.11.10.20227769)
+```
