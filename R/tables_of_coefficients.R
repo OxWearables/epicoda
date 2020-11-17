@@ -7,7 +7,7 @@
 #' @param level The level argument of the confidence intervals. Passed directly to `stats::confint`.
 #' @inheritParams comp_model
 #'
-#' @return Table of covariates and their associated coefficients (parameter value with lower and upper confidence interval of the 95% ).
+#' @return Table of covariates and their associated coefficients (parameter value with lower and upper confidence interval).
 #' @export
 tab_covariate_coefs <-
   function(model = NULL,
@@ -56,14 +56,10 @@ tab_covariate_coefs <-
 #' # logistic regression models and the Hazard Ratio for Cox regression models.
 #' level = 0.95,
 #' type = "linear",
-#' outcome = "linear_outcome",
+#' outcome = "BMI",
 #' covariates = c("agegroup", "sex"),
-#' follow_up_time = "follow_up_time",
-#' event = "event",
 #' data = simdata,
-#' comp_labels = c("partA", "partB", "partC", "partD", "partE"),
-#' rounded_zeroes = TRUE,
-#' det_limit = 0.0083)
+#' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep" ))
 #' @export
 tab_coefs <-
   function(scale_type = "lp",
@@ -135,7 +131,7 @@ tab_coefs <-
       if (scale_type == "exp") {
         all_red <- exp(all_red)
       }
-      if ((scale_type != "lp")&& (scale_type != "exp")) {
+      if ((scale_type != "lp") && (scale_type != "exp")) {
         stop("scale_type has unrecognised value.")
       }
       master <- rbind(master, all_red)
