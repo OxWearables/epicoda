@@ -225,9 +225,9 @@ normalise_comp <- function(data, comp_labels){
 #' @inheritParams process_zeroes
 rescale_comp <- function(data, comp_labels, comp_sum){
   output <- data
-  if (isFALSE(all.equal(apply(output[, comp_labels], 1, sum), rep(1, times = nrow(output))))){
+  if (!isTRUE(all.equal(apply(output[, comp_labels], 1, sum), rep(1, times = nrow(output)), tolerance = 0.01, check.attributes = FALSE))){
     warning("Rescaling was applied even though not all rows summed to 1. This may be because this function is being applied at the wrong point. It may also occur if there are missing values in the compositional columns. Repeat after removing any missing or non-numeric compositional values.")
-  }
+    }
   output[, comp_labels] <- output[, comp_labels]*comp_sum
   return(output)
 }

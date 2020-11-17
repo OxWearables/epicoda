@@ -45,17 +45,27 @@ test_that("error when incorrect arguments to process_axis_label", {
   expect_error(process_axis_label("hello"))
 })
 
-nc <- normalise_comp(simdata[,c("vigorous", "moderate", "light", "sedentary", "sleep") ], comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
+
+comp_labels <- c("vigorous", "moderate", "light", "sedentary", "sleep")
+sd_zf <- simdata[simdata$vigorous != 0,]
+for (label in comp_labels){
+  sd_zf <- sd_zf[sd_zf[, label] != 0, ]
+}
+rownames(sd_zf) <- NULL
+nc <- normalise_comp(sd_zf[,comp_labels], comp_labels = comp_labels)
 test_that("normalised data should sum to 1", {
   expect_equal(rep(1, times = nrow(nc)), apply(nc, 1, sum))
 })
 
-comp_labels <- c("vigorous", "moderate", "light", "sedentary", "sleep")
 nc_messed_up <- nc
-nc_messed_up[1, comp_labels] <- 2*nc_messed_up[1, comp_labels]
+nc_messed_up[1:1000, comp_labels] <- 22*nc_messed_up[1:1000, comp_labels]
+rc <- rescale_comp(nc, comp_labels, 24)
+rownames(rc) <- NULL
+
 test_that("rescaling normalised composition can get back to input", {
-  expect_equal(rescale_comp(nc, comp_labels, 24), simdata)
+  expect_equal(rc, sd_zf[, comp_labels])
 })
+
 
 test_that("warning if normalise data not on a single scale", {
   expect_warning(rescale_comp(nc_messed_up, comp_labels, 24))
@@ -64,8 +74,6 @@ test_that("warning if normalise data not on a single scale", {
 test_that("rescale_det_limit throws error if no clear scale", {
   expect_message(rescale_det_limit(nc_messed_up, comp_labels, 0.001))
 })
-
-
 
 
 
