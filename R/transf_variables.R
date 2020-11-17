@@ -15,8 +15,8 @@ transf_labels <- function(comp_labels, transformation_type, comparison_part = NU
     }
     l <- (length(comp_labels)-1)
     transf <- comp_labels[1:l]
-    first_labels_transf <- paste0(1:l) #, "_", transf)
-    transf_with_labels <- paste0("ilr_", first_labels_transf)# , "_vs_remaining", sep = "")
+    first_labels_transf <- paste0(1:l)
+    transf_with_labels <- paste0("ilr_", first_labels_transf)
   }
   if (transformation_type == "alr"){
     if (is.null(comparison_part)){
