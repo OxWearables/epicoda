@@ -182,7 +182,7 @@ plot_transfers(from_part = "sedentary",
 ```
 
 #### Notes 
-* There is more information on how confidence intervals for this plot are calculated in the [supplementary vignette](vignettes/derivation_of_CIs_used.Rmd).
+* There is more information on how confidence intervals for this plot are calculated in a vignette (`vignette("derivation_of_CIs_used")`).
 * To customise the appearance of the plot see 'Customising plots'. 
 
 ### Presenting the results: estimates at particular compositions
@@ -264,9 +264,7 @@ The purpose of this package is not to provide this functionality, which is imple
 ```{r}
 data_ilr_impute_zeroes <- transform_comp(data = simdata,
                                    comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
-                                   transformation_type = "ilr",
-                                   rounded_zeroes = TRUE,
-                                   det_limit = 0.0083)
+                                   transformation_type = "ilr")
 print(head(data_ilr_impute_zeroes))
 ```
 There are also a few other things we can do with this function, like specifying a given 'first part' (which is useful when it comes to reporting, and is used therefore in `tab_coefs`). To learn more, run `?transform_comp`. 
@@ -309,8 +307,6 @@ plot_transfers(from_part = "sedentary",
                comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
                y_label = "Model-estimated difference in outcome",
                units = "hr/day",
-               rounded_zeroes = TRUE,
-               det_limit = 0.0083, 
                point_specification = geom_point(size = 0.5, colour = "purple"),
                error_bar_colour = "yellow", 
                theme = theme_bw()+ theme(line = element_line(colour = "red", size = 2), 
