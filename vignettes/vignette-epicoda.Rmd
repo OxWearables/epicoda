@@ -27,7 +27,7 @@ This vignette illustrates some of the things this package can be used to do in a
 
 ## Getting started with compositional data 
 ### Loading simulated data
-`simdata` is a (simulated) compositional dataset in the package. It has 5 columns which make up a hypothetical time use composition: "vigorous" (activity), "moderate" (activity), "light" (activity), "sedentary" (behaviour), "sleep". It also contains sex, age group and outcome columns.
+`simdata` is a (simulated) compositional dataset in the package. It has 5 columns which make up a hypothetical time use composition: "vigorous" (activity), "moderate" (activity), "light" (activity), "sedentary" (behaviour), "sleep". It also contains sex, age group and outcome columns. As the data is simulated, all results are hypothetical. 
 ```{r}
 head(simdata)
 ```
@@ -62,11 +62,11 @@ comp_mean(data = simdata, # this is the dataset
 ```
 There are a few things to notice about the output. Even though we started out with sums which added to 24, the mean seems to add to 1. This is because we didn't specify the units - and so the package didn't know what units to return it to us in. But it could still return it as a sum to 1, without loss of information, as per the definition of compositional data. 
 
-We've also got a message about zeroes. Compositional data analysis can't automatically include zero values. For more information about this issue, see [@Palarea-Albaladejo2015]. There are a couple of options: 
+We've also got a message about zeroes. Compositional data analysis can't automatically include zero values. For more information about this issue, see [@Palarea-Albaladejo2015] and [@Rasmussen2020]. There are a couple of options: 
 
 * They can be dropped (this is the right option if they're so called 'true zeroes', and not related to a limit in the precision with which we can measure). To drop them, set `rounded_zeroes = FALSE`. 
 
-* They can be imputed. This is the right option if they're so-called 'rounded zeroes' i.e. they're related to a limit to the precision with which we can measure. For example, with activity data, it might be that if we recorded data for long enough, we would eventually see some vigorous activity, but our measurement period wasn't long enough. It might also be that our measurement device can't record values lower than a certain level.
+* They can be imputed. This is the right option if they're so-called 'rounded zeroes' i.e. they're related to a limit in the precision with which we can measure. For example, with activity data, it might be that if we recorded data for long enough, we would eventually see some vigorous activity, but our measurement period wasn't long enough. It might also be that our measurement device can't record values lower than a certain level.
 
 To impute the zeroes, as per the second option, we need to specify the minimum value detectable in the data. This can be specified using the `det_limit` argument, and it should be specified with the same scale as the compositional columns in the input data. [Note that if the input data scale and the output scale (`units` argument), are different, it should match *the input data scale*.]
 
@@ -128,7 +128,7 @@ plot_density_ternary(data = simdata,
 ## Regression modelling 
 
 ### Setting up regression models 
-The package has a wrapper for linear regression, logistic regression and Cox regression modelling using compositional variables, with adjustment for covariates as desired. Compositional Data Analysis regression modelling works by transforming the variables making up the composition (see 'Mechanics of Compositional Data Analysis' below), and using the transformed variables (known as 'log-ratio coordinates') in the model. The package automates these steps. For example, to set up a linear regression model for the association between behaviour variables and `BMI`, adjusted for age and sex: 
+The package has a wrapper for linear regression, logistic regression and Cox regression modelling using compositional variables, with adjustment for covariates. Compositional Data Analysis regression modelling works by transforming the variables making up the composition (see 'Mechanics of Compositional Data Analysis' below), and using the transformed variables (known as 'log-ratio coordinates') in the model. The package automates these steps. For example, to set up a linear regression model for the association between behaviour variables and `BMI`, adjusted for age and sex: 
 ```{r}
 lm_BMI <- comp_model(type = "linear",
          outcome = "BMI",
@@ -140,6 +140,7 @@ This function has several possible arguments related to how the transformation i
 
 Logistic models can be produced in exactly the same way by setting `type = "logistic"` and using an appropriate binary outcome variable. Cox models can be produced similarly by setting `type = "cox"` and either setting `outcome` as a `Surv` object from the package `survival` or setting the `follow_up_time` and `event` arguments. For examples, see 'Regression modelling: further examples'.
 
+### Understanding the model output
 The model object is a standard `lm` object, and we can inspect it in the usual way:
 ```{r}
 plot(lm_BMI)
