@@ -170,14 +170,14 @@ tab_coefs(scale_type = "lp", # This argument can be "lp" or "exp" and determines
 * The function `tab_covariate_coefs` is called within this function, and can be used to extract the coefficients of the covariates only from a model. 
 
 ### Presenting the results:  substitution plots
-Substitution plots show the model-estimated difference in the outcome (relative to at the compositional mean) as the balance between two parts of the composition varies. In the case of time use behaviours, they are known as isotemporal substitution plots and show the model-estimated difference in the outcome at higher time in one behaviour at the expesne of time in another behaviour. For example: 
+Substitution plots show the model-predicted difference in the outcome (relative to at the compositional mean) as the balance between two parts of the composition varies. In the case of time use behaviours, they are known as isotemporal substitution plots and show the model-predicted difference in the outcome at higher time in one behaviour at the expense of time in another behaviour (the model-predicted difference in outcome for a hypothetical reallocation of time from one behaviour to another). For example: 
 ```{r}
 plot_transfers(from_part = "sedentary",
                to_part = "moderate",
                model = lm_BMI ,
                dataset = simdata,
                comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
-               y_label = "Model-estimated difference in outcome",
+               y_label = "Model-predicted difference in BMI",
                units = "hr/day")
 ```
 
@@ -293,7 +293,7 @@ plot_transfers(from_part = "sedentary",
 ### Customising plots 
 All the plotting functions can have settings changed to make more visually attractive plots (e.g. changing text size, line size, text colour). `plot_transfers` and `simplex_plotting` are based on `ggplot2` and its extension `ggtern`. 
 
-* To specify non-data aspects of the plot (e.g. line, axis and text size and colours), set the optional `theme` argument. Note that you should have the `ggplot2` package loaded in order to do this.
+* To specify non-data aspects of the plot (e.g. line, axis and text size and colours), set the optional `theme` argument. Note that you will need the `ggplot2` package loaded in order to do this.
 * For `plot_transfers`, to specify characteristics of the plotted prediction line, set the `point_specification` argument as a `geom_point` object.
 * For `plot_transfers`, to specify colours of the error bars, set the `error_bar_colour` argument as the name of a colour.
 * For `plot_transfers`, if the line looks 'gappy' (likely at the ends), increase `granularity` (and if it takes too long to plot, decrease `granularity`). 
@@ -336,7 +336,7 @@ For additional information on how to customise the functions, see the manual by 
 
 ### Regression modelling: further examples
 
-Similarly to linear models, logistic and Cox models can be produced:
+As well as linear models, we can produce logistic and Cox models:
 ```{r}
 log_outcome <- comp_model(type = "logistic",
          outcome = "disease",
@@ -353,8 +353,8 @@ summary(cox_outcome)
 ```
 
 
-### Getting the numbers out: estimates/ predictions for particular compositions
-To get the numbers out for estimates/predictions at particular compositions, we can use the `predict_fit_and_ci` function (which is wrapped in the plotting functions).This takes a data frame argument for `new_data`. 
+### Getting the numbers out: predictions for particular compositions
+To get the numbers out for predictions at particular compositions, we can use the `predict_fit_and_ci` function (which is wrapped in the plotting functions).This takes a data frame argument for `new_data`. 
 
 ```{r}
 predict_fit_and_ci(model = lm_BMI, dataset = simdata, new_data = new_comp, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
