@@ -7,8 +7,9 @@
 #' @inheritParams process_zeroes
 #' @inheritParams process_units
 #' @return Vector which is the compositional mean.
-#' @examples #' comp_mean(data = simdata, # this is the dataset
-#' comp_labels =c("vigorous", "moderate", "light", "sedentary", "sleep"), # this is the labels
+#' @examples
+#' comp_mean(data = simdata, # this is the dataset
+#' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"), # this is the labels
 #' # of the compositional columns, which we specified above
 #' rounded_zeroes = TRUE, # this option specifies that we'll treat the zeroes
 #' # as rounded zeroes i.e. we'll impute them. As we've not specified det_limit, the function

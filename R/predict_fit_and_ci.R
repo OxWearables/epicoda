@@ -140,7 +140,7 @@ predict_fit_and_ci <- function(model,
 
   new_data <- transform_comp(data = new_data, comp_labels = comp_labels, transformation_type = transformation_type, rounded_zeroes = FALSE, comparison_part = comparison_part, part_1 = part_1)
 
-  # Messgae about meaning of the 'terms' argument
+  # Message about meaning of the 'terms' argument
   if (terms == FALSE){
     message(
       "Note that the confidence intervals on these predictions include uncertainty driven by other, non-compositional variables. To look at compositional variables only, use terms = TRUE"
@@ -157,8 +157,8 @@ predict_fit_and_ci <- function(model,
     dNew <- data.frame(new_data, predictions)
 
     t_value <-
-      stats::qt(0.975, df = df.residual(model))[[1]]
-    print(t_value)
+      stats::qt(0.975, df = stats::df.residual(model))[[1]]
+
     dNew$lower_CI <-
       model$family$linkinv(dNew$fit - t_value * dNew$se.fit)
     dNew$upper_CI <-
@@ -201,7 +201,7 @@ predict_fit_and_ci <- function(model,
     value <- sqrt(data.matrix(in_sqrt_true))
 
     t_value <-
-      stats::qt(0.975, df = df.residual(model))[[1]]
+      stats::qt(0.975, df = stats::df.residual(model))[[1]]
 
     alpha_lower <- dNew$log_odds_change - t_value * value
     alpha_upper <- dNew$log_odds_change + t_value * value
@@ -288,9 +288,9 @@ predict_fit_and_ci <- function(model,
     dNew <- data.frame(new_data, predictions)
 
     t_value <-
-      stats::qt(0.975, df = df.residual(model))[[1]]
+      stats::qt(0.975, df = stats::df.residual(model))[[1]]
 
-    print(t_value)
+
     dNew$lower_CI <- dNew$fit - t_value * dNew$se.fit
     dNew$upper_CI <- dNew$fit + t_value * dNew$se.fit
 
@@ -333,7 +333,7 @@ predict_fit_and_ci <- function(model,
     value <- sqrt(data.matrix(in_sqrt_true))
 
     t_value <-
-      stats::qt(0.975, df = df.residual(model))[[1]]
+      stats::qt(0.975, df = stats::df.residual(model))[[1]]
 
     dNew$lower_CI <- dNew$fit - t_value * value
     dNew$upper_CI <- dNew$fit + t_value * value

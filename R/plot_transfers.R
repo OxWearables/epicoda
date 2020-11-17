@@ -11,7 +11,7 @@
 #' @param xulimit Upper limit of x-axis shown on plot. Should be in same scale as \code{units}.
 #' @param y_label Label for y-axis. \code{"suppressed"} is a special value which will result in no label.
 #' @param plot_log If this is \code{TRUE}, the y-axis will be log-transformed.
-#' @param lower_quantile If set, this gives the lower limit of plotting (as a quantile for both variables of interest).
+#' @param lower_quantile If set, this gives the lower limit of plotting (as a quantile for both variables of interest). In practice, the current behaviour is to calculate the range of both variables between the upper and lower quantile, and use the narrower one.
 #' @param upper_quantile  If set, this gives the upper limit of plotting (as a quantile for both variables of interest).
 #' @param granularity Does not usually require setting. If set, gives the number of points plotted on the graph. If it is too low, the plot will contain gaps. If it is too high, plotting will be slow.
 #' @param point_specification Should be a \code{ggplot2::geom_point} object specifying how the points on the graph will be plotted.
