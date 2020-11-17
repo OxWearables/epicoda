@@ -57,9 +57,14 @@ Plot with balance of two parts plotted as exposure/ independent variable.
 \description{
 Principally intended as input to forest_plot_examples and plot_transfers.
 }
+\details{
+Note that confidence intervals use the t-distribution with the appropriate degrees of freedom for linear and logistic regression,
+and the z-distribution for Cox regression, to match the apparent behaviour of \code{summary()} for these model objects. As long as there are a reasonable
+number of samples (at least 30, say) the difference between the two is negligible.
+}
 \examples{
 lm_outcome <- comp_model(type = "linear",
-outcome = "linear_outcome",
+outcome = "BMI",
 covariates = c("agegroup", "sex"),
 data = simdata,
 comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))

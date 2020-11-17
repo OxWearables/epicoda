@@ -30,7 +30,7 @@ tab_covariate_coefs(
 \item{part_1}{Only used if first part in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
 }
 \value{
-Table of covariates and their associated coefficients (parameter value with lower and upper confidence interval of the 95% ).
+Table of covariates and their associated coefficients (parameter value with lower and upper confidence interval).
 }
 \description{
 This pulls out a table of the coefficients of the covariates only in the model.

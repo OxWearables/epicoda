@@ -25,5 +25,5 @@ minimum measurable value in the compositional columns of data. It should be on t
 dataframe with a single row of fixed_values.
 }
 \description{
-If fixed values are not set, this will set them to modal/ median values.
+If fixed values (for non-compositional variables) are not set, this will set them to modal/ median values.
 }

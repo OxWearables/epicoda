@@ -55,12 +55,8 @@ tab_coefs(scale_type = "lp", # This argument can be "lp" or "exp" and determines
 # logistic regression models and the Hazard Ratio for Cox regression models.
 level = 0.95,
 type = "linear",
-outcome = "linear_outcome",
+outcome = "BMI",
 covariates = c("agegroup", "sex"),
-follow_up_time = "follow_up_time",
-event = "event",
 data = simdata,
-comp_labels = c("partA", "partB", "partC", "partD", "partE"),
-rounded_zeroes = TRUE,
-det_limit = 0.0083)
+comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep" ))
 }

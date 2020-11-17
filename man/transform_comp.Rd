@@ -39,9 +39,7 @@ transformed variables added.
 }
 \examples{
 transform_comp(data = simdata,
-comp_labels = c("partA", "partB", "partC", "partD", "partE"),
-transformation_type = "ilr",
-rounded_zeroes = TRUE,
-det_limit = 0.0083)
+comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
+transformation_type = "ilr")
 
 }

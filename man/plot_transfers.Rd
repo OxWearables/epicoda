@@ -67,7 +67,7 @@ plot_transfers(
 
 \item{plot_log}{If this is \code{TRUE}, the y-axis will be log-transformed.}
 
-\item{lower_quantile}{If set, this gives the lower limit of plotting (as a quantile for both variables of interest).}
+\item{lower_quantile}{If set, this gives the lower limit of plotting (as a quantile for both variables of interest). In practice, the current behaviour is to calculate the range of both variables between the upper and lower quantile, and use the narrower one.}
 
 \item{upper_quantile}{If set, this gives the upper limit of plotting (as a quantile for both variables of interest).}
 

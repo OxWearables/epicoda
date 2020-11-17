@@ -17,7 +17,7 @@ plot_density_ternary(
 \arguments{
 \item{data}{Data frame containing data to be plotted.}
 
-\item{groups}{Name of variable in the data frame which identifies the groups to be plotted. This variable should be a factor variable.}
+\item{groups}{If plotting groups separately, name of the variable in the data frame which identifies the groups to be plotted. This variable should be a factor variable.}
 
 \item{parts_to_plot}{Names of the three variables in the data frame which are to be plotted on the ternary plot. Note they should be on the same scale (they don't need to be normalised to 1).}
 
@@ -33,13 +33,16 @@ plot_density_ternary(
 Plot showing density of data on ternary plot.
 }
 \description{
-Plot data density on a ternary plot
+Plot data density on a ternary plot.
+}
+\details{
+This is a wrapper for \code{ggtern}.
 }
 \examples{
-simdata$combined_parts <- simdata$partA + simdata$partB + simdata$partC
+simdata$activity <- simdata$vigorous + simdata$moderate + simdata$light
 
 plot_density_ternary(data = simdata,
-parts_to_plot = c("combined_parts", "partD", "partE"),
+parts_to_plot = c("activity", "sedentary", "sleep"),
 n_bins = 10 # This argument specifies we want to use 10 bins
 # (i.e. 10\% of data lies between each pair of contours on the plot.)
 )

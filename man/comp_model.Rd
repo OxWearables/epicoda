@@ -9,9 +9,9 @@ comp_model(
   outcome = NULL,
   covariates = NULL,
   comp_labels,
+  data,
   follow_up_time = NULL,
   event = NULL,
-  data,
   transformation_type = "ilr",
   rounded_zeroes = TRUE,
   det_limit = NULL,
@@ -28,11 +28,11 @@ comp_model(
 
 \item{comp_labels}{The labels of the compositional columns.}
 
+\item{data}{Dataset to have the transformation applied to.}
+
 \item{follow_up_time}{Only used if \code{type} is \code{"cox"} and \code{outcome} is \code{NULL}.  Follow-up time.}
 
 \item{event}{Only used if \code{type} is \code{"cox"} and \code{outcome} is \code{NULL}.Binary variable indicating whether or not an event was observed.}
-
-\item{data}{Dataset to have the transformation applied to.}
 
 \item{transformation_type}{The type of transformation desired. Should be \code{"ilr", "alr"} or \code{"clr"}.}
 

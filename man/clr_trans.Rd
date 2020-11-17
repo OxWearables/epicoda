@@ -16,8 +16,6 @@ clr_trans(data)
 This performs centred log-ratio transformation on the compositional columns of a data frame.
 }
 \examples{
-clr_trans(data = simdata[, c("vigorous", "moderate", "light", "sedentary", "sleep")],
-comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
-comparison_part = "sleep")
+clr_trans(data = simdata[, c("vigorous", "moderate", "light", "sedentary", "sleep")])
 
 }

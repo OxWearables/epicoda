@@ -32,12 +32,12 @@ make_new_data(
 
 \item{comp_labels}{The labels of the compositional columns.}
 
-\item{lower_quantile}{If set, this gives the lower limit of plotting (as a quantile for both variables of interest).}
+\item{lower_quantile}{If set, this gives the lower limit of plotting (as a quantile for both variables of interest). In practice, the current behaviour is to calculate the range of both variables between the upper and lower quantile, and use the narrower one.}
 
 \item{upper_quantile}{If set, this gives the upper limit of plotting (as a quantile for both variables of interest).}
 
 \item{granularity}{Does not usually require setting. If set, gives the number of points plotted on the graph. If it is too low, the plot will contain gaps. If it is too high, plotting will be slow.}
 }
 \description{
-Generates a new dataset to feed into the plotting functions.
+Generates a new dataset to feed into the plotting functions (\code{plot_transfers})
 }

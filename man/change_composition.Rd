@@ -32,7 +32,7 @@ This makes a change to a composition in the specified way and automatically real
 \examples{
 new_comp <-
 change_composition(
- composition = simdata,
+ composition = simdata[1,],
  main_part = "moderate",
  main_change = +0.5,
  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
