@@ -13,7 +13,7 @@ library(devtools)
 devtools::load_all("epicoda")
 ```
 ## How can `epicoda` be used? 
-A vignette (long form documentation featuring code and text) is included in the package, featuring an example analysis and description of what the package can do. If you're using RStudio, to view it open 'epicoda/vignettes/vignette-epicoda.Rmd' and click `Knit`. 
+A vignette (long form documentation with code and text) is included in the package. It illustrates what the package can do using an example analysis. If you're using RStudio, to view it open 'epicoda/vignettes/vignette-epicoda.Rmd' and click `Knit`. 
 
 ## Citing this package
 If you use this package, please cite:
