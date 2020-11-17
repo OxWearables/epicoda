@@ -3,7 +3,7 @@
 *This is the in-development version. Please share comments, suggestions and errors/bugs found, either directly on the github page or by emailing rosemary.walmsley@gtc.ox.ac.uk*. 
 
 ## What is `epicoda`? 
-`epicoda` is an R package designed to support epidemiological analyses using compositional exposure variables. It provides wrappers for common epidemiological use cases. Simulated data (`simdata`) can be used to try out the functions, and a vignette (`vignette-epicoda.Rmd`) illustrates the steps to carrying out an epidemiological analysis with a Compositional Data Analysis approach to the exposure. 
+`epicoda` is an R package designed to support epidemiological analyses using compositional exposure variables. It provides wrappers for common epidemiological use cases. Simulated data (`simdata`) can be used to try out the functions, and a vignette illustrates the steps to carrying out an epidemiological analysis with a Compositional Data Analysis approach to the exposure. 
 
 ## Getting started
 To install the `epicoda` package from GitHub:
