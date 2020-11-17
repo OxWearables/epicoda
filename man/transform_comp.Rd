@@ -10,6 +10,8 @@ transform_comp(
   transformation_type = "ilr",
   rounded_zeroes = TRUE,
   det_limit = NULL,
+  units = "unitless",
+  specified_units = NULL,
   comparison_part = NULL,
   part_1 = NULL
 )
@@ -23,8 +25,13 @@ transform_comp(
 
 \item{rounded_zeroes}{Are zeroes rounded zeroes?}
 
-\item{det_limit}{Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
-minimum measurable value in the compositional columns of data. It should be on the same scale as the (input) compositional columns.}
+\item{det_limit}{Detection limit if zeroes are to be imputed. This is needed when \code{rounded_zeroes} is \code{TRUE}. It should be the
+minimum measurable value in the compositional columns of data, and should be on the same scale as the (input) compositional columns. If it is
+not set, the minimum measured value greater than zero is used, which is appropriate for many practical purposes.}
+
+\item{units}{What should the units of the compositional variables be in any output? Currently available are "unitless" (where working in terms of proportions), "hr/day", "hr/wk", "min/day", "min/wk" and "specified", in which case the \code{specified_units} argument should be set. Note that this doesn't specify the input units, as this is not relevant for any function.}
+
+\item{specified_units}{If units are being specified via the composition sum, this is where it is done. It should be a vector where the first argument is a string describing the units, and the second argument is the expected sum of a composition e.g. \code{c("hr/day", 24)}}
 
 \item{comparison_part}{Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of part that all other parts will be compared to.}
 
@@ -35,7 +42,8 @@ minimum measurable value in the compositional columns of data. It should be on t
 }
 \description{
 Takes a dataset with a set of labelled compositional columns and returns a dataset with
-transformed variables added.
+transformed variables added. The current behaviour also returns compositional columns rescaled to be on the specified scale, and with zeroes imputed
+if \code{rounded_zeroes} is \code{TRUE}.
 }
 \examples{
 transform_comp(data = simdata,

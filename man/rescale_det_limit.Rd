@@ -11,8 +11,9 @@ rescale_det_limit(data, comp_labels, det_limit)
 
 \item{comp_labels}{The labels of the compositional columns.}
 
-\item{det_limit}{Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
-minimum measurable value in the compositional columns of data. It should be on the same scale as the (input) compositional columns.}
+\item{det_limit}{Detection limit if zeroes are to be imputed. This is needed when \code{rounded_zeroes} is \code{TRUE}. It should be the
+minimum measurable value in the compositional columns of data, and should be on the same scale as the (input) compositional columns. If it is
+not set, the minimum measured value greater than zero is used, which is appropriate for many practical purposes.}
 }
 \description{
 Rescale a det_limit given on the same scale as the compositional columns.

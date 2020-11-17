@@ -11,6 +11,6 @@ An object of class \code{data.frame} with 10000 rows and 12 columns.
 simdata
 }
 \description{
-This is a simulated time use dataset.
+This is a simulated physical behaviour dataset.
 }
 \keyword{data}

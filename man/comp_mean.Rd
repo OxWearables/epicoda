@@ -20,8 +20,9 @@ comp_mean(
 
 \item{rounded_zeroes}{Are zeroes rounded zeroes?}
 
-\item{det_limit}{Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
-minimum measurable value in the compositional columns of data. It should be on the same scale as the (input) compositional columns.}
+\item{det_limit}{Detection limit if zeroes are to be imputed. This is needed when \code{rounded_zeroes} is \code{TRUE}. It should be the
+minimum measurable value in the compositional columns of data, and should be on the same scale as the (input) compositional columns. If it is
+not set, the minimum measured value greater than zero is used, which is appropriate for many practical purposes.}
 
 \item{units}{What should the units of the compositional variables be in any output? Currently available are "unitless" (where working in terms of proportions), "hr/day", "hr/wk", "min/day", "min/wk" and "specified", in which case the \code{specified_units} argument should be set. Note that this doesn't specify the input units, as this is not relevant for any function.}
 
