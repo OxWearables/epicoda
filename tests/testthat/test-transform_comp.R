@@ -1,8 +1,14 @@
+comp_labels <- c("vigorous", "moderate", "light", "sedentary", "sleep")
+sd_zf <- simdata[simdata$vigorous != 0,]
+for (label in comp_labels){
+  sd_zf <- sd_zf[sd_zf[, label] != 0, ]
+}
+rownames(sd_zf) <- NULL
 test_that("output same as input in relevant way", {
   expect_equal(transform_comp(data = simdata,
                               comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
-                              transformation_type = "ilr", units = "hr/day")[, c("vigorous", "moderate", "light", "sedentary", "sleep")],
-               simdata[, c("vigorous", "moderate", "light", "sedentary", "sleep")])
+                              transformation_type = "ilr", units = "hr/day", rounded_zeroes = FALSE)[, c("vigorous", "moderate", "light", "sedentary", "sleep")],
+               sd_zf[, comp_labels])
 })
 
 
