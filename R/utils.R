@@ -85,6 +85,9 @@ process_units <- function(units, specified_units){
     if (is.null(specified_units)){
       stop("composition_sum must be given if units = \"specified\" ")
     }
+    if (!(length(specified_units) ==2)){
+      stop("specified_units are not in the correct form.")
+    }
     if (!is.character(specified_units[1])){
       stop("The first argument of specified_units must be a string describing the units.")
     }
