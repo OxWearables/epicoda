@@ -1,6 +1,6 @@
 #' Generates list of fixed_values based on median/modal values in dataset
 #'
-#' If fixed values are not set, this will set them to modal/ median values.
+#' If fixed values (for non-compositional variables) are not set, this will set them to modal/ median values.
 #'
 #' @param data Data used for model development.
 #' @inheritParams plot_transfers
@@ -40,13 +40,9 @@ vary_part_of_interest <- function(part_of_interest,
   )
   return(part_values)
 }
-
-
-# Generate a new dataset
-
 #' make_new_data: Generates a new dataset varying in the dimension of interest.
 #'
-#' Generates a new dataset to feed into the plotting functions.
+#' Generates a new dataset to feed into the plotting functions (\code{plot_transfers})
 #'
 #' @inheritParams plot_transfers
 make_new_data <- function(from_part,
@@ -62,9 +58,11 @@ make_new_data <- function(from_part,
   dataset <- normalise_comp(dataset, comp_labels)
   new_data <- data.frame()[1:granularity,]
 
+  # Process units
   comp_sum <- as.numeric(process_units(units, specified_units)[2])
   units <- process_units(units, specified_units)[1]
 
+  # Vary the to part and the from part from the upper quantile to lower quantile
   vpi_tp <- vary_part_of_interest(dataset[, to_part],
                                   lower_quantile,
                                   upper_quantile, granularity = granularity)
@@ -72,12 +70,15 @@ make_new_data <- function(from_part,
   vpi_fp <- vary_part_of_interest(dataset[, from_part],
                                   lower_quantile,
                                   upper_quantile, granularity = granularity)
+
+  # Find the ranges of these two
   min_fp <- min(vpi_fp)
   max_fp <- max(vpi_fp)
 
   min_tp <- min(vpi_tp)
   max_tp <- max(vpi_tp)
 
+  # Use the values from the narrower range
   if ((max_tp - min_tp) >= (max_fp - min_fp)){
     for (label in comp_labels) {
       if (label == from_part) {
@@ -121,6 +122,7 @@ make_new_data <- function(from_part,
     new_data[, from_part] <- tf
   }
 
+  # Rescale composition to be on the relevant scale
   new_data <- rescale_comp(new_data, comp_sum = comp_sum, comp_labels = comp_labels)
   print("Compositional variables not varied in the visualisation were fixed at:")
   for (variable in comp_labels[(comp_labels != from_part) & (comp_labels != to_part)]) {
