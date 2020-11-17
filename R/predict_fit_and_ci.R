@@ -138,7 +138,7 @@ predict_fit_and_ci <- function(model,
     }
   }
 
-  new_data <- transform_comp(data = new_data, comp_labels = comp_labels, transformation_type = transformation_type, rounded_zeroes = FALSE, comparison_part = comparison_part, part_1 = part_1)
+  new_data <- suppressMessages(transform_comp(data = new_data, comp_labels = comp_labels, transformation_type = transformation_type, rounded_zeroes = FALSE, comparison_part = comparison_part, part_1 = part_1))
 
   # Message about meaning of the 'terms' argument
   if (terms == FALSE){
