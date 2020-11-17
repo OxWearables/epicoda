@@ -121,7 +121,7 @@ process_zeroes <- function(data, comp_labels, rounded_zeroes, det_limit = NULL){
          columns of data; \n if this is an unrealistic det_limit, the results may be unreliable.")
     det_limit <- min(comp_data[!apply(comp_data[, comp_labels], 1, function(r) any(r == 0)) , comp_labels], na.rm = TRUE)
   }
-    message(paste("Note that zeroes were imputed with detection limit \n", signif(det_limit, 3), " (on the unitless scale) using zCompositions::lrEM"))
+    message(paste("Zeroes were imputed with detection limit \n", signif(det_limit, 3), " (on the unitless scale) using zCompositions::lrEM"))
     comp_data_nonans <- comp_data[stats::complete.cases(comp_data[, comp_labels]), ]
     comp_data_nans <- comp_data[!stats::complete.cases(comp_data[, comp_labels]), ]
 
