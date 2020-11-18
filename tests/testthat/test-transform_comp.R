@@ -6,8 +6,9 @@ for (label in comp_labels){
 rownames(sd_zf) <- NULL
 d <- transform_comp(data = simdata,
                    comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
-                   transformation_type = "ilr", units = "hr/day", rounded_zeroes = FALSE)[, c("vigorous", "moderate", "light", "sedentary", "sleep")]
+                   transformation_type = "ilr", rounded_zeroes = FALSE)[, c("vigorous", "moderate", "light", "sedentary", "sleep")]
 rownames(d) <- NULL
+d[, comp_labels] <- 24*d[, comp_labels]
 test_that("output same as input in relevant way", {
   expect_equal(d,
                sd_zf[, comp_labels])
