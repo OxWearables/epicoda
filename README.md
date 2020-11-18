@@ -10,7 +10,7 @@ To install the `epicoda` package from GitHub:
 ```{r}
 install.packages("devtools") # To install epicoda from GitHub, the devtools package is required.  
 library(devtools)
-devtools::install_github("activityMonitoring/epicoda",  build_opts = c("--no-resave-data", "--no-manual"))
+devtools::install_github("activityMonitoring/epicoda",  build_opts = c("--no-resave-data"), build_vignettes = TRUE, build_manual = TRUE)
 ```
 `epicoda` can now be loaded as a normal package in R using: 
 ```{r}
