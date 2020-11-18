@@ -27,7 +27,7 @@ This vignette illustrates some of the things this package can be used to do in a
 
 ## Getting started with compositional data 
 ### Loading simulated data
-`simdata` is a (simulated) compositional dataset in the package. It has 5 columns which make up a hypothetical time use composition: "vigorous" (activity), "moderate" (activity), "light" (activity), "sedentary" (behaviour), "sleep". It also contains sex, age group and outcome columns. As the data is simulated, all results are hypothetical. 
+`simdata` is a (simulated) compositional dataset in the package. It has 5 columns which make up a hypothetical physical behaviour composition: "vigorous" (activity), "moderate" (activity), "light" (activity), "sedentary" (behaviour), "sleep". It also contains sex, age group and outcome columns. As the data is simulated, all results are hypothetical. 
 ```{r}
 head(simdata)
 ```
@@ -170,7 +170,7 @@ tab_coefs(scale_type = "lp", # This argument can be "lp" or "exp" and determines
 * The function `tab_covariate_coefs` is called within this function, and can be used to extract the coefficients of the covariates only from a model. 
 
 ### Presenting the results:  substitution plots
-Substitution plots show the model-predicted difference in the outcome (relative to at the compositional mean) as the balance between two parts of the composition varies. In the case of time use behaviours, they are known as isotemporal substitution plots and show the model-predicted difference in the outcome at higher time in one behaviour at the expense of time in another behaviour (the model-predicted difference in outcome for a hypothetical reallocation of time from one behaviour to another). For example: 
+Substitution plots show the model-predicted difference in the outcome (relative to at the compositional mean) as the balance between two parts of the composition varies. In the case of time use/physical behaviours, they are known as isotemporal substitution plots and show the model-predicted difference in the outcome at higher time in one behaviour at the expense of time in another behaviour (the model-predicted difference in outcome for a hypothetical reallocation of time from one behaviour to another). For example: 
 ```{r}
 plot_transfers(from_part = "sedentary",
                to_part = "moderate",
@@ -322,7 +322,7 @@ forest_plot_comp(composition_list = list_for_plot,
                  dataset = simdata, 
                  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"), 
                  pred_name = "The predicted difference at this composition", # This sets the name with which to label the column. , 
-                 title = "Analysis of time use data", # This sets the overall plot title. 
+                 title = "Analysis of physical behaviour data", # This sets the overall plot title. 
                  col = forestplot::fpColors(zero = "black") # This sets the colour of the line at 0 (or 1, if it's the plot of a logistic or Cox model)
                  )
 
