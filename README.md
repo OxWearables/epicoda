@@ -21,6 +21,9 @@ To see examples of what the package can do, see the vignette (long form document
 ```{r}
 vignette("vignette-epicoda")
 ```
+## Troubleshooting 
+This is the in-development version - please get in touch with any feedback or problems on this page, or by emailing rosemary.walmsley@gtc.ox.ac.uk. 
+We are aware of an issue which can arise sometimes in RStudio, with plots not displaying axis labels. If this affects you, it would be really useful to know. A workaround is to run the same code in the RGui. 
 
 ## Citing this package
 If you use this package, please cite:
