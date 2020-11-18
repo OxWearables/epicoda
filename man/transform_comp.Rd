@@ -10,8 +10,6 @@ transform_comp(
   transformation_type = "ilr",
   rounded_zeroes = TRUE,
   det_limit = NULL,
-  units = "unitless",
-  specified_units = NULL,
   comparison_part = NULL,
   part_1 = NULL
 )
@@ -29,10 +27,6 @@ transform_comp(
 minimum measurable value in the compositional columns of data, and should be on the same scale as the (input) compositional columns. If it is
 not set, the minimum measured value greater than zero is used, which is appropriate for many practical purposes.}
 
-\item{units}{What should the units of the compositional variables be in any output? Currently available are "unitless" (where working in terms of proportions), "hr/day", "hr/wk", "min/day", "min/wk" and "specified", in which case the \code{specified_units} argument should be set. Note that this doesn't specify the input units, as this is not relevant for any function.}
-
-\item{specified_units}{If units are being specified via the composition sum, this is where it is done. It should be a vector where the first argument is a string describing the units, and the second argument is the expected sum of a composition e.g. \code{c("hr/day", 24)}}
-
 \item{comparison_part}{Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of part that all other parts will be compared to.}
 
 \item{part_1}{Only used if first part in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
@@ -42,7 +36,7 @@ not set, the minimum measured value greater than zero is used, which is appropri
 }
 \description{
 Takes a dataset with a set of labelled compositional columns and returns a dataset with
-transformed variables added. The current behaviour also returns compositional columns rescaled to be on the specified scale, and with zeroes imputed
+transformed variables added. The current behaviour also returns compositional columns rescaled to be on the unitless scale, and with zeroes imputed
 if \code{rounded_zeroes} is \code{TRUE}.
 }
 \examples{
