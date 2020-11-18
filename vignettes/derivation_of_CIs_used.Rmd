@@ -1,11 +1,12 @@
 ---
 title: 'Statistical Appendix: Confidence Intervals'
 output: rmarkdown::html_vignette
+bibliography: library.bib
 vignette: >
   %\VignetteIndexEntry{derivation_of_CIs_used}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-  bibliography: library.bib
+
 ---
 
 ```{r, include = FALSE}
