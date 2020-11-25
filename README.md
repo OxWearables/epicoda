@@ -1,6 +1,8 @@
 # epicoda
 
 ![R-CMD-check](https://github.com/activityMonitoring/epicoda/workflows/R-CMD-check/badge.svg) ![Windows/MacOS/Linux](https://github.com/activityMonitoring/epicoda/workflows/Windows/MacOS/Linux/badge.svg)
+[![codecov](https://codecov.io/gh/activityMonitoring/epicoda/branch/master/graph/badge.svg?token=pUfd7QVqRe)](https://codecov.io/gh/activityMonitoring/epicoda)
+
 
 *This is the in-development version. Please share comments, suggestions and errors/bugs found, either directly on the github page or by emailing rosemary.walmsley@gtc.ox.ac.uk*. 
 
