@@ -63,7 +63,6 @@ plot_density_ternary <-
           ggtern::stat_density_tern(
             geom = 'polygon',
             bins = n_bins,
-            weight = 3,
             alpha = transparency,
             colour = "black"
           ) +
@@ -98,7 +97,6 @@ plot_density_ternary <-
                 color = local_data[, groups]
               ),
               bins = n_bins,
-              weight = 3,
               alpha = transparency
             )
         }
@@ -122,7 +120,6 @@ plot_density_ternary <-
             data = data[, parts_to_plot],
             geom = 'polygon',
             bins = n_bins,
-            weight = 3,
             alpha = transparency,
             colour = "black"
           ) +
@@ -162,7 +159,6 @@ plot_density_ternary <-
                 color = local_data[, groups]
               ),
               bins = n_bins,
-              weight = 3,
               alpha = transparency
             )
         }
