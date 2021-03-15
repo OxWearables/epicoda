@@ -286,7 +286,8 @@ plot_transfers <- function(from_part,
         ggplot2::scale_y_continuous(
           trans = scales::log_trans(),
           breaks = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.2),
-          labels = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.2)
+          labels = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.2),
+          minor.breaks = NULL
         ) +
         ggplot2::geom_vline(xintercept = 0) +
         ggplot2::geom_hline(yintercept = 1) +
@@ -349,6 +350,7 @@ plot_transfers <- function(from_part,
           trans = scales::log_trans(),
           breaks = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.1),
           labels = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.1),
+          minor_breaks = NULL,
           limits = c(yllimit, yulimit)
         ) +
         theme_for_plots
@@ -409,7 +411,8 @@ plot_transfers <- function(from_part,
         ggplot2::scale_y_continuous(
           trans = scales::log_trans(),
           breaks = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.2),
-          labels = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.2)
+          labels = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.2),
+          minor_breaks = NULL
         ) +
         ggplot2::geom_vline(xintercept = 0) +
         ggplot2::geom_hline(yintercept = 0) +
