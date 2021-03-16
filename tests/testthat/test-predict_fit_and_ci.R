@@ -178,9 +178,9 @@ test_that("wrong labels for composition throws error", {
     ))
 })
 
-install.packages("devtools", "https://www.stats.bris.ac.uk/R/")
+install.packages("devtools", repos = "https://www.stats.bris.ac.uk/R/")
 library(devtools)
-devtools::install_github('tystan/deltacomp')
+devtools::install_github('tystan/deltacomp', repos = "https://www.stats.bris.ac.uk/R/")
 library(deltacomp)
 
 comp_labels <- c("sl", "sb", "lpa", "mvpa")
