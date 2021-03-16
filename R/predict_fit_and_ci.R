@@ -65,9 +65,8 @@ predict_fit_and_ci <- function(model,
   comp_cols <- ilr_trans_inv(dataset[, transf_labels])
   colnames(comp_cols) <- comp_labels
   dataset <- cbind(dataset, comp_cols)
-
   dataset_ready <-
-    dataset[,!(colnames(model_matrix) %in% transf_labels)]
+    dataset[,!(colnames(dataset) %in% transf_labels)]
 
   # We assign some internal parameters
   type <- process_model_type(model)
@@ -75,6 +74,8 @@ predict_fit_and_ci <- function(model,
   # We find the reference values
   mm <- model.matrix(model)[, transf_labels]
   cm_transf_df <- apply(mm, 2, mean)
+  cm_transf_df <- as.data.frame(t(cm_transf_df))
+  print(cm_transf_df)
   cm <- ilr_trans_inv(cm_transf_df)
   colnames(cm) <- comp_labels
 
@@ -110,6 +111,7 @@ predict_fit_and_ci <- function(model,
       new_data[, colname]<- rep(fixed_values[1, colname], by = nrow(new_data))
     }
   }
+  print(head(new_data))
 
   new_data <- suppressMessages(transform_comp(data = new_data, comp_labels = comp_labels, transformation_type = "ilr", rounded_zeroes = FALSE, part_1 = part_1))
 
