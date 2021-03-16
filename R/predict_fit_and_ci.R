@@ -7,14 +7,11 @@
 #' number of samples (at least 30, say) the difference between the two is negligible.
 #'
 #' @param model Model to use for predictions.
-#' @param det_limit Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
-#' minimum measurable value in the compositional columns of data. It should be on the same scale as the (input) compositional columns in \code{dataset} (NB it doesn't need to match \code{new_data}).
 #' @param new_data Data for predictions.
 #' @param terms Are estimates for differences in outcome associated with differences in compositional variables? If \code{terms = TRUE} all estimates and plots will be for difference in outcome associated with differences in the compositional variables. If \code{terms = FALSE}, \code{fixed_values} is used to set the values of the non-compositional covariates, and outputs are predictions for the outcome based on these values of the non-compositional covariates and the given value of the compositional variables (and confidence intervals include uncertainty due to all variables in the model, not just the compositional variables).
 #' @param fixed_values If \code{terms = FALSE}, this gives the fixed values of the non-compositional covariates at which to calculate the prediction. It is generated automatically if not set.
 #' @inheritParams transform_comp
 #' @inheritParams process_units
-#' @param cm Can be set with compositional mean to speed up calculation. This should NOT be set manually and should only be passed from other functions.
 #' @return Plot with balance of two parts plotted as exposure/ independent variable.
 #' @export
 #' @examples
@@ -44,10 +41,7 @@ predict_fit_and_ci <- function(model,
                            fixed_values = NULL,
                            part_1 = NULL,
                            units = "unitless",
-                           specified_units = NULL,
-                           rounded_zeroes = TRUE,
-                           det_limit = NULL,
-                           cm = NULL) {
+                           specified_units = NULL) {
 
   # We set units
   comp_sum <- as.numeric(process_units(units, specified_units)[2])
@@ -66,6 +60,7 @@ predict_fit_and_ci <- function(model,
                   transformation_type = "ilr",
                   part_1 = part_1)
 
+  # We back calculate the dataset used to derive the model
   dataset <- model.matrix(model)
   comp_cols <- ilr_trans_inv(dataset[, transf_labels])
   colnames(comp_cols) <- comp_labels
