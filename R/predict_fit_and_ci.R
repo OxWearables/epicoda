@@ -101,6 +101,14 @@ predict_fit_and_ci <- function(model,
                                  part_1 = part_1,
                                  comparison_part = comparison_part,
                                  rounded_zeroes = FALSE))
+  # We find the model matrix
+  mm <- model.matrix(model)[, transf_labels]
+  cm_transf_df2 <- apply(mm, 2, mean)
+  cm_transf_df2 <- as.data.frame(t(cm_transf_df2))
+
+  if (!isTRUE(all.equal(cm_transf_df2, cm_transf_df[1, transf_labels]))){
+    stop("The specified model dataset doesn't seem to be the dataset the model was developed on.")
+  }
 
   # We assign some fixed_values to use in predicting
   if (!(is.null(fixed_values))) {
@@ -276,9 +284,6 @@ predict_fit_and_ci <- function(model,
 
 
   if (type == "linear" && !(terms)) {
-    message(
-      "Note that the confidence intervals on this plot include uncertainty driven by other, non-compositional variables."
-    )
     predictions <-
       stats::predict(model,
               newdata = new_data,
