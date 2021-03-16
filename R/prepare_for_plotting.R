@@ -5,7 +5,7 @@
 #' @param data Data used for model development.
 #' @inheritParams plot_transfers
 #' @return dataframe with a single row of fixed_values.
-generate_fixed_values <- function(data, comp_labels, rounded_zeroes = TRUE, det_limit = NULL){
+generate_fixed_values <- function(data, comp_labels){
   fixed_values <- data.frame(matrix(ncol = 0, nrow = 1))
   others <- colnames(data)[!(colnames(data) %in% comp_labels)]
   for (colname in others){

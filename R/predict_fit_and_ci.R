@@ -7,7 +7,6 @@
 #' number of samples (at least 30, say) the difference between the two is negligible.
 #'
 #' @param model Model to use for predictions.
-#' @param dataset  Dataset used to develop \code{model}.
 #' @param det_limit Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
 #' minimum measurable value in the compositional columns of data. It should be on the same scale as the (input) compositional columns in \code{dataset} (NB it doesn't need to match \code{new_data}).
 #' @param new_data Data for predictions.
@@ -22,7 +21,6 @@
 #' lm_outcome <- comp_model(type = "linear",
 #' outcome = "BMI",
 #' covariates = c("agegroup", "sex"),
-#' data = simdata,
 #' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
 #'
 #' old_comp <- comp_mean(simdata,
@@ -40,24 +38,16 @@
 #' new_data = new_comp,
 #' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
 predict_fit_and_ci <- function(model,
-                           dataset,
                            new_data,
                            comp_labels,
                            terms = TRUE,
                            fixed_values = NULL,
-                           transformation_type = "ilr",
-                           comparison_part = NULL,
                            part_1 = NULL,
                            units = "unitless",
                            specified_units = NULL,
                            rounded_zeroes = TRUE,
                            det_limit = NULL,
                            cm = NULL) {
-  if (is.null(transformation_type)) {
-    stop(
-      "transformation_type must be specified and must match the transformation used in transform_comp earlier (which defaults to \"ilr\")"
-    )
-  }
 
   # We set units
   comp_sum <- as.numeric(process_units(units, specified_units)[2])
@@ -81,7 +71,7 @@ predict_fit_and_ci <- function(model,
                   part_1 = part_1)
 
   dataset_ready <-
-    dataset[,!(colnames(dataset) %in% transf_labels)]
+    model.matrix(model)[,!(colnames(model_matrix) %in% transf_labels)]
 
   # We assign some internal parameters
   type <- process_model_type(model)
@@ -89,7 +79,7 @@ predict_fit_and_ci <- function(model,
   # We calculate the compositional mean so we can use it in future calculations
   if (is.null(cm)){
       cm <- comp_mean(
-      dataset,
+      dataset_ready,
       comp_labels,
       rounded_zeroes = rounded_zeroes,
       det_limit = det_limit,
@@ -97,18 +87,12 @@ predict_fit_and_ci <- function(model,
     )
   }
   cm_transf_df <- suppressMessages(transform_comp(cm, comp_labels,
-                                 transformation_type = transformation_type,
+                                 transformation_type = "ilr",
                                  part_1 = part_1,
-                                 comparison_part = comparison_part,
                                  rounded_zeroes = FALSE))
   # We find the model matrix
   mm <- model.matrix(model)[, transf_labels]
-  cm_transf_df2 <- apply(mm, 2, mean)
-  cm_transf_df2 <- as.data.frame(t(cm_transf_df2))
-
-  if (!isTRUE(all.equal(cm_transf_df2, cm_transf_df[1, transf_labels]))){
-    stop("The specified model dataset doesn't seem to be the dataset the model was developed on.")
-  }
+  cm_transf_df <- apply(mm, 2, mean)
 
   # We assign some fixed_values to use in predicting
   if (!(is.null(fixed_values))) {
@@ -134,9 +118,8 @@ predict_fit_and_ci <- function(model,
   transf_fixed_vals <- suppressMessages(transform_comp(
     fixed_values[, colnames(fixed_values)[!(colnames(fixed_values) %in% transf_labels)]],
     comp_labels,
-    transformation_type = transformation_type,
+    transformation_type = "ilr",
     part_1 = part_1,
-    comparison_part = comparison_part,
     rounded_zeroes = FALSE
   ))
 
@@ -146,7 +129,7 @@ predict_fit_and_ci <- function(model,
     }
   }
 
-  new_data <- suppressMessages(transform_comp(data = new_data, comp_labels = comp_labels, transformation_type = transformation_type, rounded_zeroes = FALSE, comparison_part = comparison_part, part_1 = part_1))
+  new_data <- suppressMessages(transform_comp(data = new_data, comp_labels = comp_labels, transformation_type = "ilr", rounded_zeroes = FALSE, part_1 = part_1))
 
   # Message about meaning of the 'terms' argument
   if (terms == FALSE){
