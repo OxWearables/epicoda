@@ -54,45 +54,34 @@ predict_fit_and_ci <- function(model,
   units <- process_units(units, specified_units)[1]
 
   # We normalise
-  det_limit <- rescale_det_limit(data = dataset, comp_labels = comp_labels, det_limit)
-  dataset <- normalise_comp(dataset, comp_labels = comp_labels)
   new_data <- normalise_comp(new_data, comp_labels = comp_labels)
 
   # We label what the transformed cols will be
-  if (transformation_type == "ilr") {
-    if (!is.null(part_1)) {
+  if (!is.null(part_1)) {
       comp_labels <- alter_order_comp_labels(comp_labels, part_1)
     }
-  }
+
   transf_labels <-
     transf_labels(comp_labels,
-                  transformation_type,
-                  comparison_part = comparison_part,
+                  transformation_type = "ilr",
                   part_1 = part_1)
 
+  dataset <- model.matrix(model)
+  comp_cols <- ilr_trans_inv(dataset[, transf_labels])
+  colnames(comp_cols) <- comp_labels
+  dataset <- cbind(dataset, comp_cols)
+
   dataset_ready <-
-    model.matrix(model)[,!(colnames(model_matrix) %in% transf_labels)]
+    dataset[,!(colnames(model_matrix) %in% transf_labels)]
 
   # We assign some internal parameters
   type <- process_model_type(model)
 
-  # We calculate the compositional mean so we can use it in future calculations
-  if (is.null(cm)){
-      cm <- comp_mean(
-      dataset_ready,
-      comp_labels,
-      rounded_zeroes = rounded_zeroes,
-      det_limit = det_limit,
-      units = "unitless"
-    )
-  }
-  cm_transf_df <- suppressMessages(transform_comp(cm, comp_labels,
-                                 transformation_type = "ilr",
-                                 part_1 = part_1,
-                                 rounded_zeroes = FALSE))
-  # We find the model matrix
+  # We find the reference values
   mm <- model.matrix(model)[, transf_labels]
   cm_transf_df <- apply(mm, 2, mean)
+  cm <- ilr_trans_inv(cm_transf_df)
+  colnames(cm) <- comp_labels
 
   # We assign some fixed_values to use in predicting
   if (!(is.null(fixed_values))) {
@@ -108,9 +97,7 @@ predict_fit_and_ci <- function(model,
     fixed_values <-
       generate_fixed_values(
         dataset_ready,
-        comp_labels,
-        rounded_zeroes = rounded_zeroes,
-        det_limit = det_limit
+        comp_labels
       )
     fixed_values <- cbind(fixed_values, cm)
   }
