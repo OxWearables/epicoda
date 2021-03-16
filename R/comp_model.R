@@ -24,34 +24,28 @@ comp_model <-
            data,
            follow_up_time = NULL,
            event = NULL,
-           transformation_type = "ilr",
            rounded_zeroes = TRUE,
            det_limit = NULL,
-           comparison_part = NULL,
            part_1 = NULL) {
 
     # Check information specified is correct
     if ((type != "linear") && (type != "logistic") && (type != "cox")) {
       stop("type must be \"linear\", \"logistic\", or \"cox\".")
     }
-    if (transformation_type == "clr"){
-      stop("clr variables are singular and shouldn't be used for regression modelling.")
-    }
 
     # Transform data
     data_ready <- transform_comp(
       data = data,
       comp_labels = comp_labels,
-      transformation_type = transformation_type,
+      transformation_type = "ilr",
       rounded_zeroes = rounded_zeroes,
       det_limit = det_limit,
-      comparison_part = comparison_part,
       part_1 = part_1
     )
 
     # Create  strings to specify exposure variables in models
     transf_vec <-
-      transf_labels(comp_labels = comp_labels, transformation_type = transformation_type, comparison_part = comparison_part,
+      transf_labels(comp_labels = comp_labels, transformation_type = "ilr",
                     part_1 = part_1)
     transf_sum <- vector_to_sum(transf_vec)
     cov_sum <- vector_to_sum(covariates)
