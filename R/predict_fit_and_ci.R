@@ -62,6 +62,13 @@ predict_fit_and_ci <- function(model,
 
   # We back calculate the dataset used to derive the model
   dataset <- stats::model.frame(model)
+      ## We verify that the correct column names are present
+      if (!(all(transf_labels  %in% colnames(dataset)[grepl("ilr", colnames(dataset))]))){
+        stop("Specified comp_labels do not match those used to develop the model (e.g. different order?)")
+      }
+      if (!(all(colnames(dataset)[grepl("ilr", colnames(dataset))] %in% transf_labels))){
+        stop("Specified comp_labels do not match those used to develop the model (e.g. missing labels?)")
+      }
   comp_cols <- ilr_trans_inv(dataset[, transf_labels])
   colnames(comp_cols) <- comp_labels
   dataset <- cbind(dataset, comp_cols)
@@ -307,7 +314,7 @@ predict_fit_and_ci <- function(model,
 
     dNew$lower_CI <- dNew$fit - t_value * value
     dNew$upper_CI <- dNew$fit + t_value * value
- }
+  }
 
   dNew <- rescale_comp(dNew, comp_labels = comp_labels, comp_sum = comp_sum)
   if (terms == FALSE) {
