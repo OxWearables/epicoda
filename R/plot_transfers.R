@@ -103,6 +103,14 @@ plot_transfers <- function(from_part,
 
   # We back calculate the dataset used to derive the model
   dataset <- stats::model.frame(model)
+    ## We verify that the correct column names are present
+    if (!(all(transf_labels  %in% colnames(dataset)[grepl("ilr", colnames(dataset))]))){
+      stop("Specified comp_labels do not match those used to develop the model (e.g. different order?)")
+    }
+    if (!(all(colnames(dataset)[grepl("ilr", colnames(dataset))] %in% transf_labels))){
+      stop("Specified comp_labels do not match those used to develop the model (e.g. missing labels?)")
+    }
+
   comp_cols <- ilr_trans_inv(dataset[, transf_labels])
   colnames(comp_cols) <- comp_labels
   dataset <- cbind(dataset, comp_cols)
@@ -147,6 +155,9 @@ plot_transfers <- function(from_part,
   }
 
   # We make some new data for predictions
+  if ((!(from_part %in% comp_labels))|!(to_part %in% comp_labels)){
+    stop("from_part or to_part not in comp_labels")
+  }
   new_data <-
     make_new_data(
       from_part,
@@ -186,19 +197,21 @@ plot_transfers <- function(from_part,
     units = units,
     specified_units = specified_units
   )
-  # We normalise again
-  dNew <- normalise_comp(data = dNew, comp_labels = comp_labels)
 
 
   # We pull out the required values on the needed scale
-  dToScale <-
-    rescale_comp(data = dNew,
-                 comp_labels = comp_labels,
-                 comp_sum = comp_sum)
   dNew$axis_vals <-
-    dToScale[, to_part] - rep(cm_on_scale[1, to_part], by = nrow(dNew))
+    dNew[, to_part] - rep(cm_on_scale[1, to_part], by = nrow(dNew))
+  dNew$axis_vals2 <-
+    -dNew[, from_part] + rep(cm_on_scale[1, from_part], by = nrow(dNew))
+
+  # Check no pathology in axis value assignment
+  if (!(isTRUE(all.equal(dNew$axis_vals, dNew$axis_vals2)))){
+    stop("Axis vals differ")
+  }
 
 
+  # Assign limit values
   if (is.null(yllimit)) {
     yllimit <- min(dNew$lower_CI)
   }
