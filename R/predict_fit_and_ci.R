@@ -61,21 +61,20 @@ predict_fit_and_ci <- function(model,
                   part_1 = part_1)
 
   # We back calculate the dataset used to derive the model
-  dataset <- model.matrix(model)
+  dataset <- stats::model.frame(model)
   comp_cols <- ilr_trans_inv(dataset[, transf_labels])
   colnames(comp_cols) <- comp_labels
   dataset <- cbind(dataset, comp_cols)
   dataset_ready <-
-    dataset[,!(colnames(dataset) %in% transf_labels)]
+    dataset[,!(colnames(dataset) %in% c(transf_labels, "survival_object"))]
 
   # We assign some internal parameters
   type <- process_model_type(model)
 
   # We find the reference values
-  mm <- model.matrix(model)[, transf_labels]
+  mm <- stats::model.frame(model)[, transf_labels]
   cm_transf_df <- apply(mm, 2, mean)
   cm_transf_df <- as.data.frame(t(cm_transf_df))
-  print(cm_transf_df)
   cm <- ilr_trans_inv(cm_transf_df)
   colnames(cm) <- comp_labels
 
