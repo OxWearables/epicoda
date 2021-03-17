@@ -39,13 +39,11 @@ test_that("expected order of confidence interval limits", {
   expect_gt(
     predict_fit_and_ci(
       model = cox_outcome,
-      dataset = simdata,
       terms = FALSE,
       new_data = new_comp,
       comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
     )$upper_CI, predict_fit_and_ci(
     model = cox_outcome,
-    dataset = simdata,
     terms = FALSE,
     new_data = new_comp,
     comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
@@ -56,13 +54,11 @@ test_that("expected order of confidence interval limits", {
   expect_lt(
     predict_fit_and_ci(
       model = cox_outcome,
-      dataset = simdata,
       terms = FALSE,
       new_data = new_comp,
       comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
     )$lower_CI, predict_fit_and_ci(
       model = cox_outcome,
-      dataset = simdata,
       terms = FALSE,
       new_data = new_comp,
       comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
@@ -73,13 +69,11 @@ test_that("expected order of confidence interval limits", {
   expect_gt(
     predict_fit_and_ci(
       model = lm_outcome,
-      dataset = simdata,
       terms = FALSE,
       new_data = new_comp,
       comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
     )$upper_CI, predict_fit_and_ci(
       model = lm_outcome,
-      dataset = simdata,
       terms = FALSE,
       new_data = new_comp,
       comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
@@ -90,13 +84,11 @@ test_that("expected order of confidence interval limits", {
   expect_lt(
     predict_fit_and_ci(
       model = lm_outcome,
-      dataset = simdata,
       terms = FALSE,
       new_data = new_comp,
       comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
     )$lower_CI, predict_fit_and_ci(
       model = lm_outcome,
-      dataset = simdata,
       terms = FALSE,
       new_data = new_comp,
       comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
@@ -107,13 +99,11 @@ test_that("expected order of confidence interval limits", {
   expect_gt(
     predict_fit_and_ci(
       model = log_outcome,
-      dataset = simdata,
       terms = FALSE,
       new_data = new_comp,
       comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
     )$upper_CI, predict_fit_and_ci(
       model = log_outcome,
-      dataset = simdata,
       terms = FALSE,
       new_data = new_comp,
       comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
@@ -124,13 +114,11 @@ test_that("expected order of confidence interval limits", {
   expect_lt(
     predict_fit_and_ci(
       model = log_outcome,
-      dataset = simdata,
       terms = FALSE,
       new_data = new_comp,
       comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
     )$lower_CI, predict_fit_and_ci(
       model = log_outcome,
-      dataset = simdata,
       terms = FALSE,
       new_data = new_comp,
       comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
@@ -142,13 +130,11 @@ test_that("input scale of new composition doesn't matter", {
   expect_equal(
     predict_fit_and_ci(
       model = log_outcome,
-      dataset = simdata,
       terms = FALSE,
       new_data = new_comp*24,
       comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
     )$fit, predict_fit_and_ci(
       model = log_outcome,
-      dataset = simdata,
       terms = FALSE,
       new_data = new_comp,
       comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
@@ -160,7 +146,6 @@ test_that("wrong labels for composition throws error", {
   expect_error(
     predict_fit_and_ci(
       model = log_outcome,
-      dataset = simdata,
       terms = FALSE,
       new_data = new_comp,
       comp_labels = c("vigorous", "moderate", "light", "sedentary")
@@ -171,15 +156,21 @@ test_that("wrong labels for composition throws error", {
   expect_error(
     predict_fit_and_ci(
       model = log_outcome,
-      dataset = simdata,
       terms = FALSE,
       new_data = new_comp,
       comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep", "extra")
     ))
 })
+test_that("wrong labels for composition throws error", {
+  expect_error(
+    predict_fit_and_ci(
+      model = log_outcome,
+      terms = FALSE,
+      new_data = new_comp,
+      comp_labels = c("viggy", "moderate", "light", "sedentary", "sleep", "extra")
+    ))
+})
 
-install.packages("devtools", "https://www.stats.bris.ac.uk/R/")
-library(devtools)
 devtools::install_github('tystan/deltacomp')
 library(deltacomp)
 

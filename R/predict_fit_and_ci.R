@@ -110,7 +110,6 @@ predict_fit_and_ci <- function(model,
       new_data[, colname]<- rep(fixed_values[1, colname], by = nrow(new_data))
     }
   }
-  print(head(new_data))
 
   new_data <- suppressMessages(transform_comp(data = new_data, comp_labels = comp_labels, transformation_type = "ilr", rounded_zeroes = FALSE, part_1 = part_1))
 

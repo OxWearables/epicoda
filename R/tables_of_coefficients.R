@@ -87,7 +87,6 @@ tab_coefs <-
       event = event,
       data  = data,
       comp_labels = comp_labels,
-      transformation_type = "ilr",
       rounded_zeroes = rounded_zeroes,
       det_limit = det_limit
     )
@@ -96,8 +95,7 @@ tab_coefs <-
       model = start_model,
       scale_type = scale_type,
       level = level,
-      comp_labels = comp_labels,
-      transformation_type = "ilr"
+      comp_labels = comp_labels
     )
     for (part in comp_labels) {
       current_model <- comp_model(
@@ -108,7 +106,6 @@ tab_coefs <-
         event = event,
         data  = data,
         comp_labels = comp_labels,
-        transformation_type = "ilr",
         rounded_zeroes = rounded_zeroes,
         det_limit = det_limit,
         part_1 = part
