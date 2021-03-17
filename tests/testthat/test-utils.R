@@ -2,9 +2,16 @@ test_that("mode returns mode", {
   expect_equal(epicoda:::Mode(c(2,2,3)), 2)
 })
 
+test_that("mode returns mode", {
+  expect_equal(epicoda:::Mode(c(2,2,3, 3)), c(2, 3))
+})
 
 test_that("gm behaves as expected", {
   expect_equal(epicoda:::gm(c(2,1,4)), 2)
+})
+
+test_that("gm behaves as expected", {
+  expect_equal(epicoda:::gm(c(12, 3, 6, 6)), 6)
 })
 
 df <- data.frame(matrix(nrow = 2, ncol = 0))
