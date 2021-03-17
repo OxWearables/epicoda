@@ -12,10 +12,8 @@ comp_model(
   data,
   follow_up_time = NULL,
   event = NULL,
-  transformation_type = "ilr",
   rounded_zeroes = TRUE,
   det_limit = NULL,
-  comparison_part = NULL,
   part_1 = NULL
 )
 }
@@ -34,15 +32,11 @@ comp_model(
 
 \item{event}{Only used if \code{type} is \code{"cox"} and \code{outcome} is \code{NULL}.Binary variable indicating whether or not an event was observed.}
 
-\item{transformation_type}{The type of transformation desired. Should be \code{"ilr", "alr"} or \code{"clr"}.}
-
 \item{rounded_zeroes}{Are zeroes rounded zeroes?}
 
 \item{det_limit}{Detection limit if zeroes are to be imputed. This is needed when \code{rounded_zeroes} is \code{TRUE}. It should be the
 minimum measurable value in the compositional columns of data, and should be on the same scale as the (input) compositional columns. If it is
 not set, the minimum measured value greater than zero is used, which is appropriate for many practical purposes.}
-
-\item{comparison_part}{Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of part that all other parts will be compared to.}
 
 \item{part_1}{Only used if first part in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
 }

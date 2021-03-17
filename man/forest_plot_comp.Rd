@@ -8,7 +8,6 @@ forest_plot_comp(
   composition_list,
   model = NULL,
   models_list = NULL,
-  dataset,
   comp_labels,
   x_label = NULL,
   xllimit = NULL,
@@ -21,10 +20,6 @@ forest_plot_comp(
   fixed_values = NULL,
   units = "unitless",
   specified_units = NULL,
-  rounded_zeroes = TRUE,
-  det_limit = NULL,
-  transformation_type = "ilr",
-  comparison_part = NULL,
   part_1 = NULL,
   cm = NULL,
   ...
@@ -36,8 +31,6 @@ forest_plot_comp(
 \item{model}{Model to use for predictions.}
 
 \item{models_list}{If \code{model} is \code{NULL} (or not set), a named list of models for which to plot model predictions in the forest plot. All models should have the same type.}
-
-\item{dataset}{Dataset used to develop \code{model}.}
 
 \item{comp_labels}{The labels of the compositional columns.}
 
@@ -63,18 +56,7 @@ forest_plot_comp(
 
 \item{specified_units}{If units are being specified via the composition sum, this is where it is done. It should be a vector where the first argument is a string describing the units, and the second argument is the expected sum of a composition e.g. \code{c("hr/day", 24)}}
 
-\item{rounded_zeroes}{Are zeroes rounded zeroes?}
-
-\item{det_limit}{Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
-minimum measurable value in the compositional columns of data. It should be on the same scale as the (input) compositional columns in \code{dataset} (NB it doesn't need to match \code{new_data}).}
-
-\item{transformation_type}{The type of transformation desired. Should be \code{"ilr", "alr"} or \code{"clr"}.}
-
-\item{comparison_part}{Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of part that all other parts will be compared to.}
-
 \item{part_1}{Only used if first part in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
-
-\item{cm}{Can be set with compositional mean to speed up calculation. This should NOT be set manually and should only be passed from other functions.}
 
 \item{...}{
   Arguments passed on to \code{\link[forestplot:forestplot]{forestplot::forestplot}}
@@ -120,7 +102,6 @@ lm_BMI_age_group_only <- comp_model(type = "linear", outcome = "BMI",
 forest_plot_comp(composition_list = list_for_plot,
                  models_list = list("Unadjusted" = lm_BMI_unadjusted,
                  "Age-adjusted" = lm_BMI_age_group_only),
-                 dataset = simdata,
                  comp_labels = c("vigorous", "moderate",
                  "light", "sedentary", "sleep"))
 }
