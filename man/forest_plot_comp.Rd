@@ -21,7 +21,6 @@ forest_plot_comp(
   units = "unitless",
   specified_units = NULL,
   part_1 = NULL,
-  cm = NULL,
   ...
 )
 }

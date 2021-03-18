@@ -44,6 +44,7 @@ vary_part_of_interest <- function(part_of_interest,
 #'
 #' Generates a new dataset to feed into the plotting functions (\code{plot_transfers})
 #'
+#' @param dataset Dataset to use to inform range of data used (should be dataset model was developed on)
 #' @inheritParams plot_transfers
 make_new_data <- function(from_part,
                           to_part,

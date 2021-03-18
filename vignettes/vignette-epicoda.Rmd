@@ -70,7 +70,7 @@ We've also got a message about zeroes. Compositional data analysis can't automat
 
 To impute the zeroes, as per the second option, we need to specify the minimum value detectable in the data. This can be specified using the `det_limit` argument, and it should be specified with the same scale as the compositional columns in the input data. [Note that if the input data scale and the output scale (`units` argument), are different, it should match *the input data scale*.]
 
-The default in the function, if neither `rounded_zeroes` or `det_limit` is specified, is to impute them with the detection limit (`det_limit`) set as the minimum non-zero value observed in the data. For most data, this default should not cause problems. 
+The default in the function, if neither `rounded_zeroes` or `det_limit` is specified, is to impute them with the detection limit (`det_limit`) set as the minimum non-zero value observed in the data. This isn't necessarily a correct default!
 
 So we can now find the mean again, this time imputing the zeroes with a specified detection limit and specifying the units.  In the simulated data, the shortest period of a behaviour we could detect was $0.0012\ hr/day$ (due to the length of an epoch for the accelerometer used to measure the data on which the simulated data is based). 
 
@@ -88,7 +88,7 @@ comp_mean(data = simdata, # this is the dataset
           )
 ```
 
-Many other functions in the package have `rounded_zeroes` and `det_limit` arguments, because they use calculations which need zeroes to be imputed or excluded. For all of them, it works the same as for `comp_mean`. As in this case, the default is usually fine, so in the remainder of this vignette they are left at the default. 
+Many other functions in the package have `rounded_zeroes` and `det_limit` arguments, because they use calculations which need zeroes to be imputed or excluded. For all of them, it works the same as for `comp_mean`. For the simulated data, the default is fine, so in the remainder of this vignette they are left at the default. 
 
 ### Other descriptive statistics
 While the compositional mean is a fairly clear compositional equivalent to the mean for non-compositional data, other standard descriptive statistics (such as the variance), do not have straightforward compositional equivalents for all purposes for which they are used (there may be several alternatives, depending on the purpose of the analysis) [@Filzmoser2018]. These are beyond the current scope of this package. 
@@ -175,7 +175,6 @@ Substitution plots show the model-predicted difference in the outcome (relative 
 plot_transfers(from_part = "sedentary",
                to_part = "moderate",
                model = lm_BMI ,
-               dataset = simdata,
                comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
                y_label = "Model-predicted difference in BMI",
                units = "hr/day")
@@ -223,11 +222,10 @@ We now need to plot these, which can be done as follows.
 ```{r}
 forest_plot_comp(composition_list = list_for_plot, 
                  model = lm_BMI, 
-                 dataset = simdata, 
                  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
 ```
 
-The `forest_plot_comp` function can also be used to compare models. To do this, leave `model` at its default `NULL` value, and set `models_list` as a named list of models. For example, to compare `lm_BMI` with a model adjusted for `age_group` only and an unadjusted model: 
+The `forest_plot_comp` function can also be used to compare models. To do this, leave `model` at its default `NULL` value, and set `models_list` as a named list of models. For example, to compare `lm_BMI` with a model adjusted for `age_group` only and an unadjusted model (very boring in this case as the simulated data doesn't have realistic correlation structure for covariates!): 
 ```{r}
 lm_BMI_unadjusted <- comp_model(type = "linear",
          outcome = "BMI",
@@ -242,7 +240,6 @@ forest_plot_comp(composition_list = list_for_plot,
                  models_list = list("Unadjusted" = lm_BMI_unadjusted, 
                                     "Age-adjusted" = lm_BMI_age_group_only,
                                     "Age- and sex- adjusted" = lm_BMI), 
-                 dataset = simdata, 
                  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
 ```
 
@@ -275,8 +272,6 @@ An alternative way to get round the challenges of interpreting the model coeffic
 plot_transfers(from_part = "sedentary",
                to_part = "moderate",
                model = lm_BMI ,
-               dataset = simdata,
-               transformation_type = "ilr",
                comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
                y_label = "Model-predicted outcome",
                units = "hr/day",
@@ -302,8 +297,6 @@ library(ggplot2) # it's easier to specify e.g. themes if ggplot2 is loaded.
 plot_transfers(from_part = "sedentary",
                to_part = "moderate",
                model = lm_BMI ,
-               dataset = simdata,
-               transformation_type = "ilr",
                comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
                y_label = "Model-estimated difference in outcome",
                units = "hr/day",
@@ -319,7 +312,6 @@ Slightly differently, `forest_plot_comp` is based on the `forestplot` package, s
 library(forestplot) # it's easier to specify options such as fpColors if the forestplot package is loaded. 
 forest_plot_comp(composition_list = list_for_plot, 
                  model = lm_BMI, 
-                 dataset = simdata, 
                  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"), 
                  pred_name = "The predicted difference at this composition", # This sets the name with which to label the column. , 
                  title = "Analysis of physical behaviour data", # This sets the overall plot title. 
@@ -353,7 +345,15 @@ summary(cox_outcome)
 To get the numbers out for predictions at particular compositions, we can use the `predict_fit_and_ci` function (which is wrapped in the plotting functions).This takes a data frame argument for `new_data`. 
 
 ```{r}
-predict_fit_and_ci(model = lm_BMI, dataset = simdata, new_data = new_comp, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
+pla <- predict_fit_and_ci(model = lm_BMI, new_data = new_comp, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
+ploga <- predict_fit_and_ci(model = log_outcome, new_data = new_comp, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
+
+pcoxa <- predict_fit_and_ci(model = cox_outcome, new_data = new_comp, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
+pltfa <- predict_fit_and_ci(model = lm_BMI, new_data = new_comp, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"), terms = FALSE)
+plogtfa <- predict_fit_and_ci(model = log_outcome, new_data = new_comp, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"), terms = FALSE)
+
+pcoxtfa <- predict_fit_and_ci(model = cox_outcome, new_data = new_comp, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"), terms = FALSE)
+devtools::load_all()
 ```
 
 

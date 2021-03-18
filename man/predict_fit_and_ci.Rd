@@ -46,6 +46,7 @@ number of samples (at least 30, say) the difference between the two is negligibl
 \examples{
 lm_outcome <- comp_model(type = "linear",
 outcome = "BMI",
+data = simdata,
 covariates = c("agegroup", "sex"),
 comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
 
@@ -60,7 +61,6 @@ change_composition(
 )
 
 predict_fit_and_ci(model = lm_outcome,
-dataset = simdata,
 new_data = new_comp,
 comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
 }

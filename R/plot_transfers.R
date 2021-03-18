@@ -31,8 +31,6 @@
 #' epicoda::plot_transfers(from_part = "sedentary",
 #' to_part = "moderate",
 #' model = lm_outcome ,
-#' dataset = simdata,
-#' transformation_type = "ilr",
 #' comp_labels =c("vigorous", "moderate", "light", "sedentary", "sleep"),
 #' y_label = "Model-predicted difference in BMI",
 #' units = "hr/day",
