@@ -172,7 +172,6 @@ test_that("wrong labels for composition throws error", {
 })
 
 
-
 comp_labels <- c("sl", "sb", "lpa", "mvpa")
 fat_data <- deltacomp::fat_data
 dcs <- deltacomp::predict_delta_comps(
