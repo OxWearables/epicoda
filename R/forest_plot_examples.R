@@ -46,7 +46,6 @@
 #' forest_plot_comp(composition_list = list_for_plot,
 #'                  models_list = list("Unadjusted" = lm_BMI_unadjusted,
 #'                  "Age-adjusted" = lm_BMI_age_group_only),
-#'                  dataset = simdata,
 #'                  comp_labels = c("vigorous", "moderate",
 #'                  "light", "sedentary", "sleep"))
 #' @export
@@ -54,7 +53,6 @@ forest_plot_comp <-
   function(composition_list,
            model = NULL ,
            models_list = NULL,
-           dataset,
            comp_labels,
            x_label = NULL,
            xllimit = NULL,
@@ -67,10 +65,6 @@ forest_plot_comp <-
            fixed_values = NULL,
            units = "unitless",
            specified_units = NULL,
-           rounded_zeroes = TRUE,
-           det_limit = NULL,
-           transformation_type = "ilr",
-           comparison_part = NULL,
            part_1 = NULL,
            cm = NULL,
            ...) {
@@ -132,18 +126,13 @@ forest_plot_comp <-
     if (!is.null(model)){
       dNew <- predict_fit_and_ci(
         model = model,
-        dataset = dataset,
         new_data = df,
         fixed_values = fixed_values,
-        transformation_type = transformation_type,
-        comparison_part = comparison_part,
         part_1 = part_1,
         comp_labels = comp_labels,
         units = units,
         specified_units = specified_units,
-        rounded_zeroes = rounded_zeroes,
-        det_limit = det_limit,
-        terms = terms, cm = cm
+        terms = terms
       )
 
 
@@ -218,18 +207,13 @@ forest_plot_comp <-
       for (j in 1:length(models_list)){
         dPred <- predict_fit_and_ci(
         model = models_list[[j]],
-        dataset = dataset,
         new_data = df[i,],
         fixed_values = fixed_values,
-        transformation_type = transformation_type,
-        comparison_part = comparison_part,
         part_1 = part_1,
         comp_labels = comp_labels,
         units = units,
         specified_units = specified_units,
-        rounded_zeroes = rounded_zeroes,
-        det_limit = det_limit,
-        terms = terms, cm = cm
+        terms = terms
       )
       coef <- cbind(coef, dPred$fit)
       low <- cbind(low, dPred$lower_CI)
