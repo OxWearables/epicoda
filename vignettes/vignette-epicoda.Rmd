@@ -96,8 +96,11 @@ While the compositional mean is a fairly clear compositional equivalent to the m
 ### Plotting ternary diagrams
 Ternary plots provide a way to plot compositional data with three parts. The R package `ggtern` is an extension of `ggplot2` to carry out this plotting. In this package, there is a wrapper for `ggtern` functions to implement common use cases in epidemiological analyses: plotting the data density, and plotting the data density within subgroups. 
 
+#### Note (18.03.2021)
+Currently, a conflict between `ggtern` and `ggplot2` means using `ggtern` can stop axis labels appearing on `ggplot2` graphs. Pending a more permanent solutions, these functions remain in the package, but `ggtern` is not automatically loaded and should be used with care. They are not run in this vignette. 
+
 Frequently, data has more than three compositional parts (as here). There are two alternatives in that case: using three parts of the existing parts (looking at the subcomposition formed by these parts), or summing parts to consider a different composition (where that is informative). In the simulated data, `"vigorous", "moderate"` and `"light"` represent three different intensities of activity, so it is meaningful to combine them: 
-```{r}
+```{r, eval = FALSE}
 simdata$all_activity <- simdata$vigorous + simdata$moderate + simdata$light
 plot_density_ternary(data = simdata, 
                      parts_to_plot = c("all_activity", "sedentary", "sleep"),
@@ -108,7 +111,7 @@ plot_density_ternary(data = simdata,
 ```
 
 Another frequent use case is considering this plot with the density separated by groups. For example, to look at different sexes (which in fact don't differ much in the simulated data):  
-```{r}
+```{r, eval=FALSE}
 plot_density_ternary(data = simdata, 
                      parts_to_plot = c("all_activity", "sedentary", "sleep"),
                      groups = "sex")
@@ -116,7 +119,7 @@ plot_density_ternary(data = simdata,
 ```
 
 The `mark_points` argument can be used to annotate particular points using crosshairs. For example, to mark the compositional mean: 
-```{r}
+```{r,eval = FALSE}
 points_to_mark <- as.data.frame(comp_mean(data = simdata, comp_labels = c("all_activity", "sedentary", "sleep")))
 plot_density_ternary(data = simdata, 
                      parts_to_plot = c("all_activity", "sedentary", "sleep"),
@@ -170,13 +173,13 @@ tab_coefs(scale_type = "lp", # This argument can be "lp" or "exp" and determines
 * The function `tab_covariate_coefs` is called within this function, and can be used to extract the coefficients of the covariates only from a model. 
 
 ### Presenting the results:  substitution plots
-Substitution plots show the model-predicted difference in the outcome (relative to at the compositional mean) as the balance between two parts of the composition varies. In the case of time use/physical behaviours, they are known as isotemporal substitution plots and show the model-predicted difference in the outcome at higher time in one behaviour at the expense of time in another behaviour (the model-predicted difference in outcome for a hypothetical reallocation of time from one behaviour to another). For example: 
+Substitution plots show the model-estimated difference in the outcome (relative to at the compositional mean) as the balance between two parts of the composition varies. In the case of time use/physical behaviours, they are known as isotemporal substitution plots and show the model-predicted difference in the outcome at higher time in one behaviour at the expense of time in another behaviour (the model-predicted difference in outcome for a hypothetical reallocation of time from one behaviour to another). For example: 
 ```{r}
 plot_transfers(from_part = "sedentary",
                to_part = "moderate",
                model = lm_BMI ,
                comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
-               y_label = "Model-predicted difference in BMI",
+               y_label = "Model-estimated difference in BMI",
                units = "hr/day")
 ```
 
