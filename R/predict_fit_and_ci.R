@@ -128,7 +128,7 @@ predict_fit_and_ci <- function(model,
   }
 
   # We begin the plotting
-  if (type == "logistic" && (terms == FALSE)) {
+  if ((type == "logistic") & !(terms)) {
     predictions <- stats::predict(model,
                            newdata = new_data,
                            type = "link",
@@ -147,7 +147,7 @@ predict_fit_and_ci <- function(model,
 
   }
 
-  if (type == "logistic" && (terms)) {
+  if ((type == "logistic") & (terms)) {
     predictions <-
       stats::predict(
         model,
@@ -170,14 +170,8 @@ predict_fit_and_ci <- function(model,
     middle_matrix <- stats::vcov(model)[transf_labels, transf_labels]
     x <- data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
 
-    in_sqrt_1 <- (x %*% middle_matrix)
-    t_x <- as.matrix(t(x))
-    in_sqrt_true <- c()
-    for (i in 1:nrow(in_sqrt_1)) {
-      in_sqrt_true <-
-        c(in_sqrt_true, (in_sqrt_1[i,] %*% data.matrix(t_x)[, i]))
-    }
-
+    t_x <- data.matrix(as.matrix(t(x)))
+    in_sqrt_true <- diag((x %*% middle_matrix) %*% t_x)
     value <- sqrt(data.matrix(in_sqrt_true))
 
     t_value <-
@@ -192,7 +186,7 @@ predict_fit_and_ci <- function(model,
 
 
 
-  if (type == "cox" && (terms)) {
+  if ((type == "cox") & (terms)) {
     predictions <- stats::predict(
       model,
       newdata = new_data,
@@ -213,14 +207,9 @@ predict_fit_and_ci <- function(model,
 
     middle_matrix <- stats::vcov(model)[transf_labels, transf_labels]
     x <- data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
-    in_sqrt_1 <- (x %*% middle_matrix)
-    t_x <- as.matrix(t(x))
-    in_sqrt_true <- c()
-    for (i in 1:nrow(in_sqrt_1)) {
-      in_sqrt_true <-
-        c(in_sqrt_true, (in_sqrt_1[i,] %*% data.matrix(t_x)[, i]))
-    }
+    t_x <- data.matrix(as.matrix(t(x)))
 
+    in_sqrt_true <- diag((x %*% middle_matrix) %*% t_x)
     value <- sqrt(data.matrix(in_sqrt_true))
 
     z_value <- stats::qnorm(0.975)
@@ -234,7 +223,7 @@ predict_fit_and_ci <- function(model,
 
 
 
-  if (type == "cox" && !(terms)) {
+  if ((type == "cox") & !(terms)) {
     predictions <- stats::predict(model,
                            newdata = new_data,
                            type = "lp",
@@ -255,7 +244,7 @@ predict_fit_and_ci <- function(model,
 
 
 
-  if (type == "linear" && !(terms)) {
+  if ((type == "linear") & !(terms)) {
     predictions <-
       stats::predict(model,
               newdata = new_data,
@@ -279,7 +268,7 @@ predict_fit_and_ci <- function(model,
 
 
 
-  if (type == "linear" && (terms)) {
+  if ((type == "linear") & (terms)) {
     predictions <-
       stats::predict(
         model,
@@ -299,14 +288,9 @@ predict_fit_and_ci <- function(model,
 
     middle_matrix <- stats::vcov(model)[transf_labels, transf_labels]
     x <- data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
-    in_sqrt_1 <- (x %*% middle_matrix)
-    t_x <- as.matrix(t(x))
-    in_sqrt_true <- c()
-    for (i in 1:nrow(in_sqrt_1)) {
-      in_sqrt_true <-
-        c(in_sqrt_true, (in_sqrt_1[i,] %*% data.matrix(t_x)[, i]))
-    }
 
+    t_x <- data.matrix(as.matrix(t(x)))
+    in_sqrt_true <- diag((x %*% middle_matrix) %*% t_x)
     value <- sqrt(data.matrix(in_sqrt_true))
 
     t_value <-

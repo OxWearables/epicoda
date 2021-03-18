@@ -212,16 +212,16 @@ dcs <- deltacomp::predict_delta_comps(
   y = "z_bmi",
   comps = comp_labels,
   covars = c("shuttles_20m", "height"),
-  deltas = seq(-60, 60, by = 5) / (24 * 60),
+  deltas = seq(-10, 10, by = 5) / (24 * 60),
   comparisons = "one-v-one",
   alpha = 0.05
 )
 
 epic_linear <- comp_model(type = "linear", data = fat_data, rounded_zeroes = FALSE, outcome = "z_bmi",comp_labels = comp_labels,covariates = c("shuttles_20m", "height"))
 newdata <- data.frame(matrix(ncol = 0, nrow = 2) )
-newdata$sleep <- c(comp_mean(fat_data, comp_labels = comp_labels)$sleep - (-1/24), comp_mean(fat_data, comp_labels = comp_labels)$sleep)
-newdata$sed <-  c(comp_mean(fat_data, comp_labels = comp_labels)$sed + (-1/24), comp_mean(fat_data, comp_labels = comp_labels)$sed + (-1/24))
-newdata$lpa <- c(comp_mean(fat_data, comp_labels = comp_labels)$lpa, comp_mean(fat_data, comp_labels = comp_labels)$lpa + 1/24)
+newdata$sleep <- c(comp_mean(fat_data, comp_labels = comp_labels)$sleep - (-1/(24*6)), comp_mean(fat_data, comp_labels = comp_labels)$sleep)
+newdata$sed <-  c(comp_mean(fat_data, comp_labels = comp_labels)$sed + (-1/(24*6)), comp_mean(fat_data, comp_labels = comp_labels)$sed + (-1/(24*6)))
+newdata$lpa <- c(comp_mean(fat_data, comp_labels = comp_labels)$lpa, comp_mean(fat_data, comp_labels = comp_labels)$lpa + 1/(24*6))
 newdata$mvpa <- c(comp_mean(fat_data, comp_labels = comp_labels)$mvpa, comp_mean(fat_data, comp_labels = comp_labels)$mvpa)
 
 
