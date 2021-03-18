@@ -99,13 +99,13 @@ comp_model <-
         model <-
           survival::coxph(stats::as.formula(paste(
             "survival_object ~",  transf_sum
-          )), data = data_ready)
+          )), data = data_ready, model = TRUE)
       }
       if (!is.null(covariates)){
            model <-
         survival::coxph(stats::as.formula(paste(
           "survival_object ~", cov_sum, "+", transf_sum
-        )), data = data_ready)
+        )), data = data_ready, model = TRUE)
       }
     }
 
