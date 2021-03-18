@@ -345,15 +345,7 @@ summary(cox_outcome)
 To get the numbers out for predictions at particular compositions, we can use the `predict_fit_and_ci` function (which is wrapped in the plotting functions).This takes a data frame argument for `new_data`. 
 
 ```{r}
-pla <- predict_fit_and_ci(model = lm_BMI, new_data = new_comp, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
-ploga <- predict_fit_and_ci(model = log_outcome, new_data = new_comp, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
-
-pcoxa <- predict_fit_and_ci(model = cox_outcome, new_data = new_comp, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
-pltfa <- predict_fit_and_ci(model = lm_BMI, new_data = new_comp, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"), terms = FALSE)
-plogtfa <- predict_fit_and_ci(model = log_outcome, new_data = new_comp, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"), terms = FALSE)
-
-pcoxtfa <- predict_fit_and_ci(model = cox_outcome, new_data = new_comp, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"), terms = FALSE)
-devtools::load_all()
+predict_fit_and_ci(model = lm_BMI, new_data = new_comp, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
 ```
 
 
