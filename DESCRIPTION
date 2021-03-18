@@ -16,7 +16,6 @@ Imports:
     zCompositions (>= 1.3.2-1), 
     ggplot2 (>= 3.2.0), 
     survival (>= 3.1.6), 
-    ggtern (>= 3.1.0), 
     stats (>= 3.6.1), 
     data.table (>= 1.12.2), 
     scales (>= 1.0.0), 
@@ -25,8 +24,12 @@ Imports:
 RoxygenNote: 7.1.1
 Suggests: 
     testthat (>= 2.1.0),
+    ggtern (>= 3.1.0), 
+    robCompositions,
+    deltacomp, 
     knitr,
     rmarkdown, 
     devtools, 
     splines (>= 3.6.2)
 VignetteBuilder: knitr
+Remotes: tystan/deltacomp
