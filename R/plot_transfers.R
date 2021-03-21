@@ -155,7 +155,7 @@ plot_transfers <- function(from_part,
   }
   if (is.null(fixed_values)) {
     fixed_values <-
-      generate_fixed_values(dataset,
+      generate_fixed_values(dataset_ready,
                             comp_labels)
     fixed_values <- cbind(fixed_values, cm)
   }
