@@ -120,7 +120,7 @@ plot_transfers <- function(from_part,
     strata_list <- colnames(dataset)[grepl("strata\\(",colnames(dataset) )]
     for (name in strata_list){
       plain <- gsub("strata\\(", "", name)
-      plain <- gsub("\\)", "", name)
+      plain <- gsub("\\)", "", plain)
       dataset[, plain] <- dataset[, name]
     }
   }
