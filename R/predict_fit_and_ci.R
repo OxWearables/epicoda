@@ -47,6 +47,9 @@ predict_fit_and_ci <- function(model,
   comp_sum <- as.numeric(process_units(units, specified_units)[2])
   units <- process_units(units, specified_units)[1]
 
+  # We assign some internal parameters
+  type <- process_model_type(model)
+
   # We normalise
   new_data <- normalise_comp(new_data, comp_labels = comp_labels)
 
@@ -82,9 +85,6 @@ predict_fit_and_ci <- function(model,
   }
   dataset_ready <-
     dataset[,!(colnames(dataset) %in% c(transf_labels, "survival_object"))]
-
-  # We assign some internal parameters
-  type <- process_model_type(model)
 
   # We find the reference values
   mm <- stats::model.frame(model)[, transf_labels]

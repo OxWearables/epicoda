@@ -89,6 +89,10 @@ plot_transfers <- function(from_part,
   units <- process_units(units, specified_units)[1]
 
 
+  # We assign some internal parameters
+  type <- process_model_type(model)
+
+
   # We label what the transformed columns will be
   if (!is.null(part_1)) {
       comp_labels <- alter_order_comp_labels(comp_labels, part_1)
@@ -112,12 +116,16 @@ plot_transfers <- function(from_part,
   comp_cols <- ilr_trans_inv(dataset[, transf_labels])
   colnames(comp_cols) <- comp_labels
   dataset <- cbind(dataset, comp_cols)
+  if (type == "cox"){
+    strata_list <- colnames(dataset)[grepl("strata(",colnames(dataset) )]
+    for (name in strata_list){
+      plain <- gsub("strata(", "", name)
+      plain <- gsub(")", "", name)
+      dataset[, plain] <- dataset[, name]
+    }
+  }
   dataset_ready <-
     dataset[,!(colnames(dataset) %in% c(transf_labels, "survival_object"))]
-
-
-  # We assign some internal parameters
-  type <- process_model_type(model)
 
 
   # We make sure there will be a y_label, unless this is specified as "suppressed"
