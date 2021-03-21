@@ -117,10 +117,10 @@ plot_transfers <- function(from_part,
   colnames(comp_cols) <- comp_labels
   dataset <- cbind(dataset, comp_cols)
   if (type == "cox"){
-    strata_list <- colnames(dataset)[grepl("strata",colnames(dataset) )]
+    strata_list <- colnames(dataset)[grepl("strata\\(",colnames(dataset) )]
     for (name in strata_list){
-      plain <- gsub("strata(", "", name)
-      plain <- gsub(")", "", name)
+      plain <- gsub("strata\\(", "", name)
+      plain <- gsub("\\)", "", name)
       dataset[, plain] <- dataset[, name]
     }
   }
