@@ -57,6 +57,7 @@ make_new_data <- function(from_part,
                           upper_quantile = 0.95,
                           granularity = 10000) {
   dataset <- normalise_comp(dataset, comp_labels)
+  fixed_values <- normalise_comp(fixed_values, comp_labels)
   new_data <- data.frame()[1:granularity,]
 
   # Process units
