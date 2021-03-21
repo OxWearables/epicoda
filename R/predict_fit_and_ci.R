@@ -72,6 +72,14 @@ predict_fit_and_ci <- function(model,
   comp_cols <- ilr_trans_inv(dataset[, transf_labels])
   colnames(comp_cols) <- comp_labels
   dataset <- cbind(dataset, comp_cols)
+  if (type == "cox"){
+    strata_list <- colnames(dataset)[grepl("strata(",colnames(dataset) )]
+    for (name in strata_list){
+      plain <- gsub("strata(", "", name)
+      plain <- gsub(")", "", name)
+      dataset[, plain] <- dataset[, name]
+    }
+  }
   dataset_ready <-
     dataset[,!(colnames(dataset) %in% c(transf_labels, "survival_object"))]
 
