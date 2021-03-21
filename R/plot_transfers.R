@@ -31,8 +31,6 @@
 #' epicoda::plot_transfers(from_part = "sedentary",
 #' to_part = "moderate",
 #' model = lm_outcome ,
-#' dataset = simdata,
-#' transformation_type = "ilr",
 #' comp_labels =c("vigorous", "moderate", "light", "sedentary", "sleep"),
 #' y_label = "Model-predicted difference in BMI",
 #' units = "hr/day",
@@ -41,12 +39,9 @@
 plot_transfers <- function(from_part,
                            to_part,
                            model,
-                           dataset,
                            comp_labels,
                            terms = TRUE,
                            fixed_values = NULL,
-                           transformation_type = "ilr",
-                           comparison_part = NULL,
                            part_1 = NULL,
                            yllimit = NULL,
                            yulimit = NULL,
@@ -58,26 +53,11 @@ plot_transfers <- function(from_part,
                            upper_quantile = 0.95,
                            units = "unitless",
                            specified_units = NULL,
-                           rounded_zeroes = TRUE,
-                           det_limit = NULL,
                            granularity = 10000,
                            point_specification = ggplot2::geom_point(size = 2),
                            error_bar_colour = "grey",
-                           theme = NULL,
-                           cm = NULL) {
-  if (is.null(transformation_type)) {
-    stop(
-      "transformation_type must be specified and must match the transformation used in transform_comp earlier (which defaults to \"ilr\")"
-    )
-  }
+                           theme = NULL) {
 
-  # We normalise
-  det_limit <-
-    rescale_det_limit(data = dataset,
-                      comp_labels = comp_labels,
-                      det_limit = det_limit)
-  dataset <-
-    normalise_comp(data = dataset, comp_labels = comp_labels)
 
   # Set theme for plotting
   if (is.null(theme)) {
@@ -110,19 +90,30 @@ plot_transfers <- function(from_part,
 
 
   # We label what the transformed columns will be
-  if (transformation_type == "ilr") {
-    if (!is.null(part_1)) {
+  if (!is.null(part_1)) {
       comp_labels <- alter_order_comp_labels(comp_labels, part_1)
     }
-  }
+
   transf_labels <-
     transf_labels(comp_labels,
-                  transformation_type,
-                  comparison_part = comparison_part,
+                  transformation_type = "ilr",
                   part_1 = part_1)
 
+  # We back calculate the dataset used to derive the model
+  dataset <- stats::model.frame(model)
+    ## We verify that the correct column names are present
+    if (!(all(transf_labels  %in% colnames(dataset)[grepl("ilr", colnames(dataset))]))){
+      stop("Specified comp_labels do not match those used to develop the model (e.g. different order?)")
+    }
+    if (!(all(colnames(dataset)[grepl("ilr", colnames(dataset))] %in% transf_labels))){
+      stop("Specified comp_labels do not match those used to develop the model (e.g. missing labels?)")
+    }
+
+  comp_cols <- ilr_trans_inv(dataset[, transf_labels])
+  colnames(comp_cols) <- comp_labels
+  dataset <- cbind(dataset, comp_cols)
   dataset_ready <-
-    dataset[, !(colnames(dataset) %in% transf_labels)]
+    dataset[,!(colnames(dataset) %in% c(transf_labels, "survival_object"))]
 
 
   # We assign some internal parameters
@@ -136,28 +127,11 @@ plot_transfers <- function(from_part,
                        terms = terms)
 
 
-  # We calculate the compositional mean so we can use it in future calculations
-  if (is.null(cm)) {
-    cm <- comp_mean(
-      dataset,
-      comp_labels,
-      rounded_zeroes = rounded_zeroes,
-      det_limit = det_limit,
-      units = "unitless"
-    )
-  }
-
-  cm_transf_df <- suppressMessages(
-    transform_comp(
-      cm,
-      comp_labels,
-      transformation_type = transformation_type,
-      part_1 = part_1,
-      comparison_part = comparison_part,
-      rounded_zeroes = FALSE
-    )
-  )
-
+  # We find the reference values
+  mm <- stats::model.frame(model)[, transf_labels]
+  cm_transf_df <- as.data.frame(t(apply(mm, 2, mean)))
+  cm <- ilr_trans_inv(cm_transf_df)
+  colnames(cm) <- comp_labels
   cm_on_scale <-
     rescale_comp(cm, comp_labels = comp_labels, comp_sum = comp_sum)
 
@@ -174,13 +148,14 @@ plot_transfers <- function(from_part,
   if (is.null(fixed_values)) {
     fixed_values <-
       generate_fixed_values(dataset,
-                            comp_labels,
-                            rounded_zeroes = rounded_zeroes,
-                            det_limit = det_limit)
+                            comp_labels)
     fixed_values <- cbind(fixed_values, cm)
   }
 
   # We make some new data for predictions
+  if ((!(from_part %in% comp_labels))|!(to_part %in% comp_labels)){
+    stop("from_part or to_part not in comp_labels")
+  }
   new_data <-
     make_new_data(
       from_part,
@@ -204,9 +179,8 @@ plot_transfers <- function(from_part,
       transform_comp(
         new_data,
         comp_labels,
-        transformation_type = transformation_type,
+        transformation_type = "ilr",
         part_1 = part_1,
-        comparison_part = comparison_part,
         rounded_zeroes = FALSE
       )
     )
@@ -214,33 +188,28 @@ plot_transfers <- function(from_part,
 
   dNew <- predict_fit_and_ci(
     model = model,
-    dataset = dataset,
     new_data = new_data,
     fixed_values = fixed_values,
-    transformation_type = transformation_type,
-    comparison_part = comparison_part,
     part_1 = part_1,
     comp_labels = comp_labels,
     units = units,
-    specified_units = specified_units,
-    rounded_zeroes = rounded_zeroes,
-    det_limit = det_limit,
-    terms = terms,
-    cm = cm
+    specified_units = specified_units
   )
-  # We normalise again
-  dNew <- normalise_comp(data = dNew, comp_labels = comp_labels)
 
 
   # We pull out the required values on the needed scale
-  dToScale <-
-    rescale_comp(data = dNew,
-                 comp_labels = comp_labels,
-                 comp_sum = comp_sum)
   dNew$axis_vals <-
-    dToScale[, to_part] - rep(cm_on_scale[1, to_part], by = nrow(dNew))
+    dNew[, to_part] - rep(cm_on_scale[1, to_part], by = nrow(dNew))
+  dNew$axis_vals2 <-
+    -dNew[, from_part] + rep(cm_on_scale[1, from_part], by = nrow(dNew))
+
+  # Check no pathology in axis value assignment
+  if (!(isTRUE(all.equal(dNew$axis_vals, dNew$axis_vals2)))){
+    stop("Axis vals differ")
+  }
 
 
+  # Assign limit values
   if (is.null(yllimit)) {
     yllimit <- min(dNew$lower_CI)
   }

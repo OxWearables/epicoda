@@ -8,12 +8,9 @@ plot_transfers(
   from_part,
   to_part,
   model,
-  dataset,
   comp_labels,
   terms = TRUE,
   fixed_values = NULL,
-  transformation_type = "ilr",
-  comparison_part = NULL,
   part_1 = NULL,
   yllimit = NULL,
   yulimit = NULL,
@@ -25,13 +22,10 @@ plot_transfers(
   upper_quantile = 0.95,
   units = "unitless",
   specified_units = NULL,
-  rounded_zeroes = TRUE,
-  det_limit = NULL,
   granularity = 10000,
   point_specification = ggplot2::geom_point(size = 2),
   error_bar_colour = "grey",
-  theme = NULL,
-  cm = NULL
+  theme = NULL
 )
 }
 \arguments{
@@ -41,17 +35,11 @@ plot_transfers(
 
 \item{model}{Model to use for predictions.}
 
-\item{dataset}{Dataset used to develop \code{model}.}
-
 \item{comp_labels}{The labels of the compositional columns.}
 
 \item{terms}{Are estimates for differences in outcome associated with differences in compositional variables? If \code{terms = TRUE} all estimates and plots will be for difference in outcome associated with differences in the compositional variables. If \code{terms = FALSE}, \code{fixed_values} is used to set the values of the non-compositional covariates, and outputs are predictions for the outcome based on these values of the non-compositional covariates and the given value of the compositional variables (and confidence intervals include uncertainty due to all variables in the model, not just the compositional variables).}
 
 \item{fixed_values}{If \code{terms = FALSE}, this gives the fixed values of the non-compositional covariates at which to calculate the prediction. It is generated automatically if not set.}
-
-\item{transformation_type}{The type of transformation desired. Should be \code{"ilr", "alr"} or \code{"clr"}.}
-
-\item{comparison_part}{Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of part that all other parts will be compared to.}
 
 \item{part_1}{Only used if first part in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
 
@@ -75,11 +63,6 @@ plot_transfers(
 
 \item{specified_units}{If units are being specified via the composition sum, this is where it is done. It should be a vector where the first argument is a string describing the units, and the second argument is the expected sum of a composition e.g. \code{c("hr/day", 24)}}
 
-\item{rounded_zeroes}{Are zeroes rounded zeroes?}
-
-\item{det_limit}{Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
-minimum measurable value in the compositional columns of data. It should be on the same scale as the (input) compositional columns in \code{dataset} (NB it doesn't need to match \code{new_data}).}
-
 \item{granularity}{Does not usually require setting. If set, gives the number of points plotted on the graph. If it is too low, the plot will contain gaps. If it is too high, plotting will be slow.}
 
 \item{point_specification}{Should be a \code{ggplot2::geom_point} object specifying how the points on the graph will be plotted.}
@@ -87,8 +70,6 @@ minimum measurable value in the compositional columns of data. It should be on t
 \item{error_bar_colour}{Should be an R-recognised colour for error bars, specified by name in quotation marks.}
 
 \item{theme}{Optional \code{theme} argument which can be set as a \code{ggplot2::theme} object and will control how the plot appears.}
-
-\item{cm}{Can be set with compositional mean to speed up calculation. This should NOT be set manually and should only be passed from other functions.}
 }
 \value{
 Plot with balance of two parts plotted as exposure/ independent variable.
@@ -108,8 +89,6 @@ comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
 epicoda::plot_transfers(from_part = "sedentary",
 to_part = "moderate",
 model = lm_outcome ,
-dataset = simdata,
-transformation_type = "ilr",
 comp_labels =c("vigorous", "moderate", "light", "sedentary", "sleep"),
 y_label = "Model-predicted difference in BMI",
 units = "hr/day",

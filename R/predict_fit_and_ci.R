@@ -7,22 +7,18 @@
 #' number of samples (at least 30, say) the difference between the two is negligible.
 #'
 #' @param model Model to use for predictions.
-#' @param dataset  Dataset used to develop \code{model}.
-#' @param det_limit Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
-#' minimum measurable value in the compositional columns of data. It should be on the same scale as the (input) compositional columns in \code{dataset} (NB it doesn't need to match \code{new_data}).
 #' @param new_data Data for predictions.
 #' @param terms Are estimates for differences in outcome associated with differences in compositional variables? If \code{terms = TRUE} all estimates and plots will be for difference in outcome associated with differences in the compositional variables. If \code{terms = FALSE}, \code{fixed_values} is used to set the values of the non-compositional covariates, and outputs are predictions for the outcome based on these values of the non-compositional covariates and the given value of the compositional variables (and confidence intervals include uncertainty due to all variables in the model, not just the compositional variables).
 #' @param fixed_values If \code{terms = FALSE}, this gives the fixed values of the non-compositional covariates at which to calculate the prediction. It is generated automatically if not set.
 #' @inheritParams transform_comp
 #' @inheritParams process_units
-#' @param cm Can be set with compositional mean to speed up calculation. This should NOT be set manually and should only be passed from other functions.
 #' @return Plot with balance of two parts plotted as exposure/ independent variable.
 #' @export
 #' @examples
 #' lm_outcome <- comp_model(type = "linear",
 #' outcome = "BMI",
-#' covariates = c("agegroup", "sex"),
 #' data = simdata,
+#' covariates = c("agegroup", "sex"),
 #' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
 #'
 #' old_comp <- comp_mean(simdata,
@@ -36,79 +32,58 @@
 #')
 #'
 #' predict_fit_and_ci(model = lm_outcome,
-#' dataset = simdata,
 #' new_data = new_comp,
 #' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
 predict_fit_and_ci <- function(model,
-                           dataset,
                            new_data,
                            comp_labels,
                            terms = TRUE,
                            fixed_values = NULL,
-                           transformation_type = "ilr",
-                           comparison_part = NULL,
                            part_1 = NULL,
                            units = "unitless",
-                           specified_units = NULL,
-                           rounded_zeroes = TRUE,
-                           det_limit = NULL,
-                           cm = NULL) {
-  if (is.null(transformation_type)) {
-    stop(
-      "transformation_type must be specified and must match the transformation used in transform_comp earlier (which defaults to \"ilr\")"
-    )
-  }
+                           specified_units = NULL) {
 
   # We set units
   comp_sum <- as.numeric(process_units(units, specified_units)[2])
   units <- process_units(units, specified_units)[1]
 
   # We normalise
-  det_limit <- rescale_det_limit(data = dataset, comp_labels = comp_labels, det_limit)
-  dataset <- normalise_comp(dataset, comp_labels = comp_labels)
   new_data <- normalise_comp(new_data, comp_labels = comp_labels)
 
   # We label what the transformed cols will be
-  if (transformation_type == "ilr") {
-    if (!is.null(part_1)) {
+  if (!is.null(part_1)) {
       comp_labels <- alter_order_comp_labels(comp_labels, part_1)
     }
-  }
+
   transf_labels <-
     transf_labels(comp_labels,
-                  transformation_type,
-                  comparison_part = comparison_part,
+                  transformation_type = "ilr",
                   part_1 = part_1)
 
+  # We back calculate the dataset used to derive the model
+  dataset <- stats::model.frame(model)
+      ## We verify that the correct column names are present
+      if (!(all(transf_labels  %in% colnames(dataset)[grepl("ilr", colnames(dataset))]))){
+        stop("Specified comp_labels do not match those used to develop the model (e.g. different order?)")
+      }
+      if (!(all(colnames(dataset)[grepl("ilr", colnames(dataset))] %in% transf_labels))){
+        stop("Specified comp_labels do not match those used to develop the model (e.g. missing labels?)")
+      }
+  comp_cols <- ilr_trans_inv(dataset[, transf_labels])
+  colnames(comp_cols) <- comp_labels
+  dataset <- cbind(dataset, comp_cols)
   dataset_ready <-
-    dataset[,!(colnames(dataset) %in% transf_labels)]
+    dataset[,!(colnames(dataset) %in% c(transf_labels, "survival_object"))]
 
   # We assign some internal parameters
   type <- process_model_type(model)
 
-  # We calculate the compositional mean so we can use it in future calculations
-  if (is.null(cm)){
-      cm <- comp_mean(
-      dataset,
-      comp_labels,
-      rounded_zeroes = rounded_zeroes,
-      det_limit = det_limit,
-      units = "unitless"
-    )
-  }
-  cm_transf_df <- suppressMessages(transform_comp(cm, comp_labels,
-                                 transformation_type = transformation_type,
-                                 part_1 = part_1,
-                                 comparison_part = comparison_part,
-                                 rounded_zeroes = FALSE))
-  # We find the model matrix
-  mm <- model.matrix(model)[, transf_labels]
-  cm_transf_df2 <- apply(mm, 2, mean)
-  cm_transf_df2 <- as.data.frame(t(cm_transf_df2))
-
-  if (!isTRUE(all.equal(cm_transf_df2, cm_transf_df[1, transf_labels]))){
-    stop("The specified model dataset doesn't seem to be the dataset the model was developed on.")
-  }
+  # We find the reference values
+  mm <- stats::model.frame(model)[, transf_labels]
+  cm_transf_df <- apply(mm, 2, mean)
+  cm_transf_df <- as.data.frame(t(cm_transf_df))
+  cm <- ilr_trans_inv(cm_transf_df)
+  colnames(cm) <- comp_labels
 
   # We assign some fixed_values to use in predicting
   if (!(is.null(fixed_values))) {
@@ -124,9 +99,7 @@ predict_fit_and_ci <- function(model,
     fixed_values <-
       generate_fixed_values(
         dataset_ready,
-        comp_labels,
-        rounded_zeroes = rounded_zeroes,
-        det_limit = det_limit
+        comp_labels
       )
     fixed_values <- cbind(fixed_values, cm)
   }
@@ -134,9 +107,8 @@ predict_fit_and_ci <- function(model,
   transf_fixed_vals <- suppressMessages(transform_comp(
     fixed_values[, colnames(fixed_values)[!(colnames(fixed_values) %in% transf_labels)]],
     comp_labels,
-    transformation_type = transformation_type,
+    transformation_type = "ilr",
     part_1 = part_1,
-    comparison_part = comparison_part,
     rounded_zeroes = FALSE
   ))
 
@@ -146,7 +118,7 @@ predict_fit_and_ci <- function(model,
     }
   }
 
-  new_data <- suppressMessages(transform_comp(data = new_data, comp_labels = comp_labels, transformation_type = transformation_type, rounded_zeroes = FALSE, comparison_part = comparison_part, part_1 = part_1))
+  new_data <- suppressMessages(transform_comp(data = new_data, comp_labels = comp_labels, transformation_type = "ilr", rounded_zeroes = FALSE, part_1 = part_1))
 
   # Message about meaning of the 'terms' argument
   if (terms == FALSE){
@@ -156,7 +128,7 @@ predict_fit_and_ci <- function(model,
   }
 
   # We begin the plotting
-  if (type == "logistic" && (terms == FALSE)) {
+  if ((type == "logistic") & !(terms)) {
     predictions <- stats::predict(model,
                            newdata = new_data,
                            type = "link",
@@ -175,7 +147,7 @@ predict_fit_and_ci <- function(model,
 
   }
 
-  if (type == "logistic" && (terms)) {
+  if ((type == "logistic") & (terms)) {
     predictions <-
       stats::predict(
         model,
@@ -198,14 +170,8 @@ predict_fit_and_ci <- function(model,
     middle_matrix <- stats::vcov(model)[transf_labels, transf_labels]
     x <- data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
 
-    in_sqrt_1 <- (x %*% middle_matrix)
-    t_x <- as.matrix(t(x))
-    in_sqrt_true <- c()
-    for (i in 1:nrow(in_sqrt_1)) {
-      in_sqrt_true <-
-        c(in_sqrt_true, (in_sqrt_1[i,] %*% data.matrix(t_x)[, i]))
-    }
-
+    t_x <- data.matrix(as.matrix(t(x)))
+    in_sqrt_true <- diag((x %*% middle_matrix) %*% t_x)
     value <- sqrt(data.matrix(in_sqrt_true))
 
     t_value <-
@@ -220,7 +186,7 @@ predict_fit_and_ci <- function(model,
 
 
 
-  if (type == "cox" && (terms)) {
+  if ((type == "cox") & (terms)) {
     predictions <- stats::predict(
       model,
       newdata = new_data,
@@ -241,14 +207,9 @@ predict_fit_and_ci <- function(model,
 
     middle_matrix <- stats::vcov(model)[transf_labels, transf_labels]
     x <- data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
-    in_sqrt_1 <- (x %*% middle_matrix)
-    t_x <- as.matrix(t(x))
-    in_sqrt_true <- c()
-    for (i in 1:nrow(in_sqrt_1)) {
-      in_sqrt_true <-
-        c(in_sqrt_true, (in_sqrt_1[i,] %*% data.matrix(t_x)[, i]))
-    }
+    t_x <- data.matrix(as.matrix(t(x)))
 
+    in_sqrt_true <- diag((x %*% middle_matrix) %*% t_x)
     value <- sqrt(data.matrix(in_sqrt_true))
 
     z_value <- stats::qnorm(0.975)
@@ -262,7 +223,7 @@ predict_fit_and_ci <- function(model,
 
 
 
-  if (type == "cox" && !(terms)) {
+  if ((type == "cox") & !(terms)) {
     predictions <- stats::predict(model,
                            newdata = new_data,
                            type = "lp",
@@ -283,7 +244,7 @@ predict_fit_and_ci <- function(model,
 
 
 
-  if (type == "linear" && !(terms)) {
+  if ((type == "linear") & !(terms)) {
     predictions <-
       stats::predict(model,
               newdata = new_data,
@@ -307,7 +268,7 @@ predict_fit_and_ci <- function(model,
 
 
 
-  if (type == "linear" && (terms)) {
+  if ((type == "linear") & (terms)) {
     predictions <-
       stats::predict(
         model,
@@ -327,14 +288,9 @@ predict_fit_and_ci <- function(model,
 
     middle_matrix <- stats::vcov(model)[transf_labels, transf_labels]
     x <- data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
-    in_sqrt_1 <- (x %*% middle_matrix)
-    t_x <- as.matrix(t(x))
-    in_sqrt_true <- c()
-    for (i in 1:nrow(in_sqrt_1)) {
-      in_sqrt_true <-
-        c(in_sqrt_true, (in_sqrt_1[i,] %*% data.matrix(t_x)[, i]))
-    }
 
+    t_x <- data.matrix(as.matrix(t(x)))
+    in_sqrt_true <- diag((x %*% middle_matrix) %*% t_x)
     value <- sqrt(data.matrix(in_sqrt_true))
 
     t_value <-
@@ -342,7 +298,7 @@ predict_fit_and_ci <- function(model,
 
     dNew$lower_CI <- dNew$fit - t_value * value
     dNew$upper_CI <- dNew$fit + t_value * value
- }
+  }
 
   dNew <- rescale_comp(dNew, comp_labels = comp_labels, comp_sum = comp_sum)
   if (terms == FALSE) {

@@ -6,25 +6,17 @@
 \usage{
 predict_fit_and_ci(
   model,
-  dataset,
   new_data,
   comp_labels,
   terms = TRUE,
   fixed_values = NULL,
-  transformation_type = "ilr",
-  comparison_part = NULL,
   part_1 = NULL,
   units = "unitless",
-  specified_units = NULL,
-  rounded_zeroes = TRUE,
-  det_limit = NULL,
-  cm = NULL
+  specified_units = NULL
 )
 }
 \arguments{
 \item{model}{Model to use for predictions.}
-
-\item{dataset}{Dataset used to develop \code{model}.}
 
 \item{new_data}{Data for predictions.}
 
@@ -34,22 +26,11 @@ predict_fit_and_ci(
 
 \item{fixed_values}{If \code{terms = FALSE}, this gives the fixed values of the non-compositional covariates at which to calculate the prediction. It is generated automatically if not set.}
 
-\item{transformation_type}{The type of transformation desired. Should be \code{"ilr", "alr"} or \code{"clr"}.}
-
-\item{comparison_part}{Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of part that all other parts will be compared to.}
-
 \item{part_1}{Only used if first part in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
 
 \item{units}{What should the units of the compositional variables be in any output? Currently available are "unitless" (where working in terms of proportions), "hr/day", "hr/wk", "min/day", "min/wk" and "specified", in which case the \code{specified_units} argument should be set. Note that this doesn't specify the input units, as this is not relevant for any function.}
 
 \item{specified_units}{If units are being specified via the composition sum, this is where it is done. It should be a vector where the first argument is a string describing the units, and the second argument is the expected sum of a composition e.g. \code{c("hr/day", 24)}}
-
-\item{rounded_zeroes}{Are zeroes rounded zeroes?}
-
-\item{det_limit}{Detection limit if zeroes are to be imputed. This must be set if \code{rounded_zeroes} is \code{TRUE} and should be the
-minimum measurable value in the compositional columns of data. It should be on the same scale as the (input) compositional columns in \code{dataset} (NB it doesn't need to match \code{new_data}).}
-
-\item{cm}{Can be set with compositional mean to speed up calculation. This should NOT be set manually and should only be passed from other functions.}
 }
 \value{
 Plot with balance of two parts plotted as exposure/ independent variable.
@@ -65,8 +46,8 @@ number of samples (at least 30, say) the difference between the two is negligibl
 \examples{
 lm_outcome <- comp_model(type = "linear",
 outcome = "BMI",
-covariates = c("agegroup", "sex"),
 data = simdata,
+covariates = c("agegroup", "sex"),
 comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
 
 old_comp <- comp_mean(simdata,
@@ -80,7 +61,6 @@ change_composition(
 )
 
 predict_fit_and_ci(model = lm_outcome,
-dataset = simdata,
 new_data = new_comp,
 comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
 }

@@ -9,8 +9,6 @@ tab_covariate_coefs(
   scale_type = "lp",
   level = 0.95,
   comp_labels,
-  transformation_type = "ilr",
-  comparison_part = NULL,
   part_1 = NULL
 )
 }
@@ -23,14 +21,10 @@ tab_covariate_coefs(
 
 \item{comp_labels}{The labels of the compositional columns.}
 
-\item{transformation_type}{The type of transformation desired. Should be \code{"ilr", "alr"} or \code{"clr"}.}
-
-\item{comparison_part}{Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of part that all other parts will be compared to.}
-
 \item{part_1}{Only used if first part in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
 }
 \value{
-Table of covariates and their associated coefficients (parameter value with lower and upper confidence interval).
+Table of covariates and their associated coefficients (parameter value with lower and upper confidence interval). Note that, unlike the plotting and some other default model summary functions in R, this uses confidence intervals based on stats::confint.
 }
 \description{
 This pulls out a table of the coefficients of the covariates only in the model.

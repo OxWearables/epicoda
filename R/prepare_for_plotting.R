@@ -5,7 +5,7 @@
 #' @param data Data used for model development.
 #' @inheritParams plot_transfers
 #' @return dataframe with a single row of fixed_values.
-generate_fixed_values <- function(data, comp_labels, rounded_zeroes = TRUE, det_limit = NULL){
+generate_fixed_values <- function(data, comp_labels){
   fixed_values <- data.frame(matrix(ncol = 0, nrow = 1))
   others <- colnames(data)[!(colnames(data) %in% comp_labels)]
   for (colname in others){
@@ -44,6 +44,7 @@ vary_part_of_interest <- function(part_of_interest,
 #'
 #' Generates a new dataset to feed into the plotting functions (\code{plot_transfers})
 #'
+#' @param dataset Dataset to use to inform range of data used (should be dataset model was developed on)
 #' @inheritParams plot_transfers
 make_new_data <- function(from_part,
                           to_part,
@@ -56,6 +57,7 @@ make_new_data <- function(from_part,
                           upper_quantile = 0.95,
                           granularity = 10000) {
   dataset <- normalise_comp(dataset, comp_labels)
+  fixed_values <- normalise_comp(fixed_values, comp_labels)
   new_data <- data.frame()[1:granularity,]
 
   # Process units

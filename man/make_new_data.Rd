@@ -24,7 +24,7 @@ make_new_data(
 
 \item{fixed_values}{If \code{terms = FALSE}, this gives the fixed values of the non-compositional covariates at which to calculate the prediction. It is generated automatically if not set.}
 
-\item{dataset}{Dataset used to develop \code{model}.}
+\item{dataset}{Dataset to use to inform range of data used (should be dataset model was developed on)}
 
 \item{units}{What should the units of the compositional variables be in any output? Currently available are "unitless" (where working in terms of proportions), "hr/day", "hr/wk", "min/day", "min/wk" and "specified", in which case the \code{specified_units} argument should be set. Note that this doesn't specify the input units, as this is not relevant for any function.}
 

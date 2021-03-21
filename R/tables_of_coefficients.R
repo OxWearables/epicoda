@@ -7,29 +7,29 @@
 #' @param level The level argument of the confidence intervals. Passed directly to `stats::confint`.
 #' @inheritParams comp_model
 #'
-#' @return Table of covariates and their associated coefficients (parameter value with lower and upper confidence interval).
+#' @return Table of covariates and their associated coefficients (parameter value with lower and upper confidence interval). Note that, unlike the plotting and some other default model summary functions in R, this uses confidence intervals based on stats::confint.
 #' @export
 tab_covariate_coefs <-
   function(model = NULL,
            scale_type = "lp",
            level = 0.95,
            comp_labels,
-           transformation_type = "ilr",
-           comparison_part = NULL,
            part_1 = NULL) {
     transf_labels <-
       transf_labels(
         comp_labels = comp_labels,
-        transformation_type = transformation_type,
-        comparison_part = comparison_part,
+        transformation_type = "ilr",
         part_1 = part_1
       )
 
     toc <- data.frame(stats::coef(model, complete = FALSE))
     colnames(toc) <- "fit"
+
     tocint <- stats::confint(model, level = level, complete = FALSE)
+
     all <- cbind(toc, tocint)
     all_red <- all[!(rownames(all) %in% transf_labels), ]
+
     if (scale_type == "lp") {
       all_red <- all_red
     }
@@ -76,6 +76,9 @@ tab_coefs <-
     if ((scale_type == "exp") && (type == "linear")){
       warning("It usually does not make sense to exponentiate the coefficients of a linear model.")
     }
+    if ((scale_type == "lp") && (type != "linear")){
+      warning("Coeficients are on the scale of the linear predictors. For ORs/HRs, consider setting scale_type as exp")
+    }
     start_model <- comp_model(
       type = type,
       outcome = outcome,
@@ -84,7 +87,6 @@ tab_coefs <-
       event = event,
       data  = data,
       comp_labels = comp_labels,
-      transformation_type = "ilr",
       rounded_zeroes = rounded_zeroes,
       det_limit = det_limit
     )
@@ -93,8 +95,7 @@ tab_coefs <-
       model = start_model,
       scale_type = scale_type,
       level = level,
-      comp_labels = comp_labels,
-      transformation_type = "ilr"
+      comp_labels = comp_labels
     )
     for (part in comp_labels) {
       current_model <- comp_model(
@@ -105,7 +106,6 @@ tab_coefs <-
         event = event,
         data  = data,
         comp_labels = comp_labels,
-        transformation_type = "ilr",
         rounded_zeroes = rounded_zeroes,
         det_limit = det_limit,
         part_1 = part

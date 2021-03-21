@@ -44,6 +44,7 @@ simdata$activity <- simdata$vigorous + simdata$moderate + simdata$light
 plot_density_ternary(data = simdata,
 parts_to_plot = c("activity", "sedentary", "sleep"),
 n_bins = 10 # This argument specifies we want to use 10 bins
-# (i.e. 10\% of data lies between each pair of contours on the plot.)
+# (i.e. 9 equi-density contours will be plotted between the minimum and maximum
+# probability density.) Default is n_bins = 5.
 )
 }

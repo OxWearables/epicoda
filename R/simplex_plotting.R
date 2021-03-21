@@ -18,7 +18,9 @@
 #' plot_density_ternary(data = simdata,
 #' parts_to_plot = c("activity", "sedentary", "sleep"),
 #' n_bins = 10 # This argument specifies we want to use 10 bins
-#' # # (i.e. 9 equi-density contours will be plotted between the minimum and maximum probability density.) Default is 5.
+#' # (i.e. 9 equi-density contours will be plotted between the minimum and maximum
+#' # probability density.) Default is n_bins = 5.
+#' )
 #' @export
 plot_density_ternary <-
   function(data,

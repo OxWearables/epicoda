@@ -1,4 +1,3 @@
-install.packages("robCompositions", repos = "https://www.stats.bris.ac.uk/R/")
 comp_labels <- c("vigorous", "moderate", "light", "sedentary", "sleep")
 sd_zf <- simdata[simdata$vigorous != 0,]
 for (label in comp_labels){
