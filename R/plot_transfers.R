@@ -155,7 +155,7 @@ plot_transfers <- function(from_part,
   }
   if (is.null(fixed_values)) {
     fixed_values <-
-      generate_fixed_values(dataset,
+      generate_fixed_values(dataset_ready,
                             comp_labels)
     fixed_values <- cbind(fixed_values, cm)
   }
@@ -246,7 +246,7 @@ plot_transfers <- function(from_part,
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
                         mapping = ggplot2::aes_(x = dNew$axis_vals, y = dNew$fit)) +
-        ggplot2::ylim(yllimit, yulimit) + ggplot2::xlim(xllimit, xulimit) +
+        ggplot2::xlim(xllimit, xulimit) +
         ggplot2::geom_errorbar(
           ggplot2::aes_(
             x = dNew$axis_vals,
@@ -264,7 +264,8 @@ plot_transfers <- function(from_part,
           trans = scales::log_trans(),
           breaks = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.2),
           labels = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.2),
-          minor.breaks = NULL
+          minor.breaks = NULL,
+          limits = c(yllimit, yulimit)
         ) +
         ggplot2::geom_vline(xintercept = 0) +
         ggplot2::geom_hline(yintercept = 1) +
@@ -307,7 +308,7 @@ plot_transfers <- function(from_part,
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
                         mapping = ggplot2::aes_(x = dNew$axis_vals, y = dNew$fit)) +
-        ggplot2::ylim(yllimit, yulimit) + ggplot2::xlim(xllimit, xulimit) +
+        ggplot2::xlim(xllimit, xulimit) +
         ggplot2::geom_errorbar(
           ggplot2::aes_(
             x = dNew$axis_vals,
@@ -371,7 +372,7 @@ plot_transfers <- function(from_part,
       plot_of_this <-
         ggplot2::ggplot(data = dNew,
                         mapping = ggplot2::aes_(x = dNew$axis_vals, y = dNew$fit)) +
-        ggplot2::ylim(yllimit, yulimit) + ggplot2::xlim(xllimit, xulimit) +
+        ggplot2::xlim(xllimit, xulimit) +
         ggplot2::geom_errorbar(
           ggplot2::aes_(
             x = dNew$axis_vals,
@@ -389,7 +390,8 @@ plot_transfers <- function(from_part,
           trans = scales::log_trans(),
           breaks = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.2),
           labels = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.2),
-          minor_breaks = NULL
+          minor_breaks = NULL,
+          limits = c(yllimit, yulimit)
         ) +
         ggplot2::geom_vline(xintercept = 0) +
         ggplot2::geom_hline(yintercept = 0) +
