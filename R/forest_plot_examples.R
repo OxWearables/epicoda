@@ -143,19 +143,23 @@ forest_plot_comp <-
         xulimit <- max(dNew$upper_CI)
       }
 
+      if (terms){
+        xllimit <- min(xllimit, vline_loc)
+        xulimit <- max(xulimit, vline_loc)
+      }
+
       if (((xulimit - xllimit)/0.05) <= 10) {
-        req_seq <- seq(round((xllimit- 0.025)/0.05, digits = 1)*0.05, round((xulimit + 0.025)/0.05, digits = 1)*0.05, by = 0.05)
+        req_seq <- seq(floor((xllimit- 0.05)/0.05)*0.05, ceiling((xulimit + 0.05)/0.05)*0.05, by = 0.05)
         req_seq_labs <- formatC(req_seq, format = "f", digits= 2)
-        }
+      }
       if ((((xulimit - xllimit)/0.05) > 10) & (((xulimit - xllimit)/0.05) <= 20)){
-        req_seq <- seq(round((xllimit- 0.05)/0.1, digits = 1)*0.1, round((xulimit + 0.05)/0.1, digits = 1)*0.1, by = 0.1)
+        req_seq <- seq(floor((xllimit- 0.1)/0.1)*0.1, ceiling((xulimit + 0.1)/0.1)*0.1, by = 0.1)
         req_seq_labs <- formatC(req_seq, format = "f", digits= 1)
       }
       if ((((xulimit - xllimit)/0.05) > 20)){
-        req_seq <- seq(round((xllimit- 0.25)/0.5, digits = 0)*0.5, round((xulimit + 0.25)/0.5, digits = 0)*0.5, by = 0.5)
-        req_seq_labs <- formatC(req_seq, format = "f", digits= 0)
+        req_seq <- seq(floor((xllimit- 0.5)/0.5)*0.5, ceiling((xulimit + 0.5)/0.5)*0.5, by = 0.5)
+        req_seq_labs <- formatC(req_seq, format = "f", digits= 1)
       }
-
 
       attr(req_seq, "labels") <- req_seq_labs
 
@@ -230,18 +234,24 @@ forest_plot_comp <-
       xulimit <- max(data_frame_for_forest_plot)
     }
 
+
+    if (terms){
+       xllimit <- min(xllimit, vline_loc)
+       xulimit <- max(xulimit, vline_loc)
+    }
+
     if (((xulimit - xllimit)/0.05) <= 10) {
-         req_seq <- seq(round((xllimit- 0.025)/0.05, digits = 1)*0.05, round((xulimit + 0.025)/0.05, digits = 1)*0.05, by = 0.05)
-         req_seq_labs <- formatC(req_seq, format = "f", digits= 2)
-    }
+      req_seq <- seq(floor((xllimit- 0.05)/0.05)*0.05, ceiling((xulimit + 0.05)/0.05)*0.05, by = 0.05)
+      req_seq_labs <- formatC(req_seq, format = "f", digits= 2)
+       }
     if ((((xulimit - xllimit)/0.05) > 10) & (((xulimit - xllimit)/0.05) <= 20)){
-         req_seq <- seq(round((xllimit- 0.05)/0.1, digits = 1)*0.1, round((xulimit + 0.05)/0.1, digits = 1)*0.1, by = 0.1)
-         req_seq_labs <- formatC(req_seq, format = "f", digits= 1)
-    }
+      req_seq <- seq(floor((xllimit- 0.1)/0.1)*0.1, ceiling((xulimit + 0.1)/0.1)*0.1, by = 0.1)
+      req_seq_labs <- formatC(req_seq, format = "f", digits= 1)
+     }
     if ((((xulimit - xllimit)/0.05) > 20)){
-         req_seq <- seq(round((xllimit- 0.25)/0.5, digits = 0)*0.5, round((xulimit + 0.25)/0.5, digits = 0)*0.5, by = 0.5)
-         req_seq_labs <- formatC(req_seq, format = "f", digits= 1)
-    }
+      req_seq <- seq(floor((xllimit- 0.5)/0.5)*0.5, ceiling((xulimit + 0.5)/0.5)*0.5, by = 0.5)
+      req_seq_labs <- formatC(req_seq, format = "f", digits= 1)
+       }
 
     attr(req_seq, "labels") <- req_seq_labs
 
