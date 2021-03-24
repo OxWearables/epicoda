@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 knitr::opts_chunk$set(fig.width=12, fig.height=8) 
 ```
 
-```{r setup}
+```{r setup, include = FALSE}
 devtools::load_all()
 ```
 
