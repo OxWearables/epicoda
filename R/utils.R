@@ -167,7 +167,7 @@ process_model_type <- function(model){
       (stats::family(model)[[1]] == "binomial")) {
     type <- "logistic"
   }
-  if ((class(model)[1]  == "coxph")) {
+  if ((class(model)[1]  == "coxph")|(class(model)[2]  == "coxph")) {
     type <- "cox"
   }
   if (type == "unassigned") {

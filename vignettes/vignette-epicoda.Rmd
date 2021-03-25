@@ -337,10 +337,10 @@ log_outcome <- comp_model(type = "logistic",
 cox_outcome <- comp_model(type = "cox",
          event = "event", 
          follow_up_time = "follow_up_time",
-         covariates = c("agegroup", "sex"),
+         covariates = c("agegroup", "sex"), 
          data = simdata,
          comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
-summary(cox_outcome)
+
 ```
 
 
