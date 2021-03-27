@@ -3,7 +3,7 @@
 ![R-CMD-check](https://github.com/activityMonitoring/epicoda/workflows/R-CMD-check/badge.svg) ![Windows/MacOS/Linux](https://github.com/activityMonitoring/epicoda/workflows/Windows/MacOS/Linux/badge.svg)
 [![codecov](https://codecov.io/gh/activityMonitoring/epicoda/branch/master/graph/badge.svg?token=pUfd7QVqRe)](https://codecov.io/gh/activityMonitoring/epicoda)
 
-*This is the in-development version and major changes and corrections may be made. Please share comments, suggestions and errors/bugs found, either directly on the GitHub page or by emailing rosemary.walmsley@gtc.ox.ac.uk*. 
+*This is the in-development version and major changes and corrections may be made - use at your own risk! Please share comments, suggestions and errors/bugs found, either directly on the GitHub page or by emailing rosemary.walmsley@gtc.ox.ac.uk*. 
 
 NOTE: A major update was introduced on 21.03.2021. This should not affect results, but processing should be faster. It also removes the need in plotting functions to specify lots of details of model development, as this is now extracted automatically from the model (so arguments may need to be removed from existing code in order to run). As with any major change, there are likely to be bugs: bug reports are very welcome.
 
