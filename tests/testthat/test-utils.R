@@ -74,8 +74,8 @@ test_that("rescaling normalised composition can get back to input", {
 })
 
 
-test_that("warning if normalise data not on a single scale", {
-  expect_warning(rescale_comp(nc_messed_up, comp_labels, 24))
+test_that("warning if normalised data not on a single scale", {
+  expect_error(rescale_comp(nc_messed_up, comp_labels, 24))
 })
 
 test_that("rescale_det_limit throws error if no clear scale", {
