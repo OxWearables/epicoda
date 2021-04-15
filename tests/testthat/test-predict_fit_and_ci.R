@@ -235,3 +235,65 @@ test_that("equals lower ci from deltacomp package", {
 test_that("equals upper ci from deltacomp package", {
   expect_equal(ps$upper_CI[1:2], dcs$ci_up[1:2])
 })
+
+
+
+#=====
+
+fv <- epicoda:::generate_fixed_values(simdata, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
+cm_df <- as.data.frame(comp_mean(simdata, c("vigorous", "moderate", "light", "sedentary", "sleep"), units = "hr/day"))
+fv[, c("vigorous", "moderate", "light", "sedentary", "sleep")] <- cm_df
+md <- epicoda:::make_new_data(from_part = "sedentary",
+                        to_part = "moderate",
+                        dataset = simdata,
+                        comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),  fixed_values = fv, units = "hr/day")
+
+comp_labels <- c("vigorous", "moderate", "light", "sedentary", "sleep")
+m3 <- comp_model(
+  type = "cox",
+  data = simdata,
+  follow_up_time = "follow_up_time",
+  event = "event",
+  comp_labels = comp_labels,
+  rounded_zeroes = FALSE
+)
+
+m4 <- comp_model(
+  type = "cox",
+  data = epicoda::simdata,
+  follow_up_time = "follow_up_time",
+  event = "event",
+  comp_labels = comp_labels,
+  covariates = c("agegroup"),
+  rounded_zeroes = FALSE
+)
+
+t_yes <- predict_fit_and_ci(m3, md, comp_labels = comp_labels)
+t_no <- predict_fit_and_ci(m3, md, comp_labels = comp_labels , terms = FALSE)
+
+t_yes_cov <- predict_fit_and_ci(m4, md, comp_labels = comp_labels)
+t_no_cov <- predict_fit_and_ci(m4, md, comp_labels = comp_labels , terms = FALSE)
+
+test_that("when no covariates, two CI types for Cox are same ", {
+  expect_equal(t_yes$fit, t_no$fit)
+})
+
+test_that("when no covariates, two CI types for Cox are same ", {
+  expect_equal(as.vector(t_yes$lower_CI), as.vector(t_no$lower_CI))
+})
+
+test_that("when no covariates, two CI types for Cox are same ", {
+  expect_equal(as.vector(t_yes$upper_CI), as.vector(t_no$upper_CI))
+})
+
+test_that("when covariates, two CI types for Cox are same", {
+  expect_equal(as.vector((log(t_yes$upper_CI) - log(t_yes$fit))/1.96), as.vector(t_no$se.fit), tolerance = 0.00001 )
+  })
+
+test_that("when covariates, two CI types for Cox are different", {
+  expect_false(isTRUE(all.equal(as.vector(t_yes_cov$upper_CI), as.vector(t_no_cov$upper_CI))))
+})
+
+test_that("when covariates, two CI types for Cox are different", {
+  expect_false(isTRUE(all.equal(as.vector((log(t_yes_cov$upper_CI) - log(t_yes_cov$fit))/1.96), as.vector(t_no_cov$se.fit),  tolerance = 0.00001 )))
+})
