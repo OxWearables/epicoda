@@ -29,6 +29,7 @@ Suggests:
     deltacomp, 
     knitr,
     rmarkdown, 
+    markdown,
     devtools, 
     splines (>= 3.6.2)
 VignetteBuilder: knitr
