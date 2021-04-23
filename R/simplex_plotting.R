@@ -68,13 +68,13 @@ plot_density_ternary <-
             colour = "black"
           ) +
           theme +
-          ggtern::theme_showarrows() +
-          ggtern::Tlab(label = "",
-                       labelarrow = paste(name2, "(%)", "\n")) +
-          ggtern::Rlab(label = "",
-                       labelarrow = paste("\n", name3, "(%)")) +
-          ggtern::Llab(label = "",
-                       labelarrow = paste(name1, "(%)", "\n"))
+        ggtern::theme_showarrows() +
+        ggplot2::labs( x       = "",
+                xarrow  = paste(name1, "(%)", "\n"),
+                y       = "",
+                yarrow  = paste(name2, "(%)", "\n"),
+                z       = "",
+                 zarrow  =  paste("\n", name3, "(%)"))
       }
       else{
         plot <-
@@ -104,12 +104,12 @@ plot_density_ternary <-
         plot <-
           plot + theme +
           ggtern::theme_showarrows() +
-          ggtern::Tlab(label = "",
-                       labelarrow = paste(name2, "(%)", "\n")) +
-          ggtern::Rlab(label = "",
-                       labelarrow = paste("\n", name3, "(%)")) +
-          ggtern::Llab(label = "",
-                       labelarrow = paste(name1, "(%)", "\n"))
+          ggplot2::labs( x       = "",
+                         xarrow  = paste(name1, "(%)", "\n"),
+                         y       = "",
+                         yarrow  = paste(name2, "(%)", "\n"),
+                         z       = "",
+                         zarrow  =  paste("\n", name3, "(%)"))
       }
 
     }
@@ -126,12 +126,12 @@ plot_density_ternary <-
           ) +
           theme +
           ggtern::theme_showarrows() +
-          ggtern::Tlab(label = "",
-                       labelarrow = paste(name2, "(%)", "\n")) +
-          ggtern::Rlab(label = "",
-                       labelarrow = paste("\n", name3, "(%)")) +
-          ggtern::Llab(label = "",
-                       labelarrow = paste(name1, "(%)", "\n")) +
+          ggplot2::labs( x       = "",
+                         xarrow  = paste(name1, "(%)", "\n"),
+                         y       = "",
+                         yarrow  = paste(name2, "(%)", "\n"),
+                         z       = "",
+                         zarrow  =  paste("\n", name3, "(%)")) +
           ggtern::geom_crosshair_tern(
             data = mark_points,
             mapping = ggplot2::aes_(x = mark_points[, name1], y = mark_points[,  name2], z = mark_points[, name3])
@@ -173,12 +173,12 @@ plot_density_ternary <-
               color = mark_points[, groups]
             )
           ) + ggtern::theme_showarrows() +
-          ggtern::Tlab(label = "",
-                       labelarrow = paste(name2, "(%)", "\n")) +
-          ggtern::Rlab(label = "",
-                       labelarrow = paste("\n", name3, "(%)")) +
-          ggtern::Llab(label = "",
-                       labelarrow = paste(name1, "(%)", "\n"))
+          ggplot2::labs( x       = "",
+                         xarrow  = paste(name1, "(%)", "\n"),
+                         y       = "",
+                         yarrow  = paste(name2, "(%)", "\n"),
+                         z       = "",
+                         zarrow  =  paste("\n", name3, "(%)"))
 
       }
 
