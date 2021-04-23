@@ -297,3 +297,42 @@ test_that("when covariates, two CI types for Cox are different", {
 test_that("when covariates, two CI types for Cox are different", {
   expect_false(isTRUE(all.equal(as.vector((log(t_yes_cov$upper_CI) - log(t_yes_cov$fit))/1.96), as.vector(t_no_cov$se.fit),  tolerance = 0.00001 )))
 })
+
+#===================
+# Look at invariance properties
+m5 <- comp_model(
+  type = "cox",
+  data = epicoda::simdata,
+  follow_up_time = "follow_up_time",
+  event = "event",
+  comp_labels = comp_labels,
+  covariates = c("agegroup"),
+  part_1 = "sedentary",
+  rounded_zeroes = FALSE
+)
+
+m6 <- comp_model(
+  type = "cox",
+  data = epicoda::simdata,
+  follow_up_time = "follow_up_time",
+  event = "event",
+  comp_labels = comp_labels,
+  covariates = c("agegroup"),
+  part_1 = "sleep",
+  rounded_zeroes = FALSE
+)
+
+t_p1_sed <- predict_fit_and_ci(m5, md, comp_labels = comp_labels, part_1 = "sedentary")
+t_p1_sleep <- predict_fit_and_ci(m6, md, comp_labels = comp_labels, part_1 = "sleep")
+
+test_that("order of ilr parts doesn't matter for global compositional predictions", {
+  expect_equal(t_p1_sed$fit,t_p1_sleep $fit)
+})
+
+test_that("order of ilr parts doesn't matter - CI ", {
+  expect_equal(as.vector(t_p1_sed$lower_CI), as.vector(t_p1_sleep$lower_CI))
+})
+
+test_that("order of ilr parts doesn't matter - CI ", {
+  expect_equal(as.vector(t_p1_sed$upper_CI), as.vector(t_p1_sleep$upper_CI))
+})
