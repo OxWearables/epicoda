@@ -343,7 +343,7 @@ t_p1_sed <- predict_fit_and_ci(m5, md, comp_labels = comp_labels, part_1 = "sede
 t_p1_sleep <- predict_fit_and_ci(m6, md, comp_labels = comp_labels, part_1 = "sleep")
 
 test_that("order of ilr parts doesn't matter for global compositional predictions", {
-  expect_equal(t_p1_sed$fit,t_p1_sleep $fit)
+  expect_equal(t_p1_sed$fit,t_p1_sleep$fit)
 })
 
 test_that("order of ilr parts doesn't matter - CI ", {
