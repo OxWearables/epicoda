@@ -171,29 +171,38 @@ test_that("wrong labels for composition throws error", {
     ))
 })
 
+#==============
+# Test against deltacomp package
 
+# setup
 comp_labels <- c("sl", "sb", "lpa", "mvpa")
 fat_data <- deltacomp::fat_data
+
+## deltacomp predictions
 dcs <- deltacomp::predict_delta_comps(
   dataf = fat_data,
   y = "fat",
-  comps = c("sl", "sb", "lpa", "mvpa"),
+  comps = comp_labels,
   covars = c("sibs", "parents", "ed"),
   deltas = seq(-60, 60, by = 5) / (24 * 60),
   comparisons = "one-v-one",
   alpha = 0.05
 )
 
-epic_linear <- comp_model(type = "linear", data = fat_data, rounded_zeroes = FALSE, outcome = "fat",comp_labels = c("sl", "sb", "lpa", "mvpa"),covariates = c("sibs", "parents", "ed"))
-newdata <- data.frame(matrix(ncol = 0, nrow = 2) )
+## epicoda model
+epic_linear <- comp_model(type = "linear", data = fat_data, rounded_zeroes = FALSE, outcome = "fat",comp_labels = comp_labels ,covariates = c("sibs", "parents", "ed"))
+
+## set up new data
+newdata <- data.frame(matrix(ncol = 0, nrow = 2))
 newdata$sb <- c(comp_mean(fat_data, comp_labels = comp_labels)$sb - (-1/24), comp_mean(fat_data, comp_labels = comp_labels)$sb)
 newdata$sl <-  c(comp_mean(fat_data, comp_labels = comp_labels)$sl + (-1/24), comp_mean(fat_data, comp_labels = comp_labels)$sl + (-1/24))
 newdata$lpa <- c(comp_mean(fat_data, comp_labels = comp_labels)$lpa, comp_mean(fat_data, comp_labels = comp_labels)$lpa + 1/24)
 newdata$mvpa <- c(comp_mean(fat_data, comp_labels = comp_labels)$mvpa, comp_mean(fat_data, comp_labels = comp_labels)$mvpa)
 
+## epicoda predictions
+ps <- predict_fit_and_ci(epic_linear, newdata, comp_labels = comp_labels)
 
-ps <- predict_fit_and_ci(epic_linear, newdata, comp_labels = c("sl", "sb", "lpa", "mvpa"))
-
+## tests
 test_that("equals results from deltacomp package", {
   expect_equal(ps$fit[1:2], dcs$delta_pred[1:2])
 })
@@ -204,8 +213,11 @@ test_that("equals upper ci from deltacomp package", {
   expect_equal(ps$upper_CI[1:2], dcs$ci_up[1:2])
 })
 
+## new set up, new data
 comp_labels <- c("sed", "sleep", "lpa", "mvpa")
 fat_data <- deltacomp::fairclough
+
+## deltacomp predictions, one one reallocations
 dcs <- deltacomp::predict_delta_comps(
   dataf = fat_data,
   y = "z_bmi",
@@ -215,6 +227,8 @@ dcs <- deltacomp::predict_delta_comps(
   comparisons = "one-v-one",
   alpha = 0.05
 )
+
+## deltacomp predictions, proportional reallocations
 dcs2 <- deltacomp::predict_delta_comps(
   dataf = fat_data,
   y = "z_bmi",
@@ -224,18 +238,20 @@ dcs2 <- deltacomp::predict_delta_comps(
   comparisons = "prop-realloc",
   alpha = 0.05
 )
+
+## epicoda model
 epic_linear <- comp_model(type = "linear", data = fat_data, rounded_zeroes = FALSE, outcome = "z_bmi",comp_labels = comp_labels,covariates = c("shuttles_20m", "height"))
-newdata <- data.frame(matrix(ncol = 0, nrow = 2) )
-newdata$sleep <- c(comp_mean(fat_data, comp_labels = comp_labels)$sleep - (-1/(24*6)), comp_mean(fat_data, comp_labels = comp_labels)$sleep)
-newdata$sed <-  c(comp_mean(fat_data, comp_labels = comp_labels)$sed + (-1/(24*6)), comp_mean(fat_data, comp_labels = comp_labels)$sed + (-1/(24*6)))
-newdata$lpa <- c(comp_mean(fat_data, comp_labels = comp_labels)$lpa, comp_mean(fat_data, comp_labels = comp_labels)$lpa + 1/(24*6))
-newdata$mvpa <- c(comp_mean(fat_data, comp_labels = comp_labels)$mvpa, comp_mean(fat_data, comp_labels = comp_labels)$mvpa)
 
+## set up new data NB this also tests change_composition function
 cd <- as.data.frame(comp_mean(fat_data, comp_labels = comp_labels))
-newdata[3, comp_labels] <- change_composition(cd, main_change = -1/(24*6), main_part = "sed", comp_labels = comp_labels )
+newdata <- change_composition(cd, main_change = -1/(24*6), main_part = "sed", at_expense_of = "sleep", comp_labels = comp_labels)
+newdata[2, comp_labels] <- change_composition(cd, main_change = -1/(24*6), main_part = "sed", at_expense_of = "lpa", comp_labels = comp_labels)
+newdata[3, comp_labels] <- change_composition(cd, main_change = -1/(24*6), main_part = "sed", comp_labels = comp_labels) # no at_expense_of argument defaults to all
 
+## epicoda predictions
 ps <- predict_fit_and_ci(epic_linear, newdata, comp_labels = comp_labels)
 
+## tests
 test_that("equals results from deltacomp package", {
   expect_equal(ps$fit[1:2], dcs$delta_pred[1:2])
 })
@@ -255,7 +271,8 @@ test_that("equals upper ci from deltacomp package", {
   expect_equal(ps$upper_CI[3], dcs2$ci_up[1])
 })
 
-#=====
+#==============
+# Test various aspects of expected behaviour
 
 fv <- epicoda:::generate_fixed_values(simdata, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
 cm_df <- as.data.frame(comp_mean(simdata, c("vigorous", "moderate", "light", "sedentary", "sleep"), units = "hr/day"))
@@ -315,8 +332,8 @@ test_that("when covariates, two CI types for Cox are different", {
   expect_false(isTRUE(all.equal(as.vector((log(t_yes_cov$upper_CI) - log(t_yes_cov$fit))/1.96), as.vector(t_no_cov$se.fit),  tolerance = 0.00001 )))
 })
 
-#===================
-# Look at invariance properties
+#==============
+# Test known invariance properties
 m5 <- comp_model(
   type = "cox",
   data = epicoda::simdata,
