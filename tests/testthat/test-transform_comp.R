@@ -48,6 +48,16 @@ test_that("output matches that of pivotCoord complete", {
   expect_equal(t1, t2)
 })
 
+test_that("output matches that of pivotCoord complete", {
+  t1 <- transform_comp(data = simdata[1:5, c("moderate", "light", "sedentary", "sleep")],
+                       comp_labels = c("moderate","light", "sedentary", "sleep"),
+                       transformation_type = "ilr", rounded_zeroes = FALSE)[1:5, ]
+  t1 <- t1[, (ncol(t1) - 2):ncol(t1)]
+  t2 <- robCompositions::pivotCoord(simdata[1:5, c("moderate", "light", "sedentary", "sleep")])[1:5,]
+  colnames(t2) <- colnames(t1)
+  expect_equal(t1, t2)
+})
+
 x <- exp(rnorm(5))
 y <- exp(rnorm(5, x))
 z <- rep(3, by = 5)
