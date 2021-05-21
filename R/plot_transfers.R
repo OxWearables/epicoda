@@ -421,7 +421,11 @@ plot_transfers <- function(from_part,
     }
   }
 
-
+  # Message about plotting
   message("Please note that plotting may take some time.")
+
+  # Return compositional mean for reference
+  attr(plot_of_this, "cm") <- cm_on_scale
+
   return(plot_of_this)
 }
