@@ -104,44 +104,18 @@ plot_transfers <- function(from_part,
                   part_1 = part_1)
 
   # We back calculate the dataset used to derive the model
-  dataset <- stats::model.frame(model)
-    ## We verify that the correct column names are present
-    if (!(all(transf_labels  %in% colnames(dataset)[grepl("ilr", colnames(dataset))]))){
-      stop("Specified comp_labels do not match those used to develop the model (e.g. different order?)")
-    }
-    if (!(all(colnames(dataset)[grepl("ilr", colnames(dataset))] %in% transf_labels))){
-      stop("Specified comp_labels do not match those used to develop the model (e.g. missing labels?)")
-    }
+  dataset_ready <- get_dataset_from_model(model = model, comp_label = comp_labels, transf_labels = transf_labels, type = type)
 
-  comp_cols <- ilr_trans_inv(dataset[, transf_labels])
-  colnames(comp_cols) <- comp_labels
-  dataset <- cbind(dataset, comp_cols)
-  if (type == "cox"){
-    strata_list <- colnames(dataset)[grepl("strata\\(",colnames(dataset) )]
-    for (name in strata_list){
-      plain <- gsub("strata\\(", "", name)
-      plain <- gsub("\\)", "", plain)
-      dataset[, plain] <- dataset[, name]
-    }
-  }
-  dataset_ready <-
-    dataset[,!(colnames(dataset) %in% c(transf_labels, "survival_object"))]
-
+  # We find the reference values
+  cm <- get_cm_from_model(model = model, comp_labels = comp_labels, transf_labels = transf_labels)$cm
+  cm_on_scale <-
+    rescale_comp(cm, comp_labels = comp_labels, comp_sum = comp_sum)
 
   # We make sure there will be a y_label, unless this is specified as "suppressed"
   y_label <-
     process_axis_label(label = y_label,
                        type = type,
                        terms = terms)
-
-
-  # We find the reference values
-  mm <- stats::model.frame(model)[, transf_labels]
-  cm_transf_df <- as.data.frame(t(apply(mm, 2, mean)))
-  cm <- ilr_trans_inv(cm_transf_df)
-  colnames(cm) <- comp_labels
-  cm_on_scale <-
-    rescale_comp(cm, comp_labels = comp_labels, comp_sum = comp_sum)
 
 
   # We assign some fixed_values to use in setting up new_data

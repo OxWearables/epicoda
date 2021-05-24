@@ -3,7 +3,7 @@
 #' Principally intended as input to forest_plot_examples and plot_transfers.
 #'
 #' Note that confidence intervals use the t-distribution with the appropriate degrees of freedom for linear and logistic regression,
-#' and the z-distribution for Cox regression, to match the apparent behaviour of \code{summary()} for these model objects. As long as there are a reasonable
+#' and the z-distribution for Cox regression, to match the apparent behaviour of \code{summary()} for these model objects (whether or not this makes sense for logistic regression!). As long as there are a reasonable
 #' number of samples (at least 30, say) the difference between the two is negligible.
 #'
 #' @param model Model to use for predictions.
@@ -64,34 +64,11 @@ predict_fit_and_ci <- function(model,
                   part_1 = part_1)
 
   # We back calculate the dataset used to derive the model
-  dataset <- stats::model.frame(model)
-      ## We verify that the correct column names are present
-      if (!(all(transf_labels  %in% colnames(dataset)[grepl("ilr", colnames(dataset))]))){
-        stop("Specified comp_labels do not match those used to develop the model (e.g. different order?)")
-      }
-      if (!(all(colnames(dataset)[grepl("ilr", colnames(dataset))] %in% transf_labels))){
-        stop("Specified comp_labels do not match those used to develop the model (e.g. missing labels?)")
-      }
-  comp_cols <- ilr_trans_inv(dataset[, transf_labels])
-  colnames(comp_cols) <- comp_labels
-  dataset <- cbind(dataset, comp_cols)
-  if (type == "cox"){
-    strata_list <- colnames(dataset)[grepl("strata\\(",colnames(dataset) )]
-    for (name in strata_list){
-      plain <- gsub("strata\\(", "", name)
-      plain <- gsub("\\)", "", plain)
-      dataset[, plain] <- dataset[, name]
-    }
-  }
-  dataset_ready <-
-    dataset[,!(colnames(dataset) %in% c(transf_labels, "survival_object"))]
+  dataset_ready <- get_dataset_from_model(model = model, comp_label = comp_labels, transf_labels = transf_labels, type = type)
 
   # We find the reference values
-  mm <- stats::model.frame(model)[, transf_labels]
-  cm_transf_df <- apply(mm, 2, mean)
-  cm_transf_df <- as.data.frame(t(cm_transf_df))
-  cm <- ilr_trans_inv(cm_transf_df)
-  colnames(cm) <- comp_labels
+  cm <- get_cm_from_model(model = model, comp_labels = comp_labels, transf_labels = transf_labels)$cm
+  cm_transf_df <- get_cm_from_model(model = model, comp_labels = comp_labels, transf_labels = transf_labels)$cm_transf_df
 
   # We assign some fixed_values to use in predicting
   if (!(is.null(fixed_values))) {
@@ -120,12 +97,14 @@ predict_fit_and_ci <- function(model,
     rounded_zeroes = FALSE
   ))
 
+  # Fill in new data with values from fixed_values where it's missing
   for (colname in colnames(fixed_values)){
     if (!(colname %in% colnames(new_data)) & !(colname %in% transf_labels)){
       new_data[, colname]<- rep(fixed_values[1, colname], by = nrow(new_data))
     }
   }
 
+  # Perform transformation (dropping any zero values)
   new_data <- suppressMessages(transform_comp(data = new_data, comp_labels = comp_labels, transformation_type = "ilr", rounded_zeroes = FALSE, part_1 = part_1))
 
   # Message about meaning of the 'terms' argument
@@ -148,7 +127,7 @@ predict_fit_and_ci <- function(model,
       stats::qt(0.975, df = stats::df.residual(model))[[1]]
 
     dNew$lower_CI <-
-      model$family$linkinv(dNew$fit - t_value * dNew$se.fit)
+      model$family$linkinv(dNew$fit - t_value * dNew$se.fit) # This should be the correct confidence interval under the assumption of approximate normality of standard errors on scale of linear predictors. A reference for it is: https://fromthebottomoftheheap.net/2018/12/10/confidence-intervals-for-glms/
     dNew$upper_CI <-
       model$family$linkinv(dNew$fit + t_value * dNew$se.fit)
     dNew$fit <- model$family$linkinv(dNew$fit)
