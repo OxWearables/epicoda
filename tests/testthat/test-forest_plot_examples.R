@@ -15,6 +15,12 @@ log_outcome <- comp_model(type = "logistic",
                           data = simdata,
                           comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
 
+# Finally, plot
+forest_plot_comp(composition_list = list_for_plot,
+                 models_list = list("Unadjusted" = lm_BMI_unadjusted, "Age-adjusted" = lm_BMI_age_group_only),
+                 dataset = simdata,
+                 comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"), terms = FALSE, xllimit = -1)
+
 
 
 test_that("Error when forest plotting plots of different types", {
