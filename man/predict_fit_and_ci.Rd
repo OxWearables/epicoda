@@ -40,7 +40,7 @@ Principally intended as input to forest_plot_examples and plot_transfers.
 }
 \details{
 Note that confidence intervals use the t-distribution with the appropriate degrees of freedom for linear and logistic regression,
-and the z-distribution for Cox regression, to match the apparent behaviour of \code{summary()} for these model objects. As long as there are a reasonable
+and the z-distribution for Cox regression, to match the apparent behaviour of \code{summary()} for these model objects (whether or not this makes sense for logistic regression!). As long as there are a reasonable
 number of samples (at least 30, say) the difference between the two is negligible.
 }
 \examples{

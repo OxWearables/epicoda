@@ -3,9 +3,23 @@
 #' Used by predict_fit_and_ci and plot_transfers.
 #'
 #' @inheritParams predict_fit_and_ci
+#' @param transf_labels Ilr-transformed compositional column labels.
+#' @param type Model type.
 #' @return Dataset used to create model with compositional columns on original scale.
 #' @export
 #' @examples
+#' lm_outcome <- comp_model(
+#' type = "linear",
+#' outcome = "BMI",
+#' covariates = c("agegroup", "sex"),
+#' data = simdata,
+#' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
+#' )
+#'
+#' comp_labels <- c("vigorous", "moderate", "light", "sedentary", "sleep")
+#' tl <- transf_labels(comp_labels = comp_labels, transformation_type = "ilr")
+#' get_dataset_from_model(model = lm_outcome, comp_labels = comp_labels,
+#'                        transf_labels = tl, type = "linear")
 get_dataset_from_model <- function(model, comp_labels, transf_labels, type){
   ## We get dataset from model frame
   dataset <- stats::model.frame(model)
@@ -45,9 +59,22 @@ get_dataset_from_model <- function(model, comp_labels, transf_labels, type){
 #' Used by predict_fit_and_ci and plot_transfers.
 #'
 #' @inheritParams predict_fit_and_ci
+#' @param transf_labels Ilr-transformed compositional column labels.
 #' @return Dataset used to create model with compositional columns on original scale.
 #' @export
 #' @examples
+#' lm_outcome <- comp_model(
+#' type = "linear",
+#' outcome = "BMI",
+#' covariates = c("agegroup", "sex"),
+#' data = simdata,
+#' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
+#' )
+#'
+#' comp_labels <- c("vigorous", "moderate", "light", "sedentary", "sleep")
+#' tl <- transf_labels(comp_labels = comp_labels, transformation_type = "ilr")
+#' get_cm_from_model(model = lm_outcome, comp_labels = comp_labels,
+#' transf_labels = tl)
 get_cm_from_model <- function(model, comp_labels, transf_labels){
   mm <- stats::model.frame(model)[, transf_labels]
   cm_transf_df <- apply(mm, 2, mean)

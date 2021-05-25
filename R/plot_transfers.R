@@ -104,7 +104,7 @@ plot_transfers <- function(from_part,
                   part_1 = part_1)
 
   # We back calculate the dataset used to derive the model
-  dataset_ready <- get_dataset_from_model(model = model, comp_label = comp_labels, transf_labels = transf_labels, type = type)
+  dataset_ready <- get_dataset_from_model(model = model, comp_labels = comp_labels, transf_labels = transf_labels, type = type)
 
   # We find the reference values
   cm <- get_cm_from_model(model = model, comp_labels = comp_labels, transf_labels = transf_labels)$cm
