@@ -10,6 +10,7 @@
 #' @param n_bins Number of bins to use on density plot.
 #' @param mark_points Points should be the rows of a data frame with the elements of \code{parts_to_plot} as columns names. If a \code{groups} argument is given, it should also have a column for this (if the groups aren't relevant to the point in a certain row, this can be set as NA).
 #' @param transparency Control the transparency of plots. Should be between 0 and 1.
+#' @param suppress_legend Suppress legend on plot. May be used when combining plots.
 #' @inheritParams plot_transfers
 #' @return Plot showing density of data on ternary plot.
 #' @examples
@@ -29,7 +30,8 @@ plot_density_ternary <-
            n_bins = 5,
            mark_points = NULL,
            theme = NULL,
-           transparency = 0.2) {
+           transparency = 0.2,
+           suppress_legend = FALSE) {
     if (length(parts_to_plot) != 3) {
       stop("parts_to_plot should have names of exactly three parts to plot")
     }
@@ -54,6 +56,11 @@ plot_density_ternary <-
         line = ggplot2::element_line(size = 1, colour = "black")
       )
     }
+
+    if (suppress_legend){
+      theme <- theme + ggplot2::theme(legend.position = "none")
+    }
+
 
 
 
@@ -194,13 +201,8 @@ plot_density_ternary <-
 #'
 #' This is a wrapper for \code{ggtern}.
 #'
-#' @param data Data frame containing data to be plotted.
-#' @param groups If plotting groups separately, name of the variable in the data frame which identifies the groups to be plotted. This variable should be a factor variable.
-#' @param parts_to_plot Names of the three variables in the data frame which are to be plotted on the ternary plot. Note they should be on the same scale (they don't need to be normalised to 1).
 #' @param probs Sequence of probabilities to plot confidence regions for.
-#' @param mark_points Points should be the rows of a data frame with the elements of \code{parts_to_plot} as columns names. If a \code{groups} argument is given, it should also have a column for this (if the groups aren't relevant to the point in a certain row, this can be set as NA).
-#' @param transparency Control the transparency of plots. Should be between 0 and 1.
-#' @inheritParams plot_transfers
+#' @inheritParams plot_density_ternary
 #' @return Plot showing confidence regions for data on ternary plot.
 #' @examples
 #' simdata$activity <- simdata$vigorous + simdata$moderate + simdata$light
@@ -217,7 +219,8 @@ plot_confidence_region_ternary <-
            probs = c(0.5, 0.9, 0.95),
            mark_points = NULL,
            theme = NULL,
-           transparency = 0.2) {
+           transparency = 0.2,
+           suppress_legend = FALSE) {
     if (length(parts_to_plot) != 3) {
       stop("parts_to_plot should have names of exactly three parts to plot")
     }
@@ -241,6 +244,9 @@ plot_confidence_region_ternary <-
         ),
         line = ggplot2::element_line(size = 1, colour = "black")
       )
+    }
+    if (suppress_legend){
+      theme <- theme + ggplot2::theme(legend.position = "none")
     }
 
 
@@ -276,7 +282,7 @@ plot_confidence_region_ternary <-
         for (group in levels(data[, groups])) {
           local_data <- data[data[, groups] == group, c(parts_to_plot, groups)]
           plot <-
-            plot + ggtern::stat_density_tern(
+            plot + ggtern::stat_confidence_tern(
               data = local_data,
               geom = 'polygon',
               ggplot2::aes_(
@@ -305,7 +311,7 @@ plot_confidence_region_ternary <-
       if (is.null(groups)) {
         plot <-
           ggtern::ggtern(data = data[, parts_to_plot], ggplot2::aes_(x = data[, name1], y = data[, name2], z = data[, name3])) +
-          ggtern::stat_density_tern(
+          ggtern::stat_confidence_tern(
             data = data[, parts_to_plot],
             geom = 'polygon',
             breaks = probs,
@@ -338,7 +344,7 @@ plot_confidence_region_ternary <-
         for (group in levels(data[, groups])) {
           local_data <- data[data[, groups] == group, c(parts_to_plot, groups)]
           plot <-
-            plot + ggtern::stat_density_tern(
+            plot + ggtern::stat_confidence_tern(
               data = local_data,
               geom = 'polygon',
               ggplot2::aes_(
