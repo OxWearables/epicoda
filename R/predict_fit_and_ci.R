@@ -2,8 +2,8 @@
 #'
 #' Principally intended as input to forest_plot_examples and plot_transfers.
 #'
-#' Note that confidence intervals use the t-distribution with the appropriate degrees of freedom for linear and logistic regression,
-#' and the z-distribution for Cox regression, to match the apparent behaviour of \code{summary()} for these model objects (whether or not this makes sense for logistic regression!). As long as there are a reasonable
+#' Note that confidence intervals use the t-distribution with the appropriate degrees of freedom for linear regression,
+#' and the z-distribution for logistic and Cox regression, to match the behaviour of \code{summary()} for these model objects. As long as there are a reasonable
 #' number of samples (at least 30, say) the difference between the two is negligible.
 #'
 #' @param model Model to use for predictions.
@@ -46,6 +46,9 @@ predict_fit_and_ci <- function(model,
   # We set units
   comp_sum <- as.numeric(process_units(units, specified_units)[2])
   units <- process_units(units, specified_units)[1]
+
+  # We calculate z value
+  z_value <- stats::qnorm(0.975) # Currently approximately 1.96 for 95% CI; To be updated to allow user-specified CIs by specification of level
 
   # We assign some internal parameters
   type <- process_model_type(model)
@@ -123,13 +126,10 @@ predict_fit_and_ci <- function(model,
 
     dNew <- data.frame(new_data, predictions)
 
-    t_value <-
-      stats::qt(0.975, df = stats::df.residual(model))[[1]]
-
     dNew$lower_CI <-
-      model$family$linkinv(dNew$fit - t_value * dNew$se.fit) # This should be the correct confidence interval under the assumption of approximate normality of standard errors on scale of linear predictors. A reference for it is: https://fromthebottomoftheheap.net/2018/12/10/confidence-intervals-for-glms/
+      model$family$linkinv(dNew$fit - z_value * dNew$se.fit) # This should be the correct confidence interval under the assumption of approximate normality of standard errors on scale of linear predictors. A reference for it is: https://fromthebottomoftheheap.net/2018/12/10/confidence-intervals-for-glms/
     dNew$upper_CI <-
-      model$family$linkinv(dNew$fit + t_value * dNew$se.fit)
+      model$family$linkinv(dNew$fit + z_value * dNew$se.fit)
     dNew$fit <- model$family$linkinv(dNew$fit)
 
   }
@@ -161,11 +161,8 @@ predict_fit_and_ci <- function(model,
     in_sqrt_true <- diag((x %*% middle_matrix) %*% t_x)
     value <- sqrt(data.matrix(in_sqrt_true))
 
-    t_value <-
-      stats::qt(0.975, df = stats::df.residual(model))[[1]]
-
-    alpha_lower <- dNew$log_odds_change - t_value * value
-    alpha_upper <- dNew$log_odds_change + t_value * value
+    alpha_lower <- dNew$log_odds_change - z_value * value
+    alpha_upper <- dNew$log_odds_change + z_value * value
 
     dNew$lower_CI <- exp(alpha_lower)
     dNew$upper_CI <- exp(alpha_upper)
@@ -199,8 +196,6 @@ predict_fit_and_ci <- function(model,
     in_sqrt_true <- diag((x %*% middle_matrix) %*% t_x)
     value <- sqrt(data.matrix(in_sqrt_true))
 
-    z_value <- stats::qnorm(0.975)
-
     alpha_lower <- dNew$log_hazard_change - z_value*value
     alpha_upper <- dNew$log_hazard_change + z_value*value
 
@@ -219,8 +214,6 @@ predict_fit_and_ci <- function(model,
     dNew <- data.frame(new_data, predictions)
 
     dNew$fit <- exp(dNew$fit)
-
-    z_value <- stats::qnorm(0.975)
 
     dNew$lower_CI <-
       dNew$fit *exp(-(z_value * dNew$se.fit))
