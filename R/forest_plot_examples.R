@@ -62,9 +62,9 @@ forest_plot_comp <-
            pred_name = NULL,
            boxsize = 0.05,
            terms = TRUE,
-           fixed_values = NULL,
            units = "unitless",
            specified_units = NULL,
+           fixed_values = NULL,
            part_1 = NULL,
            ...) {
 
