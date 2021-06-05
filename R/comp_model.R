@@ -7,6 +7,7 @@
 #' @param covariates Character vector of column names of covariates to adjust models for. As this is used as a character vector, special arguments to the standard models (like \code{"strata(variable)"} for a Cox model) can be used here.
 #' @param follow_up_time Only used if \code{type} is \code{"cox"} and \code{outcome} is \code{NULL}.  Follow-up time.
 #' @param event Only used if \code{type} is \code{"cox"} and \code{outcome} is \code{NULL}.Binary variable indicating whether or not an event was observed.
+#' @param data Dataset to use for modelling.
 #' @inheritParams transform_comp
 #'
 #' @return Model using a compositional exposure variable (\code{lm}, \code{glm} or \code{coxph} object as appropriate).

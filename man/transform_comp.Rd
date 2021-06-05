@@ -25,14 +25,14 @@ transform_comp(
 
 \item{det_limit}{Detection limit if zeroes are to be imputed. This is needed when \code{rounded_zeroes} is \code{TRUE}. It should be the
 minimum measurable value in the compositional columns of data, and should be on the same scale as the (input) compositional columns. If it is
-not set, the minimum measured value greater than zero is used, which is appropriate for many practical purposes.}
+not set, the minimum measured value greater than zero is used.}
 
 \item{comparison_part}{Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of part that all other parts will be compared to.}
 
-\item{part_1}{Only used if first part in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
+\item{part_1}{Used with ilr-pivot coordinate transformation to specify which should be first part. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
 }
 \value{
-\code{data} with transformed activity columns.
+\code{data} with transformed compositional columns.
 }
 \description{
 Takes a dataset with a set of labelled compositional columns and returns a dataset with

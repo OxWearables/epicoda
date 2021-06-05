@@ -22,7 +22,7 @@ make_new_data(
 
 \item{to_part}{Should be an element of \code{comp_labels}.}
 
-\item{fixed_values}{If \code{terms = FALSE}, this gives the fixed values of the non-compositional covariates at which to calculate the prediction. It is generated automatically if not set.}
+\item{fixed_values}{If \code{terms = FALSE}, this gives the fixed values of the non-compositional covariates at which to calculate the prediction. It is generated automatically if not set. It does not usually need setting, and makes no difference to the output if `terms = TRUE`.}
 
 \item{dataset}{Dataset to use to inform range of data used (should be dataset model was developed on)}
 
