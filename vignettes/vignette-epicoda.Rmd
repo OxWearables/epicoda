@@ -94,36 +94,38 @@ Many other functions in the package have `rounded_zeroes` and `det_limit` argume
 While the compositional mean is a fairly clear compositional equivalent to the mean for non-compositional data, other standard descriptive statistics (such as the variance), do not have straightforward compositional equivalents for all purposes for which they are used (there may be several alternatives, depending on the purpose of the analysis) [@Filzmoser2018]. These are beyond the current scope of this package. 
 
 ### Plotting ternary diagrams
-Ternary plots provide a way to plot compositional data with three parts. The R package `ggtern` is an extension of `ggplot2` to carry out this plotting. In this package, there is a wrapper for `ggtern` functions to implement common use cases in epidemiological analyses: plotting the data density, and plotting the data density within subgroups. 
+Ternary plots provide a way to plot compositional data with three parts. The R package `ggtern` is an extension of `ggplot2` to carry out this plotting. In this package, there is a wrapper for `ggtern` functions to implement common use cases in epidemiological analyses: plotting the data density, and plotting confidence regions for the data, both overall and within subgroups.
 
 #### Note (18.03.2021)
-Currently, a conflict between `ggtern` and `ggplot2` means using `ggtern` can stop axis labels appearing on `ggplot2` graphs. Pending a more permanent solutions, these functions remain in the package, but `ggtern` is not automatically loaded and should be used with care. They are not run in this vignette. 
+Currently, a conflict between `ggtern` and `ggplot2` means using `ggtern` can stop axis labels appearing on `ggplot2` graphs. Pending a more permanent solutions, these functions remain in the package, but `ggtern` is not automatically loaded and should be used with care. They are not run in this vignette.
 
 Frequently, data has more than three compositional parts (as here). There are two alternatives in that case: using three parts of the existing parts (looking at the subcomposition formed by these parts), or summing parts to consider a different composition (where that is informative). In the simulated data, `"vigorous", "moderate"` and `"light"` represent three different intensities of activity, so it is meaningful to combine them: 
 ```{r, eval = FALSE}
 simdata$all_activity <- simdata$vigorous + simdata$moderate + simdata$light
-plot_density_ternary(data = simdata, 
+plot_confidence_region_ternary(data = simdata, 
                      parts_to_plot = c("all_activity", "sedentary", "sleep"),
-                     n_bins = 10 # This argument specifies we want to use 10 bins 
-                     # (i.e. 9 equi-density contours will be plotted between the minimum and maximum probability density.) Default is 5. 
+                     probs = c(0.25, 0.5, 0.75) # This will plot 25, 50 and 75% confidence regions (default is 0.5, 0.9, 0.95)
                       )
 
 ```
 
 Another frequent use case is considering this plot with the density separated by groups. For example, to look at different sexes (which in fact don't differ much in the simulated data):  
 ```{r, eval=FALSE}
-plot_density_ternary(data = simdata, 
+plot_confidence_region_ternary(data = simdata, 
                      parts_to_plot = c("all_activity", "sedentary", "sleep"),
-                     groups = "sex")
+                     groups = "sex", 
+                     probs = c(0.25, 0.5, 0.75) # This will plot 25, 50 and 75% confidence regions (default is 0.5, 0.9, 0.95)
+                      )
 
 ```
 
 The `mark_points` argument can be used to annotate particular points using crosshairs. For example, to mark the compositional mean: 
 ```{r,eval = FALSE}
 points_to_mark <- as.data.frame(comp_mean(data = simdata, comp_labels = c("all_activity", "sedentary", "sleep")))
-plot_density_ternary(data = simdata, 
+plot_confidence_region_ternary(data = simdata, 
                      parts_to_plot = c("all_activity", "sedentary", "sleep"),
-                     mark_points = points_to_mark
+                     mark_points = points_to_mark,
+                     probs = c(0.25, 0.5, 0.75) # This will plot 25, 50 and 75% confidence regions (default is 0.5, 0.9, 0.95)
                       )                              
 ```
 
@@ -139,7 +141,6 @@ lm_BMI <- comp_model(type = "linear",
          data = simdata,
          comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
 ```
-This function has several possible arguments related to how the transformation is carried out. However, for basic usage most of these arguments can be left at their defaults. 
 
 Logistic models can be produced in exactly the same way by setting `type = "logistic"` and using an appropriate binary outcome variable. Cox models can be produced similarly by setting `type = "cox"` and either setting `outcome` as a `Surv` object from the package `survival` or setting the `follow_up_time` and `event` arguments. For examples, see 'Regression modelling: further examples'.
 
@@ -154,7 +155,7 @@ summary(lm_BMI)
 The model diagnostics can be interpreted as usual, and in this case all looks fine. However, the summary is hard to interpret because the transformed variables or 'coordinates' used in the model do not relate in a straightforward way to the original composition. 
 
 ### Presenting the results: tabulate pivot-coordinate coefficients
-A common way to present the results is to present coefficients as usual for covariates, and then produce as many models as there are compositional variables. From each of these models, the coefficient for the first 'ilr pivot coordinate' is taken (see 'Mechanics of Compositional Data Analysis' below). These ilr pivot coordinate coefficients can be interpreted in terms of transfer between the particular compositional part and all other parts proportionally. `tab_coefs` is a function which wraps generating one model per compositional variable and outputting a table of model coefficients. 
+A common way to present the results is to present coefficients as usual for covariates, and then produce as many models as there are compositional variables. From each of these models, the coefficient for the first 'ilr pivot coordinate' is taken (see 'Mechanics of Compositional Data Analysis' below). These ilr pivot coordinate coefficients can be interpreted in terms of reallocation between the particular compositional part and all other parts proportionally. `tab_coefs` is a function which wraps generating one model per compositional variable and outputting a table of model coefficients. 
 ```{r}
 tab_coefs(scale_type = "lp", # This argument can be "lp" or "exp" and determines whether coefficients are presented on the scale of the linear predictors ("lp") or are exponentiated ("exp"). # Exponentiation gives the Odds Ratio for logistic regression models and the Hazard Ratio for Cox regression models. 
           level = 0.95, 
@@ -173,7 +174,7 @@ tab_coefs(scale_type = "lp", # This argument can be "lp" or "exp" and determines
 * The function `tab_covariate_coefs` is called within this function, and can be used to extract the coefficients of the covariates only from a model. 
 
 ### Presenting the results:  substitution plots
-Substitution plots show the model-estimated difference in the outcome (relative to at the compositional mean) as the balance between two parts of the composition varies. In the case of time use/physical behaviours, they are known as isotemporal substitution plots and show the model-predicted difference in the outcome at higher time in one behaviour at the expense of time in another behaviour (the model-predicted difference in outcome for a hypothetical reallocation of time from one behaviour to another). For example: 
+Substitution or reallocation plots show the model-estimated difference in the outcome (relative to at the compositional mean) as the balance between two parts of the composition varies. In the case of time use/physical behaviours, they are sometimes called isotemporal substitution plots. They show the model-predicted difference in the outcome at higher time in one behaviour at the expense of time in another behaviour (the model-predicted difference in outcome for a hypothetical reallocation of time from one behaviour to another). For example: 
 ```{r}
 plot_transfers(from_part = "sedentary",
                to_part = "moderate",
@@ -184,11 +185,12 @@ plot_transfers(from_part = "sedentary",
 ```
 
 #### Notes 
-* There is more information on how confidence intervals for this plot are calculated in a vignette (`vignette("derivation_of_CIs_used")`).
 * To customise the appearance of the plot see 'Customising plots'. 
+* Results of analyses using a Compositional Data Analysis approach can be presented using reallocations other than 1-1 between two parts. This is not currently implemented in the `plot_transfers` function. However, the `predict_fit_and_ci` function can be used to estimate the outcome for any specified reallocation. 
+* There is more information on how confidence intervals for this plot are calculated in a vignette (`vignette("derivation_of_CIs_used")`).
 
 ### Presenting the results: estimates at particular compositions
-Another set of estimates that might be of interest are estimates at particular compositions. These can be examined by plotting these in a 'forest plot' style plot. This allows assessment of the model-estimated associations with much more complex substitutions of time. 
+Another set of estimates that might be of interest are estimates at particular compositions. These can be examined by plotting these in a 'forest plot' style plot. This allows assessment of the model-estimated associations with much more complex reallocations between parts. 
 
 #### Generating perturbations of a composition
 While there are hugely varied compositions which might be possible, one kind of composition is often of interest. This is compositions where one particular part is perturbed at the expense of all other parts proportionally. As this is a common use case, there is a function implemented to do this: 
@@ -258,7 +260,7 @@ This section contains lots of additional information, on:
 ### Mechanics of Compositional Data Analysis: Log-ratio transformations
 The functions above wrap all the 'log-ratio mechanics' of using a Compositional Data Analysis approach.
 
-There are several different kinds of transformations which can be used in order to work with compositional data (alr, ilr, clr). These transform the variables into coordinates which are capable of representing all the variation in the data. Different transformations have different pros/cons, and alr and clr can only be used for certain applications. All the functions default to ilr (isometric log ratio) transformation using so-called 'pivot coordinates', which is fairly standard in the physical activity literature (and is appropriate for the applications which the other transformations are used for). If you want to learn more, see [@Filzmoser2018][@Pawlowsky-Glahn2011].
+There are several different kinds of transformations which can be used in order to work with compositional data (alr, ilr, clr). These transform the variables into coordinates which are capable of representing all the variation in the data. Different transformations have different pros/cons, and alr and clr can only be used for certain applications. All the functions default to ilr (isometric log ratio) transformation using so-called 'pivot coordinates', which is fairly standard in the physical behaviour/time use literature (and is appropriate for the applications which the other transformations are used for). If you want to learn more, see [@Filzmoser2018][@Pawlowsky-Glahn2011].
 
 The purpose of this package is not to provide this functionality, which is implemented in other R packages, such as `compositions` and `robCompositions`. (The main aim of this package is shown above, in the functions to perform standard epidemiological analyses). This functionality is reimplemented here simply to ensure that future changes to the defaults in those packages do not affect this package.
 ```{r}
@@ -270,7 +272,7 @@ print(head(data_ilr_impute_zeroes))
 There are also a few other things we can do with this function, like specifying a given 'first part' (which is useful when it comes to reporting, and is used therefore in `tab_coefs`). To learn more, run `?transform_comp`. 
 
 ### Presenting results via model predictions 
-An alternative way to get round the challenges of interpreting the model coefficients for these models is to look at model-predicted outcomes for different input variable values (rather than model-estimated differences). The `plot_transfers` function can do this (for linear, logistic and Cox regression models) by setting `terms = FALSE`: 
+An alternative which may sometimes be useful when interpreting models is to look at model-predicted outcomes for different input variable values (rather than model-estimated differences). Functions related to plotting (e.g. the `plot_transfers` function) can do this by setting `terms = FALSE`: 
 ```{r}
 plot_transfers(from_part = "sedentary",
                to_part = "moderate",
@@ -340,7 +342,6 @@ cox_outcome <- comp_model(type = "cox",
          covariates = c("agegroup", "sex"),
          data = simdata,
          comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
-summary(cox_outcome)
 ```
 
 
@@ -351,5 +352,6 @@ To get the numbers out for predictions at particular compositions, we can use th
 predict_fit_and_ci(model = lm_BMI, new_data = new_comp, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
 ```
 
+As noted above, this can be used to look at any reallocations between parts which are of interest. 
 
 # References
