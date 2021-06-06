@@ -9,7 +9,7 @@
 #' @param model Model to use for predictions.
 #' @param new_data Data for predictions.
 #' @param terms Are estimates for differences in outcome associated with differences in compositional variables? If \code{terms = TRUE} all estimates and plots will be for difference in outcome associated with differences in the compositional variables. If \code{terms = FALSE}, \code{fixed_values} is used to set the values of the non-compositional covariates, and outputs are predictions for the outcome based on these values of the non-compositional covariates and the given value of the compositional variables (and confidence intervals include uncertainty due to all variables in the model, not just the compositional variables).
-#' @param fixed_values If \code{terms = FALSE}, this gives the fixed values of the non-compositional covariates at which to calculate the prediction. It is generated automatically if not set.
+#' @param fixed_values If \code{terms = FALSE}, this gives the fixed values of the non-compositional covariates at which to calculate the prediction. It is generated automatically if not set. It does not usually need setting, and makes no difference to the output if `terms = TRUE`.
 #' @inheritParams transform_comp
 #' @inheritParams process_units
 #' @return Plot with balance of two parts plotted as exposure/ independent variable.
@@ -38,10 +38,10 @@ predict_fit_and_ci <- function(model,
                            new_data,
                            comp_labels,
                            terms = TRUE,
-                           fixed_values = NULL,
                            part_1 = NULL,
                            units = "unitless",
-                           specified_units = NULL) {
+                           specified_units = NULL,
+                           fixed_values = NULL) {
 
   # We set units
   comp_sum <- as.numeric(process_units(units, specified_units)[2])

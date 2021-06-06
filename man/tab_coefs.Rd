@@ -33,7 +33,7 @@ tab_coefs(
 
 \item{event}{Only used if \code{type} is \code{"cox"} and \code{outcome} is \code{NULL}.Binary variable indicating whether or not an event was observed.}
 
-\item{data}{Dataset to have the transformation applied to.}
+\item{data}{Dataset to use for modelling.}
 
 \item{comp_labels}{The labels of the compositional columns.}
 
@@ -41,7 +41,7 @@ tab_coefs(
 
 \item{det_limit}{Detection limit if zeroes are to be imputed. This is needed when \code{rounded_zeroes} is \code{TRUE}. It should be the
 minimum measurable value in the compositional columns of data, and should be on the same scale as the (input) compositional columns. If it is
-not set, the minimum measured value greater than zero is used, which is appropriate for many practical purposes.}
+not set, the minimum measured value greater than zero is used.}
 }
 \value{
 Table of all model coefficients (parameter value with lower and upper confidence interval of the 95% ), using the first pivot coordinates for all compositional coefficients.

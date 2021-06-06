@@ -21,7 +21,7 @@ tab_covariate_coefs(
 
 \item{comp_labels}{The labels of the compositional columns.}
 
-\item{part_1}{Only used if first part in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
+\item{part_1}{Used with ilr-pivot coordinate transformation to specify which should be first part. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
 }
 \value{
 Table of covariates and their associated coefficients (parameter value with lower and upper confidence interval). Note that, unlike the plotting and some other default model summary functions in R, this uses confidence intervals based on stats::confint.

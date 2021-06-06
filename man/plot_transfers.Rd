@@ -10,7 +10,6 @@ plot_transfers(
   model,
   comp_labels,
   terms = TRUE,
-  fixed_values = NULL,
   part_1 = NULL,
   yllimit = NULL,
   yulimit = NULL,
@@ -22,6 +21,7 @@ plot_transfers(
   upper_quantile = 0.95,
   units = "unitless",
   specified_units = NULL,
+  fixed_values = NULL,
   granularity = 10000,
   point_specification = ggplot2::geom_point(size = 2),
   error_bar_colour = "grey",
@@ -39,9 +39,7 @@ plot_transfers(
 
 \item{terms}{Are estimates for differences in outcome associated with differences in compositional variables? If \code{terms = TRUE} all estimates and plots will be for difference in outcome associated with differences in the compositional variables. If \code{terms = FALSE}, \code{fixed_values} is used to set the values of the non-compositional covariates, and outputs are predictions for the outcome based on these values of the non-compositional covariates and the given value of the compositional variables (and confidence intervals include uncertainty due to all variables in the model, not just the compositional variables).}
 
-\item{fixed_values}{If \code{terms = FALSE}, this gives the fixed values of the non-compositional covariates at which to calculate the prediction. It is generated automatically if not set.}
-
-\item{part_1}{Only used if first part in ilr-pivot coordinate transformation. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
+\item{part_1}{Used with ilr-pivot coordinate transformation to specify which should be first part. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
 
 \item{yllimit}{Lower limit of y-axis shown on plot.}
 
@@ -62,6 +60,8 @@ plot_transfers(
 \item{units}{What should the units of the compositional variables be in any output? Currently available are "unitless" (where working in terms of proportions), "hr/day", "hr/wk", "min/day", "min/wk" and "specified", in which case the \code{specified_units} argument should be set. Note that this doesn't specify the input units, as this is not relevant for any function.}
 
 \item{specified_units}{If units are being specified via the composition sum, this is where it is done. It should be a vector where the first argument is a string describing the units, and the second argument is the expected sum of a composition e.g. \code{c("hr/day", 24)}}
+
+\item{fixed_values}{If \code{terms = FALSE}, this gives the fixed values of the non-compositional covariates at which to calculate the prediction. It is generated automatically if not set. It does not usually need setting, and makes no difference to the output if `terms = TRUE`.}
 
 \item{granularity}{Does not usually require setting. If set, gives the number of points plotted on the graph. If it is too low, the plot will contain gaps. If it is too high, plotting will be slow.}
 
