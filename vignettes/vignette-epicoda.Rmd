@@ -21,16 +21,8 @@ knitr::opts_chunk$set(fig.width=12, fig.height=8)
 ```{r, include = FALSE}
 devtools::load_all()
 ```
-This code chunk installs and loads the package: 
+If you have installed the package following the instructions on GitHub, it can be loaded by:
 ```{r, eval = FALSE}
-install.packages("devtools") # To install epicoda from GitHub, the devtools package is required.
-library(devtools)
-devtools::install_github(
-  "activityMonitoring/epicoda",
-  build_opts = c("--no-resave-data"),
-  build_vignettes = TRUE,
-  build_manual = TRUE
-)
 library(epicoda)
 ```
 # A basic analysis
