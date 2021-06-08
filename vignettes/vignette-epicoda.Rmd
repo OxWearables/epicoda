@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 knitr::opts_chunk$set(fig.width=12, fig.height=8) 
 ```
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
 devtools::load_all()
 ```
 If you have installed the package following the instructions on GitHub, it can be loaded by:
