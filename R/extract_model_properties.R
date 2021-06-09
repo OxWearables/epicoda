@@ -37,14 +37,17 @@ get_dataset_from_model <- function(model, comp_labels, transf_labels, type){
   colnames(comp_cols) <- comp_labels
   dataset <- cbind(dataset, comp_cols)
 
-  ## We remove the "strata" prefix from any Cox strata variables
+  ## We remove the "strata" prefix from any Cox strata variables.
   if (type == "cox"){
     strata_list <- colnames(dataset)[grepl("strata\\(",colnames(dataset) )]
     for (name in strata_list){
       plain <- gsub("strata\\(", "", name)
       plain <- gsub("\\)", "", plain)
-      dataset[, plain] <- dataset[, name]
-  }
+      colnames_list <- strsplit(plain, ", ")[[1]]
+      for (i in 1:length(colnames_list)){
+        dataset[, colnames_list[i] ] <- as.vector(sapply(strsplit(as.character(dataset[, name]), ", "), function(x) x[[i]]))
+      }
+    }
   }
 
   ## We return the dataset without the compositional columns
@@ -81,5 +84,6 @@ get_cm_from_model <- function(model, comp_labels, transf_labels){
   cm_transf_df <- as.data.frame(t(cm_transf_df))
   cm <- ilr_trans_inv(cm_transf_df)
   colnames(cm) <- comp_labels
-return(list("cm"= cm, "cm_transf_df" = cm_transf_df))
+
+  return(list("cm"= cm, "cm_transf_df" = cm_transf_df))
 }
