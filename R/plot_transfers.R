@@ -146,8 +146,8 @@ plot_transfers <- function(from_part,
       dataset  = dataset_ready,
       units = "hr/day",
       comp_labels = comp_labels,
-      lower_quantile = 0.05,
-      upper_quantile = 0.95,
+      lower_quantile = lower_quantile,
+      upper_quantile = upper_quantile,
       granularity = granularity
     )
 
