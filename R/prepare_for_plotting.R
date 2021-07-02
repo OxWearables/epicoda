@@ -34,8 +34,8 @@ vary_part_of_interest <- function(part_of_interest,
                                   upper_quantile = 0.95,
                                   granularity = 10000) {
   part_values <- seq(
-    from = stats::quantile(part_of_interest, 0.05, na.rm = TRUE),
-    to = stats::quantile(part_of_interest, 0.95, na.rm = TRUE),
+    from = stats::quantile(part_of_interest, lower_quantile, na.rm = TRUE),
+    to = stats::quantile(part_of_interest, upper_quantile, na.rm = TRUE),
     length.out = granularity
   )
   return(part_values)
