@@ -2,7 +2,7 @@
 % Please edit documentation in R/prepare_for_plotting.R
 \name{generate_fixed_values}
 \alias{generate_fixed_values}
-\title{Generates list of fixed_values based on median/modal values in dataset}
+\title{Generates list of fixed_values based on mean/modal values in dataset}
 \usage{
 generate_fixed_values(data, comp_labels)
 }
@@ -15,5 +15,5 @@ generate_fixed_values(data, comp_labels)
 dataframe with a single row of fixed_values.
 }
 \description{
-If fixed values (for non-compositional variables) are not set, this will set them to modal/ median values.
+If fixed values (for non-compositional variables) are not set, this will set them to modal/ mean values.
 }
