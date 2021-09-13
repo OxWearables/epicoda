@@ -25,12 +25,10 @@ RoxygenNote: 7.1.1
 Suggests: 
     testthat (>= 3.0.0),
     ggtern (>= 3.1.0), 
-    robCompositions,
     deltacomp, 
     knitr,
     rmarkdown, 
     markdown,
-    devtools, 
-    splines (>= 3.6.2)
+    devtools
 VignetteBuilder: knitr
 Remotes: tystan/deltacomp
