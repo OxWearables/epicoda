@@ -5,8 +5,6 @@
 
 *This is the in-development version and major changes and corrections may be made - use at your own risk! Please share comments, suggestions and errors/bugs found, either directly on the GitHub page or by emailing rosemary.walmsley@gtc.ox.ac.uk*. 
 
-NOTE: A major update was introduced on 21.03.2021. This should not affect results, but processing should be faster. It also removes the need in plotting functions to specify lots of details of model development, as this is now extracted automatically from the model (so arguments may need to be removed from existing code in order to run). As with any major change, there are likely to be bugs: bug reports are very welcome.
-
 We are actively seeking review of the code - if you are able to provide feedback, we would love to hear from you (either on GitHub or at rosemary.walmsley@gtc.ox.ac.uk). 
 
 ## What is `epicoda`? 
@@ -35,8 +33,6 @@ We are aware of one issue where a conflict between dependency packages can lead 
 ## Citing this package
 If you use this package, please cite:
 ```
-[Walmsley2020] Walmsley R, Chan S, et al. (2020)
-Reallocating time from machine-learned sleep, sedentary behaviour or light 
-physical activity to moderate-to-vigorous physical activity is associated with 
-lower cardiovascular disease risk (preprint https://doi.org/10.1101/2020.11.10.20227769)
+[Walmsley2021] Walmsley R, Chan S, Smith-Byrne K, et al Reallocation of time between device-measured movement behaviours and risk of incident cardiovascular disease
+ British Journal of Sports Medicine Published Online First: 06 September 2021. doi: 10.1136/bjsports-2021-104050
 ```
