@@ -1,6 +1,6 @@
-#' Generates list of fixed_values based on median/modal values in dataset
+#' Generates list of fixed_values based on mean/modal values in dataset
 #'
-#' If fixed values (for non-compositional variables) are not set, this will set them to modal/ median values.
+#' If fixed values (for non-compositional variables) are not set, this will set them to modal/ mean values.
 #'
 #' @param data Data used for model development.
 #' @inheritParams plot_transfers
@@ -13,7 +13,7 @@ generate_fixed_values <- function(data, comp_labels){
       fixed_values[colname] <- (Mode(data[,colname]))[1]
     }
     if ((is.numeric(data[, colname]))) {
-      fixed_values[colname] <- stats::median(data[, colname], na.rm = TRUE)
+      fixed_values[colname] <- mean(data[, colname], na.rm = TRUE)
     }
   }
   return(fixed_values)
@@ -34,8 +34,8 @@ vary_part_of_interest <- function(part_of_interest,
                                   upper_quantile = 0.95,
                                   granularity = 10000) {
   part_values <- seq(
-    from = stats::quantile(part_of_interest, 0.05, na.rm = TRUE),
-    to = stats::quantile(part_of_interest, 0.95, na.rm = TRUE),
+    from = stats::quantile(part_of_interest, lower_quantile, na.rm = TRUE),
+    to = stats::quantile(part_of_interest, upper_quantile, na.rm = TRUE),
     length.out = granularity
   )
   return(part_values)
