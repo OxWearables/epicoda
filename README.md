@@ -28,7 +28,10 @@ vignette("vignette-epicoda")
 ```
 ## Troubleshooting 
 This is the in-development version - please get in touch with any feedback or problems on this page, or by emailing rosemary.walmsley@gtc.ox.ac.uk. 
-We are aware of one issue where a conflict between dependency packages can lead to plots not displaying axis labels. The current settings should avoid this, but if it does affect you, it would be really useful to know. 
+
+Some issues we are aware of: 
+- The package was written using base R syntax with data formatted as a data frame. Some functions can fail if data is formatted as a tibble (as per tidyverse and [some R books](https://r4ds.had.co.nz/) ) - and it may not be obvious from the error message that this is the cause. [A simple fix](https://r4ds.had.co.nz/tibbles.html#interacting-with-older-code) is to reformat the data as a data frame before analysis (`as.data.frame(my_data)`).
+- There is one issue where a conflict between dependency packages can lead to plots not displaying axis labels. The current settings should avoid this, but if it does affect you, it would be really useful to know. 
 
 ## Citing this package
 If you use this package, please cite:
