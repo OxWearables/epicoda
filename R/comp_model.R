@@ -75,7 +75,7 @@ comp_model <-
       }
       if (is.null(covariates)){
               model <-
-        stats::glm(stats::as.formula(paste(outcome, "~", cov_sum, "+", transf_sum)),
+        stats::glm(stats::as.formula(paste(outcome, "~", transf_sum)),
             data = data_ready, family = "binomial")
       }
       else {
