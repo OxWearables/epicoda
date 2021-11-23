@@ -175,7 +175,8 @@ plot_transfers <- function(from_part,
     part_1 = part_1,
     comp_labels = comp_labels,
     units = units,
-    specified_units = specified_units
+    specified_units = specified_units,
+    terms = terms
   )
 
 
