@@ -305,7 +305,7 @@ plot_transfers(from_part = "sedentary",
 
 #### Notes
 * The predictions and confidence intervals on this plot capture the predictions and uncertainty on them due to all variables in the model, including the covariates at the set fixed values. 
-* The `fixed_values` argument can be used to set the values at which covariates are fixed (which if not set default to median or modal values for continuous and categorical variables respectively)
+* The `fixed_values` argument can be used to set the values at which covariates are fixed (which if not set default to mean or modal values for continuous and categorical variables respectively)
 * Other functions, such as `forest_plot_comp`, can also output predictions by setting `terms = FALSE`. 
 
 ### Customising plots 
