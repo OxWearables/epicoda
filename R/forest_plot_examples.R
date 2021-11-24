@@ -1,6 +1,6 @@
 #' Produce a forest plot of model predictions
 #'
-#' This function takes a named list of compositions, and plots model predictions for each composition.
+#' This function takes a named list of compositions, and plots model predictions for each composition. Please note that with the default \code{terms = TRUE} predictions are relative to at the (compositional) mean composition in the data used to create the model. Please note that if there is missing data in the original data (e.g. in covariates or outcomes) this may not be the same as the compositional mean in the original data.
 #'
 #' @param composition_list Named list of compositions. Note each composition should be stored as a data frame. For example, use the output of \code{change_composition}.
 #' @param models_list If \code{model} is \code{NULL} (or not set), a named list of models for which to plot model predictions in the forest plot. All models should have the same type.
@@ -118,7 +118,6 @@ forest_plot_comp <-
       vline_loc <- NA
     }
 
-
     col_of_names <- names(composition_list)
     df <- data.table::rbindlist(composition_list, use.names = TRUE)
 
@@ -180,7 +179,6 @@ forest_plot_comp <-
         tabletext <- cbind(c(NA, NA, col_of_names), c(pred_name, vline_loc, text_col[3:nrow(data_frame_for_forest_plot)]))
       }
 
-
       fp <- forestplot::forestplot(
         tabletext,
         graph.pos = 2,
@@ -191,7 +189,6 @@ forest_plot_comp <-
         xticks = req_seq,
         xlab = x_label,
         zero = vline_loc,
-        clr.line = "black",
         txt_gp = text_settings,
         boxsize = boxsize,
         ...
@@ -202,7 +199,7 @@ forest_plot_comp <-
       if (is.null(models_list)){
         return( " Either model or models_list must be set.")
       }
-       data_frame_for_forest_plot <- data.frame("coef" = c(), "low" = c(), "high" = c())
+      data_frame_for_forest_plot <- data.frame("coef" = c(), "low" = c(), "high" = c())
     for (i in 1:nrow(df)){
       coef <- c()
       low <- c()
