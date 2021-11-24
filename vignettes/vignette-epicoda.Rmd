@@ -28,6 +28,10 @@ library(epicoda)
 # A basic analysis
 This vignette illustrates some of the things this package can be used to do in an epidemiological analysis with a compositional exposure. More information about any function can  be found by running `?function_name` (as usual).
 
+Please note this package is shared as-is and without extensive review/testing. Use is at your own risk (https://github.com/activityMonitoring/epicoda). Bug reports are welcome. 
+
+It is highly recommended to deal with missing data both in compositional variables and in covariate or outcome data prior to using the package: functions were designed assuming complete data and may not behave predictably where data is not complete.
+
 ## Getting started with compositional data 
 ### Loading simulated data
 `simdata` is a (simulated) compositional dataset in the package. It has 5 columns which make up a hypothetical physical behaviour composition: "vigorous" (activity), "moderate" (activity), "light" (activity), "sedentary" (behaviour), "sleep". It also contains sex, age group and outcome columns. As the data is simulated, all results are hypothetical. 
@@ -235,6 +239,15 @@ We now need to plot these, which can be done as follows.
 forest_plot_comp(composition_list = list_for_plot, 
                  model = lm_BMI, 
                  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
+```
+Please note that on the plot with `terms = TRUE` the reference is always the compositional mean *in the dataset used to create the model*. This will agree with the compositional mean calculated above and which we calculated perturbations relative to if there is no missing data in the dataset used to create the model. To check this, there's a utility function in the package to get the compositional mean directly from the model (although it's a bit ugly): 
+```{r}
+# Set up of the function means it uses this internal from the modelling. Hopefully will be streamlined in future... : 
+tl_for_check <- transf_labels(comp_labels  = c("vigorous", "moderate", "light", "sedentary", "sleep"), transformation_type = "ilr") 
+ # The comp mean calculated from the model: 
+get_cm_from_model(lm_BMI, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"), transf_labels = tl_for_check)$cm
+# The comp mean calculated above transformed to unitless scale: 
+df/24 
 ```
 
 The `forest_plot_comp` function can also be used to compare models. To do this, leave `model` at its default `NULL` value, and set `models_list` as a named list of models. For example, to compare `lm_BMI` with a model adjusted for `age_group` only and an unadjusted model (very boring in this case as the simulated data doesn't have realistic correlation structure for covariates!): 
