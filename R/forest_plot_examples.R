@@ -191,7 +191,6 @@ forest_plot_comp <-
         zero = vline_loc,
         txt_gp = text_settings,
         boxsize = boxsize,
-        col = forestplot::fpColors(zero = "black"),
         ...
       )
     }
