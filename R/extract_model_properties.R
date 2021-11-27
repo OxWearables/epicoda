@@ -13,7 +13,8 @@
 #' outcome = "BMI",
 #' covariates = c("agegroup", "sex"),
 #' data = simdata,
-#' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
+#' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
+#' det_limit = 0.00119
 #' )
 #'
 #' comp_labels <- c("vigorous", "moderate", "light", "sedentary", "sleep")
@@ -68,7 +69,8 @@ get_dataset_from_model <- function(model, comp_labels, transf_labels, type){
 #' outcome = "BMI",
 #' covariates = c("agegroup", "sex"),
 #' data = simdata,
-#' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
+#' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
+#' det_limit = 0.00119
 #' )
 #'
 #' comp_labels <- c("vigorous", "moderate", "light", "sedentary", "sleep")

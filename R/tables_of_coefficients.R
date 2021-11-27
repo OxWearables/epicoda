@@ -59,7 +59,9 @@ tab_covariate_coefs <-
 #' outcome = "BMI",
 #' covariates = c("agegroup", "sex"),
 #' data = simdata,
-#' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep" ))
+#' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep" ),
+#' rounded_zeroes = FALSE
+#' )
 #' @export
 tab_coefs <-
   function(scale_type = "lp",
@@ -76,8 +78,11 @@ tab_coefs <-
     if ((scale_type == "exp") && (type == "linear")){
       warning("It usually does not make sense to exponentiate the coefficients of a linear model.")
     }
-    if ((scale_type == "lp") && (type != "linear")){
-      warning("Coeficients are on the scale of the linear predictors. For ORs/HRs, consider setting scale_type as exp")
+    if ((scale_type == "lp") && (type == "logistic")){
+      warning("Coefficients are on the scale of the linear predictors. For ORs, consider setting scale_type as exp.")
+    }
+    if ((scale_type == "lp") && (type == "cox")){
+      warning("Coefficients are on the scale of the linear predictors. For HRs, consider setting scale_type as exp.")
     }
     start_model <- comp_model(
       type = type,

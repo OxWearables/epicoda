@@ -15,7 +15,8 @@
 #' outcome = "BMI",
 #' covariates = c("agegroup", "sex"),
 #' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
-#' data = simdata)
+#' data = simdata,
+#' det_limit = 0.00119)
 #' @export
 comp_model <-
   function(type = NULL,

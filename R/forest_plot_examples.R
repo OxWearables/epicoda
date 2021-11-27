@@ -20,7 +20,7 @@
 #' df <- as.data.frame(comp_mean(data = simdata,
 #'                              comp_labels = c("vigorous", "moderate",
 #'                              "light", "sedentary", "sleep"),
-#'                              units = "hr/day"))
+#'                              units = "hr/day", rounded_zeroes = FALSE))
 #' new_comp <- change_composition(composition = df, main_part = "moderate",
 #'                              main_change = +0.5,
 #'                              comp_labels = c("vigorous", "moderate",
@@ -36,11 +36,11 @@
 #' lm_BMI_unadjusted <- comp_model(type = "linear", outcome = "BMI",
 #'                                 data = simdata,
 #'                                 comp_labels = c("vigorous", "moderate",
-#'                                  "light", "sedentary", "sleep"))
+#'                                  "light", "sedentary", "sleep"), rounded_zeroes = FALSE)
 #' lm_BMI_age_group_only <- comp_model(type = "linear", outcome = "BMI",
 #'                                     covariates = c("agegroup"), data = simdata,
 #'                                     comp_labels = c("vigorous", "moderate",
-#'                                      "light", "sedentary", "sleep"))
+#'                                      "light", "sedentary", "sleep"), rounded_zeroes = FALSE)
 #'
 #'   # Finally, plot
 #' forest_plot_comp(composition_list = list_for_plot,

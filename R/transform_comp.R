@@ -13,7 +13,8 @@
 #' @return \code{data} with transformed compositional columns.
 #' @examples transform_comp(data = simdata,
 #' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
-#' transformation_type = "ilr")
+#' transformation_type = "ilr",
+#' det_limit = 0.00119)
 #'
 #' @export
 transform_comp <- function(data, comp_labels, transformation_type = "ilr", rounded_zeroes = TRUE, det_limit = NULL, comparison_part = NULL, part_1 = NULL){
