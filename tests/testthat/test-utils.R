@@ -36,8 +36,8 @@ test_that("error if units not one of permitted descriptions", {
   expect_error(epicoda:::process_units(units = "made up name"))
 })
 
-data_with_zero <- simdata[1,]
-data_with_zero[1, "vigorous"] <- 0
+data_with_zero <- simdata[1:3,]
+data_with_zero[1:3, "vigorous"] <- 0
 
 test_that("when rounded_zeroes is FALSE, zeroes are removed", {
   expect_equal(nrow(epicoda:::process_zeroes(data_with_zero, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"), rounded_zeroes = FALSE)), 0)
@@ -79,7 +79,7 @@ test_that("error if normalised data not on a single scale", {
 })
 
 test_that("rescale_det_limit throws error if no clear scale", {
-  expect_message(rescale_det_limit(nc_messed_up, comp_labels, 0.001))
+  expect_error(rescale_det_limit(nc_messed_up, comp_labels, 0.001))
 })
 
 
