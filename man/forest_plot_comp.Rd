@@ -47,7 +47,7 @@ forest_plot_comp(
 
 \item{boxsize}{Sets the size of boxes for estimates on the forest plot.}
 
-\item{terms}{Are estimates for differences in outcome associated with differences in compositional variables? If \code{terms = TRUE} all estimates and plots will be for difference in outcome associated with differences in the compositional variables. If \code{terms = FALSE}, \code{fixed_values} is used to set the values of the non-compositional covariates, and outputs are predictions for the outcome based on these values of the non-compositional covariates and the given value of the compositional variables (and confidence intervals include uncertainty due to all variables in the model, not just the compositional variables).}
+\item{terms}{Are estimates for differences in outcome associated with differences in compositional variables? If \code{terms = TRUE} all estimates and plots will be for difference in outcome associated with differences in the compositional variables. If \code{terms = FALSE}, \code{fixed_values} is used to set the values of the non-compositional covariates, and outputs are predictions for the outcome based on these values of the non-compositional covariates and the given value of the compositional variables (and confidence intervals include uncertainty due to all variables in the model, not just the compositional variables). Note that for logistic regression models with \code{terms = TRUE} estimates are odds ratios; for logistic regression models with \code{terms = FALSE} estimates are probabilities (i.e. predictions on the response scale).}
 
 \item{units}{What should the units of the compositional variables be in any output? Currently available are "unitless" (where working in terms of proportions), "hr/day", "hr/wk", "min/day", "min/wk" and "specified", in which case the \code{specified_units} argument should be set. Note that this doesn't specify the input units, as this is not relevant for any function.}
 
@@ -67,7 +67,7 @@ forest_plot_comp(
 Forest plot showing model predictions.
 }
 \description{
-This function takes a named list of compositions, and plots model predictions for each composition.
+This function takes a named list of compositions, and plots model predictions for each composition. Please note that with the default \code{terms = TRUE} predictions are relative to at the (compositional) mean composition in the data used to create the model. Please note that if there is missing data in the original data (e.g. in covariates or outcomes) this may not be the same as the compositional mean in the original data.
 }
 \examples{
 # Example using a list of models
@@ -75,7 +75,7 @@ This function takes a named list of compositions, and plots model predictions fo
 df <- as.data.frame(comp_mean(data = simdata,
                              comp_labels = c("vigorous", "moderate",
                              "light", "sedentary", "sleep"),
-                             units = "hr/day"))
+                             units = "hr/day", rounded_zeroes = FALSE))
 new_comp <- change_composition(composition = df, main_part = "moderate",
                              main_change = +0.5,
                              comp_labels = c("vigorous", "moderate",
@@ -91,11 +91,11 @@ list_for_plot <- list("Extra 0.5 hr/day moderate" = new_comp,
 lm_BMI_unadjusted <- comp_model(type = "linear", outcome = "BMI",
                                 data = simdata,
                                 comp_labels = c("vigorous", "moderate",
-                                 "light", "sedentary", "sleep"))
+                                 "light", "sedentary", "sleep"), rounded_zeroes = FALSE)
 lm_BMI_age_group_only <- comp_model(type = "linear", outcome = "BMI",
                                     covariates = c("agegroup"), data = simdata,
                                     comp_labels = c("vigorous", "moderate",
-                                     "light", "sedentary", "sleep"))
+                                     "light", "sedentary", "sleep"), rounded_zeroes = FALSE)
 
   # Finally, plot
 forest_plot_comp(composition_list = list_for_plot,

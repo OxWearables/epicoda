@@ -21,8 +21,10 @@ comp_mean(
 \item{rounded_zeroes}{Are zeroes rounded zeroes?}
 
 \item{det_limit}{Detection limit if zeroes are to be imputed. This is needed when \code{rounded_zeroes} is \code{TRUE}. It should be the
-minimum measurable value in the compositional columns of data, and should be on the same scale as the (input) compositional columns. If it is
-not set, the minimum measured value greater than zero is used.}
+minimum measurable value in the compositional columns of data, and should be on the same scale as the (input) compositional columns.
+If \code{rounded_zeroes} is \code{TRUE} and there are zero values in the data, it throws an error.
+If the compositional columns do not have a constant sum, it also throws an error, as it cannot be automatically rescaled.
+Embedded zero imputation is for convenience only. It may be advisable to perform zero imputation prior to working with the data, particularly in more complex cases.}
 
 \item{units}{What should the units of the compositional variables be in any output? Currently available are "unitless" (where working in terms of proportions), "hr/day", "hr/wk", "min/day", "min/wk" and "specified", in which case the \code{specified_units} argument should be set. Note that this doesn't specify the input units, as this is not relevant for any function.}
 
@@ -39,8 +41,8 @@ comp_mean(data = simdata, # this is the dataset
 comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"), # this is the labels
 # of the compositional columns, which we specified above
 rounded_zeroes = TRUE, # this option specifies that we'll treat the zeroes
-# as rounded zeroes i.e. we'll impute them. As we've not specified det_limit, the function
-# will calculate it automatically based on the smallest observed value in the data
+# as rounded zeroes i.e. we'll impute them.
+det_limit = 0.00119, # This is the det_limit for zero imputation
 units = "hr/day" # this is the units. There are pre-specified options "hr/day",
 # "hr/wk", "min/day", "min/wk" and "unitless".
 # If you set units = "specified", you can also specify your own units using
