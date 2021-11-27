@@ -25,6 +25,8 @@ RoxygenNote: 7.1.1
 Suggests: 
     testthat (>= 3.0.0),
     ggtern (>= 3.1.0), 
+    robCompositions (>= 2.3.1), 
+    questionr (>= 0.7.5),
     deltacomp, 
     knitr,
     rmarkdown, 
