@@ -15,7 +15,7 @@ test_that("error if from part not in comp_labels", {
                                         comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),  fixed_values = fv))
 })
 
-cm_df <- as.data.frame(comp_mean(simdata, c("vigorous", "moderate", "light", "sedentary", "sleep"), units = "hr/day"))
+cm_df <- as.data.frame(comp_mean(simdata, c("vigorous", "moderate", "light", "sedentary", "sleep"), units = "hr/day", det_limit = 0.00119))
 fv[, c("vigorous", "moderate", "light", "sedentary", "sleep")] <- cm_df
 q1 <- quantile(simdata$moderate, 0.05)[[1]]
 q2 <- quantile(simdata$moderate, 0.95)[[1]]
@@ -79,5 +79,72 @@ test_that("correct range of min data", {
                                             to_part = "moderate",
                                             dataset = simdata,
                                             comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),  fixed_values = fv, units = "hr/day")$moderate) , q7 )
+})
+
+
+cm_df <- as.data.frame(comp_mean(simdata, c("vigorous", "moderate", "light", "sedentary", "sleep"), units = "hr/day", det_limit = 0.00119))
+fv[, c("vigorous", "moderate", "light", "sedentary", "sleep")] <- cm_df
+q1 <- quantile(simdata$moderate, 0.1)[[1]]
+q2 <- quantile(simdata$moderate, 0.9)[[1]]
+q3 <- quantile(simdata$vigorous, 0.1)[[1]]
+q4 <- quantile(simdata$vigorous, 0.9)[[1]]
+q5 <- cm_df$sedentary - (q1 - cm_df$moderate)
+q6 <- cm_df$sedentary - (q2 - cm_df$moderate)
+q7 <- cm_df$moderate - (q3- cm_df$vigorous)
+q8 <- cm_df$moderate - (q4 - cm_df$vigorous)
+test_that("correct range of min data", {
+  expect_equal(min(epicoda:::make_new_data(from_part = "sedentary",
+                                           to_part = "moderate",
+                                           dataset = simdata,
+                                           comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),  fixed_values = fv, units = "hr/day", lower_quantile = 0.1, upper_quantile = 0.9)$moderate) , q1 )
+})
+
+test_that("correct range of min data", {
+  expect_equal(max(epicoda:::make_new_data( from_part = "sedentary",
+                                            to_part = "moderate",
+                                            dataset = simdata,
+                                            comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),  fixed_values = fv, units = "hr/day", lower_quantile = 0.1, upper_quantile = 0.9)$moderate) , q2 )
+})
+
+test_that("correct range of min data", {
+  expect_equal(min(epicoda:::make_new_data(from_part = "vigorous",
+                                           to_part = "moderate",
+                                           dataset = simdata,
+                                           comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),  fixed_values = fv, units = "hr/day", lower_quantile = 0.1, upper_quantile = 0.9)$vigorous) , q3 )
+})
+
+test_that("correct range of min data", {
+  expect_equal(max(epicoda:::make_new_data( from_part = "vigorous",
+                                            to_part = "moderate",
+                                            dataset = simdata,
+                                            comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),  fixed_values = fv, units = "hr/day", lower_quantile = 0.1, upper_quantile = 0.9)$vigorous) , q4 )
+})
+
+test_that("correct range of min data", {
+  expect_equal(min(epicoda:::make_new_data(from_part = "sedentary",
+                                           to_part = "moderate",
+                                           dataset = simdata,
+                                           comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),  fixed_values = fv, units = "hr/day", lower_quantile = 0.1, upper_quantile = 0.9)$sedentary) , q6 )
+})
+
+test_that("correct range of min data", {
+  expect_equal(max(epicoda:::make_new_data( from_part = "sedentary",
+                                            to_part = "moderate",
+                                            dataset = simdata,
+                                            comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),  fixed_values = fv, units = "hr/day", lower_quantile = 0.1, upper_quantile = 0.9)$sedentary) , q5 )
+})
+
+test_that("correct range of min data", {
+  expect_equal(min(epicoda:::make_new_data(from_part = "vigorous",
+                                           to_part = "moderate",
+                                           dataset = simdata,
+                                           comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),  fixed_values = fv, units = "hr/day", lower_quantile = 0.1, upper_quantile = 0.9)$moderate) , q8 )
+})
+
+test_that("correct range of min data", {
+  expect_equal(max(epicoda:::make_new_data( from_part = "vigorous",
+                                            to_part = "moderate",
+                                            dataset = simdata,
+                                            comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),  fixed_values = fv, units = "hr/day", lower_quantile = 0.1, upper_quantile = 0.9)$moderate) , q7 )
 })
 
