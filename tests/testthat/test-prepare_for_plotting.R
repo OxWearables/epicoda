@@ -42,7 +42,7 @@ test_that("new_data behaves as expected", {
 })
 
 # New data sums to appropriate scale
-cm_df <- as.data.frame(comp_mean(simdata, units = "hr/day", det_limit = 0.00119))
+cm_df <- as.data.frame(epicoda::comp_mean(epicoda::simdata, comp_labels =c("vigorous", "moderate", "light", "sedentary", "sleep"), units = "hr/day", det_limit = 0.00119))
 n <- epicoda:::make_new_data(from_part = "moderate",
                         to_part = "sedentary",
                         dataset = simdata,
@@ -51,7 +51,7 @@ n <- epicoda:::make_new_data(from_part = "moderate",
                         comp_labels =c("vigorous", "moderate", "light", "sedentary", "sleep"), fixed_values = cm_df, units = "min/day", granularity = 5)
 n2 <- epicoda:::make_new_data(from_part = "moderate",
                              to_part = "sedentary",
-                             dataset = simdata,
+                             dataset = epicoda::simdata,
                              lower_quantile = 0.2,
                              upper_quantile = 0.8,
                              comp_labels =c("vigorous", "moderate", "light", "sedentary"), fixed_values = cm_df, units = "min/wk", granularity = 5)
