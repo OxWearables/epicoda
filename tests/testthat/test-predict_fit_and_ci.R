@@ -1,9 +1,10 @@
+min_val_in_data <- min(simdata$vigorous[simdata$vigorous >0 ])
 lm_outcome <- comp_model(
   type = "linear",
   outcome = "BMI",
   covariates = c("agegroup", "sex"),
   data = simdata,
-  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
+  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"), det_limit = min_val_in_data
 )
 
 log_outcome <- comp_model(
@@ -11,7 +12,7 @@ log_outcome <- comp_model(
   outcome = "disease",
   covariates = c("agegroup", "sex"),
   data = simdata,
-  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
+  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"), det_limit = min_val_in_data
 )
 cox_outcome <- comp_model(
   type = "cox",
@@ -19,13 +20,13 @@ cox_outcome <- comp_model(
   follow_up_time = "follow_up_time",
   covariates = c("agegroup", "sex"),
   data = simdata,
-  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
+  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"), det_limit = min_val_in_data
 )
 
 old_comp <- comp_mean(
   simdata,
   comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
-  units = "hr/day"
+  units = "hr/day", det_limit = min_val_in_data
 )
 new_comp <-
   change_composition(
@@ -275,7 +276,7 @@ test_that("equals upper ci from deltacomp package", {
 # Test various aspects of expected behaviour
 
 fv <- epicoda:::generate_fixed_values(simdata, comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
-cm_df <- as.data.frame(comp_mean(simdata, c("vigorous", "moderate", "light", "sedentary", "sleep"), units = "hr/day"))
+cm_df <- as.data.frame(comp_mean(simdata, c("vigorous", "moderate", "light", "sedentary", "sleep"), units = "hr/day", det_limit = min_val_in_data))
 fv[, c("vigorous", "moderate", "light", "sedentary", "sleep")] <- cm_df
 md <- epicoda:::make_new_data(from_part = "sedentary",
                         to_part = "moderate",

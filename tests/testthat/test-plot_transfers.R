@@ -1,8 +1,9 @@
+min_val_in_data <- min(simdata$vigorous[simdata$vigorous > 0])
 lm_outcome <- comp_model(type = "linear",
 outcome = "BMI",
 covariates = c("agegroup", "sex"),
 data = simdata,
-comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
+comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"), det_limit = min_val_in_data)
 
 test_that("error if try to use parts not appearing in comp_labels", {
   expect_error(epicoda::plot_transfers(from_part = "sedentary",

@@ -25,7 +25,9 @@
 #' outcome = "BMI",
 #' covariates = c("agegroup", "sex"),
 #' data = simdata,
-#' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
+#' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
+#' rounded_zeroes = FALSE
+#' )
 #'
 #'
 #' epicoda::plot_transfers(from_part = "sedentary",

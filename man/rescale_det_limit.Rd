@@ -12,8 +12,10 @@ rescale_det_limit(data, comp_labels, det_limit)
 \item{comp_labels}{The labels of the compositional columns.}
 
 \item{det_limit}{Detection limit if zeroes are to be imputed. This is needed when \code{rounded_zeroes} is \code{TRUE}. It should be the
-minimum measurable value in the compositional columns of data, and should be on the same scale as the (input) compositional columns. If it is
-not set, the minimum measured value greater than zero is used.}
+minimum measurable value in the compositional columns of data, and should be on the same scale as the (input) compositional columns.
+If \code{rounded_zeroes} is \code{TRUE} and there are zero values in the data, it throws an error.
+If the compositional columns do not have a constant sum, it also throws an error, as it cannot be automatically rescaled.
+Embedded zero imputation is for convenience only. It may be advisable to perform zero imputation prior to working with the data, particularly in more complex cases.}
 }
 \description{
 Rescale a det_limit given on the same scale as the compositional columns.

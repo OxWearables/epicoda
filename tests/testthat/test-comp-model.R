@@ -1,4 +1,5 @@
 comp_labels <- c("vigorous", "moderate", "light", "sedentary", "sleep")
+min_val_in_data <- min(simdata$vigorous[simdata$vigorous > 0])
 
 # Cached models --------------------------------------------------------
 test_that("Model unchanged from cached model.", {
@@ -6,14 +7,14 @@ test_that("Model unchanged from cached model.", {
            outcome = "BMI",
            covariates = c("agegroup", "sex"),
            data = simdata,
-           comp_labels = comp_labels), file = "../test_data/example_model.rds")
+           comp_labels = comp_labels, det_limit = min_val_in_data), file = "../test_data/example_model.rds")
 })
 
 test_that("Model unchanged from cached model.", {
   expect_equal_to_reference(epicoda::comp_model(type = "linear",
                                                 outcome = "BMI",
                                                 data = simdata,
-                                                comp_labels = comp_labels), file = "../test_data/example_model_null.rds")
+                                                comp_labels = comp_labels, det_limit = min_val_in_data), file = "../test_data/example_model_null.rds")
 })
 
 test_that("Model unchanged from cached model.", {
@@ -21,14 +22,14 @@ test_that("Model unchanged from cached model.", {
                                                 outcome = "disease",
                                                 covariates = c("agegroup", "sex"),
                                                 data = simdata,
-                                                comp_labels = comp_labels), file = "../test_data/example_model_logistic.rds")
+                                                comp_labels = comp_labels, det_limit = min_val_in_data), file = "../test_data/example_model_logistic.rds")
 })
 
 test_that("Model unchanged from cached model.", {
   expect_equal_to_reference(epicoda::comp_model(type = "logistic",
                                                 outcome = "disease",
                                                 data = simdata,
-                                                comp_labels = comp_labels), file = "../test_data/example_model_logistic_null.rds")
+                                                comp_labels = comp_labels, det_limit = min_val_in_data), file = "../test_data/example_model_logistic_null.rds")
 })
 
 test_that("Model unchanged from cached model.", {
@@ -37,7 +38,7 @@ test_that("Model unchanged from cached model.", {
                                                 event = "event",
                                                 covariates = c("agegroup", "sex"),
                                                 data = simdata,
-                                                comp_labels = comp_labels), file = "../test_data/example_model_cox.rds")
+                                                comp_labels = comp_labels, det_limit = min_val_in_data), file = "../test_data/example_model_cox.rds")
 })
 
 test_that("Model unchanged from cached model.", {
@@ -45,7 +46,7 @@ test_that("Model unchanged from cached model.", {
                                                 follow_up_time = "follow_up_time",
                                                 event = "event",
                                                 data = simdata,
-                                                comp_labels = comp_labels), file = "../test_data/example_model_cox_null.rds")
+                                                comp_labels = comp_labels, det_limit = min_val_in_data), file = "../test_data/example_model_cox_null.rds")
 })
 
 # Errors when expected ---------------------------------------------------------------------------------------------
@@ -61,7 +62,7 @@ test_that("Error if composition not specified correctly.", {
                                     outcome = "BMI",
                                     covariates = c("agegroup", "sex"),
                                     data = simdata,
-                                    comp_labels = "sleep"))
+                                    comp_labels = "sleep", det_limit = min_val_in_data))
 })
 
 # Behaviours as expected ------------------------------------------------------------------------------------------
@@ -71,18 +72,18 @@ for (cov_vec in list(NULL, c("agegroup"), c("agegroup", "sex"))){{
                                   outcome = "BMI",
                                   covariates = cov_vec,
                                   data = simdata,
-                                  comp_labels = comp_labels)
+                                  comp_labels = comp_labels, rounded_zeroes = FALSE)
     model2 <- epicoda::comp_model(type = "logistic",
                                   outcome = "disease",
                                   covariates = cov_vec,
                                   data = simdata,
-                                  comp_labels = comp_labels)
+                                  comp_labels = comp_labels, rounded_zeroes = FALSE)
     model3 <- epicoda::comp_model(type = "cox",
                                   event = "event",
                                   follow_up_time = "follow_up_time",
                                   covariates = cov_vec,
                                   data = simdata,
-                                  comp_labels = comp_labels)
+                                  comp_labels = comp_labels, rounded_zeroes = FALSE)
     n_coef <- length(comp_labels) - 1
     if ("agegroup" %in% cov_vec){
       n_coef <- n_coef + 4
@@ -103,12 +104,12 @@ m1 <- epicoda::comp_model(type = "cox",
                     event = "event",
                     covariates = c("agegroup", "sex"),
                     data = simdata,
-                    comp_labels = comp_labels)
+                    comp_labels = comp_labels, det_limit = min_val_in_data)
 m2 <- epicoda::comp_model(type = "cox",
                           outcome  = survival::Surv(simdata$follow_up_time, simdata$event),
                           covariates = c("agegroup", "sex"),
                           data = simdata,
-                          comp_labels = comp_labels)
+                          comp_labels = comp_labels, det_limit = min_val_in_data)
 test_that("Two ways of producing same model are equivalent", {
   expect_equal(coef(m1), coef(m2))
 })

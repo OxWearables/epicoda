@@ -46,6 +46,7 @@ simdata$activity <- simdata$vigorous + simdata$moderate + simdata$light
 
 plot_confidence_region_ternary(data = simdata,
 parts_to_plot = c("activity", "sedentary", "sleep"),
-probs = c(0.25, 0.5, 0.75) # This argument specifies we want to plot 25\%, 50\% and 75\% confidence regions.
+probs = c(0.25, 0.5, 0.75) # This argument specifies
+# we want to plot 25\%, 50\% and 75\% confidence regions.
 )
 }
