@@ -73,7 +73,12 @@ forest_plot_comp <-
     }
 
     if (is.null(pred_name)){
-      pred_name <- "Model prediction (95% CI)"
+      if (terms){
+        pred_name <- "Model estimate (95% CI)"
+        }
+      if (!(terms)){
+        pred_name <- "Model prediction (95% CI)"
+      }
     }
 
     if (is.null(text_settings)){
