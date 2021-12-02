@@ -218,7 +218,7 @@ plot_transfers(from_part = "sedentary",
 * There is more information on how confidence intervals for this plot are calculated in a vignette (`vignette("derivation_of_CIs_used")`).
 
 ### Presenting the results: estimates at particular compositions
-Another set of estimates that might be of interest are estimates at particular compositions. These can be examined by plotting these in a 'forest plot' style plot. This allows assessment of the model-estimated associations with much more complex reallocations between parts. 
+Another set of estimates that might be of interest are estimates of the difference in outcome associated with particular compositions, again relative to the mean.  These can be examined by plotting these in a 'forest plot' style plot. This allows assessment of the model-estimated associations with much more complex reallocations between parts. 
 
 #### Generating perturbations of a composition
 While there are hugely varied compositions which might be possible, one kind of composition is often of interest. This is compositions where one particular part is perturbed at the expense of all other parts proportionally. As this is a common use case, there is a function implemented to do this: 
