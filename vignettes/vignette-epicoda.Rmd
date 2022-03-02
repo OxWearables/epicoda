@@ -40,7 +40,7 @@ head(simdata)
 ```
 
 ### What is compositional data? 
-Data is compositional when the *relative* (not absolute) values of the variables are relevant to the problem being studied [@Filzmoser2018]. Another way to describe this is that compositional data is data that can be expressed as proportions of a whole without losing information. 
+Data is compositional when it is positive-valued and the *relative* (not absolute) values of the variables are relevant to the problem being studied [@Filzmoser2018]. Another way to describe this is that compositional data is data that can be expressed as proportions of a whole without losing information. 
 
 Here, the compositional variables sum to the same total (24- the number of hours in the day), which is a common situation. As this means it is not possible to simply increase time in one behaviour - it is only possible to spend time in one behaviour rather than in another behaviour - it is the relative values that are relevant. 
 ```{r}
