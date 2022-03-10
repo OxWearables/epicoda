@@ -294,9 +294,7 @@ predict_fit_and_ci <- function(model,
     vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
     sum_for_args <- paste0(vector_for_args, collapse = "+")
 
-    dNew$main <- eval(parse(text = sum_for_args))
-
-    dNew$fit <- dNew$main
+    dNew$fit <- eval(parse(text = sum_for_args))
 
     middle_matrix <-
       stats::vcov(model)[transf_labels, transf_labels]
@@ -316,6 +314,7 @@ predict_fit_and_ci <- function(model,
 
   dNew <-
     rescale_comp(dNew, comp_labels = comp_labels, comp_sum = comp_sum)
+
   if (terms == FALSE) {
     short_form <- gsub(".*~", "", as.character(stats::formula(model)))
     print(paste("Covariate values were fixed at: "))
