@@ -266,7 +266,7 @@ predict_fit_and_ci <- function(model,
     dNew <- data.frame(new_data, predictions)
 
     t_value <-
-      stats::qt(0.975, df = stats::df.residual(model))[[1]]
+      stats::qt(0.975, df = stats::df.residual(model))
 
 
     dNew$lower_CI <- dNew$fit - t_value * dNew$se.fit
@@ -308,7 +308,7 @@ predict_fit_and_ci <- function(model,
     value <- sqrt(data.matrix(in_sqrt_true))
 
     t_value <-
-      stats::qt(0.975, df = stats::df.residual(model))[[1]]
+      stats::qt(0.975, df = stats::df.residual(model))
 
     dNew$lower_CI <- dNew$fit - t_value * value
     dNew$upper_CI <- dNew$fit + t_value * value
