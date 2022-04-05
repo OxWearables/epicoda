@@ -39,20 +39,20 @@
 #' new_data = new_comp,
 #' comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
 predict_fit_and_ci <- function(model,
-                           new_data,
-                           comp_labels,
-                           terms = TRUE,
-                           part_1 = NULL,
-                           units = "unitless",
-                           specified_units = NULL,
-                           fixed_values = NULL) {
-
+                               new_data,
+                               comp_labels,
+                               terms = TRUE,
+                               part_1 = NULL,
+                               units = "unitless",
+                               specified_units = NULL,
+                               fixed_values = NULL) {
   # We set units
   comp_sum <- as.numeric(process_units(units, specified_units)[2])
   units <- process_units(units, specified_units)[1]
 
   # We calculate z value
-  z_value <- stats::qnorm(0.975) # Currently approximately 1.96 for 95% CI; To be updated to allow user-specified CIs by specification of level
+  z_value <-
+    stats::qnorm(0.975) # Currently approximately 1.96 for 95% CI; To be updated to allow user-specified CIs by specification of level
 
   # We assign some internal parameters
   type <- process_model_type(model)
@@ -62,8 +62,8 @@ predict_fit_and_ci <- function(model,
 
   # We label what the transformed cols will be
   if (!is.null(part_1)) {
-      comp_labels <- alter_order_comp_labels(comp_labels, part_1)
-    }
+    comp_labels <- alter_order_comp_labels(comp_labels, part_1)
+  }
 
   transf_labels <-
     transf_labels(comp_labels,
@@ -71,11 +71,23 @@ predict_fit_and_ci <- function(model,
                   part_1 = part_1)
 
   # We back calculate the dataset used to derive the model
-  dataset_ready <- get_dataset_from_model(model = model, comp_labels = comp_labels, transf_labels = transf_labels, type = type)
+  dataset_ready <-
+    get_dataset_from_model(
+      model = model,
+      comp_labels = comp_labels,
+      transf_labels = transf_labels,
+      type = type
+    )
 
   # We find the reference values
-  cm <- get_cm_from_model(model = model, comp_labels = comp_labels, transf_labels = transf_labels)$cm
-  cm_transf_df <- get_cm_from_model(model = model, comp_labels = comp_labels, transf_labels = transf_labels)$cm_transf_df
+  cm <-
+    get_cm_from_model(model = model,
+                      comp_labels = comp_labels,
+                      transf_labels = transf_labels)$cm
+  cm_transf_df <-
+    get_cm_from_model(model = model,
+                      comp_labels = comp_labels,
+                      transf_labels = transf_labels)$cm_transf_df
 
   # We assign some fixed_values to use in predicting
   if (!(is.null(fixed_values))) {
@@ -83,39 +95,51 @@ predict_fit_and_ci <- function(model,
       message(
         "fixed_values will be updated to have compositional parts fixed at the compositional mean. For technical and pragmatic reasons, use of a different reference for the compositional parts is not currently possible."
       )
-      fixed_values <- fixed_values[, colnames(fixed_values)[!(colnames(fixed_values) %in% comp_labels)]]
+      fixed_values <-
+        fixed_values[, colnames(fixed_values)[!(colnames(fixed_values) %in% comp_labels)]]
     }
     fixed_values <- cbind(fixed_values, cm)
   }
   if (is.null(fixed_values)) {
     fixed_values <-
-      generate_fixed_values(
-        dataset_ready,
-        comp_labels
-      )
+      generate_fixed_values(dataset_ready,
+                            comp_labels)
     fixed_values <- cbind(fixed_values, cm)
   }
 
-  transf_fixed_vals <- suppressMessages(transform_comp(
-    fixed_values[, colnames(fixed_values)[!(colnames(fixed_values) %in% transf_labels)]],
-    comp_labels,
-    transformation_type = "ilr",
-    part_1 = part_1,
-    rounded_zeroes = FALSE
-  ))
+  transf_fixed_vals <- suppressMessages(
+    transform_comp(
+      fixed_values[, colnames(fixed_values)[!(colnames(fixed_values) %in% transf_labels)]],
+      comp_labels,
+      transformation_type = "ilr",
+      part_1 = part_1,
+      rounded_zeroes = FALSE
+    )
+  )
 
   # Fill in new data with values from fixed_values where it's missing
-  for (colname in colnames(fixed_values)){
-    if (!(colname %in% colnames(new_data)) & !(colname %in% transf_labels)){
-      new_data[, colname]<- rep(fixed_values[1, colname], by = nrow(new_data))
+  for (colname in colnames(fixed_values)) {
+    if (!(colname %in% colnames(new_data)) &
+        !(colname %in% transf_labels)) {
+      new_data[, colname] <-
+        rep(fixed_values[1, colname], by = nrow(new_data))
     }
   }
 
   # Perform transformation (dropping any zero values)
-  new_data <- suppressMessages(transform_comp(data = new_data, comp_labels = comp_labels, transformation_type = "ilr", rounded_zeroes = FALSE, part_1 = part_1))
+  new_data <-
+    suppressMessages(
+      transform_comp(
+        data = new_data,
+        comp_labels = comp_labels,
+        transformation_type = "ilr",
+        rounded_zeroes = FALSE,
+        part_1 = part_1
+      )
+    )
 
   # Message about meaning of the 'terms' argument
-  if (terms == FALSE){
+  if (terms == FALSE) {
     message(
       "Note that the confidence intervals on these predictions include uncertainty driven by other, non-compositional variables. To look at compositional variables only, use terms = TRUE"
     )
@@ -124,9 +148,9 @@ predict_fit_and_ci <- function(model,
   # We begin the plotting
   if ((type == "logistic") & !(terms)) {
     predictions <- stats::predict(model,
-                           newdata = new_data,
-                           type = "link",
-                           se.fit = TRUE)
+                                  newdata = new_data,
+                                  type = "link",
+                                  se.fit = TRUE)
 
     dNew <- data.frame(new_data, predictions)
 
@@ -158,8 +182,10 @@ predict_fit_and_ci <- function(model,
     dNew$log_odds_change <- eval(parse(text = sum_for_args))
     dNew$fit <- exp(dNew$log_odds_change)
 
-    middle_matrix <- stats::vcov(model)[transf_labels, transf_labels]
-    x <- data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
+    middle_matrix <-
+      stats::vcov(model)[transf_labels, transf_labels]
+    x <-
+      data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
 
     t_x <- data.matrix(as.matrix(t(x)))
     in_sqrt_true <- diag((x %*% middle_matrix) %*% t_x)
@@ -193,15 +219,17 @@ predict_fit_and_ci <- function(model,
     dNew$log_hazard_change <- eval(parse(text = sum_for_args))
     dNew$fit <- exp(dNew$log_hazard_change)
 
-    middle_matrix <- stats::vcov(model)[transf_labels, transf_labels]
-    x <- data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
+    middle_matrix <-
+      stats::vcov(model)[transf_labels, transf_labels]
+    x <-
+      data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
     t_x <- data.matrix(as.matrix(t(x)))
 
     in_sqrt_true <- diag((x %*% middle_matrix) %*% t_x)
     value <- sqrt(data.matrix(in_sqrt_true))
 
-    alpha_lower <- dNew$log_hazard_change - z_value*value
-    alpha_upper <- dNew$log_hazard_change + z_value*value
+    alpha_lower <- dNew$log_hazard_change - z_value * value
+    alpha_upper <- dNew$log_hazard_change + z_value * value
 
     dNew$lower_CI <- exp(alpha_lower)
     dNew$upper_CI <- exp(alpha_upper)
@@ -211,18 +239,18 @@ predict_fit_and_ci <- function(model,
 
   if ((type == "cox") & !(terms)) {
     predictions <- stats::predict(model,
-                           newdata = new_data,
-                           type = "lp",
-                           se.fit = TRUE)
+                                  newdata = new_data,
+                                  type = "lp",
+                                  se.fit = TRUE)
 
     dNew <- data.frame(new_data, predictions)
 
     dNew$fit <- exp(dNew$fit)
 
     dNew$lower_CI <-
-      dNew$fit *exp(-(z_value * dNew$se.fit))
+      dNew$fit * exp(-(z_value * dNew$se.fit))
     dNew$upper_CI <-
-      dNew$fit* exp( +(z_value * dNew$se.fit))
+      dNew$fit * exp(+(z_value * dNew$se.fit))
   }
 
 
@@ -231,14 +259,14 @@ predict_fit_and_ci <- function(model,
   if ((type == "linear") & !(terms)) {
     predictions <-
       stats::predict(model,
-              newdata = new_data,
-              type = "response",
-              se.fit = TRUE)
+                     newdata = new_data,
+                     type = "response",
+                     se.fit = TRUE)
 
     dNew <- data.frame(new_data, predictions)
 
     t_value <-
-      stats::qt(0.975, df = stats::df.residual(model))[[1]]
+      stats::qt(0.975, df = stats::df.residual(model))
 
 
     dNew$lower_CI <- dNew$fit - t_value * dNew$se.fit
@@ -266,25 +294,27 @@ predict_fit_and_ci <- function(model,
     vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
     sum_for_args <- paste0(vector_for_args, collapse = "+")
 
-    dNew$main <- eval(parse(text = sum_for_args))
+    dNew$fit <- eval(parse(text = sum_for_args))
 
-    dNew$fit <- dNew$main
-
-    middle_matrix <- stats::vcov(model)[transf_labels, transf_labels]
-    x <- data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
+    middle_matrix <-
+      stats::vcov(model)[transf_labels, transf_labels]
+    x <-
+      data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
 
     t_x <- data.matrix(as.matrix(t(x)))
     in_sqrt_true <- diag((x %*% middle_matrix) %*% t_x)
     value <- sqrt(data.matrix(in_sqrt_true))
 
     t_value <-
-      stats::qt(0.975, df = stats::df.residual(model))[[1]]
+      stats::qt(0.975, df = stats::df.residual(model))
 
     dNew$lower_CI <- dNew$fit - t_value * value
     dNew$upper_CI <- dNew$fit + t_value * value
   }
 
-  dNew <- rescale_comp(dNew, comp_labels = comp_labels, comp_sum = comp_sum)
+  dNew <-
+    rescale_comp(dNew, comp_labels = comp_labels, comp_sum = comp_sum)
+
   if (terms == FALSE) {
     short_form <- gsub(".*~", "", as.character(stats::formula(model)))
     print(paste("Covariate values were fixed at: "))
