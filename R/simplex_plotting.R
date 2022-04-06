@@ -195,22 +195,22 @@ plot_density_ternary <-
   }
 
 
-#' plot_confidence_region_ternary: Plot confidence regions on a ternary plot
+#' plot_confidence_region_ternary: Plot predictive confidence regions on a ternary plot
 #'
-#' Plot confidence regions.
+#' Plot predictive confidence regions. Please note these wrap the `ggtern` function `geom_confidence_region` but are actually prediction regions (or predictive confidence regions): regions in which a future data point is expected to fall with the given probability (rather than a confidence region for a particular statistic).
 #'
 #' This is a wrapper for \code{ggtern}.
 #'
-#' @param probs Sequence of probabilities to plot confidence regions for.
+#' @param probs Sequence of probabilities to plot preidction regions for.
 #' @inheritParams plot_density_ternary
-#' @return Plot showing confidence regions for data on ternary plot.
+#' @return Plot showing prediction regions for data on ternary plot.
 #' @examples
 #' simdata$activity <- simdata$vigorous + simdata$moderate + simdata$light
 #'
 #' plot_confidence_region_ternary(data = simdata,
 #' parts_to_plot = c("activity", "sedentary", "sleep"),
 #' probs = c(0.25, 0.5, 0.75) # This argument specifies
-#' # we want to plot 25%, 50% and 75% confidence regions.
+#' # we want to plot 25%, 50% and 75% prediction regions.
 #' )
 #' @export
 plot_confidence_region_ternary <-

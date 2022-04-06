@@ -1,6 +1,6 @@
 #' Tabulate coefficients associated with covariates
 #'
-#' This pulls out a table of the coefficients of the covariates only in the model.
+#' This pulls out a table of the coefficients of the covariates only in the model. Confidence intervals are calculated using `confint`.  The function may fail for logistic regression if the MASS package is not installed.
 #'
 #' @param model Model for which extracting coefficients.
 #' @param scale_type Can take value "lp" (linear predictors) or "exp" (exponentiated- relevant for interpretation of logistic and Cox models).
@@ -44,7 +44,7 @@ tab_covariate_coefs <-
 
 #' Tabulate model using ilr pivot coordinate method
 #'
-#' This pulls out a table of the coefficients of the models.
+#' This pulls out a table of the coefficients of the models. Confidence intervals are calculated using `confint`. The function may fail for logistic regression if the MASS package is not installed.
 #'
 #' @inheritParams tab_covariate_coefs
 #' @inheritParams comp_model
