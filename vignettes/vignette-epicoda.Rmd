@@ -120,7 +120,7 @@ comp_mean(data = simdata,
 While the compositional mean is a fairly clear compositional equivalent to the mean for non-compositional data, other standard descriptive statistics (such as the variance), do not have straightforward compositional equivalents for all purposes for which they are used (there may be several alternatives, depending on the purpose of the analysis) [@Filzmoser2018]. These are beyond the current scope of this package. 
 
 ### Plotting ternary diagrams
-Ternary plots provide a way to plot compositional data with three parts. The R package `ggtern` is an extension of `ggplot2` to carry out this plotting. In this package, there is a wrapper for `ggtern` functions to implement common use cases in epidemiological analyses: plotting the data density, and plotting confidence regions for the data, both overall and within subgroups.
+Ternary plots provide a way to plot compositional data with three parts. The R package `ggtern` is an extension of `ggplot2` to carry out this plotting. In this package, there is a wrapper for `ggtern` functions to implement common use cases: plotting the data density, and plotting prediction regions for the data, both overall and within subgroups. Note that while the terminology "confidence_region" is used, following `ggtern`, the regions produced seem to be [more properly described as prediction regions](https://github.com/nicholasehamilton/ggtern/issues/51).
 
 **Note (18.03.2021):** Currently, a conflict between `ggtern` and `ggplot2` means using `ggtern` can stop axis labels appearing on `ggplot2` graphs. Pending a more permanent solution, these functions remain in the package, but `ggtern` is not automatically loaded and should be used with care. They are not run in this vignette.
 
@@ -129,7 +129,7 @@ Frequently, data has more than three compositional parts (as here). There are tw
 simdata$all_activity <- simdata$vigorous + simdata$moderate + simdata$light
 plot_confidence_region_ternary(data = simdata, 
                      parts_to_plot = c("all_activity", "sedentary", "sleep"),
-                     probs = c(0.25, 0.5, 0.75) # This will plot 25, 50 and 75% confidence regions (default is 0.5, 0.9, 0.95)
+                     probs = c(0.25, 0.5, 0.75) # This will plot 25, 50 and 75% prediction regions (default is 0.5, 0.9, 0.95)
                       )
 
 ```
@@ -139,7 +139,7 @@ Another frequent use case is considering this plot separated by subgroups. For e
 plot_confidence_region_ternary(data = simdata, 
                      parts_to_plot = c("all_activity", "sedentary", "sleep"),
                      groups = "sex", 
-                     probs = c(0.25, 0.5, 0.75) # This will plot 25, 50 and 75% confidence regions (default is 0.5, 0.9, 0.95)
+                     probs = c(0.25, 0.5, 0.75) # This will plot 25, 50 and 75% prediction regions (default is 0.5, 0.9, 0.95)
                       )
 
 ```
@@ -150,7 +150,7 @@ points_to_mark <- as.data.frame(comp_mean(data = simdata, comp_labels = c("all_a
 plot_confidence_region_ternary(data = simdata, 
                      parts_to_plot = c("all_activity", "sedentary", "sleep"),
                      mark_points = points_to_mark,
-                     probs = c(0.25, 0.5, 0.75) # This will plot 25, 50 and 75% confidence regions (default is 0.5, 0.9, 0.95)
+                     probs = c(0.25, 0.5, 0.75) # This will plot 25, 50 and 75% prediction regions (default is 0.5, 0.9, 0.95)
                       )                              
 ```
 
