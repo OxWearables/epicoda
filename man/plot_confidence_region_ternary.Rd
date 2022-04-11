@@ -2,7 +2,7 @@
 % Please edit documentation in R/simplex_plotting.R
 \name{plot_confidence_region_ternary}
 \alias{plot_confidence_region_ternary}
-\title{plot_confidence_region_ternary: Plot confidence regions on a ternary plot}
+\title{plot_confidence_region_ternary: Plot predictive confidence regions on a ternary plot}
 \usage{
 plot_confidence_region_ternary(
   data,
@@ -22,7 +22,7 @@ plot_confidence_region_ternary(
 
 \item{parts_to_plot}{Names of the three variables in the data frame which are to be plotted on the ternary plot. Note they should be on the same scale (they don't need to be normalised to 1).}
 
-\item{probs}{Sequence of probabilities to plot confidence regions for.}
+\item{probs}{Sequence of probabilities to plot preidction regions for.}
 
 \item{mark_points}{Points should be the rows of a data frame with the elements of \code{parts_to_plot} as columns names. If a \code{groups} argument is given, it should also have a column for this (if the groups aren't relevant to the point in a certain row, this can be set as NA).}
 
@@ -33,10 +33,10 @@ plot_confidence_region_ternary(
 \item{suppress_legend}{Suppress legend on plot. May be used when combining plots.}
 }
 \value{
-Plot showing confidence regions for data on ternary plot.
+Plot showing prediction regions for data on ternary plot.
 }
 \description{
-Plot confidence regions.
+Plot predictive confidence regions. Please note these wrap the `ggtern` function `geom_confidence_region` but are actually prediction regions (or predictive confidence regions): regions in which a future data point is expected to fall with the given probability (rather than a confidence region for a particular statistic).
 }
 \details{
 This is a wrapper for \code{ggtern}.
@@ -47,6 +47,6 @@ simdata$activity <- simdata$vigorous + simdata$moderate + simdata$light
 plot_confidence_region_ternary(data = simdata,
 parts_to_plot = c("activity", "sedentary", "sleep"),
 probs = c(0.25, 0.5, 0.75) # This argument specifies
-# we want to plot 25\%, 50\% and 75\% confidence regions.
+# we want to plot 25\%, 50\% and 75\% prediction regions.
 )
 }
