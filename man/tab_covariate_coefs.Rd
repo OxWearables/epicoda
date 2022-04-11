@@ -15,17 +15,25 @@ tab_covariate_coefs(
 \arguments{
 \item{model}{Model for which extracting coefficients.}
 
-\item{scale_type}{Can take value "lp" (linear predictors) or "exp" (exponentiated- relevant for interpretation of logistic and Cox models).}
+\item{scale_type}{Can take value \code{"lp"} (linear predictors) or \code{"exp"}
+(exponentiated- relevant for interpretation of logistic and Cox models).}
 
-\item{level}{The level argument of the confidence intervals. Passed directly to `stats::confint`.}
+\item{level}{The level argument of the confidence intervals. Passed directly
+to \code{stats::confint()}.}
 
 \item{comp_labels}{The labels of the compositional columns.}
 
-\item{part_1}{Used with ilr-pivot coordinate transformation to specify which should be first part. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
+\item{part_1}{Used with ilr-pivot coordinate transformation to specify which
+should be first part. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
 }
 \value{
-Table of covariates and their associated coefficients (parameter value with lower and upper confidence interval). Note that, unlike the plotting and some other default model summary functions in R, this uses confidence intervals based on stats::confint.
+Table of covariates and their associated coefficients (parameter value with
+lower and upper confidence interval). Note that, unlike the plotting and some
+other default model summary functions in R, this uses confidence intervals
+based on \code{stats::confint()}.
 }
 \description{
-This pulls out a table of the coefficients of the covariates only in the model.
+This pulls out a table of the coefficients of the covariates only in the
+model. Confidence intervals are calculated using \code{confint()}. The function
+may fail for logistic regression if the \emph{MASS} package is not installed.
 }

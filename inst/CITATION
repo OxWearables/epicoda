@@ -1,0 +1,40 @@
+year <- 2021
+title <- "Reallocation of time between device-measured movement behaviours and risk of incident cardiovascular disease"
+journal <- "Br J Sports Med"
+# volume <- NULL
+# number <- NULL
+pages <- "Epub ahead of print"
+doi <- "10.1136/bjsports-2021-104050"
+
+bibentry(
+  bibtype = "Article",
+  title = title,
+  author = c(
+    person("Rosemary", "Walmsley"),
+    person("Shing", "Chan"),
+    person("Karl", "Smith-Byrne"),
+    person("Rema", "Ramakrishnan"),
+    person("Mark", "Woodward"),
+    person("Kazem", "Rahimi"),
+    person("Terence", "Dwyer"),
+    person("Derrick", "Bennett"),
+    person("Aiden", "Doherty")
+  ),
+  year = year,
+  header = "To cite {epicoda} in publications use:",
+  key = "epicoda-package",
+  journal = journal,
+#  volume = volume,
+#  number = number,
+  pages = pages,
+  doi = doi,
+  textVersion = paste(
+    paste("Rosemary Walmsley", "Shing Chan", "Karl Smith-Byrne", "Rema Ramakrishnan", "Mark Woodward", "Kazem Rahimi", "Terence Dwyer", "Derrick Bennett", "Aiden Doherty", sep = ", "),
+    paste0("(", year, ")."),
+    paste0(title, "."),
+    paste0(journal, ","),
+#    paste0(volume, "(", number, "),"),
+    paste0(pages, "."),
+    paste("doi:", doi, ".")
+  )
+)

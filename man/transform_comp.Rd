@@ -19,32 +19,42 @@ transform_comp(
 
 \item{comp_labels}{The labels of the compositional columns.}
 
-\item{transformation_type}{The type of transformation desired. Should be \code{"ilr", "alr"} or \code{"clr"}.}
+\item{transformation_type}{The type of transformation desired. Should be
+\code{"ilr"}, \code{"alr"} or \code{"clr"}.}
 
 \item{rounded_zeroes}{Are zeroes rounded zeroes?}
 
-\item{det_limit}{Detection limit if zeroes are to be imputed. This is needed when \code{rounded_zeroes} is \code{TRUE}. It should be the
-minimum measurable value in the compositional columns of data, and should be on the same scale as the (input) compositional columns.
-If \code{rounded_zeroes} is \code{TRUE} and there are zero values in the data, it throws an error.
-If the compositional columns do not have a constant sum, it also throws an error, as it cannot be automatically rescaled.
-Embedded zero imputation is for convenience only. It may be advisable to perform zero imputation prior to working with the data, particularly in more complex cases.}
+\item{det_limit}{Detection limit if zeroes are to be imputed. This is needed
+when \code{rounded_zeroes} is \code{TRUE}. It should be the minimum measurable value in
+the compositional columns of data, and should be on the same scale as the
+(input) compositional columns.nIf \code{rounded_zeroes} is \code{TRUE} and there are
+zero values in the data, it throws an error. If the compositional columns do
+not have a constant sum, it also throws an error, as it cannot be
+automatically rescaled. Embedded zero imputation is for convenience only. It
+may be advisable to perform zero imputation prior to working with the data,
+particularly in more complex cases.}
 
-\item{comparison_part}{Only needed for alr transformation. Should be an element of \code{comp_labels}. Name of part that all other parts will be compared to.}
+\item{comparison_part}{Only needed for alr transformation. Should be an
+element of \code{comp_labels}. Name of part that all other parts will be compared
+to.}
 
-\item{part_1}{Used with ilr-pivot coordinate transformation to specify which should be first part. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
+\item{part_1}{Used with ilr-pivot coordinate transformation to specify which
+should be first part. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
 }
 \value{
 \code{data} with transformed compositional columns.
 }
 \description{
-Takes a dataset with a set of labelled compositional columns and returns a dataset with
-transformed variables added. The current behaviour also returns compositional columns rescaled to be on the unitless scale, and with zeroes imputed
-if \code{rounded_zeroes} is \code{TRUE}.
+Takes a dataset with a set of labelled compositional columns and returns a
+dataset with transformed variables added. The current behaviour also returns
+compositional columns rescaled to be on the unitless scale, and with zeroes
+imputed if \code{rounded_zeroes} is \code{TRUE}.
 }
 \examples{
-transform_comp(data = simdata,
-comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
-transformation_type = "ilr",
-det_limit = 0.00119)
-
+transform_comp(
+  data = simdata,
+  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
+  transformation_type = "ilr",
+  det_limit = 0.00119
+)
 }

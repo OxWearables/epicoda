@@ -13,11 +13,15 @@ process_zeroes(data, comp_labels, rounded_zeroes, det_limit = NULL)
 
 \item{rounded_zeroes}{Are zeroes rounded zeroes?}
 
-\item{det_limit}{Detection limit if zeroes are to be imputed. This is needed when \code{rounded_zeroes} is \code{TRUE}. It should be the
-minimum measurable value in the compositional columns of data, and should be on the same scale as the (input) compositional columns.
-If \code{rounded_zeroes} is \code{TRUE} and there are zero values in the data, it throws an error.
-If the compositional columns do not have a constant sum, it also throws an error, as it cannot be automatically rescaled.
-Embedded zero imputation is for convenience only. It may be advisable to perform zero imputation prior to working with the data, particularly in more complex cases.}
+\item{det_limit}{Detection limit if zeroes are to be imputed. This is needed
+when \code{rounded_zeroes} is \code{TRUE}. It should be the minimum measurable value in
+the compositional columns of data, and should be on the same scale as the
+(input) compositional columns.nIf \code{rounded_zeroes} is \code{TRUE} and there are
+zero values in the data, it throws an error. If the compositional columns do
+not have a constant sum, it also throws an error, as it cannot be
+automatically rescaled. Embedded zero imputation is for convenience only. It
+may be advisable to perform zero imputation prior to working with the data,
+particularly in more complex cases.}
 }
 \description{
 Process zeroes argument

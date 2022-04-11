@@ -22,15 +22,38 @@ predict_fit_and_ci(
 
 \item{comp_labels}{The labels of the compositional columns.}
 
-\item{terms}{Are estimates for differences in outcome associated with differences in compositional variables? If \code{terms = TRUE} all estimates and plots will be for difference in outcome associated with differences in the compositional variables. If \code{terms = FALSE}, \code{fixed_values} is used to set the values of the non-compositional covariates, and outputs are predictions for the outcome based on these values of the non-compositional covariates and the given value of the compositional variables (and confidence intervals include uncertainty due to all variables in the model, not just the compositional variables). Note that for logistic regression models with \code{terms = TRUE} estimates are odds ratios; for logistic regression models with \code{terms = FALSE} estimates are probabilities (i.e. predictions on the response scale).}
+\item{terms}{Are estimates for differences in outcome associated with
+differences in compositional variables? If \code{terms = TRUE} all estimates and
+plots will be for difference in outcome associated with differences in the
+compositional variables. If \code{terms = FALSE}, \code{fixed_values} is used to set
+the values of the non-compositional covariates, and outputs are predictions
+for the outcome based on these values of the non-compositional covariates and
+the given value of the compositional variables (and confidence intervals
+include uncertainty due to all variables in the model, not just the
+compositional variables). Note that for logistic regression models with
+\code{terms = TRUE} estimates are odds ratios; for logistic regression models with
+\code{terms = FALSE} estimates are probabilities (i.e. predictions on the response
+scale).}
 
-\item{part_1}{Used with ilr-pivot coordinate transformation to specify which should be first part. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
+\item{part_1}{Used with ilr-pivot coordinate transformation to specify which
+should be first part. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
 
-\item{units}{What should the units of the compositional variables be in any output? Currently available are "unitless" (where working in terms of proportions), "hr/day", "hr/wk", "min/day", "min/wk" and "specified", in which case the \code{specified_units} argument should be set. Note that this doesn't specify the input units, as this is not relevant for any function.}
+\item{units}{What should the units of the compositional variables be in any
+output? Currently available are "unitless" (where working in terms of
+proportions), \code{"hr/day"}, \code{"hr/wk"}, \code{"min/day"}, \code{"min/wk"}, \code{"unspecified"}
+and \code{"specified"}, in which case the \code{specified_units} argument should be
+set. Note that this doesn't specify the input units, as this is not relevant
+for any function.}
 
-\item{specified_units}{If units are being specified via the composition sum, this is where it is done. It should be a vector where the first argument is a string describing the units, and the second argument is the expected sum of a composition e.g. \code{c("hr/day", 24)}}
+\item{specified_units}{If units are being specified via the composition sum,
+this is where it is done. It should be a vector where the first argument is a
+string describing the units, and the second argument is the expected sum of a
+composition e.g. \code{c("hr/day", 24)}}
 
-\item{fixed_values}{If \code{terms = FALSE}, this gives the fixed values of the non-compositional covariates at which to calculate the prediction. It is generated automatically if not set. It does not usually need setting, and makes no difference to the output if `terms = TRUE`.}
+\item{fixed_values}{If \code{terms = FALSE}, this gives the fixed values of the
+non-compositional covariates at which to calculate the prediction. It is
+generated automatically if not set. It does not usually need setting, and
+makes no difference to the output if \code{terms = TRUE}.}
 }
 \value{
 Plot with balance of two parts plotted as exposure/ independent variable.
@@ -39,32 +62,38 @@ Plot with balance of two parts plotted as exposure/ independent variable.
 Principally intended as input to forest_plot_examples and plot_transfers.
 }
 \details{
-Note that confidence intervals use the t-distribution with the appropriate degrees of freedom for linear regression,
-and the z-distribution for logistic and Cox regression, to match the behaviour of \code{summary()} for these model objects. As long as there are a reasonable
-number of samples (at least 30, say) the difference between the two is negligible.
+Note that confidence intervals use the t-distribution with the appropriate
+degrees of freedom for linear regression, and the z-distribution for logistic
+and Cox regression, to match the behaviour of \code{summary()} for these model
+objects. As long as there are a reasonable number of samples (at least 30,
+say) the difference between the two is negligible.
 }
 \examples{
-lm_outcome <- comp_model(type = "linear",
-outcome = "BMI",
-data = simdata,
-covariates = c("agegroup", "sex"),
-comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
-rounded_zeroes = FALSE
+lm_outcome <- comp_model(
+  type = "linear",
+  outcome = "BMI",
+  data = simdata,
+  covariates = c("agegroup", "sex"),
+  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
+  rounded_zeroes = FALSE
 )
 
-old_comp <- comp_mean(simdata,
-comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
-rounded_zeroes = FALSE
+old_comp <- comp_mean(
+  data = simdata,
+  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
+  rounded_zeroes = FALSE
 )
-new_comp <-
-change_composition(
+
+new_comp <- change_composition(
  composition = old_comp,
  main_part = "moderate",
  main_change = +0.5,
  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
 )
 
-predict_fit_and_ci(model = lm_outcome,
-new_data = new_comp,
-comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"))
+predict_fit_and_ci(
+  model = lm_outcome,
+  new_data = new_comp,
+  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
+)
 }

@@ -22,17 +22,26 @@ Dataset used to create model with compositional columns on original scale.
 Used by predict_fit_and_ci and plot_transfers.
 }
 \examples{
+comp_labels <- c("vigorous", "moderate", "light", "sedentary", "sleep")
+
 lm_outcome <- comp_model(
-type = "linear",
-outcome = "BMI",
-covariates = c("agegroup", "sex"),
-data = simdata,
-comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
-det_limit = 0.00119
+  type = "linear",
+  outcome = "BMI",
+  covariates = c("agegroup", "sex"),
+  data = simdata,
+  comp_labels = comp_labels,
+  det_limit = 0.00119
 )
 
-comp_labels <- c("vigorous", "moderate", "light", "sedentary", "sleep")
-tl <- transf_labels(comp_labels = comp_labels, transformation_type = "ilr")
-get_dataset_from_model(model = lm_outcome, comp_labels = comp_labels,
-                       transf_labels = tl, type = "linear")
+tl <- transf_labels(
+  comp_labels = comp_labels,
+  transformation_type = "ilr"
+)
+
+get_dataset_from_model(
+  model = lm_outcome,
+  comp_labels = comp_labels,
+  transf_labels = tl,
+  type = "linear"
+)
 }

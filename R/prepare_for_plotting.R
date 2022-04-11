@@ -1,10 +1,17 @@
+#' @title
 #' Generates list of fixed_values based on mean/modal values in dataset
 #'
-#' If fixed values (for non-compositional variables) are not set, this will set them to modal/ mean values.
+#' @description
+#' If fixed values (for non-compositional variables) are not set, this will set
+#' them to modal/mean values.
 #'
 #' @param data Data used for model development.
 #' @inheritParams plot_transfers
-#' @return dataframe with a single row of fixed_values.
+#' 
+#' @return
+#' dataframe with a single row of fixed_values.
+
+#' @noRd
 generate_fixed_values <- function(data, comp_labels){
   fixed_values <- data.frame(matrix(ncol = 0, nrow = 1))
   others <- colnames(data)[!(colnames(data) %in% comp_labels)]
@@ -20,32 +27,48 @@ generate_fixed_values <- function(data, comp_labels){
 }
 
 
-
-
+#' @title
 #' Varies part of interest.
 #'
-#' Produces variable going between percentiles of the part of interest in the data.
+#' @description
+#' Produces variable going between percentiles of the part of interest in the
+#' data.
 #'
 #' @param part_of_interest The variable of interest.
 #' @inheritParams plot_transfers
-#' @return Vector of values going from \code{lower_quantile} to \code{upper_quantile} of the distribution of the varaible of interest.
+#' 
+#' @return
+#' Vector of values going from `lower_quantile` to `upper_quantile` of the
+#' distribution of the varaible of interest.
+#'
+#' @importFrom stats quantile
+
+#' @noRd
 vary_part_of_interest <- function(part_of_interest,
                                   lower_quantile = 0.05,
                                   upper_quantile = 0.95,
                                   granularity = 10000) {
   part_values <- seq(
-    from = stats::quantile(part_of_interest, lower_quantile, na.rm = TRUE),
-    to = stats::quantile(part_of_interest, upper_quantile, na.rm = TRUE),
+    from = quantile(part_of_interest, lower_quantile, na.rm = TRUE),
+    to = quantile(part_of_interest, upper_quantile, na.rm = TRUE),
     length.out = granularity
   )
   return(part_values)
 }
+
+
+#' @title
 #' make_new_data: Generates a new dataset varying in the dimension of interest.
 #'
-#' Generates a new dataset to feed into the plotting functions (\code{plot_transfers})
+#' @description
+#' Generates a new dataset to feed into the plotting functions
+#' ([`plot_transfers`])
 #'
-#' @param dataset Dataset to use to inform range of data used (should be dataset model was developed on)
+#' @param dataset Dataset to use to inform range of data used (should be
+#' dataset model was developed on)
 #' @inheritParams plot_transfers
+
+#' @noRd
 make_new_data <- function(from_part,
                           to_part,
                           fixed_values,
@@ -58,10 +81,10 @@ make_new_data <- function(from_part,
                           granularity = 10000) {
   dataset <- normalise_comp(dataset, comp_labels)
   fixed_values <- normalise_comp(fixed_values, comp_labels)
-  new_data <- data.frame()[1:granularity,]
+  new_data <- data.frame()[seq_len(granularity), ]
 
   # Process units
-  comp_sum <- as.numeric(process_units(units, specified_units)[2])
+  comp_sum <- as.double(process_units(units, specified_units)[2])
   units <- process_units(units, specified_units)[1]
 
   # Vary the to part and the from part from the upper quantile to lower quantile

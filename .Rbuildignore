@@ -1,3 +1,7 @@
+^\.git
+^\.github
+^\.gitignore$
 ^.*\.Rproj$
-^\.Rproj\.user$
-.github/workflows
+^data-raw
+^LICENSE\.md$
+^README\.md$

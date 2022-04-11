@@ -7,9 +7,17 @@
 process_units(units, specified_units)
 }
 \arguments{
-\item{units}{What should the units of the compositional variables be in any output? Currently available are "unitless" (where working in terms of proportions), "hr/day", "hr/wk", "min/day", "min/wk" and "specified", in which case the \code{specified_units} argument should be set. Note that this doesn't specify the input units, as this is not relevant for any function.}
+\item{units}{What should the units of the compositional variables be in any
+output? Currently available are "unitless" (where working in terms of
+proportions), \code{"hr/day"}, \code{"hr/wk"}, \code{"min/day"}, \code{"min/wk"}, \code{"unspecified"}
+and \code{"specified"}, in which case the \code{specified_units} argument should be
+set. Note that this doesn't specify the input units, as this is not relevant
+for any function.}
 
-\item{specified_units}{If units are being specified via the composition sum, this is where it is done. It should be a vector where the first argument is a string describing the units, and the second argument is the expected sum of a composition e.g. \code{c("hr/day", 24)}}
+\item{specified_units}{If units are being specified via the composition sum,
+this is where it is done. It should be a vector where the first argument is a
+string describing the units, and the second argument is the expected sum of a
+composition e.g. \code{c("hr/day", 24)}}
 }
 \description{
 Process units argument

@@ -23,7 +23,7 @@ plot_transfers(
   specified_units = NULL,
   fixed_values = NULL,
   granularity = 10000,
-  point_specification = ggplot2::geom_point(size = 2),
+  point_specification = geom_point(size = 2),
   error_bar_colour = "grey",
   theme = NULL
 )
@@ -37,39 +37,74 @@ plot_transfers(
 
 \item{comp_labels}{The labels of the compositional columns.}
 
-\item{terms}{Are estimates for differences in outcome associated with differences in compositional variables? If \code{terms = TRUE} all estimates and plots will be for difference in outcome associated with differences in the compositional variables. If \code{terms = FALSE}, \code{fixed_values} is used to set the values of the non-compositional covariates, and outputs are predictions for the outcome based on these values of the non-compositional covariates and the given value of the compositional variables (and confidence intervals include uncertainty due to all variables in the model, not just the compositional variables). Note that for logistic regression models with \code{terms = TRUE} estimates are odds ratios; for logistic regression models with \code{terms = FALSE} estimates are probabilities (i.e. predictions on the response scale).}
+\item{terms}{Are estimates for differences in outcome associated with
+differences in compositional variables? If \code{terms = TRUE} all estimates and
+plots will be for difference in outcome associated with differences in the
+compositional variables. If \code{terms = FALSE}, \code{fixed_values} is used to set
+the values of the non-compositional covariates, and outputs are predictions
+for the outcome based on these values of the non-compositional covariates and
+the given value of the compositional variables (and confidence intervals
+include uncertainty due to all variables in the model, not just the
+compositional variables). Note that for logistic regression models with
+\code{terms = TRUE} estimates are odds ratios; for logistic regression models with
+\code{terms = FALSE} estimates are probabilities (i.e. predictions on the response
+scale).}
 
-\item{part_1}{Used with ilr-pivot coordinate transformation to specify which should be first part. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
+\item{part_1}{Used with ilr-pivot coordinate transformation to specify which
+should be first part. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
 
 \item{yllimit}{Lower limit of y-axis shown on plot.}
 
 \item{yulimit}{Upper limit of y-axis shown on plot.}
 
-\item{xllimit}{Lower limit of x-axis shown on plot. Should be in same scale as \code{units}.}
+\item{xllimit}{Lower limit of x-axis shown on plot. Should be in same scale
+as \code{units}.}
 
-\item{xulimit}{Upper limit of x-axis shown on plot. Should be in same scale as \code{units}.}
+\item{xulimit}{Upper limit of x-axis shown on plot. Should be in same scale
+as \code{units}.}
 
-\item{y_label}{Label for y-axis. \code{"suppressed"} is a special value which will result in no label.}
+\item{y_label}{Label for y-axis. \code{"suppressed"} is a special value which will
+result in no label.}
 
 \item{plot_log}{If this is \code{TRUE}, the y-axis will be log-transformed.}
 
-\item{lower_quantile}{If set, this gives the lower limit of plotting (as a quantile for both variables of interest). In practice, the current behaviour is to calculate the range of both variables between the upper and lower quantile, and use the narrower one.}
+\item{lower_quantile}{If set, this gives the lower limit of plotting (as a
+quantile for both variables of interest). In practice, the current behaviour
+is to calculate the range of both variables between the upper and lower
+quantile, and use the narrower one.}
 
-\item{upper_quantile}{If set, this gives the upper limit of plotting (as a quantile for both variables of interest).}
+\item{upper_quantile}{If set, this gives the upper limit of plotting (as a
+quantile for both variables of interest).}
 
-\item{units}{What should the units of the compositional variables be in any output? Currently available are "unitless" (where working in terms of proportions), "hr/day", "hr/wk", "min/day", "min/wk" and "specified", in which case the \code{specified_units} argument should be set. Note that this doesn't specify the input units, as this is not relevant for any function.}
+\item{units}{What should the units of the compositional variables be in any
+output? Currently available are "unitless" (where working in terms of
+proportions), \code{"hr/day"}, \code{"hr/wk"}, \code{"min/day"}, \code{"min/wk"}, \code{"unspecified"}
+and \code{"specified"}, in which case the \code{specified_units} argument should be
+set. Note that this doesn't specify the input units, as this is not relevant
+for any function.}
 
-\item{specified_units}{If units are being specified via the composition sum, this is where it is done. It should be a vector where the first argument is a string describing the units, and the second argument is the expected sum of a composition e.g. \code{c("hr/day", 24)}}
+\item{specified_units}{If units are being specified via the composition sum,
+this is where it is done. It should be a vector where the first argument is a
+string describing the units, and the second argument is the expected sum of a
+composition e.g. \code{c("hr/day", 24)}}
 
-\item{fixed_values}{If \code{terms = FALSE}, this gives the fixed values of the non-compositional covariates at which to calculate the prediction. It is generated automatically if not set. It does not usually need setting, and makes no difference to the output if `terms = TRUE`.}
+\item{fixed_values}{If \code{terms = FALSE}, this gives the fixed values of the
+non-compositional covariates at which to calculate the prediction. It is
+generated automatically if not set. It does not usually need setting, and
+makes no difference to the output if \code{terms = TRUE}.}
 
-\item{granularity}{Does not usually require setting. If set, gives the number of points plotted on the graph. If it is too low, the plot will contain gaps. If it is too high, plotting will be slow.}
+\item{granularity}{Does not usually require setting. If set, gives the number
+of points plotted on the graph. If it is too low, the plot will contain gaps.
+If it is too high, plotting will be slow.}
 
-\item{point_specification}{Should be a \code{ggplot2::geom_point} object specifying how the points on the graph will be plotted.}
+\item{point_specification}{Should be a \code{ggplot2::geom_point} object
+specifying how the points on the graph will be plotted.}
 
-\item{error_bar_colour}{Should be an R-recognised colour for error bars, specified by name in quotation marks.}
+\item{error_bar_colour}{Should be an R-recognised colour for error bars,
+specified by name in quotation marks.}
 
-\item{theme}{Optional \code{theme} argument which can be set as a \code{ggplot2::theme} object and will control how the plot appears.}
+\item{theme}{Optional \code{theme} argument which can be set as a
+\code{ggplot2::theme} object and will control how the plot appears.}
 }
 \value{
 Plot with balance of two parts plotted as exposure/ independent variable.
@@ -78,22 +113,22 @@ Plot with balance of two parts plotted as exposure/ independent variable.
 Plots model predictions for transfers/substitutions between the named parts.
 }
 \examples{
-
-lm_outcome <- comp_model(type = "linear",
-outcome = "BMI",
-covariates = c("agegroup", "sex"),
-data = simdata,
-comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
-rounded_zeroes = FALSE
+lm_outcome <- comp_model(
+  type = "linear",
+  outcome = "BMI",
+  covariates = c("agegroup", "sex"),
+  data = simdata,
+  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
+  rounded_zeroes = FALSE
 )
 
-
-epicoda::plot_transfers(from_part = "sedentary",
-to_part = "moderate",
-model = lm_outcome ,
-comp_labels =c("vigorous", "moderate", "light", "sedentary", "sleep"),
-y_label = "Model-predicted difference in BMI",
-units = "hr/day",
-terms = TRUE)
-
+plot_transfers(
+  from_part = "sedentary",
+  to_part = "moderate",
+  model = lm_outcome ,
+  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
+  y_label = "Model-predicted difference in BMI",
+  units = "hr/day",
+  terms = TRUE
+)
 }

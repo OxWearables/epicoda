@@ -18,19 +18,29 @@ plot_density_ternary(
 \arguments{
 \item{data}{Data frame containing data to be plotted.}
 
-\item{groups}{If plotting groups separately, name of the variable in the data frame which identifies the groups to be plotted. This variable should be a factor variable.}
+\item{groups}{If plotting groups separately, name of the variable in the data
+frame which identifies the groups to be plotted. This variable should be a
+factor variable.}
 
-\item{parts_to_plot}{Names of the three variables in the data frame which are to be plotted on the ternary plot. Note they should be on the same scale (they don't need to be normalised to 1).}
+\item{parts_to_plot}{Names of the three variables in the data frame which are
+to be plotted on the ternary plot. Note they should be on the same scale
+(they don't need to be normalised to 1).}
 
 \item{n_bins}{Number of bins to use on density plot.}
 
-\item{mark_points}{Points should be the rows of a data frame with the elements of \code{parts_to_plot} as columns names. If a \code{groups} argument is given, it should also have a column for this (if the groups aren't relevant to the point in a certain row, this can be set as NA).}
+\item{mark_points}{Points should be the rows of a data frame with the
+elements of \code{parts_to_plot} as columns names. If a \code{groups} argument is
+given, it should also have a column for this (if the groups aren't relevant
+to the point in a certain row, this can be set as NA).}
 
-\item{theme}{Optional \code{theme} argument which can be set as a \code{ggplot2::theme} object and will control how the plot appears.}
+\item{theme}{Optional \code{theme} argument which can be set as a
+\code{ggplot2::theme} object and will control how the plot appears.}
 
-\item{transparency}{Control the transparency of plots. Should be between 0 and 1.}
+\item{transparency}{Control the transparency of plots. Should be between 0
+and 1.}
 
-\item{suppress_legend}{Suppress legend on plot. May be used when combining plots.}
+\item{suppress_legend}{Suppress legend on plot. May be used when combining
+plots.}
 }
 \value{
 Plot showing density of data on ternary plot.
@@ -44,10 +54,11 @@ This is a wrapper for \code{ggtern}.
 \examples{
 simdata$activity <- simdata$vigorous + simdata$moderate + simdata$light
 
-plot_density_ternary(data = simdata,
-parts_to_plot = c("activity", "sedentary", "sleep"),
-n_bins = 10 # This argument specifies we want to use 10 bins
-# (i.e. 9 equi-density contours will be plotted between the minimum and maximum
-# probability density.) Default is n_bins = 5.
+plot_density_ternary(
+  data = simdata,
+  parts_to_plot = c("activity", "sedentary", "sleep"),
+  n_bins = 10 # This argument specifies we want to use 10 bins
+  # (i.e. 9 equi-density contours will be plotted between the minimum and maximum
+  # probability density.) Default is n_bins = 5.
 )
 }

@@ -1,10 +1,12 @@
 Package: epicoda
-Type: Package
 Title: Supports epidemiological analyses using compositional exposure variables
-Version: 0.0.0.9000
-Author: person("Rosemary", "Walmsley", email = "rosemary.walmsley@gtc.ox.ac.uk",
-                  role = c("aut", "cre"))
-Maintainer: <rosemary.walmsley@gtc.ox.ac.uk>
+Version: 0.1-0
+Authors@R: person(given = "Rosemary",
+    family = "Walmsley",
+    role = c("aut", "cre"),
+    email = "rosemary.walmsley@gtc.ox.ac.uk",
+    comment = c(ORCID = "0000-0002-1916-2478"))
+Maintainer: Rosemary Walmsley <rosemary.walmsley@gtc.ox.ac.uk>
 Description: Provides functions to support epidemiological analyses using compositional 
     exposure variables, including regression modelling and plotting 
     graphs of model predictions for linear, logistic and Cox regression models.  
@@ -12,25 +14,30 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.6.0)
-Imports: 
-    zCompositions (>= 1.3.2-1), 
-    ggplot2 (>= 3.2.0), 
-    survival (>= 3.1.6), 
-    stats (>= 3.6.1), 
-    data.table (>= 1.12.2), 
-    scales (>= 1.0.0), 
-    forestplot (>= 1.9), 
-    utils (>= 3.6.1)
-RoxygenNote: 7.1.1
+Imports:
+    data.table (>= 1.12.2),
+    forestplot (>= 1.9),
+    ggplot2 (>= 3.2.0),
+    ggtern (>= 3.1.0),
+    grDevices,
+    grid,
+    scales (>= 1.0.0),
+    stats,
+    survival (>= 3.1.6),
+    utils,
+    zCompositions (>= 1.3.2-1)
 Suggests: 
-    testthat (>= 3.0.0),
-    ggtern (>= 3.1.0), 
-    robCompositions (>= 2.3.1), 
-    questionr (>= 0.7.5),
-    deltacomp, 
+    deltacomp,
+    devtools,
     knitr,
-    rmarkdown, 
     markdown,
-    devtools
+    questionr (>= 0.7.5),
+    rmarkdown,
+    robCompositions (>= 2.3.1),
+    testthat (>= 3.0.0)
+RoxygenNote: 7.1.2
+Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr
 Remotes: tystan/deltacomp
+URL: https://github.com/activityMonitoring/epicoda
+BugReports: https://github.com/activityMonitoring/epicoda/issues

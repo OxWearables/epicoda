@@ -19,19 +19,31 @@ tab_coefs(
 )
 }
 \arguments{
-\item{scale_type}{Can take value "lp" (linear predictors) or "exp" (exponentiated- relevant for interpretation of logistic and Cox models).}
+\item{scale_type}{Can take value \code{"lp"} (linear predictors) or \code{"exp"}
+(exponentiated- relevant for interpretation of logistic and Cox models).}
 
-\item{level}{The level argument of the confidence intervals. Passed directly to `stats::confint`.}
+\item{level}{The level argument of the confidence intervals. Passed directly
+to \code{stats::confint()}.}
 
-\item{type}{Type of statistical model to use. It should be one of "linear", "logistic", "cox".}
+\item{type}{Type of statistical model to use. It should be one of \code{"linear"},
+\code{"logistic"}, \code{"cox"}.}
 
-\item{outcome}{Column name of outcome variable in data. If \code{type} is \code{"linear"}, this should be a continuous variable.  If \code{type} is \code{"logistic"}, this should be a binary outcome.  If \code{type} is \code{"cox"}, if this is set it should be a \code{Surv} object from package \code{survival} (if it is set, the function defaults to attempt to use it, even if \code{follow_up_time} and \code{event} are set). If this is left as \code{NULL}, \code{follow_up_time} and \code{event} can be set instead.}
+\item{outcome}{Column name of outcome variable in data. If \code{type} is
+\code{"linear"}, this should be a continuous variable.  If \code{type} is \code{"logistic"},
+this should be a binary outcome. If \code{type} is \code{"cox"}, if this is set it
+should be a \code{Surv} object from package \emph{survival} (if it is set, the function
+defaults to attempt to use it, even if \code{follow_up_time} and \code{event} are set).
+If this is left as \code{NULL}, \code{follow_up_time} and \code{event} can be set instead.}
 
-\item{covariates}{Character vector of column names of covariates to adjust models for. As this is used as a character vector, special arguments to the standard models (like \code{"strata(variable)"} for a Cox model) can be used here.}
+\item{covariates}{Character vector of column names of covariates to adjust
+models for. As this is used as a character vector, special arguments to the
+standard models (like \code{strata(variable)} for a Cox model) can be used here.}
 
-\item{follow_up_time}{Only used if \code{type} is \code{"cox"} and \code{outcome} is \code{NULL}.  Follow-up time.}
+\item{follow_up_time}{Only used if \code{type} is \code{"cox"} and \code{outcome} is \code{NULL}.
+Follow-up time.}
 
-\item{event}{Only used if \code{type} is \code{"cox"} and \code{outcome} is \code{NULL}.Binary variable indicating whether or not an event was observed.}
+\item{event}{Only used if \code{type} is \code{"cox"} and \code{outcome} is \code{NULL}.Binary
+variable indicating whether or not an event was observed.}
 
 \item{data}{Dataset to use for modelling.}
 
@@ -39,29 +51,38 @@ tab_coefs(
 
 \item{rounded_zeroes}{Are zeroes rounded zeroes?}
 
-\item{det_limit}{Detection limit if zeroes are to be imputed. This is needed when \code{rounded_zeroes} is \code{TRUE}. It should be the
-minimum measurable value in the compositional columns of data, and should be on the same scale as the (input) compositional columns.
-If \code{rounded_zeroes} is \code{TRUE} and there are zero values in the data, it throws an error.
-If the compositional columns do not have a constant sum, it also throws an error, as it cannot be automatically rescaled.
-Embedded zero imputation is for convenience only. It may be advisable to perform zero imputation prior to working with the data, particularly in more complex cases.}
+\item{det_limit}{Detection limit if zeroes are to be imputed. This is needed
+when \code{rounded_zeroes} is \code{TRUE}. It should be the minimum measurable value in
+the compositional columns of data, and should be on the same scale as the
+(input) compositional columns.nIf \code{rounded_zeroes} is \code{TRUE} and there are
+zero values in the data, it throws an error. If the compositional columns do
+not have a constant sum, it also throws an error, as it cannot be
+automatically rescaled. Embedded zero imputation is for convenience only. It
+may be advisable to perform zero imputation prior to working with the data,
+particularly in more complex cases.}
 }
 \value{
-Table of all model coefficients (parameter value with lower and upper confidence interval of the 95% ), using the first pivot coordinates for all compositional coefficients.
+Table of all model coefficients (parameter value with lower and upper
+confidence interval of the 95\%), using the first pivot coordinates for all
+compositional coefficients.
 }
 \description{
-This pulls out a table of the coefficients of the models.
+This pulls out a table of the coefficients of the models. Confidence
+intervals are calculated using \code{confint()}. The function may fail for
+logistic regression if the \emph{MASS} package is not installed.
 }
 \examples{
-tab_coefs(scale_type = "lp", # This argument can be "lp" or "exp" and determines whether
-# coefficients are presented on the scale of the linear predictors ("lp")
-# or are exponentiated ("exp"). Exponentiation gives the Odds Ratio for
-# logistic regression models and the Hazard Ratio for Cox regression models.
-level = 0.95,
-type = "linear",
-outcome = "BMI",
-covariates = c("agegroup", "sex"),
-data = simdata,
-comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep" ),
-rounded_zeroes = FALSE
+tab_coefs(
+  scale_type = "lp", # This argument can be "lp" or "exp" and determines whether
+  # coefficients are presented on the scale of the linear predictors ("lp")
+  # or are exponentiated ("exp"). Exponentiation gives the Odds Ratio for
+  # logistic regression models and the Hazard Ratio for Cox regression models.
+  level = 0.95,
+  type = "linear",
+  outcome = "BMI",
+  covariates = c("agegroup", "sex"),
+  data = simdata,
+  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep" ),
+  rounded_zeroes = FALSE
 )
 }

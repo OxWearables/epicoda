@@ -25,11 +25,15 @@ forest_plot_comp(
 )
 }
 \arguments{
-\item{composition_list}{Named list of compositions. Note each composition should be stored as a data frame. For example, use the output of \code{change_composition}.}
+\item{composition_list}{Named list of compositions. Note each composition
+should be stored as a data frame. For example, use the output of
+\code{change_composition}.}
 
 \item{model}{Model to use for predictions.}
 
-\item{models_list}{If \code{model} is \code{NULL} (or not set), a named list of models for which to plot model predictions in the forest plot. All models should have the same type.}
+\item{models_list}{If \code{model} is \code{NULL} (or not set), a named list of models
+for which to plot model predictions in the forest plot. All models should
+have the same type.}
 
 \item{comp_labels}{The labels of the compositional columns.}
 
@@ -41,21 +45,45 @@ forest_plot_comp(
 
 \item{plot_log}{If this is \code{TRUE}, the x-axis will be log-transformed.}
 
-\item{text_settings}{An optional argument to specify text formatting. It should be an \code{fpTxtGp} object (\code{forestplot} package).}
+\item{text_settings}{An optional argument to specify text formatting. It
+should be an \code{fpTxtGp} object (\emph{forestplot} package).}
 
 \item{pred_name}{Name for column of predictions in plot.}
 
 \item{boxsize}{Sets the size of boxes for estimates on the forest plot.}
 
-\item{terms}{Are estimates for differences in outcome associated with differences in compositional variables? If \code{terms = TRUE} all estimates and plots will be for difference in outcome associated with differences in the compositional variables. If \code{terms = FALSE}, \code{fixed_values} is used to set the values of the non-compositional covariates, and outputs are predictions for the outcome based on these values of the non-compositional covariates and the given value of the compositional variables (and confidence intervals include uncertainty due to all variables in the model, not just the compositional variables). Note that for logistic regression models with \code{terms = TRUE} estimates are odds ratios; for logistic regression models with \code{terms = FALSE} estimates are probabilities (i.e. predictions on the response scale).}
+\item{terms}{Are estimates for differences in outcome associated with
+differences in compositional variables? If \code{terms = TRUE} all estimates and
+plots will be for difference in outcome associated with differences in the
+compositional variables. If \code{terms = FALSE}, \code{fixed_values} is used to set
+the values of the non-compositional covariates, and outputs are predictions
+for the outcome based on these values of the non-compositional covariates and
+the given value of the compositional variables (and confidence intervals
+include uncertainty due to all variables in the model, not just the
+compositional variables). Note that for logistic regression models with
+\code{terms = TRUE} estimates are odds ratios; for logistic regression models with
+\code{terms = FALSE} estimates are probabilities (i.e. predictions on the response
+scale).}
 
-\item{units}{What should the units of the compositional variables be in any output? Currently available are "unitless" (where working in terms of proportions), "hr/day", "hr/wk", "min/day", "min/wk" and "specified", in which case the \code{specified_units} argument should be set. Note that this doesn't specify the input units, as this is not relevant for any function.}
+\item{units}{What should the units of the compositional variables be in any
+output? Currently available are "unitless" (where working in terms of
+proportions), \code{"hr/day"}, \code{"hr/wk"}, \code{"min/day"}, \code{"min/wk"}, \code{"unspecified"}
+and \code{"specified"}, in which case the \code{specified_units} argument should be
+set. Note that this doesn't specify the input units, as this is not relevant
+for any function.}
 
-\item{specified_units}{If units are being specified via the composition sum, this is where it is done. It should be a vector where the first argument is a string describing the units, and the second argument is the expected sum of a composition e.g. \code{c("hr/day", 24)}}
+\item{specified_units}{If units are being specified via the composition sum,
+this is where it is done. It should be a vector where the first argument is a
+string describing the units, and the second argument is the expected sum of a
+composition e.g. \code{c("hr/day", 24)}}
 
-\item{fixed_values}{If \code{terms = FALSE}, this gives the fixed values of the non-compositional covariates at which to calculate the prediction. It is generated automatically if not set. It does not usually need setting, and makes no difference to the output if `terms = TRUE`.}
+\item{fixed_values}{If \code{terms = FALSE}, this gives the fixed values of the
+non-compositional covariates at which to calculate the prediction. It is
+generated automatically if not set. It does not usually need setting, and
+makes no difference to the output if \code{terms = TRUE}.}
 
-\item{part_1}{Used with ilr-pivot coordinate transformation to specify which should be first part. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
+\item{part_1}{Used with ilr-pivot coordinate transformation to specify which
+should be first part. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
 
 \item{...}{
   Arguments passed on to \code{\link[forestplot:forestplot]{forestplot::forestplot}}
@@ -67,40 +95,65 @@ forest_plot_comp(
 Forest plot showing model predictions.
 }
 \description{
-This function takes a named list of compositions, and plots model predictions for each composition. Please note that with the default \code{terms = TRUE} predictions are relative to at the (compositional) mean composition in the data used to create the model. Please note that if there is missing data in the original data (e.g. in covariates or outcomes) this may not be the same as the compositional mean in the original data.
+This function takes a named list of compositions, and plots model predictions
+for each composition. Please note that with the default \code{terms = TRUE}
+predictions are relative to at the (compositional) mean composition in the
+data used to create the model. Please note that if there is missing data in
+the original data (e.g. in covariates or outcomes) this may not be the same
+as the compositional mean in the original data.
 }
 \examples{
 # Example using a list of models
-  # First we set up composition list
-df <- as.data.frame(comp_mean(data = simdata,
-                             comp_labels = c("vigorous", "moderate",
-                             "light", "sedentary", "sleep"),
-                             units = "hr/day", rounded_zeroes = FALSE))
-new_comp <- change_composition(composition = df, main_part = "moderate",
-                             main_change = +0.5,
-                             comp_labels = c("vigorous", "moderate",
-                             "light", "sedentary", "sleep"))
-new_comp2 <- change_composition(composition = df, main_part = "sedentary",
-                             main_change = -3.5,
-                             comp_labels = c("vigorous", "moderate",
-                             "light", "sedentary", "sleep"))
-list_for_plot <- list("Extra 0.5 hr/day moderate" = new_comp,
-                      "3.5 hr/day less sedentary" = new_comp2)
+# First we set up composition list
+df <- as.data.frame(
+  comp_mean(
+    data = simdata,
+    comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
+    units = "hr/day",
+    rounded_zeroes = FALSE
+  )
+)
+new_comp <- change_composition(
+  composition = df,
+  main_part = "moderate",
+  main_change = +0.5,
+  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
+)
+new_comp2 <- change_composition(
+  composition = df,
+  main_part = "sedentary",
+  main_change = -3.5,
+  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
+)
+list_for_plot <- list(
+  "Extra 0.5 hr/day moderate" = new_comp,
+  "3.5 hr/day less sedentary" = new_comp2
+)
 
- # Then calculate models
-lm_BMI_unadjusted <- comp_model(type = "linear", outcome = "BMI",
-                                data = simdata,
-                                comp_labels = c("vigorous", "moderate",
-                                 "light", "sedentary", "sleep"), rounded_zeroes = FALSE)
-lm_BMI_age_group_only <- comp_model(type = "linear", outcome = "BMI",
-                                    covariates = c("agegroup"), data = simdata,
-                                    comp_labels = c("vigorous", "moderate",
-                                     "light", "sedentary", "sleep"), rounded_zeroes = FALSE)
+# Then calculate models
+lm_BMI_unadjusted <- comp_model(
+  type = "linear",
+  outcome = "BMI",
+  data = simdata,
+  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
+  rounded_zeroes = FALSE
+)
+lm_BMI_age_group_only <- comp_model(
+  type = "linear",
+  outcome = "BMI",
+  covariates = c("agegroup"),
+  data = simdata,
+  comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
+  rounded_zeroes = FALSE
+)
 
-  # Finally, plot
-forest_plot_comp(composition_list = list_for_plot,
-                 models_list = list("Unadjusted" = lm_BMI_unadjusted,
-                 "Age-adjusted" = lm_BMI_age_group_only),
-                 comp_labels = c("vigorous", "moderate",
-                 "light", "sedentary", "sleep"))
+# Finally, plot
+forest_plot_comp(
+  composition_list = list_for_plot,
+  models_list = list(
+    "Unadjusted" = lm_BMI_unadjusted,
+    "Age-adjusted" = lm_BMI_age_group_only
+  ),
+  comp_labels = c("vigorous", "moderate","light", "sedentary", "sleep")
+)
 }
