@@ -20,6 +20,7 @@ gm <- function(vector) {
 #'
 #' @param nrow Number of rows of transformation matrix to be created (= number of parts in composition)
 create_transformation_matrix <- function(nrow) {
+  if (nrow == 1){stop("A single variable cannot be a composition")}
   tm <- matrix(nrow = nrow, ncol = 0)
   for (i in 1:(nrow - 1)) {
     newcol <- c()
@@ -38,6 +39,21 @@ create_transformation_matrix <- function(nrow) {
   }
   tm <- as.matrix(tm)
   return(tm)
+}
+
+#' Create transformation matrix from clr to ilr pivot coordinates
+#'
+#' New improved version of create_transformation_matrix due to Ben Feakins
+#'
+#' @param nrow Number of rows of transformation matrix to be created (= number of parts in composition)
+tmat <- function(cols) {
+  mat <- rep(seq_len(cols), each = cols)
+  mat <- matrix(mat, nrow = cols)
+  mat <- -1/sqrt((cols - mat)*(cols - mat + 1))
+  diag(mat) <- sqrt((cols - seq_len(cols))/(cols - seq_len(cols) + 1))
+  mat[upper.tri(mat)] <- 0
+  mat <- mat[, seq_len(cols - 1L)]
+  return(as.matrix(mat))
 }
 
 
