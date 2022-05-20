@@ -46,13 +46,13 @@ create_transformation_matrix <- function(nrow) {
 #' New improved version of create_transformation_matrix due to Ben Feakins
 #'
 #' @param nrow Number of rows of transformation matrix to be created (= number of parts in composition)
-tmat <- function(cols) {
-  mat <- rep(seq_len(cols), each = cols)
-  mat <- matrix(mat, nrow = cols)
-  mat <- -1/sqrt((cols - mat)*(cols - mat + 1))
-  diag(mat) <- sqrt((cols - seq_len(cols))/(cols - seq_len(cols) + 1))
+tmat <- function(nrow) {
+  mat <- rep(seq_len(nrow), each = nrow)
+  mat <- matrix(mat, nrow = nrow)
+  mat <- -1/sqrt((nrow - mat)*(nrow - mat + 1))
+  diag(mat) <- sqrt((nrow - seq_len(nrow))/(nrow - seq_len(nrow) + 1))
   mat[upper.tri(mat)] <- 0
-  mat <- mat[, seq_len(cols - 1L)]
+  mat <- mat[, seq_len(nrow - 1L)]
   return(as.matrix(mat))
 }
 

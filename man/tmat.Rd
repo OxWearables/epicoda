@@ -4,7 +4,7 @@
 \alias{tmat}
 \title{Create transformation matrix from clr to ilr pivot coordinates}
 \usage{
-tmat(cols)
+tmat(nrow)
 }
 \arguments{
 \item{nrow}{Number of rows of transformation matrix to be created (= number of parts in composition)}
