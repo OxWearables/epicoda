@@ -146,183 +146,189 @@ predict_fit_and_ci <- function(model,
   }
 
   # We begin the plotting
-  if ((type == "logistic") & !(terms)) {
-    predictions <- stats::predict(model,
-                                  newdata = new_data,
-                                  type = "link",
-                                  se.fit = TRUE)
+  if (type == "logistic") {
+    if (terms) {
+      # Terms predictions
+      predictions <-
+        stats::predict(
+          model,
+          newdata = new_data,
+          type = "terms",
+          terms = transf_labels,
+          se.fit = TRUE
+        )
+      dNew <- data.frame(new_data, predictions)
 
-    dNew <- data.frame(new_data, predictions)
+      # Sum terms predictions to get log_odds difference, exponentiate for OR
+      vector_for_args <-
+        paste("dNew$fit.", transf_labels, sep = "")
+      sum_for_args <- paste0(vector_for_args, collapse = "+")
+      dNew$log_odds_change <- eval(parse(text = sum_for_args))
+      dNew$fit <- exp(dNew$log_odds_change)
 
-    dNew$lower_CI <-
-      model$family$linkinv(dNew$fit - z_value * dNew$se.fit) # This should be the correct confidence interval under the assumption of approximate normality of standard errors on scale of linear predictors. A reference for it is: https://fromthebottomoftheheap.net/2018/12/10/confidence-intervals-for-glms/
-    dNew$upper_CI <-
-      model$family$linkinv(dNew$fit + z_value * dNew$se.fit)
-    dNew$fit <- model$family$linkinv(dNew$fit)
+      # Calculate SE on this estimate using variance-covariance matrix
+      middle_matrix <-
+        stats::vcov(model)[transf_labels, transf_labels]
 
-  }
+      x <-
+        data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
+      t_x <- data.matrix(as.matrix(t(x)))
 
-  if ((type == "logistic") & (terms)) {
-    predictions <-
-      stats::predict(
+      in_sqrt_true <- diag((x %*% middle_matrix) %*% t_x)
+      value <- sqrt(data.matrix(in_sqrt_true))
+
+      # Calculate Wald CI
+      alpha_lower <- dNew$log_odds_change - z_value * value
+      alpha_upper <- dNew$log_odds_change + z_value * value
+
+      dNew$lower_CI <- exp(alpha_lower)
+      dNew$upper_CI <- exp(alpha_upper)
+
+    } else {
+      # Predict on link scale (linear predictor)
+      predictions <- stats::predict(model,
+                                    newdata = new_data,
+                                    type = "link",
+                                    se.fit = TRUE)
+      dNew <- data.frame(new_data, predictions)
+      # Calculate CI
+      dNew$lower_CI <-
+        model$family$linkinv(dNew$fit - z_value * dNew$se.fit) # This should be the correct confidence interval under the assumption of approximate normality of standard errors on scale of linear predictors. A reference for it is: https://fromthebottomoftheheap.net/2018/12/10/confidence-intervals-for-glms/
+      dNew$upper_CI <-
+        model$family$linkinv(dNew$fit + z_value * dNew$se.fit)
+      # Invert fit to get probability scale
+      dNew$fit <- model$family$linkinv(dNew$fit)
+    }
+    }
+
+  if (type == "cox") {
+    if (terms) {
+      # Terms predictions
+      predictions <- stats::predict(
         model,
         newdata = new_data,
         type = "terms",
+        se.fit = TRUE,
         terms = transf_labels,
-        se.fit = TRUE
+        reference = "sample"
       )
+      dNew <- data.frame(new_data, predictions)
 
-    dNew <- data.frame(new_data, predictions)
+      # Sum terms predictions for log HR, exponentiate to get HR
+      vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
+      sum_for_args <- paste0(vector_for_args, collapse = "+")
+      dNew$log_hazard_change <- eval(parse(text = sum_for_args))
+      dNew$fit <- exp(dNew$log_hazard_change)
 
-    vector_for_args <-
-      paste("dNew$fit.", transf_labels, sep = "")
-    sum_for_args <- paste0(vector_for_args, collapse = "+")
+      # Calculate SE on this estimate using variance-covariance matrix
+      middle_matrix <-
+        stats::vcov(model)[transf_labels, transf_labels]
 
+      x <-
+        data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
+      t_x <- data.matrix(as.matrix(t(x)))
 
-    dNew$log_odds_change <- eval(parse(text = sum_for_args))
-    dNew$fit <- exp(dNew$log_odds_change)
+      in_sqrt_true <- diag((x %*% middle_matrix) %*% t_x)
+      value <- sqrt(data.matrix(in_sqrt_true))
 
-    middle_matrix <-
-      stats::vcov(model)[transf_labels, transf_labels]
-    x <-
-      data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
+      # Calculate Wald CI
+      alpha_lower <- dNew$log_hazard_change - z_value * value
+      alpha_upper <- dNew$log_hazard_change + z_value * value
 
-    t_x <- data.matrix(as.matrix(t(x)))
-    in_sqrt_true <- diag((x %*% middle_matrix) %*% t_x)
-    value <- sqrt(data.matrix(in_sqrt_true))
+      dNew$lower_CI <- exp(alpha_lower)
+      dNew$upper_CI <- exp(alpha_upper)
+    } else {
+      # Predictions on linear predictor scale
+      predictions <- stats::predict(model,
+                                    newdata = new_data,
+                                    type = "lp",
+                                    se.fit = TRUE)
+      dNew <- data.frame(new_data, predictions)
 
-    alpha_lower <- dNew$log_odds_change - z_value * value
-    alpha_upper <- dNew$log_odds_change + z_value * value
+      # Exponentiate fit to HR scale
+      dNew$fit <- exp(dNew$fit)
 
-    dNew$lower_CI <- exp(alpha_lower)
-    dNew$upper_CI <- exp(alpha_upper)
-  }
-
-
-
-  if ((type == "cox") & (terms)) {
-    predictions <- stats::predict(
-      model,
-      newdata = new_data,
-      type = "terms",
-      se.fit = TRUE,
-      terms = transf_labels,
-      reference = "sample"
-    )
-
-    dNew <- data.frame(new_data, predictions)
-
-    vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
-    sum_for_args <- paste0(vector_for_args, collapse = "+")
-
-
-    dNew$log_hazard_change <- eval(parse(text = sum_for_args))
-    dNew$fit <- exp(dNew$log_hazard_change)
-
-    middle_matrix <-
-      stats::vcov(model)[transf_labels, transf_labels]
-    x <-
-      data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
-    t_x <- data.matrix(as.matrix(t(x)))
-
-    in_sqrt_true <- diag((x %*% middle_matrix) %*% t_x)
-    value <- sqrt(data.matrix(in_sqrt_true))
-
-    alpha_lower <- dNew$log_hazard_change - z_value * value
-    alpha_upper <- dNew$log_hazard_change + z_value * value
-
-    dNew$lower_CI <- exp(alpha_lower)
-    dNew$upper_CI <- exp(alpha_upper)
-  }
-
-
-
-  if ((type == "cox") & !(terms)) {
-    predictions <- stats::predict(model,
-                                  newdata = new_data,
-                                  type = "lp",
-                                  se.fit = TRUE)
-
-    dNew <- data.frame(new_data, predictions)
-
-    dNew$fit <- exp(dNew$fit)
-
-    dNew$lower_CI <-
-      dNew$fit * exp(-(z_value * dNew$se.fit))
-    dNew$upper_CI <-
-      dNew$fit * exp(+(z_value * dNew$se.fit))
-  }
-
-
-
-
-  if ((type == "linear") & !(terms)) {
-    predictions <-
-      stats::predict(model,
-                     newdata = new_data,
-                     type = "response",
-                     se.fit = TRUE)
-
-    dNew <- data.frame(new_data, predictions)
-
-    t_value <-
-      stats::qt(0.975, df = stats::df.residual(model))
-
-
-    dNew$lower_CI <- dNew$fit - t_value * dNew$se.fit
-    dNew$upper_CI <- dNew$fit + t_value * dNew$se.fit
-
-
-  }
-
-
-
-
-
-
-  if ((type == "linear") & (terms)) {
-    predictions <-
-      stats::predict(
-        model,
-        newdata = new_data,
-        type = "terms",
-        terms = transf_labels,
-        se.fit = TRUE
-      )
-
-    dNew <- data.frame(new_data, predictions)
-    vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
-    sum_for_args <- paste0(vector_for_args, collapse = "+")
-
-    dNew$fit <- eval(parse(text = sum_for_args))
-
-    middle_matrix <-
-      stats::vcov(model)[transf_labels, transf_labels]
-    x <-
-      data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
-
-    t_x <- data.matrix(as.matrix(t(x)))
-    in_sqrt_true <- diag((x %*% middle_matrix) %*% t_x)
-    value <- sqrt(data.matrix(in_sqrt_true))
-
-    t_value <-
-      stats::qt(0.975, df = stats::df.residual(model))
-
-    dNew$lower_CI <- dNew$fit - t_value * value
-    dNew$upper_CI <- dNew$fit + t_value * value
-  }
-
-  dNew <-
-    rescale_comp(dNew, comp_labels = comp_labels, comp_sum = comp_sum)
-
-  if (terms == FALSE) {
-    short_form <- gsub(".*~", "", as.character(stats::formula(model)))
-    print(paste("Covariate values were fixed at: "))
-    variables <- strsplit(short_form[3], " + ", fixed = TRUE)[[1]]
-    for (variable in variables[!(variables %in% transf_labels)]) {
-      print(paste(variable, ":", fixed_values[1, variable]))
+      # Calculate CI on HR scale
+      dNew$lower_CI <-
+        dNew$fit * exp(-(z_value * dNew$se.fit))
+      dNew$upper_CI <-
+        dNew$fit * exp(+(z_value * dNew$se.fit))
     }
   }
 
-  return(dNew)
-}
+
+    # NB both the logistic and Cox functions for non-terms are a bit awkward
+    # because of the need to rename fit in the returned data frame
+    # Would be better if more disciplined about columns and column names
+    # in returned data frame
+
+
+    if (type == "linear") {
+      t_value <-
+        stats::qt(0.975, df = stats::df.residual(model)) # t value calculation is same for both
+
+      if (terms) {
+        # Terms predictions
+        predictions <-
+          stats::predict(
+            model,
+            newdata = new_data,
+            type = "terms",
+            terms = transf_labels,
+            se.fit = TRUE
+          )
+        dNew <- data.frame(new_data, predictions)
+
+        # Sum terms predictions to get linear predictions
+        vector_for_args <-   paste("dNew$fit.", transf_labels, sep = "")
+        sum_for_args <- paste0(vector_for_args, collapse = "+")
+
+        dNew$fit <- eval(parse(text = sum_for_args))
+
+
+        # Calculate SE on this estimate using variance-covariance matrix
+        middle_matrix <-
+          stats::vcov(model)[transf_labels, transf_labels]
+
+        x <-
+          data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
+        t_x <- data.matrix(as.matrix(t(x)))
+
+        in_sqrt_true <- diag((x %*% middle_matrix) %*% t_x)
+        value <- sqrt(data.matrix(in_sqrt_true))
+
+        # Calculate CI
+        dNew$lower_CI <- dNew$fit - t_value * value
+        dNew$upper_CI <- dNew$fit + t_value * value
+
+      } else {
+        # Predictions directly
+        predictions <-
+          stats::predict(model,
+                         newdata = new_data,
+                         type = "response",
+                         se.fit = TRUE)
+        dNew <- data.frame(new_data, predictions)
+
+        # Calculate CI
+        dNew$lower_CI <- dNew$fit - t_value * dNew$se.fit
+        dNew$upper_CI <- dNew$fit + t_value * dNew$se.fit
+      }
+    }
+
+    # Composition to output scale
+    dNew <-
+      rescale_comp(dNew, comp_labels = comp_labels, comp_sum = comp_sum)
+
+    # Print some details if non-terms
+    if (!terms) {
+      short_form <- gsub(".*~", "", as.character(stats::formula(model)))
+      print(paste("Covariate values were fixed at: "))
+      variables <- strsplit(short_form[3], " + ", fixed = TRUE)[[1]]
+      for (variable in variables[!(variables %in% transf_labels)]) {
+        print(paste(variable, ":", fixed_values[1, variable]))
+      }
+    }
+
+    return(dNew)
+  }

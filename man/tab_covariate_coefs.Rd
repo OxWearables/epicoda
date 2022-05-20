@@ -27,5 +27,5 @@ tab_covariate_coefs(
 Table of covariates and their associated coefficients (parameter value with lower and upper confidence interval). Note that, unlike the plotting and some other default model summary functions in R, this uses confidence intervals based on stats::confint.
 }
 \description{
-This pulls out a table of the coefficients of the covariates only in the model.
+This pulls out a table of the coefficients of the covariates only in the model. Confidence intervals are calculated using `confint`.  The function may fail for logistic regression if the MASS package is not installed.
 }

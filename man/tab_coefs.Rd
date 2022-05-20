@@ -49,7 +49,7 @@ Embedded zero imputation is for convenience only. It may be advisable to perform
 Table of all model coefficients (parameter value with lower and upper confidence interval of the 95% ), using the first pivot coordinates for all compositional coefficients.
 }
 \description{
-This pulls out a table of the coefficients of the models.
+This pulls out a table of the coefficients of the models. Confidence intervals are calculated using `confint`. The function may fail for logistic regression if the MASS package is not installed.
 }
 \examples{
 tab_coefs(scale_type = "lp", # This argument can be "lp" or "exp" and determines whether
