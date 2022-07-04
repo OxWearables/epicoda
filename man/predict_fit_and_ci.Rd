@@ -16,9 +16,9 @@ predict_fit_and_ci(
 )
 }
 \arguments{
-\item{model}{Model to use for predictions.}
+\item{model}{Model to use in estimates/predictions.}
 
-\item{new_data}{Data for predictions.}
+\item{new_data}{New data to use in estimates/predictions.}
 
 \item{comp_labels}{The labels of the compositional columns.}
 
@@ -33,7 +33,7 @@ predict_fit_and_ci(
 \item{fixed_values}{If \code{terms = FALSE}, this gives the fixed values of the non-compositional covariates at which to calculate the prediction. It is generated automatically if not set. It does not usually need setting, and makes no difference to the output if `terms = TRUE`.}
 }
 \value{
-Plot with balance of two parts plotted as exposure/ independent variable.
+Data frame with estimates/predictions.
 }
 \description{
 Principally intended as input to forest_plot_examples and plot_transfers.

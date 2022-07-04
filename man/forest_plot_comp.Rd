@@ -27,7 +27,7 @@ forest_plot_comp(
 \arguments{
 \item{composition_list}{Named list of compositions. Note each composition should be stored as a data frame. For example, use the output of \code{change_composition}.}
 
-\item{model}{Model to use for predictions.}
+\item{model}{Model to use in estimates/predictions.}
 
 \item{models_list}{If \code{model} is \code{NULL} (or not set), a named list of models for which to plot model predictions in the forest plot. All models should have the same type.}
 

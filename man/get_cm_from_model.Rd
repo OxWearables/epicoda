@@ -7,7 +7,7 @@
 get_cm_from_model(model, comp_labels, transf_labels)
 }
 \arguments{
-\item{model}{Model to use for predictions.}
+\item{model}{Model to use in estimates/predictions.}
 
 \item{comp_labels}{The labels of the compositional columns.}
 
