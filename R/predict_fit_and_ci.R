@@ -6,13 +6,13 @@
 #' and the z-distribution for logistic and Cox regression, to match the behaviour of \code{summary()} for these model objects. As long as there are a reasonable
 #' number of samples (at least 30, say) the difference between the two is negligible.
 #'
-#' @param model Model to use for predictions.
-#' @param new_data Data for predictions.
+#' @param model Model to use in estimates/predictions.
+#' @param new_data New data to use in estimates/predictions.
 #' @param terms Are estimates for differences in outcome associated with differences in compositional variables? If \code{terms = TRUE} all estimates and plots will be for difference in outcome associated with differences in the compositional variables. If \code{terms = FALSE}, \code{fixed_values} is used to set the values of the non-compositional covariates, and outputs are predictions for the outcome based on these values of the non-compositional covariates and the given value of the compositional variables (and confidence intervals include uncertainty due to all variables in the model, not just the compositional variables). Note that for logistic regression models with \code{terms = TRUE} estimates are odds ratios; for logistic regression models with \code{terms = FALSE} estimates are probabilities (i.e. predictions on the response scale).
 #' @param fixed_values If \code{terms = FALSE}, this gives the fixed values of the non-compositional covariates at which to calculate the prediction. It is generated automatically if not set. It does not usually need setting, and makes no difference to the output if `terms = TRUE`.
 #' @inheritParams transform_comp
 #' @inheritParams process_units
-#' @return Plot with balance of two parts plotted as exposure/ independent variable.
+#' @return Data frame with estimates/predictions.
 #' @export
 #' @examples
 #' lm_outcome <- comp_model(type = "linear",

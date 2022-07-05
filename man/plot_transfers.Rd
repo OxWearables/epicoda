@@ -33,7 +33,7 @@ plot_transfers(
 
 \item{to_part}{Should be an element of \code{comp_labels}.}
 
-\item{model}{Model to use for predictions.}
+\item{model}{Model to use in estimates/predictions.}
 
 \item{comp_labels}{The labels of the compositional columns.}
 
