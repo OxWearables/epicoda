@@ -13,9 +13,9 @@ Please note that:
 - The package is likely to be breakable with non-standard cases (e.g. 'NULL' or 'NA' values)
 - **Use of the package is strictly at your own risk**. 
 
-Please share comments, suggestions and errors/bugs found, either directly on the GitHub page or by emailing rosemary.walmsley@gtc.ox.ac.uk.* 
+Please share comments, suggestions and errors/bugs found, either directly on the GitHub page or by emailing rosemary.walmsley@bdi.ox.ac.uk.* 
 
-We are actively seeking review of the code - if you are able to provide feedback, we would love to hear from you (either on GitHub or at rosemary.walmsley@gtc.ox.ac.uk). If you would like to co-develop the package, please also get in touch.
+We are actively seeking review of the code - if you are able to provide feedback, we would love to hear from you (either on GitHub or at rosemary.walmsley@bdi.ox.ac.uk). If you would like to co-develop the package, please also get in touch.
 
 ## What is `epicoda`? 
 `epicoda` is an R package designed to support epidemiological analyses using compositional exposure variables. It provides wrappers for common epidemiological use cases. Simulated data (`simdata`) can be used to try out the functions, and a vignette illustrates the steps to carrying out an epidemiological analysis with a Compositional Data Analysis approach to the exposure. 
@@ -37,7 +37,7 @@ To see examples of what the package can do, see the vignette (long form document
 vignette("vignette-epicoda")
 ```
 ## Troubleshooting 
-This is the in-development version - please get in touch with any feedback or problems on this page, or by emailing rosemary.walmsley@gtc.ox.ac.uk. 
+This is the in-development version - please get in touch with any feedback or problems on this page, or by emailing rosemary.walmsley@bdi.ox.ac.uk. 
 
 Some issues we are aware of: 
 - The package was written using base R syntax with data formatted as a data frame. Some functions can fail if data is formatted as a tibble (as per tidyverse and [some R books](https://r4ds.had.co.nz/) ) - and it may not be obvious from the error message that this is the cause. [A simple fix](https://r4ds.had.co.nz/tibbles.html#interacting-with-older-code) is to reformat the data as a data frame before analysis (`as.data.frame(my_data)`).
