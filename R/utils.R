@@ -236,6 +236,10 @@ process_zeroes <-
       if ((class(model)[1]  == "coxph")) {
         type <- "cox"
       }
+      if ((class(model)[1] == "glm") &&
+          (stats::family(model)[[1]] == "poisson")) {
+        type <- "poisson"
+      }
       if (type == "unassigned") {
         stop("model is not a recognised type of model.")
       }
