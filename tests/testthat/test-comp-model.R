@@ -1,3 +1,4 @@
+simdata <- epicoda::simdata
 comp_labels <- c("vigorous", "moderate", "light", "sedentary", "sleep")
 min_val_in_data <- min(simdata$vigorous[simdata$vigorous > 0])
 
