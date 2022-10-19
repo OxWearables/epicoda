@@ -26,13 +26,13 @@ The results of Compositional Data Analyses can be presented graphically, using p
 
 Wherever results are presented, there are two options. The default is to set `terms = TRUE`, and present the predicted difference in the outcome at the different levels of the compositional variables. Implicitly, in this case, all other covariates are fixed.
 
-The alternative is to set `terms = FALSE`. In this case, the `fixed_values` argument is used (if `fixed_values` is `NULL`, the default, the `generate_fixed_values` function is used to set this argument internally, using median, modal and compositional mean values as appropriate). The plot shows model predictions for the specified composition and for additional (non-compositional) covariate values as given in `fixed_values`. 
+The alternative is to set `terms = FALSE`. In this case, the `fixed_values` argument is used (if `fixed_values` is `NULL`, the default, the `generate_fixed_values` function is used to set this argument internally, using mean, modal and compositional mean values as appropriate). The plot shows model predictions for the specified composition and for additional (non-compositional) covariate values as given in `fixed_values`. 
 
 ## Confidence intervals when `terms = TRUE`
 
 In all cases, using `predict` with `type = "terms"` gives fitted values of each specified term on the linear predictor scale i.e. for $x_1$ it returns $\beta_1 x_1$. If the (transformed) compositional variables are $z_1, z_2, ... z_n$ and these are the specified terms, then `predict` returns estimates of $\beta_1 z_1, \beta_2 z_2, ... \beta_n z_n$ which can be used to calculate $$\overline{\Delta y} = \beta_1 z_1 + \beta_2 z_2 + ... + \beta_n z_n.$$ We now need to calculate the uncertainty on this quantity. 
 
-This can be derived in the same way as the confidence interval on a model prediction is derived for a general model; the difference here is the use of a partial sum of terms, rather than the full sum of terms. For a linear regression model, the standard error of $\overline{\Delta y}$ is given by: $$ SE(\overline{\Delta y}) = \sigma \sqrt{diag\Big((x - \overline{x})(ZZ^{T})^{-1}(x-\overline{x})^T\Big)} $$ where $Z$ is the design matrix of the model, $\sigma$ is the residual variance, $x$ is the new values of the explanatory variables and $\overline{x}$ is the mean value of the explanatory variables in the data used to calculate the model. 
+This can be derived in the same way as the confidence interval on a model prediction is derived in general; the difference here is the use of a partial sum of terms, rather than the full sum of terms. For a linear regression model, the standard error of $\overline{\Delta y}$ is given by: $$ SE(\overline{\Delta y}) = \sigma \sqrt{diag\Big((x - \overline{x})(ZZ^{T})^{-1}(x-\overline{x})^T\Big)} $$ where $Z$ is the design matrix of the model, $\sigma$ is the residual variance, $x$ is the new values of the explanatory variables and $\overline{x}$ is the mean value of the explanatory variables in the data used to calculate the model. 
 
 As $$ \sigma ^2 (ZZ^{T})^{-1} $$ is the variance-covariance matrix of the coefficients of the fitted model (henceforth written $V$), this can be calculated as: $$ SE(\overline{\Delta y}) =  \sqrt{diag\Big((x - \overline{x})V(x-\overline{x})^T\Big)}. $$ This generalises immediately to the sum of linear predictors in logistic regression or Cox model (using the respective variance-covariance metrics for the coefficients), and is the version implemented in the package.  
 
@@ -49,5 +49,5 @@ Here, the terms given by the `predict` function are on the scale of the linear p
 
 
 ## Confidence intervals when `terms = FALSE`
-In this case, for linear, logistic and Cox models, the confidence intervals are the standard confidence intervals on the mean prediction, as calculated by the `predict` method. Note the intervals are *not* the prediction intervals (the intervals within which 95% of new observations $\overline{\Delta y}$ might be expected to fall given their $x$ values). 
+In this case, for linear, logistic and Cox models, the confidence intervals are the standard confidence intervals on the prediction, as calculated by the `predict` method. Note the intervals are *not* the prediction intervals (the intervals within which 95% of new observations $\overline{\Delta y}$ might be expected to fall given their $x$ values). 
 
