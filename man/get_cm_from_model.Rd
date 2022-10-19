@@ -14,7 +14,7 @@ get_cm_from_model(model, comp_labels, transf_labels)
 \item{transf_labels}{Ilr-transformed compositional column labels.}
 }
 \value{
-Dataset used to create model with compositional columns on original scale.
+Compositional mean of data used to create models, on both original and transformed scale (two element list).
 }
 \description{
 Used by predict_fit_and_ci and plot_transfers.

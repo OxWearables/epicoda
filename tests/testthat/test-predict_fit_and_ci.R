@@ -1,3 +1,4 @@
+simdata <- epicoda::simdata
 min_val_in_data <- min(simdata$vigorous[simdata$vigorous >0 ])
 lm_outcome <- comp_model(
   type = "linear",
@@ -171,6 +172,30 @@ test_that("wrong labels for composition throws error", {
       comp_labels = c("viggy", "moderate", "light", "sedentary", "sleep", "extra")
     ))
 })
+
+#==============
+# Equality with calculation using coefficients
+comp_labels <- c("vigorous", "moderate", "light", "sedentary", "sleep")
+transf_comp <- transform_comp(new_comp, comp_labels = comp_labels)
+tl <- transf_labels(comp_labels, "ilr")
+transf_comp_mean <- get_cm_from_model(lm_outcome, comp_labels = comp_labels, transf_labels = tl)[[2]]
+delta_comp <- transf_comp[, tl] - transf_comp_mean[, tl]
+
+models_list <- list("linear"= lm_outcome, "logistic" = log_outcome, "cox" = cox_outcome)
+for (name in names(models_list)){
+  model <- models_list[[name]]
+  terms_pred <- as.matrix(delta_comp) %*% coef(model)[tl]
+  sum_pred <- apply(terms_pred, 1, sum)
+  assign(paste0(name, "_sumfit"), sum_pred)
+  fitfromfunction <- predict_fit_and_ci(model, new_comp, comp_labels)$fit
+  if (name %in% c("logistic", "cox")){
+    fitfrombasics <- exp(sum_pred)
+  } else if (name %in% c("linear")) {fitfrombasics <- sum_pred}
+  test_that("terms predictions for fit correct", {
+    expect_equal(fitfromfunction, fitfrombasics)
+  })
+
+}
 
 #==============
 # Test against deltacomp package

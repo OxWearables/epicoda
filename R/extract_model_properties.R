@@ -61,7 +61,7 @@ get_dataset_from_model <- function(model, comp_labels, transf_labels, type){
 #'
 #' @inheritParams predict_fit_and_ci
 #' @param transf_labels Ilr-transformed compositional column labels.
-#' @return Dataset used to create model with compositional columns on original scale.
+#' @return Compositional mean of data used to create models, on both original and transformed scale (two element list).
 #' @export
 #' @examples
 #' lm_outcome <- comp_model(
