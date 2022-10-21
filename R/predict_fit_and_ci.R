@@ -57,6 +57,9 @@ predict_fit_and_ci <- function(model,
   # We assign some internal parameters
   type <- process_model_type(model)
 
+  # We coerce to data frame
+  new_data <- as.data.frame(new_data)
+
   # We normalise
   new_data <- normalise_comp(new_data, comp_labels = comp_labels)
 
