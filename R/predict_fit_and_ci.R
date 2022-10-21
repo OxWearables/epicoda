@@ -121,8 +121,7 @@ predict_fit_and_ci <- function(model,
   for (colname in colnames(fixed_values)) {
     if (!(colname %in% colnames(new_data)) &
         !(colname %in% transf_labels)) {
-      new_data[, colname] <-
-        rep(fixed_values[1, colname], by = nrow(new_data))
+      new_data[, colname] <- fixed_values[1, colname]
     }
   }
 
@@ -171,8 +170,8 @@ predict_fit_and_ci <- function(model,
         stats::vcov(model)[transf_labels, transf_labels]
 
       x <-
-        data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
-      t_x <- data.matrix(as.matrix(t(x)))
+        data.matrix(new_data[, transf_labels] - cm_transf_df[rep(1, nrow(new_data)), transf_labels])
+      t_x <- t(x)
 
       in_sqrt_true <- diag((x %*% middle_matrix) %*% t_x)
       value <- sqrt(data.matrix(in_sqrt_true))
@@ -225,8 +224,8 @@ predict_fit_and_ci <- function(model,
         stats::vcov(model)[transf_labels, transf_labels]
 
       x <-
-        data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
-      t_x <- data.matrix(as.matrix(t(x)))
+        data.matrix(new_data[, transf_labels] - cm_transf_df[rep(1, nrow(new_data)), transf_labels])
+      t_x <- t(x)
 
       in_sqrt_true <- diag((x %*% middle_matrix) %*% t_x)
       value <- sqrt(data.matrix(in_sqrt_true))
@@ -291,8 +290,8 @@ predict_fit_and_ci <- function(model,
           stats::vcov(model)[transf_labels, transf_labels]
 
         x <-
-          data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
-        t_x <- data.matrix(as.matrix(t(x)))
+          data.matrix(new_data[, transf_labels] - cm_transf_df[rep(1, nrow(new_data)), transf_labels])
+        t_x <- t(x)
 
         in_sqrt_true <- diag((x %*% middle_matrix) %*% t_x)
         value <- sqrt(data.matrix(in_sqrt_true))

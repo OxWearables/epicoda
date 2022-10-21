@@ -21,7 +21,7 @@ Imports:
     scales (>= 1.0.0), 
     forestplot (>= 1.9), 
     utils (>= 3.6.1)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.1
 Suggests: 
     testthat (>= 3.0.0),
     ggtern (>= 3.1.0), 
