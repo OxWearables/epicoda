@@ -252,15 +252,14 @@ forest_plot_comp <-
 
     attr(req_seq, "labels") <- req_seq_labs
 
-    data_frame_for_forest_plot <- rbind( rep(vline_loc, by = ncol(data_frame_for_forest_plot)), data_frame_for_forest_plot)
+    data_frame_for_forest_plot <- rbind(vline_loc, data_frame_for_forest_plot)
 
     if (terms){
-       tabletext <- cbind(c( "REFERENCE: At compositional mean", col_of_names))
+       tabletext <- cbind(c("REFERENCE: At compositional mean", col_of_names))
     }
     if (!(terms)){
       tabletext <- cbind(c(NA, col_of_names))
     }
-
 
     col_vec <- grDevices::hcl.colors(n = length(models_list), palette = "dark2")
     fp <- forestplot::forestplot(
