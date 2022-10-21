@@ -28,8 +28,8 @@ ilr_trans_inv <- function(data){
   transformation_matrix <- create_transformation_matrix(ncol(data) + 1)
   transformation_matrix_t <- t(transformation_matrix)
 
-  matrixA <- rbind(transformation_matrix_t, rep(1, by = ncol(transformation_matrix_t)))
-  aug_data <- cbind(data, rep(0, by = nrow(data)))
+  matrixA <- rbind(transformation_matrix_t, 1)
+  aug_data <- cbind(data, "zero_col" = 0)
 
   Ainv <- solve(matrixA)
 
