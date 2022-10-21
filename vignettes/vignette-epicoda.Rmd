@@ -374,7 +374,7 @@ For additional information on how to customise the functions, see the manual by 
 
 As well as linear models, we can produce logistic and Cox models:
 ```{r}
-log_outcome <- comp_model(type = "logistic",
+logistic_outcome <- comp_model(type = "logistic",
          outcome = "disease",
          covariates = c("agegroup", "sex"),
          data = simdata,
