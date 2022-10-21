@@ -93,7 +93,8 @@ predict_fit_and_ci <- function(model,
                       transf_labels = transf_labels)$cm_transf_df
 
   # We assign some fixed_values to use in predicting
-  if (!(is.null(fixed_values))) {
+  # NOTE: this is only used to fill out non-compositional columns if they are not assigned in the new data that was passed to it
+    if (!(is.null(fixed_values))) {
     if (length(colnames(fixed_values)[colnames(fixed_values) %in% comp_labels]) > 0) {
       message(
         "fixed_values will be updated to have compositional parts fixed at the compositional mean. For technical and pragmatic reasons, use of a different reference for the compositional parts is not currently possible."
@@ -109,16 +110,6 @@ predict_fit_and_ci <- function(model,
                             comp_labels)
     fixed_values <- cbind(fixed_values, cm)
   }
-
-  transf_fixed_vals <- suppressMessages(
-    transform_comp(
-      fixed_values[, colnames(fixed_values)[!(colnames(fixed_values) %in% transf_labels)]],
-      comp_labels,
-      transformation_type = "ilr",
-      part_1 = part_1,
-      rounded_zeroes = FALSE
-    )
-  )
 
   # Fill in new data with values from fixed_values where it's missing
   for (colname in colnames(fixed_values)) {
