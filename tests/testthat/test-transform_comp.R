@@ -58,16 +58,16 @@ test_that("output matches that of pivotCoord complete", {
   expect_equal(t1, t2)
 })
 #
-# x <- exp(rnorm(5))
-# y <- exp(rnorm(5, x))
-# z <- rep(3, by = 5)
-# ddum <- data.frame(cbind(x = x, y = y, z = z))
-# test_that("output matches that of pivotCoord dummy input", {
-#   t1 <- transform_comp(data = ddum,
-#                        comp_labels = c("x", "y", "z"),
-#                        transformation_type = "ilr", rounded_zeroes = FALSE)[2:5, 4:5]
-#   t2 <- robCompositions::pivotCoord(ddum)[2:5,1:2]
-#   colnames(t1) <- colnames(t2)
-#
-#   expect_equal(t1, t2)
-# })
+x <- exp(rnorm(5))
+y <- exp(rnorm(5, x))
+z <- rep(3, 5)
+ddum <- data.frame(cbind(x = x, y = y, z = z))
+test_that("output matches that of pivotCoord dummy input", {
+  t1 <- transform_comp(data = ddum,
+                       comp_labels = c("x", "y", "z"),
+                       transformation_type = "ilr", rounded_zeroes = FALSE)[2:5, 4:5]
+  t2 <- robCompositions::pivotCoord(ddum)[2:5,1:2]
+  colnames(t1) <- colnames(t2)
+
+  expect_equal(t1, t2)
+})
