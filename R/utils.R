@@ -255,18 +255,18 @@ process_zeroes <-
       if ((is.null(label)) & (terms) & (type == "linear")) {
         label <- "Model-predicted difference in outcome"
       }
-      if ((is.null(label)) & !(terms) & (type == "logistic")) {
-        label <- "Model-predicted probability"
-      }
       if ((is.null(label)) & (terms) & (type == "logistic")) {
         label <- "Model-predicted OR"
+      }
+      if ((is.null(label)) & !(terms) & (type == "logistic")) {
+        label <- "Model-predicted probability"
       }
       if ((is.null(label)) &  (type == "cox")) {
         label <- "Model-predicted HR"
       }
-      if ((is.null(label)) & (terms == FALSE)) {
+      if ((is.null(label)) & !(terms)) {
         label <- "Model-predicted outcome"
-      }
+      } # This is after all others as a catch all - if the label hasn't already been assigned (which it should have been for Cox/logistic) and predictions are not for terms, predictions are just for overall outcome
       if (label == "suppressed" | label == "Suppressed") {
         label <- NULL
       }

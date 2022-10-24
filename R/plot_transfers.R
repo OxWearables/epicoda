@@ -184,9 +184,9 @@ plot_transfers <- function(from_part,
 
   # We pull out the required values on the needed scale
   dNew$axis_vals <-
-    dNew[, to_part] - rep(cm_on_scale[1, to_part], by = nrow(dNew))
+    dNew[, to_part] - cm_on_scale[rep(1, nrow(dNew)), to_part]
   dNew$axis_vals2 <-
-    -dNew[, from_part] + rep(cm_on_scale[1, from_part], by = nrow(dNew))
+    -dNew[, from_part] + cm_on_scale[rep(1, nrow(dNew)), from_part]
 
   # Check no pathology in axis value assignment
   if (!(isTRUE(all.equal(dNew$axis_vals, dNew$axis_vals2)))){

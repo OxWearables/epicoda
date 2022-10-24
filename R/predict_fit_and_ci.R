@@ -57,6 +57,9 @@ predict_fit_and_ci <- function(model,
   # We assign some internal parameters
   type <- process_model_type(model)
 
+  # We coerce to data frame
+  new_data <- as.data.frame(new_data)
+
   # We normalise
   new_data <- normalise_comp(new_data, comp_labels = comp_labels)
 
@@ -90,7 +93,11 @@ predict_fit_and_ci <- function(model,
                       transf_labels = transf_labels)$cm_transf_df
 
   # We assign some fixed_values to use in predicting
-  if (!(is.null(fixed_values))) {
+  # NOTE: this is only used to fill out non-compositional columns if they are not assigned in the new data that was passed to it
+    if (!(is.null(fixed_values))) {
+      if (nrow(fixed_values) > 1){
+        warning("Only the first row of the fixed_values data frame will be used.")
+      }
     if (length(colnames(fixed_values)[colnames(fixed_values) %in% comp_labels]) > 0) {
       message(
         "fixed_values will be updated to have compositional parts fixed at the compositional mean. For technical and pragmatic reasons, use of a different reference for the compositional parts is not currently possible."
@@ -107,22 +114,11 @@ predict_fit_and_ci <- function(model,
     fixed_values <- cbind(fixed_values, cm)
   }
 
-  transf_fixed_vals <- suppressMessages(
-    transform_comp(
-      fixed_values[, colnames(fixed_values)[!(colnames(fixed_values) %in% transf_labels)]],
-      comp_labels,
-      transformation_type = "ilr",
-      part_1 = part_1,
-      rounded_zeroes = FALSE
-    )
-  )
-
   # Fill in new data with values from fixed_values where it's missing
   for (colname in colnames(fixed_values)) {
     if (!(colname %in% colnames(new_data)) &
         !(colname %in% transf_labels)) {
-      new_data[, colname] <-
-        rep(fixed_values[1, colname], by = nrow(new_data))
+      new_data[, colname] <- fixed_values[1, colname]
     }
   }
 
@@ -171,8 +167,8 @@ predict_fit_and_ci <- function(model,
         stats::vcov(model)[transf_labels, transf_labels]
 
       x <-
-        data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
-      t_x <- data.matrix(as.matrix(t(x)))
+        data.matrix(new_data[, transf_labels] - cm_transf_df[rep(1, nrow(new_data)), transf_labels])
+      t_x <- t(x)
 
       in_sqrt_true <- diag((x %*% middle_matrix) %*% t_x)
       value <- sqrt(data.matrix(in_sqrt_true))
@@ -225,8 +221,8 @@ predict_fit_and_ci <- function(model,
         stats::vcov(model)[transf_labels, transf_labels]
 
       x <-
-        data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
-      t_x <- data.matrix(as.matrix(t(x)))
+        data.matrix(new_data[, transf_labels] - cm_transf_df[rep(1, nrow(new_data)), transf_labels])
+      t_x <- t(x)
 
       in_sqrt_true <- diag((x %*% middle_matrix) %*% t_x)
       value <- sqrt(data.matrix(in_sqrt_true))
@@ -291,8 +287,8 @@ predict_fit_and_ci <- function(model,
           stats::vcov(model)[transf_labels, transf_labels]
 
         x <-
-          data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
-        t_x <- data.matrix(as.matrix(t(x)))
+          data.matrix(new_data[, transf_labels] - cm_transf_df[rep(1, nrow(new_data)), transf_labels])
+        t_x <- t(x)
 
         in_sqrt_true <- diag((x %*% middle_matrix) %*% t_x)
         value <- sqrt(data.matrix(in_sqrt_true))
