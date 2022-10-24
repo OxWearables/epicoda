@@ -95,6 +95,9 @@ predict_fit_and_ci <- function(model,
   # We assign some fixed_values to use in predicting
   # NOTE: this is only used to fill out non-compositional columns if they are not assigned in the new data that was passed to it
     if (!(is.null(fixed_values))) {
+      if (nrow(fixed_values) > 1){
+        warning("Only the first row of the fixed_values data frame will be used.")
+      }
     if (length(colnames(fixed_values)[colnames(fixed_values) %in% comp_labels]) > 0) {
       message(
         "fixed_values will be updated to have compositional parts fixed at the compositional mean. For technical and pragmatic reasons, use of a different reference for the compositional parts is not currently possible."
