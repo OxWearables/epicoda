@@ -64,8 +64,8 @@ forest_plot_comp <-
            terms = TRUE,
            units = "unitless",
            specified_units = NULL,
-           fixed_values = NULL,
            part_1 = NULL,
+           fixed_values = NULL,
            ...) {
 
     if (!is.list(composition_list)) {
@@ -125,12 +125,12 @@ forest_plot_comp <-
       dNew <- predict_fit_and_ci(
         model = model,
         new_data = df,
-        fixed_values = fixed_values,
-        part_1 = part_1,
         comp_labels = comp_labels,
+        terms = terms,
+        part_1 = part_1,
         units = units,
         specified_units = specified_units,
-        terms = terms
+        fixed_values = fixed_values
       )
 
 
@@ -269,7 +269,7 @@ forest_plot_comp <-
       lower = data_frame_for_forest_plot[, colnames(data_frame_for_forest_plot)[grepl("low", colnames(data_frame_for_forest_plot))]],
       upper = data_frame_for_forest_plot[, colnames(data_frame_for_forest_plot)[grepl("high", colnames(data_frame_for_forest_plot))]],
       xlog = plot_log,
-      clip = c(xllimit -0.05, xulimit + 0.05),
+      clip = c(xllimit - 0.05, xulimit + 0.05),
       xticks = req_seq,
       xlab = x_label,
       zero = vline_loc,
