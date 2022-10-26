@@ -219,6 +219,8 @@ plot_transfers <- function(from_part,
 
   # We begin the plotting
   if (type == "logistic") {
+    yintercept_hline <- ifelse(terms, 1, NULL) # Only put hline for no difference when terms = TRUE
+
     if (plot_log == TRUE) {
       plot_of_this <-
         # DATA
@@ -255,8 +257,8 @@ plot_transfers <- function(from_part,
         ) +
 
         # LINES FOR SPECIAL VALUES
+        ggplot2::geom_hline(yintercept = yintercept_hline) +
         ggplot2::geom_vline(xintercept = 0) +
-        ggplot2::geom_hline(yintercept = 1) + # NOTE THIS hline doesn't make much sense when terms = FALSE, but will just fall off plot
 
         # PLOTTING THEME
         theme_for_plots
@@ -290,8 +292,8 @@ plot_transfers <- function(from_part,
         ) +
 
         # LINES FOR SPECIAL VALUES
+        ggplot2::geom_hline(yintercept = yintercept_hline) +
         ggplot2::geom_vline(xintercept = 0) +
-        ggplot2::geom_hline(yintercept = 1) + # NOTE THIS hline doesn't make much sense when terms = FALSE, but will just fall off plot
 
         # THEMES
         theme_for_plots
@@ -306,6 +308,8 @@ plot_transfers <- function(from_part,
 
 
   if (type == "cox") {
+    yintercept_hline <- ifelse(terms, 1, NULL) # Only put hline for no difference when terms = TRUE
+
     if (plot_log == TRUE) {
       plot_of_this <-
         # DATA
@@ -333,7 +337,7 @@ plot_transfers <- function(from_part,
         ) +
 
         # LINES FOR SPECIAL VALUES
-        ggplot2::geom_hline(yintercept = 1) +
+        ggplot2::geom_hline(yintercept = yintercept_hline) +
         ggplot2::geom_vline(xintercept = 0) +
 
         # MORE SCALES (FOR LOG TRANSFORMED AXIS) - eventually should be with the above but currently regression tests note done
@@ -375,7 +379,7 @@ plot_transfers <- function(from_part,
         ) +
 
         # LINES FOR SPECIAL VALUES
-        ggplot2::geom_hline(yintercept = 1) +
+        ggplot2::geom_hline(yintercept = yintercept_hline) +
         ggplot2::geom_vline(xintercept = 0) +
 
         # THEME
@@ -389,6 +393,8 @@ plot_transfers <- function(from_part,
 
 
   if (type == "linear") {
+    yintercept_hline <- ifelse(terms, 0, NULL) # Only put hline for no difference when terms = TRUE
+
     if (plot_log == TRUE) {
       if (terms) {
         warning(
@@ -430,8 +436,9 @@ plot_transfers <- function(from_part,
         ) +
 
         # LINES FOR SPECIAL VALUES
+        ggplot2::geom_hline(yintercept = yintercept_hline) +
         ggplot2::geom_vline(xintercept = 0) +
-        ggplot2::geom_hline(yintercept = 0) +
+
 
         # THEME
         theme_for_plots
@@ -464,8 +471,8 @@ plot_transfers <- function(from_part,
         ) +
 
         # LINES FOR SPECIAL VALUES
+        ggplot2::geom_hline(yintercept = yintercept_hline) +
         ggplot2::geom_vline(xintercept = 0) +
-        ggplot2::geom_hline(yintercept = 0) + # NOTE THIS hline doesn't make much sense when terms = FALSE, but will usually just fall off plot
 
         # THEME
         theme_for_plots
