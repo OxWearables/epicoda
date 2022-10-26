@@ -221,9 +221,14 @@ plot_transfers <- function(from_part,
   if (type == "logistic") {
     if (plot_log == TRUE) {
       plot_of_this <-
+        # DATA
         ggplot2::ggplot(data = dNew,
                         mapping = ggplot2::aes(x = axis_vals, y = fit)) +
+
+        # SCALES
         ggplot2::xlim(xllimit, xulimit) +
+
+        # ADD GEOMS
         ggplot2::geom_errorbar(
           ggplot2::aes(
             x = axis_vals,
@@ -233,10 +238,14 @@ plot_transfers <- function(from_part,
           color = error_bar_colour
         ) +
         point_specification +
+
+        # LABELS
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label
         ) +
+
+        # MORE SCALES (FOR LOG TRANSFORMED AXIS) - eventually should be with the above but currently regression tests note done
         ggplot2::scale_y_continuous(
           trans = scales::log_trans(),
           breaks = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.2),
@@ -244,16 +253,26 @@ plot_transfers <- function(from_part,
           minor.breaks = NULL,
           limits = c(yllimit, yulimit)
         ) +
+
+        # LINES FOR SPECIAL VALUES
         ggplot2::geom_vline(xintercept = 0) +
-        ggplot2::geom_hline(yintercept = 1) +
+        ggplot2::geom_hline(yintercept = 1) + # NOTE THIS hline doesn't make much sense when terms = FALSE, but will just fall off plot
+
+        # PLOTTING THEME
         theme_for_plots
     }
 
     else {
       plot_of_this <-
+        # DATA
         ggplot2::ggplot(data = dNew,
                         mapping = ggplot2::aes(x = axis_vals, y = fit)) +
-        ggplot2::ylim(yllimit, yulimit) + ggplot2::xlim(xllimit, xulimit) +
+
+        # SCALES
+        ggplot2::ylim(yllimit, yulimit) +
+        ggplot2::xlim(xllimit, xulimit) +
+
+        # GEOMS
         ggplot2::geom_errorbar(
           ggplot2::aes(
             x = axis_vals,
@@ -263,12 +282,18 @@ plot_transfers <- function(from_part,
           color = error_bar_colour
         ) +
         point_specification +
+
+        # LABELS
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label
         ) +
+
+        # LINES FOR SPECIAL VALUES
         ggplot2::geom_vline(xintercept = 0) +
-        ggplot2::geom_hline(yintercept = 1) +
+        ggplot2::geom_hline(yintercept = 1) + # NOTE THIS hline doesn't make much sense when terms = FALSE, but will just fall off plot
+
+        # THEMES
         theme_for_plots
     }
   }
@@ -283,9 +308,14 @@ plot_transfers <- function(from_part,
   if (type == "cox") {
     if (plot_log == TRUE) {
       plot_of_this <-
+        # DATA
         ggplot2::ggplot(data = dNew,
                         mapping = ggplot2::aes(x = axis_vals, y = fit)) +
+
+        # SCALES
         ggplot2::xlim(xllimit, xulimit) +
+
+        # GEOMS
         ggplot2::geom_errorbar(
           ggplot2::aes(
             x = axis_vals,
@@ -295,12 +325,18 @@ plot_transfers <- function(from_part,
           color = error_bar_colour
         ) +
         point_specification +
+
+        # LABELS
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label
         ) +
+
+        # LINES FOR SPECIAL VALUES
         ggplot2::geom_hline(yintercept = 1) +
         ggplot2::geom_vline(xintercept = 0) +
+
+        # MORE SCALES (FOR LOG TRANSFORMED AXIS) - eventually should be with the above but currently regression tests note done
         ggplot2::scale_y_continuous(
           trans = scales::log_trans(),
           breaks = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.1),
@@ -308,13 +344,20 @@ plot_transfers <- function(from_part,
           minor_breaks = NULL,
           limits = c(yllimit, yulimit)
         ) +
+
+        # THEME
         theme_for_plots
     }
     else {
       plot_of_this <-
+        # DATA
         ggplot2::ggplot(data = dNew,
                         mapping = ggplot2::aes(x = axis_vals, y = fit)) +
-        ggplot2::ylim(yllimit, yulimit) + ggplot2::xlim(xllimit, xulimit) +
+        # SCALES
+        ggplot2::ylim(yllimit, yulimit) +
+        ggplot2::xlim(xllimit, xulimit) +
+
+        # GEOMS
         ggplot2::geom_errorbar(
           ggplot2::aes(
             x = axis_vals,
@@ -324,12 +367,18 @@ plot_transfers <- function(from_part,
           color = error_bar_colour
         ) +
         point_specification +
+
+        # LABELS
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label
         ) +
+
+        # LINES FOR SPECIAL VALUES
         ggplot2::geom_hline(yintercept = 1) +
         ggplot2::geom_vline(xintercept = 0) +
+
+        # THEME
         theme_for_plots
     }
   }
@@ -347,9 +396,14 @@ plot_transfers <- function(from_part,
         )
       }
       plot_of_this <-
+        # DATA
         ggplot2::ggplot(data = dNew,
                         mapping = ggplot2::aes(x = axis_vals, y = fit)) +
+
+        # SCALES
         ggplot2::xlim(xllimit, xulimit) +
+
+        # GEOMS
         ggplot2::geom_errorbar(
           ggplot2::aes(
             x = axis_vals,
@@ -359,10 +413,14 @@ plot_transfers <- function(from_part,
           color = error_bar_colour
         ) +
         point_specification +
+
+        # LABELS
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label
         ) +
+
+        #  MORE SCALES (FOR LOG TRANSFORMED AXIS) - eventually should be with the above but currently regression tests note done
         ggplot2::scale_y_continuous(
           trans = scales::log_trans(),
           breaks = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.2),
@@ -370,15 +428,25 @@ plot_transfers <- function(from_part,
           minor_breaks = NULL,
           limits = c(yllimit, yulimit)
         ) +
+
+        # LINES FOR SPECIAL VALUES
         ggplot2::geom_vline(xintercept = 0) +
         ggplot2::geom_hline(yintercept = 0) +
+
+        # THEME
         theme_for_plots
     }
     else {
       plot_of_this <-
+        # DATA
         ggplot2::ggplot(data = dNew,
                         mapping = ggplot2::aes(x = axis_vals, y = fit)) +
-        ggplot2::ylim(yllimit, yulimit) + ggplot2::xlim(xllimit, xulimit) +
+
+        # SCALES
+        ggplot2::ylim(yllimit, yulimit) +
+        ggplot2::xlim(xllimit, xulimit) +
+
+        # GEOMS
         ggplot2::geom_errorbar(
           ggplot2::aes(
             x = axis_vals,
@@ -388,12 +456,18 @@ plot_transfers <- function(from_part,
           color = error_bar_colour
         ) +
         point_specification +
+
+        # LABELS
         ggplot2::labs(
           x = paste("More", from_part, "\U2194", "More", to_part, "\n " , units),
           y = y_label
         ) +
+
+        # LINES FOR SPECIAL VALUES
         ggplot2::geom_vline(xintercept = 0) +
-        ggplot2::geom_hline(yintercept = 0) +
+        ggplot2::geom_hline(yintercept = 0) + # NOTE THIS hline doesn't make much sense when terms = FALSE, but will usually just fall off plot
+
+        # THEME
         theme_for_plots
     }
   }
