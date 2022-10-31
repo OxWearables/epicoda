@@ -167,6 +167,7 @@ for (cov_vec in list(NULL, c("agegroup"), c("agegroup", "sex"))){{
 }}
 
 # Two ways of producing same model are equivalent -------------------------------------------------
+comp_labels <- c("vigorous", "moderate", "light", "sedentary", "sleep")
 m1 <- epicoda::comp_model(type = "cox",
                     follow_up_time = "follow_up_time",
                     event = "event",
@@ -182,3 +183,42 @@ test_that("Two ways of producing same model are equivalent", {
   expect_equal(coef(m1), coef(m2))
 })
 
+# TEST THAT ROUNDED ZEROES ARGUMENT WORKS AS EXPECTED ----------------------------------------------
+sd_zf <- simdata[simdata$vigorous != 0,]
+# Pre do zero drop
+m1 <- epicoda::comp_model(type = "cox",
+                          follow_up_time = "follow_up_time",
+                          event = "event",
+                          covariates = c("agegroup", "sex"),
+                          data = sd_zf,
+                          comp_labels = comp_labels, det_limit = min_val_in_data)
+
+m2 <- epicoda::comp_model(type = "linear",
+                          outcome = "BMI",
+                          data = sd_zf,
+                          comp_labels = comp_labels)
+
+# Post do zero drop
+m3 <-epicoda::comp_model(type = "cox",
+                         follow_up_time = "follow_up_time",
+                         event = "event",
+                         covariates = c("agegroup", "sex"),
+                         data = sd_zf,
+                         comp_labels = comp_labels, rounded_zeroes = F)
+
+m4 <- epicoda::comp_model(type = "linear",
+                          outcome = "BMI",
+                          data = sd_zf,
+                          comp_labels = comp_labels, rounded_zeroes = FALSE)
+
+
+
+test_that("Two ways of producing same model (dropping zeroes) are equivalent", {
+  expect_equal(m1, m3)
+})
+
+
+
+test_that("Two ways of producing same model (dropping zeroes) are equivalent", {
+  expect_equal(m2, m4)
+})
