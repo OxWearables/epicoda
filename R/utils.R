@@ -245,9 +245,7 @@ process_zeroes <-
 
     #' Prompt model type
     #'
-    #' @param model
-    #' @param terms
-    #' @param plot_log
+    #' @inheritParams plot_transfers
     prompt_scale <- function(model, terms, plot_log){
       model_type <- process_model_type(model)
       if (model_type == "logistic"){
