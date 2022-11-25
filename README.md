@@ -1,7 +1,7 @@
 # epicoda
 
-![R-CMD-check](https://github.com/activityMonitoring/epicoda/workflows/R-CMD-check/badge.svg) ![Windows/MacOS/Linux](https://github.com/activityMonitoring/epicoda/workflows/Windows/MacOS/Linux/badge.svg)
-[![codecov](https://codecov.io/gh/activityMonitoring/epicoda/branch/master/graph/badge.svg?token=pUfd7QVqRe)](https://codecov.io/gh/activityMonitoring/epicoda)
+![R-CMD-check](https://github.com/OxWearables/epicoda/workflows/R-CMD-check/badge.svg) ![Windows/MacOS/Linux](https://github.com/OxWearables/epicoda/workflows/Windows/MacOS/Linux/badge.svg)
+[![codecov](https://codecov.io/gh/OxWearables/epicoda/branch/master/graph/badge.svg?token=pUfd7QVqRe)](https://codecov.io/gh/OxWearables/epicoda)
 
 Please note that: 
 - This is the in-development version and major changes and corrections may be made 
