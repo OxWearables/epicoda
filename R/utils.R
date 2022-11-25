@@ -216,8 +216,7 @@ process_zeroes <-
 
       return(data[, entered_cols])
     }
-    }
-
+  }
 
 
     #' Process model argument
@@ -243,6 +242,26 @@ process_zeroes <-
       return(type)
     }
 
+
+    #' Prompt model type
+    #'
+    #' @param model
+    #' @param terms
+    #' @param plot_log
+    prompt_scale <- function(model, terms, plot_log){
+      model_type <- process_model_type(model)
+      if (model_type == "logistic"){
+        if (terms & !plot_log){
+          message("You seem to be plotting Odds Ratios from a logistic regression model. You may wish to consider log transformation of the axis scale, by setting the plot_log argument.")
+        }
+      }
+      if (model_type == "cox"){
+        if (!plot_log){
+          message("You seem to be plotting Hazard Ratios from a Cox regression model. You may wish to consider log transformation of the axis scale, by setting the plot_log argument.")
+        }
+
+      }
+    }
 
 
 
@@ -345,3 +364,4 @@ process_zeroes <-
       }
       return(det_limit_new)
     }
+

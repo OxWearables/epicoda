@@ -60,6 +60,8 @@ plot_transfers <- function(from_part,
                            error_bar_colour = "grey",
                            theme = NULL) {
 
+  # We prompt consideration of a log scale for ORs/HRs
+  prompt_scale(model = model, terms = terms, plot_log = plot_log)
 
   # Set theme for plotting
   if (is.null(theme)) {

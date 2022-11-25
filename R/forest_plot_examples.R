@@ -68,14 +68,17 @@ forest_plot_comp <-
            fixed_values = NULL,
            ...) {
 
+    # Check list
     if (!is.list(composition_list)) {
       stop('`composition_list` should be a list.')
     }
 
+    # Process column label
     if (is.null(pred_name)){
       pred_name <- "Model prediction (95% CI)"
     }
 
+    # Process formatting
     if (is.null(text_settings)){
       text_settings <- forestplot::fpTxtGp(
         label = grid::gpar(
@@ -91,6 +94,7 @@ forest_plot_comp <-
         ticks = grid::gpar(cex = 0.75, fontface = 2)
       )
     }
+    # Process model
     if (!is.null(model)){
       type <- process_model_type(model)
     }
@@ -103,6 +107,11 @@ forest_plot_comp <-
       }
     }
 
+
+    # We prompt consideration of a log scale for ORs/HRs
+    prompt_scale(model = model, terms = terms, plot_log = plot_log)
+
+    # Process label
     x_label <- process_axis_label(label = x_label, type = type, terms = terms)
 
 
