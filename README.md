@@ -1,7 +1,7 @@
 # epicoda
 
 ![R-CMD-check](https://github.com/OxWearables/epicoda/workflows/R-CMD-check/badge.svg) ![Windows/MacOS/Linux](https://github.com/OxWearables/epicoda/workflows/Windows/MacOS/Linux/badge.svg)
-![codecov](https://codecov.io/gh/OxWearables/epicoda/branch/master/graph/badge.svg?token=pUfd7QVqRe)](https://codecov.io/gh/OxWearables/epicoda)
+![codecov](https://codecov.io/gh/OxWearables/epicoda/branch/master/graph/badge.svg?token=pUfd7QVqRe)
 
 --------------------------------
 
