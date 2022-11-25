@@ -1,7 +1,15 @@
 # epicoda
 
 ![R-CMD-check](https://github.com/OxWearables/epicoda/workflows/R-CMD-check/badge.svg) ![Windows/MacOS/Linux](https://github.com/OxWearables/epicoda/workflows/Windows/MacOS/Linux/badge.svg)
-[![codecov](https://codecov.io/gh/OxWearables/epicoda/branch/master/graph/badge.svg?token=pUfd7QVqRe)](https://codecov.io/gh/OxWearables/epicoda)
+![codecov](https://codecov.io/gh/OxWearables/epicoda/branch/master/graph/badge.svg?token=pUfd7QVqRe)](https://codecov.io/gh/OxWearables/epicoda)
+
+--------------------------------
+
+**IMPORTANT:** This package is no longer actively maintained. It remains publicly available primarily for the purpose of reproducibility.
+
+**Please continue to get in touch with bug reports. Please also get in touch if you are interested in developing/maintaining the package.**
+
+--------------------------------
 
 Please note that: 
 - This is the in-development version and major changes and corrections may be made 
