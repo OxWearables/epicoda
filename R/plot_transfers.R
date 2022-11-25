@@ -253,7 +253,7 @@ plot_transfers <- function(from_part,
           trans = scales::log_trans(),
           breaks = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.2),
           labels = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.2),
-          minor.breaks = NULL,
+          minor_breaks = NULL,
           limits = c(yllimit, yulimit)
         ) +
 
