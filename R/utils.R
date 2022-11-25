@@ -253,7 +253,7 @@ process_zeroes <-
     #' @param type Output from \code{process_model_type}
     process_axis_label <- function(label, terms, type) {
       if ((is.null(label)) & (terms) & (type == "linear")) {
-        label <- "Model-predicted difference in outcome"
+        label <- "Model-predicted difference in outcome" # I've gone back and forth on the "predicted" terminology (the vignette uses the word "estimate" in many places for predictions based on groups of terms). But this is consistent with predict functions for lm, glm, coxph in R so I'm happy with it.
       }
       if ((is.null(label)) & (terms) & (type == "logistic")) {
         label <- "Model-predicted OR"
