@@ -209,9 +209,9 @@ plot_transfers <- function(from_part,
   }
 
   dNew$lower_CI <-
-    pmax(rep(yllimit, by = length(dNew$lower_CI)), dNew$lower_CI)
+    pmax(yllimit, dNew$lower_CI)
   dNew$upper_CI <-
-    pmin(rep(yulimit, by = length(dNew$lower_CI)), dNew$upper_CI)
+    pmin(yulimit, dNew$upper_CI)
 
 
 
