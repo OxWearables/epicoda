@@ -219,7 +219,8 @@ plot_transfers <- function(from_part,
 
   # We begin the plotting
   if (type == "logistic") {
-    yintercept_hline <- ifelse(terms, 1, NULL) # Only put hline for no difference when terms = TRUE
+    yintercept_hline <- NULL
+    if (terms) {yintercept_hline <- 1} # Only put hline for no difference when terms = TRUE
 
     if (plot_log == TRUE) {
       plot_of_this <-
@@ -308,7 +309,8 @@ plot_transfers <- function(from_part,
 
 
   if (type == "cox") {
-    yintercept_hline <- ifelse(terms, 1, NULL) # Only put hline for no difference when terms = TRUE
+    yintercept_hline <- NULL
+    if (terms){yintercept_hline <- 1} # Only put hline for no difference when terms = TRUE
 
     if (plot_log == TRUE) {
       plot_of_this <-
@@ -393,7 +395,8 @@ plot_transfers <- function(from_part,
 
 
   if (type == "linear") {
-    yintercept_hline <- ifelse(terms, 0, NULL) # Only put hline for no difference when terms = TRUE
+    yintercept_hline <- NULL
+    if (terms){yintercept_hline <- 0} # Only put hline for no difference when terms = TRUE
 
     if (plot_log == TRUE) {
       if (terms) {
