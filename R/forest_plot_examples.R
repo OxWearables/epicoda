@@ -97,19 +97,26 @@ forest_plot_comp <-
     # Process model
     if (!is.null(model)){
       type <- process_model_type(model)
+      # We prompt consideration of a log scale for ORs/HRs
+      prompt_scale(model = model, terms = terms, plot_log = plot_log)
     }
     if (is.null(model)){
       type <- process_model_type(models_list[[1]])
+
+      # Check all models have same type
       for (i in 2:length(models_list)){
         if (process_model_type(models_list[[i]]) != type){
           stop("Not all models are of the same type.")
         }
       }
+
+      # We prompt consideration of a log scale for ORs/HRs
+      prompt_scale(model = models_list[[1]], terms = terms, plot_log = plot_log)
+
     }
 
 
-    # We prompt consideration of a log scale for ORs/HRs
-    prompt_scale(model = model, terms = terms, plot_log = plot_log)
+
 
     # Process label
     x_label <- process_axis_label(label = x_label, type = type, terms = terms)
