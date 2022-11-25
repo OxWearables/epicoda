@@ -250,10 +250,10 @@ plot_transfers <- function(from_part,
           y = y_label
         ) +
 
-        # MORE SCALES (FOR LOG TRANSFORMED AXIS) - eventually should be with the above but currently regression tests note done
+        # MORE SCALES (FOR LOG TRANSFORMED AXIS) - eventually should be with the above but currently regression tests not done
         ggplot2::scale_y_continuous(
           trans = scales::log_trans(),
-          breaks = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.2),
+          breaks = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.2), # note this pragmatic setting for breaks can lead to ridiculous unannotated axis when terms = FALSE. But that's not worth a fix at the moment as it's an odd case anyway (very rarely using terms = FALSE)
           labels = seq(round(yllimit, digits = 1), round(yulimit, digits = 1), by = 0.2),
           minor_breaks = NULL,
           limits = c(yllimit, yulimit)
