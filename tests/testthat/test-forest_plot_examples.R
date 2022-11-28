@@ -183,7 +183,7 @@ for (name in names(model_list) ){
         comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"), plot_log = TRUE)
 
       test_that("Plot not equal with and without log scale plotting",
-                {expect_false(isTRUE(all.equal(p1$org_mean, p2$org_mean)))}) # can't just check for equality of overall objects because behave weirdly in all sorts of ways which could lead to false failures
+                {expect_false(isTRUE(all.equal(p1$estimates, p2$estimates)))}) # can't just check for equality of overall objects because behave weirdly in all sorts of ways which could lead to false failures
 
 
     test_that("Message for Cox models and logistic models with terms.", {
@@ -291,7 +291,7 @@ for ( name in names(model_list_list) ){
         comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"), plot_log = TRUE)
 
      test_that("Plot not equal with and without log scale plotting",
-                {expect_false(isTRUE(all.equal(p1$org_mean, p2$org_mean)))}) # can't just check for equality of overall objects because behave weirdly in all sorts of ways which could lead to false failures
+                {expect_false(isTRUE(all.equal(p1$estimates, p2$estimates)))}) # can't just check for equality of overall objects because behave weirdly in all sorts of ways which could lead to false failures
 
     test_that("Message for Cox models and logistic models with terms.", {
       expect_message(forest_plot_comp(
