@@ -243,7 +243,7 @@ process_zeroes <-
     }
 
 
-    #' Prompt model type
+    #' Prompt scale of axes depending on model type
     #'
     #' @inheritParams plot_transfers
     prompt_scale <- function(model, terms, plot_log){
