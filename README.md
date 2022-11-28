@@ -1,7 +1,7 @@
 # epicoda
 
 ![Windows/MacOS/Linux](https://github.com/OxWearables/epicoda/workflows/Windows/MacOS/Linux/badge.svg)
-![codecov](https://codecov.io/gh/OxWearables/epicoda/branch/master/graph/badge.svg?token=pUfd7QVqRe)
+[![codecov](https://codecov.io/gh/OxWearables/epicoda/branch/master/graph/badge.svg?token=pUfd7QVqRe)](https://codecov.io/gh/OxWearables/epicoda)
 
 --------------------------------
 
