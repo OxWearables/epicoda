@@ -67,8 +67,6 @@ plot_transfers <- function(from_part,
   if (is.null(theme)) {
     theme_for_plots <-
       ggplot2::theme(
-        line = ggplot2::element_line(size = 1),
-        axis.ticks = ggplot2::element_line(size = 2),
         text = ggplot2::element_text(size = 15, face = "bold"),
         axis.text.y = ggplot2::element_text(
           size = 15,
