@@ -19,8 +19,8 @@ forest_plot_comp(
   terms = TRUE,
   units = "unitless",
   specified_units = NULL,
-  fixed_values = NULL,
   part_1 = NULL,
+  fixed_values = NULL,
   ...
 )
 }
@@ -53,9 +53,9 @@ forest_plot_comp(
 
 \item{specified_units}{If units are being specified via the composition sum, this is where it is done. It should be a vector where the first argument is a string describing the units, and the second argument is the expected sum of a composition e.g. \code{c("hr/day", 24)}}
 
-\item{fixed_values}{If \code{terms = FALSE}, this gives the fixed values of the non-compositional covariates at which to calculate the prediction. It is generated automatically if not set. It does not usually need setting, and makes no difference to the output if `terms = TRUE`.}
-
 \item{part_1}{Used with ilr-pivot coordinate transformation to specify which should be first part. Passed to \code{alter_order_comp_labels} unless \code{NULL}.}
+
+\item{fixed_values}{If \code{terms = FALSE}, this gives the fixed values of the non-compositional covariates at which to calculate the prediction. It is generated automatically if not set. It does not usually need setting, and makes no difference to the output if `terms = TRUE`.}
 
 \item{...}{
   Arguments passed on to \code{\link[forestplot:forestplot]{forestplot::forestplot}}

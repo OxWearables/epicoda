@@ -50,6 +50,73 @@ test_that("Model unchanged from cached model.", {
                                                 comp_labels = comp_labels, det_limit = min_val_in_data), file = "../test_data/example_model_cox_null.rds")
 })
 
+
+
+# TEST THAT DET LIMIT PASSES CORRECTLY WITH RESCALING--------------------------------------------
+simdata_scaled1 <- simdata
+simdata_scaled2<- simdata
+simdata_scaled1[, comp_labels] <- (1/24)*simdata[, comp_labels]
+simdata_scaled2[, comp_labels] <- 35*simdata[, comp_labels]
+min_val_in_data_scaled1 <- (1/24)*min_val_in_data
+min_val_in_data_scaled2 <- (35)*min_val_in_data
+
+test_that("Model invariant to scaling of data and det_limit.", {
+  expect_equal_to_reference(epicoda::comp_model(type = "linear",
+                                                outcome = "BMI",
+                                                covariates = c("agegroup", "sex"),
+                                                data = simdata_scaled1,
+                                                comp_labels = comp_labels, det_limit = min_val_in_data_scaled1), file = "../test_data/example_model.rds")
+})
+
+
+test_that("Model invariant to scaling of data and det_limit.", {
+  expect_equal_to_reference(epicoda::comp_model(type = "linear",
+                                                outcome = "BMI",
+                                                covariates = c("agegroup", "sex"),
+                                                data = simdata_scaled2,
+                                                comp_labels = comp_labels, det_limit = min_val_in_data_scaled2), file = "../test_data/example_model.rds")
+})
+
+
+test_that("Model invariant to scaling of data and det_limit.", {
+  expect_equal_to_reference(epicoda::comp_model(type = "logistic",
+                                                outcome = "disease",
+                                                covariates = c("agegroup", "sex"),
+                                                data = simdata_scaled1,
+                                                comp_labels = comp_labels, det_limit = min_val_in_data_scaled1), file = "../test_data/example_model_logistic.rds")
+})
+
+test_that("Model invariant to scaling of data and det_limit.", {
+  expect_equal_to_reference(epicoda::comp_model(type = "logistic",
+                                                outcome = "disease",
+                                                covariates = c("agegroup", "sex"),
+                                                data = simdata_scaled2,
+                                                comp_labels = comp_labels, det_limit = min_val_in_data_scaled2), file = "../test_data/example_model_logistic.rds")
+})
+
+
+test_that("Model invariant to scaling of data and det_limit.", {
+  expect_equal_to_reference(epicoda::comp_model(type = "cox",
+                                                follow_up_time = "follow_up_time",
+                                                event = "event",
+                                                covariates = c("agegroup", "sex"),
+                                                data = simdata_scaled1,
+                                                comp_labels = comp_labels, det_limit = min_val_in_data_scaled1), file = "../test_data/example_model_cox.rds")
+})
+
+
+
+test_that("Model invariant to scaling of data and det_limit.", {
+  expect_equal_to_reference(epicoda::comp_model(type = "cox",
+                                                follow_up_time = "follow_up_time",
+                                                event = "event",
+                                                covariates = c("agegroup", "sex"),
+                                                data = simdata_scaled2,
+                                                comp_labels = comp_labels, det_limit = min_val_in_data_scaled2), file = "../test_data/example_model_cox.rds")
+})
+
+
+
 # Errors when expected ---------------------------------------------------------------------------------------------
 test_that("Error if no outcome.", {
   expect_error(epicoda::comp_model(type = "linear",
@@ -100,6 +167,7 @@ for (cov_vec in list(NULL, c("agegroup"), c("agegroup", "sex"))){{
 }}
 
 # Two ways of producing same model are equivalent -------------------------------------------------
+comp_labels <- c("vigorous", "moderate", "light", "sedentary", "sleep")
 m1 <- epicoda::comp_model(type = "cox",
                     follow_up_time = "follow_up_time",
                     event = "event",
@@ -115,4 +183,42 @@ test_that("Two ways of producing same model are equivalent", {
   expect_equal(coef(m1), coef(m2))
 })
 
+# TEST THAT ROUNDED ZEROES ARGUMENT WORKS AS EXPECTED ----------------------------------------------
+sd_zf <- simdata[simdata$vigorous != 0,]
+# Pre do zero drop
+m1 <- epicoda::comp_model(type = "cox",
+                          follow_up_time = "follow_up_time",
+                          event = "event",
+                          covariates = c("agegroup", "sex"),
+                          data = sd_zf,
+                          comp_labels = comp_labels, det_limit = min_val_in_data)
 
+m2 <- epicoda::comp_model(type = "linear",
+                          outcome = "BMI",
+                          data = sd_zf,
+                          comp_labels = comp_labels)
+
+# Post do zero drop
+m3 <-epicoda::comp_model(type = "cox",
+                         follow_up_time = "follow_up_time",
+                         event = "event",
+                         covariates = c("agegroup", "sex"),
+                         data = sd_zf,
+                         comp_labels = comp_labels, rounded_zeroes = F)
+
+m4 <- epicoda::comp_model(type = "linear",
+                          outcome = "BMI",
+                          data = sd_zf,
+                          comp_labels = comp_labels, rounded_zeroes = FALSE)
+
+
+
+test_that("Two ways of producing same model (dropping zeroes) are equivalent", {
+  expect_equal(m1, m3)
+})
+
+
+
+test_that("Two ways of producing same model (dropping zeroes) are equivalent", {
+  expect_equal(m2, m4)
+})

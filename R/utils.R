@@ -216,8 +216,7 @@ process_zeroes <-
 
       return(data[, entered_cols])
     }
-    }
-
+  }
 
 
     #' Process model argument
@@ -244,6 +243,24 @@ process_zeroes <-
     }
 
 
+    #' Prompt scale of axes depending on model type
+    #'
+    #' @inheritParams plot_transfers
+    prompt_scale <- function(model, terms, plot_log){
+      model_type <- process_model_type(model)
+      if (model_type == "logistic"){
+        if (terms & !plot_log){
+          message("You seem to be plotting Odds Ratios from a logistic regression model. You may wish to consider log transformation of the axis scale, by setting the plot_log argument.")
+        }
+      }
+      if (model_type == "cox"){
+        if (!plot_log){
+          message("You seem to be plotting Hazard Ratios from a Cox regression model. You may wish to consider log transformation of the axis scale, by setting the plot_log argument.")
+        }
+
+      }
+    }
+
 
 
     #' Process axis labels
@@ -253,7 +270,7 @@ process_zeroes <-
     #' @param type Output from \code{process_model_type}
     process_axis_label <- function(label, terms, type) {
       if ((is.null(label)) & (terms) & (type == "linear")) {
-        label <- "Model-predicted difference in outcome"
+        label <- "Model-predicted difference in outcome" # I've gone back and forth on the "predicted" terminology (the vignette uses the word "estimate" in many places for predictions based on groups of terms). But this is consistent with predict functions for lm, glm, coxph in R so I'm happy with it.
       }
       if ((is.null(label)) & (terms) & (type == "logistic")) {
         label <- "Model-predicted OR"
@@ -345,3 +362,4 @@ process_zeroes <-
       }
       return(det_limit_new)
     }
+

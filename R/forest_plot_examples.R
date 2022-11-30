@@ -64,19 +64,21 @@ forest_plot_comp <-
            terms = TRUE,
            units = "unitless",
            specified_units = NULL,
-           fixed_values = NULL,
            part_1 = NULL,
+           fixed_values = NULL,
            ...) {
-
+    # Check list
     if (!is.list(composition_list)) {
       stop('`composition_list` should be a list.')
     }
 
-    if (is.null(pred_name)){
+    # Process column label
+    if (is.null(pred_name)) {
       pred_name <- "Model prediction (95% CI)"
     }
 
-    if (is.null(text_settings)){
+    # Process formatting
+    if (is.null(text_settings)) {
       text_settings <- forestplot::fpTxtGp(
         label = grid::gpar(
           fontfamily = "sans",
@@ -91,92 +93,157 @@ forest_plot_comp <-
         ticks = grid::gpar(cex = 0.75, fontface = 2)
       )
     }
-    if (!is.null(model)){
+    # Process model
+    if (!is.null(model)) {
       type <- process_model_type(model)
+      # We prompt consideration of a log scale for ORs/HRs
+      prompt_scale(model = model,
+                   terms = terms,
+                   plot_log = plot_log)
     }
-    if (is.null(model)){
+    if (is.null(model)) {
       type <- process_model_type(models_list[[1]])
-      for (i in 2:length(models_list)){
-        if (process_model_type(models_list[[i]]) != type){
+
+      n_model1 <- nrow(stats::model.frame(models_list[[1]]))
+      # Check all models have same type and roughly that on same data frame [not exact, just check of number of rows]
+      for (i in 2:length(models_list)) {
+        if (process_model_type(models_list[[i]]) != type) {
           stop("Not all models are of the same type.")
         }
+
+        if (nrow(stats::model.frame(models_list[[i]])) != n_model1) {
+          stop(
+            "Models appear to be calculated on different datasets. This is currently not supported: the current defaults mean the comparator for different models would be different in different datasets, leading to confusing or uninterpretable results. See the vignette for more details."
+          )
+        }
       }
+
+      # We prompt consideration of a log scale for ORs/HRs
+      prompt_scale(model = models_list[[1]],
+                   terms = terms,
+                   plot_log = plot_log)
+
     }
 
-    x_label <- process_axis_label(label = x_label, type = type, terms = terms)
 
 
-    if (terms){
+
+    # Process label
+    x_label <-
+      process_axis_label(label = x_label,
+                         type = type,
+                         terms = terms)
+
+
+    if (terms) {
       if (type == "cox" | type == "logistic") {
         vline_loc <- 1
       }
-     if (type == "linear"){
+      if (type == "linear") {
         vline_loc <- 0
-     }
+      }
     }
-    if (!terms){
+    if (!terms) {
       vline_loc <- NA
     }
 
     col_of_names <- names(composition_list)
     df <- data.table::rbindlist(composition_list, use.names = TRUE)
 
-    if (!is.null(model)){
+    if (!is.null(model)) {
       dNew <- predict_fit_and_ci(
         model = model,
         new_data = df,
-        fixed_values = fixed_values,
-        part_1 = part_1,
         comp_labels = comp_labels,
+        terms = terms,
+        part_1 = part_1,
         units = units,
         specified_units = specified_units,
-        terms = terms
+        fixed_values = fixed_values
       )
 
 
 
-      if (is.null(xllimit)){
+      if (is.null(xllimit)) {
         xllimit <- min(dNew$lower_CI)
       }
-      if (is.null(xulimit)){
+      if (is.null(xulimit)) {
         xulimit <- max(dNew$upper_CI)
       }
 
-      if (terms){
+      if (terms) {
         xllimit <- min(xllimit, vline_loc)
         xulimit <- max(xulimit, vline_loc)
       }
 
-      if (((xulimit - xllimit)/0.05) <= 10) {
-        req_seq <- seq(floor((xllimit- 0.05)/0.05)*0.05, ceiling((xulimit + 0.05)/0.05)*0.05, by = 0.05)
-        req_seq_labs <- formatC(req_seq, format = "f", digits= 2)
+      if (((xulimit - xllimit) / 0.05) <= 10) {
+        req_seq <-
+          seq(floor((xllimit - 0.05) / 0.05) * 0.05, ceiling((xulimit + 0.05) / 0.05) *
+                0.05, by = 0.05)
+        req_seq_labs <- formatC(req_seq, format = "f", digits = 2)
       }
-      if ((((xulimit - xllimit)/0.05) > 10) & (((xulimit - xllimit)/0.05) <= 20)){
-        req_seq <- seq(floor((xllimit- 0.1)/0.1)*0.1, ceiling((xulimit + 0.1)/0.1)*0.1, by = 0.1)
-        req_seq_labs <- formatC(req_seq, format = "f", digits= 1)
+      if ((((xulimit - xllimit) / 0.05) > 10) &
+          (((xulimit - xllimit) / 0.05) <= 20)) {
+        req_seq <-
+          seq(floor((xllimit - 0.1) / 0.1) * 0.1, ceiling((xulimit + 0.1) / 0.1) *
+                0.1, by = 0.1)
+        req_seq_labs <- formatC(req_seq, format = "f", digits = 1)
       }
-      if ((((xulimit - xllimit)/0.05) > 20)){
-        req_seq <- seq(floor((xllimit- 0.5)/0.5)*0.5, ceiling((xulimit + 0.5)/0.5)*0.5, by = 0.5)
-        req_seq_labs <- formatC(req_seq, format = "f", digits= 1)
+      if ((((xulimit - xllimit) / 0.05) > 20)) {
+        req_seq <-
+          seq(floor((xllimit - 0.5) / 0.5) * 0.5, ceiling((xulimit + 0.5) / 0.5) *
+                0.5, by = 0.5)
+        req_seq_labs <- formatC(req_seq, format = "f", digits = 1)
       }
 
       attr(req_seq, "labels") <- req_seq_labs
 
 
-      data_frame_for_forest_plot <- dNew[, c("fit", "lower_CI", "upper_CI")]
-      colnames(data_frame_for_forest_plot) <- c("coef", "low", "high")
+      data_frame_for_forest_plot <-
+        dNew[, c("fit", "lower_CI", "upper_CI")]
+      colnames(data_frame_for_forest_plot) <-
+        c("coef", "low", "high")
 
-      data_frame_for_forest_plot <- rbind(data.frame("coef" = c(NA, vline_loc), "low" = c(NA, vline_loc), "high" = c(NA, vline_loc)), data_frame_for_forest_plot)
+      data_frame_for_forest_plot <-
+        rbind(data.frame(
+          "coef" = c(NA, vline_loc),
+          "low" = c(NA, vline_loc),
+          "high" = c(NA, vline_loc)
+        ),
+        data_frame_for_forest_plot)
 
 
 
 
-      text_col <- paste(format(round(data_frame_for_forest_plot$coef , digits = 2), nsmall = 2), " (", format(round(data_frame_for_forest_plot$low, digits = 2), nsmall = 2), ", ", format(round(data_frame_for_forest_plot$high, digits = 2), nsmall = 2), ")", sep = "")
-      if (terms){
-        tabletext <- cbind(c(NA, "REFERENCE: At compositional mean", col_of_names), c(pred_name, vline_loc, text_col[3:nrow(data_frame_for_forest_plot)]))
+      text_col <-
+        paste(
+          format(
+            round(data_frame_for_forest_plot$coef , digits = 2),
+            nsmall = 2
+          ),
+          " (",
+          format(round(
+            data_frame_for_forest_plot$low, digits = 2
+          ), nsmall = 2),
+          ", ",
+          format(
+            round(data_frame_for_forest_plot$high, digits = 2),
+            nsmall = 2
+          ),
+          ")",
+          sep = ""
+        )
+      if (terms) {
+        tabletext <-
+          cbind(
+            c(NA, "REFERENCE: At compositional mean", col_of_names),
+            c(pred_name, vline_loc, text_col[3:nrow(data_frame_for_forest_plot)])
+          )
       }
-      if (!(terms)){
-        tabletext <- cbind(c(NA, NA, col_of_names), c(pred_name, vline_loc, text_col[3:nrow(data_frame_for_forest_plot)]))
+      if (!(terms)) {
+        tabletext <-
+          cbind(c(NA, NA, col_of_names),
+                c(pred_name, vline_loc, text_col[3:nrow(data_frame_for_forest_plot)]))
       }
 
       fp <- forestplot::forestplot(
@@ -195,97 +262,114 @@ forest_plot_comp <-
       )
     }
 
-    if (is.null(model)){
-      if (is.null(models_list)){
-        return( " Either model or models_list must be set.")
+    if (is.null(model)) {
+      if (is.null(models_list)) {
+        return(" Either model or models_list must be set.")
       }
-      data_frame_for_forest_plot <- data.frame("coef" = c(), "low" = c(), "high" = c())
-    for (i in 1:nrow(df)){
-      coef <- c()
-      low <- c()
-      high <- c()
-      for (j in 1:length(models_list)){
-        dPred <- predict_fit_and_ci(
-        model = models_list[[j]],
-        new_data = df[i,],
-        fixed_values = fixed_values,
-        part_1 = part_1,
-        comp_labels = comp_labels,
-        units = units,
-        specified_units = specified_units,
-        terms = terms
+      data_frame_for_forest_plot <-
+        data.frame("coef" = c(),
+                   "low" = c(),
+                   "high" = c())
+      for (i in 1:nrow(df)) {
+        coef <- c()
+        low <- c()
+        high <- c()
+        for (j in 1:length(models_list)) {
+          dPred <- predict_fit_and_ci(
+            model = models_list[[j]],
+            new_data = df[i, ],
+            fixed_values = fixed_values,
+            part_1 = part_1,
+            comp_labels = comp_labels,
+            units = units,
+            specified_units = specified_units,
+            terms = terms
+          )
+          coef <- cbind(coef, dPred$fit)
+          low <- cbind(low, dPred$lower_CI)
+          high <- cbind(high, dPred$upper_CI)
+
+        }
+        data_frame_for_forest_plot <-
+          rbind(data_frame_for_forest_plot,
+                data.frame(
+                  "coef" = coef,
+                  "low" = low,
+                  "high" = high
+                ))
+
+      }
+
+      if (is.null(xllimit)) {
+        xllimit <- min(data_frame_for_forest_plot)
+      }
+      if (is.null(xulimit)) {
+        xulimit <- max(data_frame_for_forest_plot)
+      }
+
+
+      if (terms) {
+        xllimit <- min(xllimit, vline_loc)
+        xulimit <- max(xulimit, vline_loc)
+      }
+
+      if (((xulimit - xllimit) / 0.05) <= 10) {
+        req_seq <-
+          seq(floor((xllimit - 0.05) / 0.05) * 0.05, ceiling((xulimit + 0.05) / 0.05) *
+                0.05, by = 0.05)
+        req_seq_labs <- formatC(req_seq, format = "f", digits = 2)
+      }
+      if ((((xulimit - xllimit) / 0.05) > 10) &
+          (((xulimit - xllimit) / 0.05) <= 20)) {
+        req_seq <-
+          seq(floor((xllimit - 0.1) / 0.1) * 0.1, ceiling((xulimit + 0.1) / 0.1) *
+                0.1, by = 0.1)
+        req_seq_labs <- formatC(req_seq, format = "f", digits = 1)
+      }
+      if ((((xulimit - xllimit) / 0.05) > 20)) {
+        req_seq <-
+          seq(floor((xllimit - 0.5) / 0.5) * 0.5, ceiling((xulimit + 0.5) / 0.5) *
+                0.5, by = 0.5)
+        req_seq_labs <- formatC(req_seq, format = "f", digits = 1)
+      }
+
+      attr(req_seq, "labels") <- req_seq_labs
+
+      data_frame_for_forest_plot <-
+        rbind(vline_loc, data_frame_for_forest_plot)
+
+      if (terms) {
+        tabletext <-
+          cbind(c("REFERENCE: At compositional mean", col_of_names))
+      }
+      if (!(terms)) {
+        tabletext <- cbind(c(NA, col_of_names))
+      }
+
+      col_vec <-
+        grDevices::hcl.colors(n = length(models_list), palette = "dark2")
+      fp <- forestplot::forestplot(
+        tabletext,
+        graph.pos = 2,
+        mean = data_frame_for_forest_plot[, colnames(data_frame_for_forest_plot)[grepl("coef", colnames(data_frame_for_forest_plot))]],
+        lower = data_frame_for_forest_plot[, colnames(data_frame_for_forest_plot)[grepl("low", colnames(data_frame_for_forest_plot))]],
+        upper = data_frame_for_forest_plot[, colnames(data_frame_for_forest_plot)[grepl("high", colnames(data_frame_for_forest_plot))]],
+        xlog = plot_log,
+        clip = c(xllimit - 0.05, xulimit + 0.05),
+        xticks = req_seq,
+        xlab = x_label,
+        zero = vline_loc,
+        txt_gp = text_settings,
+        legend = names(models_list),
+        col = forestplot::fpColors(
+          box = col_vec,
+          line = col_vec,
+          zero = "black"
+        ),
+        boxsize = boxsize,
+        ...
       )
-      coef <- cbind(coef, dPred$fit)
-      low <- cbind(low, dPred$lower_CI)
-      high <- cbind(high, dPred$upper_CI)
-
-      }
-      data_frame_for_forest_plot <- rbind(data_frame_for_forest_plot, data.frame("coef" = coef, "low" = low, "high" = high))
-
-    }
-
-    if (is.null(xllimit)){
-      xllimit <- min(data_frame_for_forest_plot)
-    }
-    if (is.null(xulimit)){
-      xulimit <- max(data_frame_for_forest_plot)
-    }
-
-
-    if (terms){
-       xllimit <- min(xllimit, vline_loc)
-       xulimit <- max(xulimit, vline_loc)
-    }
-
-    if (((xulimit - xllimit)/0.05) <= 10) {
-      req_seq <- seq(floor((xllimit- 0.05)/0.05)*0.05, ceiling((xulimit + 0.05)/0.05)*0.05, by = 0.05)
-      req_seq_labs <- formatC(req_seq, format = "f", digits= 2)
-       }
-    if ((((xulimit - xllimit)/0.05) > 10) & (((xulimit - xllimit)/0.05) <= 20)){
-      req_seq <- seq(floor((xllimit- 0.1)/0.1)*0.1, ceiling((xulimit + 0.1)/0.1)*0.1, by = 0.1)
-      req_seq_labs <- formatC(req_seq, format = "f", digits= 1)
-     }
-    if ((((xulimit - xllimit)/0.05) > 20)){
-      req_seq <- seq(floor((xllimit- 0.5)/0.5)*0.5, ceiling((xulimit + 0.5)/0.5)*0.5, by = 0.5)
-      req_seq_labs <- formatC(req_seq, format = "f", digits= 1)
-       }
-
-    attr(req_seq, "labels") <- req_seq_labs
-
-    data_frame_for_forest_plot <- rbind(vline_loc, data_frame_for_forest_plot)
-
-    if (terms){
-       tabletext <- cbind(c("REFERENCE: At compositional mean", col_of_names))
-    }
-    if (!(terms)){
-      tabletext <- cbind(c(NA, col_of_names))
-    }
-
-    col_vec <- grDevices::hcl.colors(n = length(models_list), palette = "dark2")
-    fp <- forestplot::forestplot(
-    tabletext,
-     graph.pos = 2,
-      mean = data_frame_for_forest_plot[, colnames(data_frame_for_forest_plot)[grepl("coef", colnames(data_frame_for_forest_plot))]],
-      lower = data_frame_for_forest_plot[, colnames(data_frame_for_forest_plot)[grepl("low", colnames(data_frame_for_forest_plot))]],
-      upper = data_frame_for_forest_plot[, colnames(data_frame_for_forest_plot)[grepl("high", colnames(data_frame_for_forest_plot))]],
-      xlog = plot_log,
-      clip = c(xllimit -0.05, xulimit + 0.05),
-      xticks = req_seq,
-      xlab = x_label,
-      zero = vline_loc,
-      txt_gp = text_settings,
-      legend = names(models_list),
-      col = forestplot::fpColors(box = col_vec, line = col_vec, zero = "black"),
-    boxsize = boxsize,
-      ...
-    )
     }
 
     return(fp)
   }
-
-
-
-
-
-

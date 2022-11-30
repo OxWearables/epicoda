@@ -30,7 +30,7 @@ old_comp <- comp_mean(
   comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep"),
   units = "hr/day", det_limit = min_val_in_data
 )
-new_comp <-
+new_comp1 <-
   change_composition(
     composition = old_comp,
     main_part = "moderate",
@@ -38,189 +38,259 @@ new_comp <-
     comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
   )
 
-# BASIC EXPECTED PROPERTIES=======================================================
-test_that("expected order of confidence interval limits", {
-  expect_gt(
-    predict_fit_and_ci(
+
+new_comp2 <- new_comp1 # This is to also try with a composition which isn't just proportional
+new_comp2$light <- new_comp1$light + 0.6
+new_comp2$sedentary <- new_comp1$sedentary - 0.6
+
+
+for (new_comp in list(new_comp1, new_comp2)){
+  # BASIC EXPECTED PROPERTIES=======================================================
+  test_that("expected order of confidence interval limits", {
+    expect_gt(
+      predict_fit_and_ci(
+        model = cox_outcome,
+        terms = FALSE,
+        new_data = new_comp,
+        comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
+      )$upper_CI, predict_fit_and_ci(
       model = cox_outcome,
       terms = FALSE,
       new_data = new_comp,
       comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
-    )$upper_CI, predict_fit_and_ci(
-    model = cox_outcome,
-    terms = FALSE,
-    new_data = new_comp,
+    )$fit )
+  })
+
+  test_that("expected order of confidence interval limits", {
+    expect_lt(
+      predict_fit_and_ci(
+        model = cox_outcome,
+        terms = FALSE,
+        new_data = new_comp,
+        comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
+      )$lower_CI, predict_fit_and_ci(
+        model = cox_outcome,
+        terms = FALSE,
+        new_data = new_comp,
+        comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
+      )$fit )
+  })
+
+  test_that("expected order of confidence interval limits", {
+    expect_gt(
+      predict_fit_and_ci(
+        model = lm_outcome,
+        terms = FALSE,
+        new_data = new_comp,
+        comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
+      )$upper_CI, predict_fit_and_ci(
+        model = lm_outcome,
+        terms = FALSE,
+        new_data = new_comp,
+        comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
+      )$fit )
+  })
+
+  test_that("expected order of confidence interval limits", {
+    expect_lt(
+      predict_fit_and_ci(
+        model = lm_outcome,
+        terms = FALSE,
+        new_data = new_comp,
+        comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
+      )$lower_CI, predict_fit_and_ci(
+        model = lm_outcome,
+        terms = FALSE,
+        new_data = new_comp,
+        comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
+      )$fit )
+  })
+
+  test_that("expected order of confidence interval limits", {
+    expect_gt(
+      predict_fit_and_ci(
+        model = logistic_outcome,
+        terms = FALSE,
+        new_data = new_comp,
+        comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
+      )$upper_CI, predict_fit_and_ci(
+        model = logistic_outcome,
+        terms = FALSE,
+        new_data = new_comp,
+        comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
+      )$fit )
+  })
+
+  test_that("expected order of confidence interval limits", {
+    expect_lt(
+      predict_fit_and_ci(
+        model = logistic_outcome,
+        terms = FALSE,
+        new_data = new_comp,
+        comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
+      )$lower_CI, predict_fit_and_ci(
+        model = logistic_outcome,
+        terms = FALSE,
+        new_data = new_comp,
+        comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
+      )$fit )
+  })
+
+
+  test_that("input scale of new composition doesn't matter", {
+    expect_equal(
+      predict_fit_and_ci(
+        model = logistic_outcome,
+        terms = FALSE,
+        new_data = new_comp*24,
+        comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
+      )$fit, predict_fit_and_ci(
+        model = logistic_outcome,
+        terms = FALSE,
+        new_data = new_comp,
+        comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
+      )$fit )
+  })
+
+  # ERRORS THROWN WHEN EXPECTED===============================================================
+  test_that("wrong labels for composition throws error", {
+    expect_error(
+      predict_fit_and_ci(
+        model = logistic_outcome,
+        terms = FALSE,
+        new_data = new_comp,
+        comp_labels = c("vigorous", "moderate", "light", "sedentary")
+      ))
+  })
+
+  test_that("wrong labels for composition throws error", {
+    expect_error(
+      predict_fit_and_ci(
+        model = logistic_outcome,
+        terms = FALSE,
+        new_data = new_comp,
+        comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep", "extra")
+      ))
+  })
+  test_that("wrong labels for composition throws error", {
+    expect_error(
+      predict_fit_and_ci(
+        model = logistic_outcome,
+        terms = FALSE,
+        new_data = new_comp,
+        comp_labels = c("viggy", "moderate", "light", "sedentary", "sleep", "extra")
+      ))
+  })
+
+  # CORRECT BEHAVIOUR OF TERMS ARGUMENTS WITH FIXED VALUES ARGUMENTS=========================================
+  comp_labels <- c("vigorous", "moderate", "light", "sedentary", "sleep")
+  models_list <- list("linear"= lm_outcome, "logistic" = logistic_outcome, "cox" = cox_outcome)
+  for (name in names(models_list)){
+    model <- models_list[[name]]
+    fixedvalfem <- data.frame("agegroup" = "Middle", "sex" = "Female")
+    fixedvalmal <- data.frame("agegroup" = "Middle", "sex" = "Male")
+
+    fitnontermsfem <- predict_fit_and_ci(model, new_comp, comp_labels, terms = FALSE, fixed_values = fixedvalfem)$fit
+    fitnontermsmal <- predict_fit_and_ci(model, new_comp, comp_labels, terms = FALSE, fixed_values = fixedvalmal)$fit
+
+    test_that("fixed values work as expected with terms = FALSE", {
+      expect_false(isTRUE(all.equal(fitnontermsfem, fitnontermsmal)))
+    })
+
+    fittermsfem <- predict_fit_and_ci(model, new_comp, comp_labels, fixed_values = fixedvalfem)$fit
+    fittermsmal <- predict_fit_and_ci(model, new_comp, comp_labels, fixed_values = fixedvalmal)$fit
+
+    test_that("fixed values have no effect with terms = TRUE", {
+      expect_equal(fittermsfem, fittermsmal)
+    })
+
+  }
+
+
+
+  # EQUALITY WITH CALCULATION USING COEFFICIENTS=============================================================
+  transf_comp <- transform_comp(new_comp, comp_labels = comp_labels)
+  tl <- transf_labels(comp_labels, "ilr")
+  transf_comp_mean <- get_cm_from_model(lm_outcome, comp_labels = comp_labels, transf_labels = tl)[[2]]
+  delta_comp <- transf_comp[, tl] - transf_comp_mean[, tl]
+
+  for (name in names(models_list)){
+    model <- models_list[[name]]
+    terms_pred <- as.matrix(delta_comp) %*% coef(model)[tl]
+    sum_pred <- apply(terms_pred, 1, sum)
+    assign(paste0(name, "_sumfit"), sum_pred)
+    fitfromfunction <- predict_fit_and_ci(model, new_comp, comp_labels)$fit
+    if (name %in% c("logistic", "cox")){
+      fitfrombasics <- exp(sum_pred)
+    } else if (name %in% c("linear")) {fitfrombasics <- sum_pred}
+    test_that("terms predictions for fit correct", {
+      expect_equal(fitfromfunction, fitfrombasics)
+    })
+
+  }
+
+
+}
+
+# TEST GET EXPECTED VALUES WHEN WORKING WITH CHANGES AFFECTING A SINGLE COEFFICIENT ================
+new_comp3 <-
+  change_composition(
+    composition = old_comp,
+    main_part = "vigorous",
+    main_change = +0.5,
     comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
-  )$fit )
-})
+  )
+new_comp3$agegroup <- "Middle"
+new_comp3$sex <- "Female"
+new_comp3 <- transform_comp(new_comp3, comp_labels)
 
-test_that("expected order of confidence interval limits", {
-  expect_lt(
-    predict_fit_and_ci(
-      model = cox_outcome,
-      terms = FALSE,
-      new_data = new_comp,
-      comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
-    )$lower_CI, predict_fit_and_ci(
-      model = cox_outcome,
-      terms = FALSE,
-      new_data = new_comp,
-      comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
-    )$fit )
-})
+ilr1_diff <- sqrt(4/5)*log(new_comp3$vigorous/((new_comp3$moderate*new_comp3$light*new_comp3$sedentary*new_comp3$sleep)^(1/4))) - sqrt(4/5)*log(old_comp$vigorous/((old_comp$moderate*old_comp$light*old_comp$sedentary*old_comp$sleep)^(1/4)))
 
-test_that("expected order of confidence interval limits", {
-  expect_gt(
-    predict_fit_and_ci(
-      model = lm_outcome,
-      terms = FALSE,
-      new_data = new_comp,
-      comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
-    )$upper_CI, predict_fit_and_ci(
-      model = lm_outcome,
-      terms = FALSE,
-      new_data = new_comp,
-      comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
-    )$fit )
-})
-
-test_that("expected order of confidence interval limits", {
-  expect_lt(
-    predict_fit_and_ci(
-      model = lm_outcome,
-      terms = FALSE,
-      new_data = new_comp,
-      comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
-    )$lower_CI, predict_fit_and_ci(
-      model = lm_outcome,
-      terms = FALSE,
-      new_data = new_comp,
-      comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
-    )$fit )
-})
-
-test_that("expected order of confidence interval limits", {
-  expect_gt(
-    predict_fit_and_ci(
-      model = logistic_outcome,
-      terms = FALSE,
-      new_data = new_comp,
-      comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
-    )$upper_CI, predict_fit_and_ci(
-      model = logistic_outcome,
-      terms = FALSE,
-      new_data = new_comp,
-      comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
-    )$fit )
-})
-
-test_that("expected order of confidence interval limits", {
-  expect_lt(
-    predict_fit_and_ci(
-      model = logistic_outcome,
-      terms = FALSE,
-      new_data = new_comp,
-      comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
-    )$lower_CI, predict_fit_and_ci(
-      model = logistic_outcome,
-      terms = FALSE,
-      new_data = new_comp,
-      comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
-    )$fit )
-})
-
-
-test_that("input scale of new composition doesn't matter", {
-  expect_equal(
-    predict_fit_and_ci(
-      model = logistic_outcome,
-      terms = FALSE,
-      new_data = new_comp*24,
-      comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
-    )$fit, predict_fit_and_ci(
-      model = logistic_outcome,
-      terms = FALSE,
-      new_data = new_comp,
-      comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep")
-    )$fit )
-})
-
-# ERRORS THROWN WHEN EXPECTED===============================================================
-test_that("wrong labels for composition throws error", {
-  expect_error(
-    predict_fit_and_ci(
-      model = logistic_outcome,
-      terms = FALSE,
-      new_data = new_comp,
-      comp_labels = c("vigorous", "moderate", "light", "sedentary")
-    ))
-})
-
-test_that("wrong labels for composition throws error", {
-  expect_error(
-    predict_fit_and_ci(
-      model = logistic_outcome,
-      terms = FALSE,
-      new_data = new_comp,
-      comp_labels = c("vigorous", "moderate", "light", "sedentary", "sleep", "extra")
-    ))
-})
-test_that("wrong labels for composition throws error", {
-  expect_error(
-    predict_fit_and_ci(
-      model = logistic_outcome,
-      terms = FALSE,
-      new_data = new_comp,
-      comp_labels = c("viggy", "moderate", "light", "sedentary", "sleep", "extra")
-    ))
-})
-
-# CORRECT BEHAVIOUR OF TERMS ARGUMENTS WITH FIXED VALUES ARGUMENTS=========================================
-comp_labels <- c("vigorous", "moderate", "light", "sedentary", "sleep")
-models_list <- list("linear"= lm_outcome, "logistic" = logistic_outcome, "cox" = cox_outcome)
-for (name in names(models_list)){
-  model <- models_list[[name]]
-  fixedvalfem <- data.frame("agegroup" = "Middle", "sex" = "Female")
-  fixedvalmal <- data.frame("agegroup" = "Middle", "sex" = "Male")
-
-  fitnontermsfem <- predict_fit_and_ci(model, new_comp, comp_labels, terms = FALSE, fixed_values = fixedvalfem)$fit
-  fitnontermsmal <- predict_fit_and_ci(model, new_comp, comp_labels, terms = FALSE, fixed_values = fixedvalmal)$fit
-
-  test_that("fixed values work as expected with terms = FALSE", {
-    expect_false(isTRUE(all.equal(fitnontermsfem, fitnontermsmal)))
-  })
-
-  fittermsfem <- predict_fit_and_ci(model, new_comp, comp_labels, fixed_values = fixedvalfem)$fit
-  fittermsmal <- predict_fit_and_ci(model, new_comp, comp_labels, fixed_values = fixedvalmal)$fit
-
-  test_that("fixed values have no effect with terms = TRUE", {
-    expect_equal(fittermsfem, fittermsmal)
-  })
-
-}
-
-
-
-# EQUALITY WITH CALCULATION USING COEFFICIENTS=============================================================
-transf_comp <- transform_comp(new_comp, comp_labels = comp_labels)
-tl <- transf_labels(comp_labels, "ilr")
-transf_comp_mean <- get_cm_from_model(lm_outcome, comp_labels = comp_labels, transf_labels = tl)[[2]]
-delta_comp <- transf_comp[, tl] - transf_comp_mean[, tl]
 
 for (name in names(models_list)){
   model <- models_list[[name]]
-  terms_pred <- as.matrix(delta_comp) %*% coef(model)[tl]
-  sum_pred <- apply(terms_pred, 1, sum)
-  assign(paste0(name, "_sumfit"), sum_pred)
-  fitfromfunction <- predict_fit_and_ci(model, new_comp, comp_labels)$fit
+  coefs <- summary(model)$coef
+  fitdiff <- coefs[grepl("ilr_1", rownames(coefs)), 1]*ilr1_diff
+  fitfromfunction <- predict_fit_and_ci(model, new_comp3, comp_labels)$fit[1]
+  uppercifunction <- predict_fit_and_ci(model, new_comp3, comp_labels)$upper_CI[1]
+  fitfrompredict_link <- predict(model, type = "terms", terms = "ilr_1_vigorous_vs_parts_2_to_5", se.fit = TRUE, newdata = new_comp3)$fit[1]
+  sefrompredict <- predict(model, type = "terms", terms = "ilr_1_vigorous_vs_parts_2_to_5", se.fit = TRUE, newdata = new_comp3)$se.fit[1]
+  attr(fitfrompredict_link, "constant") <- NULL
+  colnames(fitfrompredict_link) <- NULL
+  attr(sefrompredict, "constant") <- NULL
+  colnames(sefrompredict) <- NULL
+
+  col_se <- ifelse(name %in% c("linear", "logistic"), 2, 3) # columns of SE sits in different places in fit
+  sediff <- coefs[grepl("ilr_1", rownames(coefs)), col_se]*ilr1_diff
   if (name %in% c("logistic", "cox")){
-    fitfrombasics <- exp(sum_pred)
-  } else if (name %in% c("linear")) {fitfrombasics <- sum_pred}
+    fitfrombasics <- exp(fitdiff)
+    uppercibasics <- exp(fitdiff + sediff*qnorm(0.975))
+    fitfrompredict <- exp(fitfrompredict_link)
+    uppercifrompredict <- exp(fitfrompredict_link + sefrompredict*qnorm(0.975))
+  }
+  if (name %in% c("linear")) {
+    fitfrombasics <- fitdiff
+    uppercibasics <- fitdiff + sediff*qt(0.975, model$df.residual)
+    fitfrompredict <- fitfrompredict_link
+    uppercifrompredict <- fitfrompredict_link + sefrompredict*qt(0.975, model$df.residual)
+
+  }
   test_that("terms predictions for fit correct", {
-    expect_equal(fitfromfunction, fitfrombasics)
+     expect_equal(fitfromfunction, fitfrombasics)
+  })
+  test_that("terms predictions for upper ci correct", {
+     expect_equal(uppercifunction, uppercibasics)
+  })
+
+  test_that("terms predictions for fit correct", {
+    expect_equal(fitfromfunction, fitfrompredict)
+  })
+  test_that("terms predictions for upper ci correct", {
+     expect_equal(uppercifunction, uppercifrompredict)
   })
 
 }
+
 
 #==============
 # Test against deltacomp package
