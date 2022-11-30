@@ -11,14 +11,6 @@
 
 --------------------------------
 
---------------------------------
-
-**IMPORTANT:** This package is no longer actively maintained. It remains publicly available primarily for the purpose of reproducibility.
-
-**Please continue to get in touch with bug reports. Please also get in touch if you are interested in developing/maintaining the package.**
-
---------------------------------
-
 Please note that: 
 - This is the in-development version and major changes and corrections may be made 
 - The package is shared as-is to enable scientific reproducibility and 'open science' 
