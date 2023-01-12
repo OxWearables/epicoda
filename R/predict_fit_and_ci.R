@@ -142,6 +142,63 @@ predict_fit_and_ci <- function(model,
   }
 
   # We begin the plotting
+  if (type == "poisson") {
+    if (terms) {
+      # Terms predictions
+      predictions <-
+        stats::predict(
+          model,
+          newdata = new_data,
+          type = "terms",
+          terms = transf_labels,
+          se.fit = TRUE
+        )
+      dNew <- data.frame(new_data, predictions)
+
+      # Sum terms predictions to get log_odds difference, exponentiate for OR
+      vector_for_args <-
+        paste("dNew$fit.", transf_labels, sep = "")
+      sum_for_args <- paste0(vector_for_args, collapse = "+")
+      dNew$log_rate_change <- eval(parse(text = sum_for_args))
+      dNew$fit <- exp(dNew$log_rate_change)
+
+      # Calculate SE on this estimate using variance-covariance matrix
+      # Robust covariance matrix
+      middle_matrix <-
+        sandwich::sandwich(model)[transf_labels, transf_labels]
+
+      x <-
+        data.matrix(new_data[, transf_labels] - rep(cm_transf_df[, transf_labels], by = nrow(new_data)))
+      t_x <- data.matrix(as.matrix(t(x)))
+
+      in_sqrt_true <- diag((x %*% middle_matrix) %*% t_x)
+      value <- sqrt(data.matrix(in_sqrt_true))
+
+      # Calculate Wald CI
+      alpha_lower <- dNew$log_rate_change - z_value * value
+      alpha_upper <- dNew$log_rate_change + z_value * value
+
+      dNew$lower_CI <- exp(alpha_lower)
+      dNew$upper_CI <- exp(alpha_upper)
+
+    } else {
+      # Predict on link scale (linear predictor)
+      predictions <- stats::predict(model,
+                                    newdata = new_data,
+                                    type = "link",
+                                    se.fit = TRUE)
+      dNew <- data.frame(new_data, predictions)
+      # Calculate CI
+      dNew$lower_CI <-
+        model$family$linkinv(dNew$fit - z_value * dNew$se.fit) # This should be the correct confidence interval under the assumption of approximate normality of standard errors on scale of linear predictors. A reference for it is: https://fromthebottomoftheheap.net/2018/12/10/confidence-intervals-for-glms/
+      dNew$upper_CI <-
+        model$family$linkinv(dNew$fit + z_value * dNew$se.fit)
+      # Invert fit to get probability scale
+      dNew$fit <- model$family$linkinv(dNew$fit)
+    }
+  }
+
+  # We begin the plotting
   if (type == "logistic") {
     if (terms) {
       # Terms predictions
