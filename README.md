@@ -44,6 +44,14 @@ To see examples of what the package can do, see the vignette (long form document
 ```{r}
 vignette("vignette-epicoda")
 ```
+
+## Note:
+Some users have encountered installation errors related to vignette building (e.g., missing packages such as ggtern). A temporary workaround is to install the package without building vignettes, for example:
+```{r}
+remotes::install_github("OxWearables/epicoda", build_vignettes = FALSE)
+```
+
+This will install the core package successfully, though vignettes will not be available locally.
 ## Troubleshooting 
 This is the in-development version - please get in touch with any feedback or problems on this page, or by emailing rosemary.walmsley@bdi.ox.ac.uk. 
 
